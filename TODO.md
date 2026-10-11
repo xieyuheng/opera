@@ -1,5 +1,9 @@
 # 学习
 
+关于本地函数 http 化的笔记。
+
+---
+
 hono api，尤其是 hono streaming api
 
 - 为了看懂 stream 相关的代码，从而 refactor 相关的代码
@@ -17,15 +21,29 @@ hono api，尤其是 hono streaming api
   也许 dsh 的插件机制真的有用。
   是否与 laravel 的依赖注入类似？
 
+# model 接口的边界
+
+对于有 exception 机制的语言来说，
+model 接口的边界，不只包含显式声明参数类型，
+还包括 throw 的 error 类型。
+
+model 不应该把 http 相关的错误 throw 出来，
+让 turn 相关的函数处理，
+应该在 provider 阶段就处理好所有的错误类型，
+把错误归一化，作为 event 发出来。
+
+---
+
+关于能力边界的笔记。
+
 # usage
 
 目前我们的 agent interpret 只是返回一个 stream，
 而 vercel 的 `streamText` 返回的是一个 `StreamTextResult`：
 
 ```typescript
-import { streamText } from 'ai';
 const result = streamText({
-  model: 'openai/gpt-5.6-sol',
+  model: 'deepseek/deepseek-flash',
   prompt: 'Write a short poem about the ocean.',
 });
 
