@@ -1,9 +1,5 @@
 # 学习
 
-关于本地函数 http 化的笔记。
-
----
-
 hono api，尤其是 hono streaming api
 
 - 为了看懂 stream 相关的代码，从而 refactor 相关的代码
