@@ -12,7 +12,7 @@ import type {
   FileSystemWatchEvent,
   FileType,
 } from "../../fs/index.ts"
-import { makeFileSystemError, type FileSystemError } from "../../fs/index.ts"
+import type { FileSystemError } from "../../fs/index.ts"
 import { err, ok, type Result } from "@windbell/std.js/result"
 import { encodeBase64 } from "@windbell/std.js/base64"
 import {
@@ -338,14 +338,12 @@ export function makeHttpFileSystemClient(
       const parsed = ResultSchema(VoidSchema).safeParse(value)
 
       if (!parsed.success) {
-        return err(
-          makeFileSystemError(
-            "invalid-response",
-            "write-bytes",
-            parsed.error.message,
-            { path },
-          ),
-        )
+        return err({
+          type: "invalid-response",
+          who: "write-bytes",
+          message: parsed.error.message,
+          info: { path },
+        })
       }
 
       return parsed.data
@@ -514,15 +512,15 @@ async function readErrorResponse(
     // Fall through to a generic HTTP error.
   }
 
-  return makeFileSystemError(
-    "http-error",
+  return {
+    type: "http-error",
     who,
-    text === "" ? response.statusText : text,
-    {
+    message: text === "" ? response.statusText : text,
+    info: {
       ...info,
       status: response.status,
     },
-  )
+  }
 }
 
 function toClientError(
@@ -537,14 +535,14 @@ function toClientError(
       errorInfo.status = error.status
     }
 
-    return makeFileSystemError("http-error", who, error.message, errorInfo)
+    return { type: "http-error", who, message: error.message, info: errorInfo }
   }
 
   if (isAbortError(error)) {
-    return makeFileSystemError("aborted", who, errorMessage(error), info)
+    return { type: "aborted", who, message: errorMessage(error), info }
   }
 
-  return makeFileSystemError("unknown", who, errorMessage(error), info)
+  return { type: "unknown", who, message: errorMessage(error), info }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -558,7 +556,8 @@ function isFileSystemError(value: unknown): value is FileSystemError {
     typeof value.type === "string" &&
     typeof value.who === "string" &&
     typeof value.message === "string" &&
-    isRecord(value.info)
+    (value.info === undefined ||
+      (value.info !== null && typeof value.info === "object"))
   )
 }
 

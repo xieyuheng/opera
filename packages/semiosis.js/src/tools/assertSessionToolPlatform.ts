@@ -1,6 +1,6 @@
 import process from "node:process"
 import { isToolSign, type Sign } from "../sign/index.ts"
-import { defaultShellDialect } from "./makeDefaultToolRouter.ts"
+import { platformShellName } from "./makeDefaultToolRouter.ts"
 
 const shellToolNames = new Set(["bash", "pwsh"])
 
@@ -8,7 +8,7 @@ export function assertSessionToolPlatform(
   signs: Array<Sign>,
   platform: NodeJS.Platform = process.platform,
 ): void {
-  const expectedShellTool = defaultShellDialect(platform)
+  const expectedShellTool = platformShellName(platform)
   const sessionShellTools = signs
     .filter(isToolSign)
     .map((sign) => sign.name)

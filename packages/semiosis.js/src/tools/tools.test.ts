@@ -6,16 +6,16 @@ import { test } from "node:test"
 import { makeBashToolHandler, makeBashToolSign } from "./bash/index.ts"
 import { assertSessionToolPlatform } from "./assertSessionToolPlatform.ts"
 import {
-  defaultShellDialect,
+  platformShellName,
   makeDefaultToolRouter,
 } from "./makeDefaultToolRouter.ts"
 import { makePwshToolSign } from "./pwsh/index.ts"
-import { resolvePwshPath } from "./pwsh/resolvePwshPath.ts"
+import { resolvePwshPath } from "@windbell/sh.js/local-sh"
 
-test("defaultShellDialect chooses bash on posix and pwsh on win32", () => {
-  assert.equal(defaultShellDialect("linux"), "bash")
-  assert.equal(defaultShellDialect("darwin"), "bash")
-  assert.equal(defaultShellDialect("win32"), "pwsh")
+test("platformShellName chooses bash on posix and pwsh on win32", () => {
+  assert.equal(platformShellName("linux"), "bash")
+  assert.equal(platformShellName("darwin"), "bash")
+  assert.equal(platformShellName("win32"), "pwsh")
 })
 
 test("assertSessionToolPlatform accepts matching shell tools", () => {
@@ -58,7 +58,7 @@ test("resolvePwshPath falls back to pwsh outside win32", () => {
 test("makeDefaultToolRouter defines the platform shell tool", () => {
   assert.equal(
     makeDefaultToolRouter({ cwd: process.cwd() }).toolSigns[0]?.name,
-    defaultShellDialect(),
+    platformShellName(),
   )
 })
 

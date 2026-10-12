@@ -10,7 +10,7 @@ import type {
   FileSystemWatchEvent,
   FileType,
 } from "../fs/index.ts"
-import { makeFileSystemError, type FileSystemError } from "../fs/index.ts"
+import type { FileSystemError } from "../fs/index.ts"
 import { err, isError, ok, type Result } from "@windbell/std.js/result"
 
 const errorTypeByCode: Record<string, string> = {
@@ -316,14 +316,12 @@ async function classifyFile(
     const stat = await fs.stat(path)
 
     if (!stat.isFile()) {
-      return err(
-        makeFileSystemError(
-          "not-a-file",
-          "classify-file",
-          `not a file: ${path}`,
-          { path },
-        ),
-      )
+      return err({
+        type: "not-a-file",
+        who: "classify-file",
+        message: `not a file: ${path}`,
+        info: { path },
+      })
     }
 
     const sample = await readSample(path, 4096)
@@ -423,12 +421,12 @@ async function* watch(
   if (!statResult.value.isDirectory()) {
     yield {
       type: "error",
-      error: makeFileSystemError(
-        "not-a-directory",
-        "watch",
-        `not a directory: ${path}`,
-        { path },
-      ),
+      error: {
+        type: "not-a-directory",
+        who: "watch",
+        message: `not a directory: ${path}`,
+        info: { path },
+      },
     }
     yield { type: "close" }
     return
@@ -639,18 +637,21 @@ function toFileSystemError(
   if (isFileSystemError(error)) return error
 
   const code = readErrorCode(error)
-  const errorInfo: JsonObject = { ...info }
-
-  if (code !== undefined) {
-    errorInfo.code = code
+  const fileSystemError: FileSystemError = {
+    type: errorTypeFromError(error),
+    who,
+    message: errorMessage(error),
   }
 
-  return makeFileSystemError(
-    errorTypeFromError(error),
-    who,
-    errorMessage(error),
-    errorInfo,
-  )
+  if (Object.keys(info).length > 0 || code !== undefined) {
+    fileSystemError.info = { ...info }
+  }
+
+  if (code !== undefined && fileSystemError.info !== undefined) {
+    fileSystemError.info.code = code
+  }
+
+  return fileSystemError
 }
 
 function isFileSystemError(value: unknown): value is FileSystemError {
@@ -662,8 +663,8 @@ function isFileSystemError(value: unknown): value is FileSystemError {
     typeof record.type === "string" &&
     typeof record.who === "string" &&
     typeof record.message === "string" &&
-    record.info !== null &&
-    typeof record.info === "object"
+    (record.info === undefined ||
+      (record.info !== null && typeof record.info === "object"))
   )
 }
 

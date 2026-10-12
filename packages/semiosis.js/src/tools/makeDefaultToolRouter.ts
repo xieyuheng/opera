@@ -5,7 +5,7 @@ import { makePwshToolHandler, makePwshToolSign } from "./pwsh/index.ts"
 
 export type ShellDialect = "bash" | "pwsh"
 
-export function defaultShellDialect(
+export function platformShellName(
   platform: NodeJS.Platform = process.platform,
 ): ShellDialect {
   return platform === "win32" ? "pwsh" : "bash"
@@ -36,11 +36,11 @@ export function makeDefaultToolRouter(
   options: DefaultToolRouterOptions,
 ): ToolRouter {
   const toolRouter = makeToolRouter()
-  const shell = defaultShellDialect()
+  const name = platformShellName()
   const timeoutMs = options.timeoutMs ?? 300_000
   const maxOutputChars = options.maxOutputChars ?? 200_000
 
-  if (shell === "pwsh") {
+  if (name === "pwsh") {
     toolRouter.defineTool(
       makePwshToolSign({
         description: defaultPwshToolDescription,

@@ -28,7 +28,7 @@ export const FileSystemErrorSchema: z.ZodType<FileSystemError> = z.object({
   type: z.string(),
   who: z.string(),
   message: z.string(),
-  info: JsonObjectSchema,
+  info: JsonObjectSchema.optional(),
 })
 
 export function ResultSchema<T>(
