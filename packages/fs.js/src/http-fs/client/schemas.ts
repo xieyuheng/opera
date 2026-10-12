@@ -5,8 +5,8 @@ import type {
   FileSystemError,
   FileType,
 } from "../../fs/index.ts"
-import type { Result } from "../../result/index.ts"
-import { decodeBase64 } from "../codec.ts"
+import type { Result } from "@windbell/std.js/result"
+import { decodeBase64 } from "@windbell/std.js/base64"
 
 const JsonValueSchema: z.ZodType<Json> = z.lazy(() =>
   z.union([

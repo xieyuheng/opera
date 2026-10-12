@@ -1,5 +1,10 @@
 # fs.js
 
+下面我们的目标是：
+- 用依赖注入的方式实现 semiosis.js 本身，
+  从而避免整个 semiosis-api.js。
+先给出方案。
+
 # 学习
 
 hono api，尤其是 hono streaming api

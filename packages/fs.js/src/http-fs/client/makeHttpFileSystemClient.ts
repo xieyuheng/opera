@@ -12,8 +12,8 @@ import type {
   FileType,
 } from "../../fs/index.ts"
 import { makeFileSystemError, type FileSystemError } from "../../fs/index.ts"
-import { err, ok, type Result } from "../../result/index.ts"
-import { encodeBase64 } from "../codec.ts"
+import { err, ok, type Result } from "@windbell/std.js/result"
+import { encodeBase64 } from "@windbell/std.js/base64"
 import {
   Base64BytesSchema,
   BooleanSchema,
@@ -55,6 +55,16 @@ type BatchWriteInput<T> = {
 export function makeHttpFileSystemClient(
   config: HttpFileSystemClientConfig,
 ): FileSystem {
+  const homeEndpoint = makeJsonEndpoint<void, Result<string, FileSystemError>>(
+    config,
+    {
+      method: "POST",
+      path: "/home",
+      body: () => ({}),
+      output: ResultSchema(StringSchema),
+    },
+  )
+
   const existsEndpoint = makeJsonEndpoint<
     PathInput,
     Result<boolean, FileSystemError>
@@ -387,6 +397,7 @@ export function makeHttpFileSystemClient(
   }
 
   return {
+    home: () => callResult("home", homeEndpoint, undefined, {}),
     exists: (path) => callResult("exists", existsEndpoint, { path }, { path }),
     isFile: (path) => callResult("is-file", isFileEndpoint, { path }, { path }),
     isDirectory: (path) =>

@@ -1,7 +1,8 @@
-import type { Result } from "../result/index.ts"
+import type { Result } from "@windbell/std.js/result"
 import type { FileSystemError } from "./FileSystemError.ts"
 
 export type FileSystem = {
+  home(): Promise<Result<string, FileSystemError>>
   exists(path: string): Promise<Result<boolean, FileSystemError>>
   isFile(path: string): Promise<Result<boolean, FileSystemError>>
   isDirectory(path: string): Promise<Result<boolean, FileSystemError>>

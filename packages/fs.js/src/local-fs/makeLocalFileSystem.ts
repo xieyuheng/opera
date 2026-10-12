@@ -2,6 +2,7 @@ import fs from "node:fs/promises"
 import { watch as watchDirectory, type WatchEventType } from "node:fs"
 import { randomUUID } from "node:crypto"
 import Path from "node:path"
+import Os from "node:os"
 import type { JsonObject } from "@windbell/std.js/json"
 import type {
   FileSystem,
@@ -10,7 +11,7 @@ import type {
   FileType,
 } from "../fs/index.ts"
 import { makeFileSystemError, type FileSystemError } from "../fs/index.ts"
-import { err, isError, ok, type Result } from "../result/index.ts"
+import { err, isError, ok, type Result } from "@windbell/std.js/result"
 
 const errorTypeByCode: Record<string, string> = {
   ENOENT: "not-found",
@@ -33,6 +34,7 @@ const errorTypeByCode: Record<string, string> = {
 
 export function makeLocalFileSystem(): FileSystem {
   return {
+    home,
     exists,
     isFile,
     isDirectory,
@@ -68,6 +70,10 @@ async function run<T>(
   } catch (error) {
     return err(toFileSystemError(who, error, info))
   }
+}
+
+async function home(): Promise<Result<string, FileSystemError>> {
+  return run("home", async () => Os.homedir())
 }
 
 async function exists(path: string): Promise<Result<boolean, FileSystemError>> {

@@ -3,9 +3,9 @@ import { HTTPException } from "hono/http-exception"
 import { streamSSE } from "hono/streaming"
 import type { FileSystem } from "../../fs/index.ts"
 import type { FileSystemError } from "../../fs/index.ts"
-import { ok, type Result } from "../../result/index.ts"
+import { ok, type Result } from "@windbell/std.js/result"
 import { makeLocalFileSystem } from "../../local-fs/index.ts"
-import { decodeBase64, encodeBase64 } from "../codec.ts"
+import { decodeBase64, encodeBase64 } from "@windbell/std.js/base64"
 
 export type HttpFileSystemRouterOptions = {
   fs?: FileSystem
@@ -74,6 +74,7 @@ export function makeHttpFileSystemRouter(
   })
 
   const handlers: Record<string, Handler> = {
+    home: async () => fs.home(),
     exists: async (body) => fs.exists(readPath(body)),
     "is-file": async (body) => fs.isFile(readPath(body)),
     "is-directory": async (body) => fs.isDirectory(readPath(body)),
