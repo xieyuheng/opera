@@ -3,6 +3,7 @@ import {
   makeJsonEndpoint,
   requestServerSentEvents,
   sendRequest,
+  type ServerSentEvent,
 } from "@windbell/http.js"
 import type { JsonObject } from "@windbell/std.js/json"
 import type {
@@ -357,43 +358,59 @@ export function makeHttpFileSystemClient(
     path: string,
     options: { signal?: AbortSignal },
   ): AsyncIterable<FileSystemWatchEvent> {
-    try {
-      for await (const event of requestServerSentEvents({
-        baseUrl: config.baseUrl,
-        method: "POST",
-        path: "/watch",
-        body: { path },
-        signal: options.signal,
-      })) {
-        let watchEvent: FileSystemWatchEvent
+    let reconnectDelay = 500
+    let attempt = 0
 
-        try {
-          watchEvent = JSON.parse(event.data) as FileSystemWatchEvent
-        } catch (error) {
-          yield {
-            type: "error",
-            error: toClientError("watch", error, { path }),
+    while (!options.signal?.aborted) {
+      let connected = false
+
+      try {
+        for await (const event of requestServerSentEvents({
+          baseUrl: config.baseUrl,
+          method: "POST",
+          path: "/watch",
+          body: { path },
+          signal: options.signal,
+        })) {
+          const watchEvent = parseFileSystemWatchEvent(event)
+          if (watchEvent === undefined) continue
+
+          if (!connected) {
+            connected = true
+            attempt = 0
+            reconnectDelay = 500
           }
+
+          yield watchEvent
+
+          if (watchEvent.type === "close") return
+        }
+      } catch (error) {
+        if (options.signal?.aborted || isAbortError(error)) {
           yield { type: "close" }
           return
         }
-
-        yield watchEvent
-
-        if (watchEvent.type === "close") return
       }
-    } catch (error) {
-      if (isAbortError(error)) {
+
+      if (options.signal?.aborted) {
         yield { type: "close" }
         return
       }
 
+      attempt += 1
+
       yield {
-        type: "error",
-        error: toClientError("watch", error, { path }),
+        type: "reconnecting",
+        path,
+        attempt,
+        delayMs: reconnectDelay,
       }
-      yield { type: "close" }
+
+      await sleep(reconnectDelay, options.signal)
+      reconnectDelay = Math.min(reconnectDelay * 2, 5_000)
     }
+
+    yield { type: "close" }
   }
 
   return {
@@ -543,6 +560,90 @@ function isFileSystemError(value: unknown): value is FileSystemError {
     typeof value.message === "string" &&
     isRecord(value.info)
   )
+}
+
+function parseFileSystemWatchEvent(
+  event: ServerSentEvent,
+): FileSystemWatchEvent | undefined {
+  let value: unknown
+
+  try {
+    value = JSON.parse(event.data)
+  } catch {
+    return undefined
+  }
+
+  if (!isRecord(value) || typeof value.type !== "string") {
+    return undefined
+  }
+
+  switch (value.type) {
+    case "ready":
+      return typeof value.path === "string"
+        ? { type: "ready", path: value.path }
+        : undefined
+
+    case "change": {
+      const path = value.path
+      const changeType = value.changeType
+      const filename = value.filename
+
+      if (typeof path !== "string") return undefined
+      if (changeType !== "rename" && changeType !== "change") return undefined
+      if (filename !== null && typeof filename !== "string") return undefined
+
+      return {
+        type: "change",
+        path,
+        changeType,
+        filename,
+      }
+    }
+
+    case "error":
+      return isFileSystemError(value.error)
+        ? { type: "error", error: value.error }
+        : undefined
+
+    case "reconnecting":
+      return typeof value.path === "string" &&
+        typeof value.attempt === "number" &&
+        typeof value.delayMs === "number"
+        ? {
+            type: "reconnecting",
+            path: value.path,
+            attempt: value.attempt,
+            delayMs: value.delayMs,
+          }
+        : undefined
+
+    case "ping":
+      return { type: "ping" }
+
+    case "close":
+      return { type: "close" }
+
+    default:
+      return undefined
+  }
+}
+
+async function sleep(delayMs: number, signal?: AbortSignal): Promise<void> {
+  if (signal?.aborted) return
+
+  await new Promise<void>((resolve) => {
+    const onAbort = (): void => {
+      clearTimeout(timer)
+      resolve()
+    }
+
+    const timer = setTimeout(() => {
+      signal?.removeEventListener("abort", onAbort)
+      resolve()
+    }, delayMs)
+
+    signal?.addEventListener("abort", onAbort, { once: true })
+  })
 }
 
 function isAbortError(error: unknown): boolean {

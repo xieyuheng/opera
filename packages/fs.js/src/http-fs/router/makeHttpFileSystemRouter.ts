@@ -62,13 +62,28 @@ export function makeHttpFileSystemRouter(
     const path = readPath(body)
 
     return streamSSE(c, async (stream) => {
-      for await (const event of fs.watch(path, {
-        signal: c.req.raw.signal,
-      })) {
-        await stream.writeSSE({
-          event: event.type,
-          data: JSON.stringify(event),
-        })
+      const heartbeat = setInterval(() => {
+        if (stream.aborted) return
+
+        void stream
+          .writeSSE({
+            event: "ping",
+            data: JSON.stringify({ type: "ping" }),
+          })
+          .catch(() => undefined)
+      }, 15_000)
+
+      try {
+        for await (const event of fs.watch(path, {
+          signal: c.req.raw.signal,
+        })) {
+          await stream.writeSSE({
+            event: event.type,
+            data: JSON.stringify(event),
+          })
+        }
+      } finally {
+        clearInterval(heartbeat)
       }
     })
   })

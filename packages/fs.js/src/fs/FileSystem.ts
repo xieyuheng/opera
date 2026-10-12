@@ -67,4 +67,11 @@ export type FileSystemWatchEvent =
       filename: string | null
     }
   | { type: "error"; error: FileSystemError }
+  | {
+      type: "reconnecting"
+      path: string
+      attempt: number
+      delayMs: number
+    }
+  | { type: "ping" }
   | { type: "close" }
