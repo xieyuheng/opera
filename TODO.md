@@ -1,3 +1,10 @@
+# fs.js
+
+下面在 fs.js 中设置 http-fs/，
+用 local-fs + hono 的 api server + http clinet，
+实现我们所定义的 FileSystem 接口。
+（最终实现接口的其实是 http clinet）
+
 # 学习
 
 hono api，尤其是 hono streaming api

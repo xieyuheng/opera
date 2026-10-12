@@ -57,7 +57,7 @@ export type FileSystemWatchEvent =
   | {
     type: "change"
     path: string
-    eventType: "rename" | "change"
+    changeType: "rename" | "change"
     filename: string | null
   }
   | { type: "error"; error: FileSystemError }
