@@ -1,0 +1,28 @@
+{
+  "name": "@windbell/fs.js",
+  "version": "0.1.0",
+  "private": true,
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "main": "src/index.ts",
+  "files": [
+    "src"
+  ],
+  "prettier": {
+    "semi": false,
+    "trailingComma": "all"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "prettier": "^3.9.10",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@windbell/std.js": "workspace:*"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./fs": "./src/fs/index.ts",
+    "./result": "./src/result/index.ts"
+  }
+}

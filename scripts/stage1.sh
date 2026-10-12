@@ -10,6 +10,7 @@ set -e
 ./scripts/run-in.sh http.js format.sh
 ./scripts/run-in.sh cli.js format.sh
 ./scripts/run-in.sh semiosis.js format.sh
+./scripts/run-in.sh fs.js format.sh
 ./scripts/run-in.sh fs-api.js format.sh
 ./scripts/run-in.sh semiosis-api.js format.sh
 ./scripts/run-in.sh windbell-cli.js format.sh
@@ -22,6 +23,7 @@ set -e
 ./scripts/run-in.sh http.js check.sh
 ./scripts/run-in.sh cli.js check.sh
 ./scripts/run-in.sh semiosis.js check.sh
+./scripts/run-in.sh fs.js check.sh
 ./scripts/run-in.sh fs-api.js check.sh
 ./scripts/run-in.sh semiosis-api.js check.sh
 ./scripts/run-in.sh windbell-cli.js check.sh
