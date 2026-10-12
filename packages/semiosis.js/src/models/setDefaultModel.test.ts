@@ -3,7 +3,7 @@ import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
-import { makeDatabase } from "../database/index.ts"
+import { makeNodeDatabase } from "../database/index.ts"
 import { pinModel } from "./pinModel.ts"
 import { setDefaultModel } from "./setDefaultModel.ts"
 
@@ -13,7 +13,7 @@ test("setDefaultModel writes provider defaultModel", async () => {
   )
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
 
     await database.providers.put("deepseek", {
       name: "deepseek",
@@ -39,7 +39,7 @@ test("setDefaultModel accepts model that is not pinned", async () => {
   )
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
 
     await database.providers.put("deepseek", {
       name: "deepseek",
@@ -64,7 +64,7 @@ test("setDefaultModel rejects unsupported provider", async () => {
   )
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
 
     await assert.rejects(
       () => setDefaultModel(database, "unknown", "deepseek-flash"),

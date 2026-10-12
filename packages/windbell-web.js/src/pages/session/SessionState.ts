@@ -1,4 +1,4 @@
-import { makeSemiosisClient } from "@windbell/semiosis-api.js/client"
+import { semiosis } from "../../app/semiosis"
 import type * as S from "@windbell/semiosis.js/node"
 import { reactive } from "vue"
 
@@ -41,10 +41,6 @@ export type SessionState = {
   errorRetryable: boolean
   errorInputPersisted: boolean
 }
-
-const semiosis = makeSemiosisClient({
-  baseUrl: "/api/semiosis",
-})
 
 const maxInterpretAttempts = 3
 const retryDelaysMs = [500, 1_000, 2_000]

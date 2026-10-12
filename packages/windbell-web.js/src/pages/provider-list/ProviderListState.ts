@@ -1,9 +1,5 @@
-import { makeSemiosisClient } from "@windbell/semiosis-api.js/client"
+import { semiosis } from "../../app/semiosis"
 import { reactive } from "vue"
-
-const semiosis = makeSemiosisClient({
-  baseUrl: "/api/semiosis",
-})
 
 export type ProviderModelLine = {
   name: string

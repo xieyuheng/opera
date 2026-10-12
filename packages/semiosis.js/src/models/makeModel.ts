@@ -3,7 +3,6 @@ import { readProviderConfig } from "../provider/index.ts"
 import type { Model, ModelRef } from "../model/index.ts"
 import * as DeepSeek from "../providers/deepseek/index.ts"
 import * as OpenRouter from "../providers/openrouter/index.ts"
-import { readMockModel } from "./readMockModel.ts"
 
 export type MakeModelOptions = {
   database: Database
@@ -14,10 +13,6 @@ export async function makeModel(
   options: MakeModelOptions,
 ): Promise<Model> {
   switch (ref.providerName) {
-    case "mock": {
-      return readMockModel(ref.name)
-    }
-
     case "deepseek": {
       const client = DeepSeek.makeClient(
         await DeepSeek.readClientConfig(options.database),

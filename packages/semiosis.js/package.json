@@ -23,7 +23,8 @@
     "@windbell/std.js": "workspace:*",
     "ajv": "^8.20.0",
     "zod": "^4.6.5",
-    "@windbell/sh.js": "workspace:*"
+    "@windbell/sh.js": "workspace:*",
+    "@windbell/fs.js": "workspace:*"
   },
   "bin": {
     "semiosis.js": "src/main.ts"

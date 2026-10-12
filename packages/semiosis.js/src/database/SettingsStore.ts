@@ -1,8 +1,10 @@
-import Path from "node:path"
+import type { Path } from "@windbell/std.js/path"
 import type { Settings } from "../settings/Settings.ts"
-import { readJsonFile, writeJsonFile } from "./jsonFile.ts"
+import type { FileStore } from "./fileStore.ts"
 
 export type SettingsStoreOptions = {
+  files: FileStore
+  path: Path
   root: string
 }
 
@@ -14,12 +16,11 @@ export type SettingsStore = {
 export function makeSettingsStore(
   options: SettingsStoreOptions,
 ): SettingsStore {
-  const root = Path.resolve(options.root)
-  const path = Path.join(root, "settings.json")
+  const filePath = options.path.join(options.root, "settings.json")
 
   return {
     async get() {
-      const value = await readJsonFile(path)
+      const value = await options.files.readJsonFile(filePath)
       if (value === undefined) return undefined
       if (
         value === null ||
@@ -40,7 +41,7 @@ export function makeSettingsStore(
     },
 
     async put(settings) {
-      await writeJsonFile(path, settings)
+      await options.files.writeJsonFile(filePath, settings)
     },
   }
 }

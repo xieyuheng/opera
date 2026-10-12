@@ -1,6 +1,4 @@
-import Path from "node:path"
 import type { Database } from "../../../database/index.ts"
-import { writeJsonFile } from "../../../database/index.ts"
 import { parseModelConfig } from "./parseModelConfig.ts"
 import { readModelConfigs } from "./readModelConfigs.ts"
 
@@ -20,10 +18,10 @@ export async function unpinModel(
     pinned: false,
   }
 
-  await writeJsonFile(modelConfigsPath(database), configs)
+  await database.files.writeJsonFile(modelConfigsPath(database), configs)
   return true
 }
 
 function modelConfigsPath(database: Database): string {
-  return Path.join(database.providersRoot, "deepseek", "models.json")
+  return database.path.join(database.providersRoot, "deepseek", "models.json")
 }

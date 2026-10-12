@@ -32,11 +32,11 @@ test("assertSessionToolPlatform rejects mismatched shell tools", () => {
 
   assert.throws(
     () => assertSessionToolPlatform([pwshSign], "linux"),
-    /session shell tool "pwsh" does not match platform "linux"/,
+    /session shell tool "pwsh" does not match shell "bash"/,
   )
   assert.throws(
     () => assertSessionToolPlatform([bashSign], "win32"),
-    /session shell tool "bash" does not match platform "win32"/,
+    /session shell tool "bash" does not match shell "pwsh"/,
   )
 })
 

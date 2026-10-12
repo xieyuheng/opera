@@ -1,16 +1,12 @@
-import fs from "node:fs/promises"
-import Path from "node:path"
+import type { Path } from "@windbell/std.js/path"
 import type { ProviderConfig } from "../provider/index.ts"
 import { parseProviderConfig } from "../provider/index.ts"
+import type { FileStore } from "./fileStore.ts"
 import { assertId, isValidId } from "./id.ts"
-import {
-  isEnoent,
-  listDirectories,
-  readJsonFile,
-  writeJsonFile,
-} from "./jsonFile.ts"
 
 export type ProviderStoreOptions = {
+  files: FileStore
+  path: Path
   root: string
 }
 
@@ -24,21 +20,21 @@ export type ProviderStore = {
 export function makeProviderStore(
   options: ProviderStoreOptions,
 ): ProviderStore {
-  const root = Path.resolve(options.root)
+  const root = options.path.normalize(options.root)
 
   const providerDir = (providerName: string): string => {
-    return Path.join(root, providerName)
+    return options.path.join(root, providerName)
   }
 
   const providerPath = (providerName: string): string => {
-    return Path.join(providerDir(providerName), "index.json")
+    return options.path.join(providerDir(providerName), "index.json")
   }
 
   const store: ProviderStore = {
     async get(providerName) {
       assertId(providerName)
 
-      const value = await readJsonFile(providerPath(providerName))
+      const value = await options.files.readJsonFile(providerPath(providerName))
       if (value === undefined) return undefined
 
       return parseProviderConfig(value)
@@ -53,16 +49,16 @@ export function makeProviderStore(
         )
       }
 
-      await writeJsonFile(providerPath(providerName), value)
+      await options.files.writeJsonFile(providerPath(providerName), value)
     },
 
     async list() {
-      const directoryNames = await listDirectories(root)
+      const directoryNames = await options.files.listDirectories(root)
       const providerNames: Array<string> = []
 
       for (const providerName of directoryNames) {
         if (!isValidId(providerName)) continue
-        if (!(await pathExists(providerPath(providerName)))) continue
+        if (!(await options.files.exists(providerPath(providerName)))) continue
 
         providerNames.push(providerName)
       }
@@ -73,19 +69,9 @@ export function makeProviderStore(
 
     async remove(providerName) {
       assertId(providerName)
-      await fs.rm(providerDir(providerName), { recursive: true, force: true })
+      await options.files.remove(providerDir(providerName))
     },
   }
 
   return store
-}
-
-async function pathExists(path: string): Promise<boolean> {
-  try {
-    await fs.access(path)
-    return true
-  } catch (error) {
-    if (isEnoent(error)) return false
-    throw error
-  }
 }

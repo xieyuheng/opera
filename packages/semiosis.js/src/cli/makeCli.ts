@@ -1,7 +1,7 @@
 import * as Cli from "@windbell/cli.js"
 import { getPackageJson } from "@windbell/std.js/node"
 import { fileURLToPath } from "node:url"
-import { defaultDatabaseRoot, makeDatabase } from "../database/index.ts"
+import { defaultDatabaseRoot, makeNodeDatabase } from "../database/index.ts"
 import { makeBatchHandler } from "./commands/BatchCommand.ts"
 import { makeModelDefaultHandler } from "./commands/ModelDefaultCommand.ts"
 import { makeModelPinHandler } from "./commands/ModelPinCommand.ts"
@@ -14,7 +14,7 @@ import { makeProviderListHandler } from "./commands/ProviderListCommand.ts"
 import { makeReplHandler } from "./commands/ReplCommand.ts"
 
 export function makeCli() {
-  const database = makeDatabase({ root: defaultDatabaseRoot() })
+  const database = makeNodeDatabase({ root: defaultDatabaseRoot() })
   const { version } = getPackageJson(fileURLToPath(import.meta.url))
   const router = Cli.makeRouter("semiosis.js", version)
 

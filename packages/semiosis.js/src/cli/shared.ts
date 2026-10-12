@@ -2,7 +2,7 @@ import Path from "node:path"
 import type { Agent } from "../agent/index.ts"
 import type { Database } from "../database/index.ts"
 import type { Model } from "../model/index.ts"
-import { makeModel } from "../models/index.ts"
+import { makeModel, readMockModel } from "../models/index.ts"
 import { readProviderConfig } from "../provider/index.ts"
 import { makeAgentFromSession } from "../session/index.ts"
 import type { ToolRouter } from "../tool/index.ts"
@@ -28,12 +28,7 @@ export async function makeModelFromOptions(options: {
       throw new Error("model is required for provider: mock")
     }
 
-    return await makeModel(
-      { providerName, name: modelOption },
-      {
-        database: options.database,
-      },
-    )
+    return readMockModel(modelOption)
   }
 
   const providerConfig = await readProviderConfig(

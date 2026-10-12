@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto"
 import type { ModelRef } from "../model/index.ts"
 import type { Sign } from "../sign/index.ts"
 import type { SessionId } from "../session/Session.ts"
@@ -27,6 +26,12 @@ export type Turn = {
   completedAt?: number
 }
 
-export function makeInputHash(input: Array<Sign>): string {
-  return createHash("sha256").update(JSON.stringify(input)).digest("hex")
+export async function makeInputHash(input: Array<Sign>): Promise<string> {
+  const data = new TextEncoder().encode(JSON.stringify(input))
+  const digest = await globalThis.crypto.subtle.digest("SHA-256", data)
+  const bytes = new Uint8Array(digest)
+
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join(
+    "",
+  )
 }

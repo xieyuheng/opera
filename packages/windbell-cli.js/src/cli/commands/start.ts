@@ -42,7 +42,7 @@ export function makeStartHandler() {
       )
     }
 
-    const database = S.makeDatabase({
+    const database = S.makeNodeDatabase({
       root: databaseRoot,
     })
 

@@ -6,7 +6,7 @@ import type { DevOptions } from "./resolveDevOptions.ts"
 import type { ServerType } from "@hono/node-server"
 
 export async function runDev(options: DevOptions): Promise<void> {
-  const database = S.makeDatabase({
+  const database = S.makeNodeDatabase({
     root: options.databaseRoot,
   })
 

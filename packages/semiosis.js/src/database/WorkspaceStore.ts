@@ -1,10 +1,11 @@
-import fs from "node:fs/promises"
-import Path from "node:path"
+import type { Path } from "@windbell/std.js/path"
 import type { Workspace, WorkspaceId } from "../workspace/Workspace.ts"
+import type { FileStore } from "./fileStore.ts"
 import { assertId, isValidId, makeId } from "./id.ts"
-import { listDirectories, readJsonFile, writeJsonFile } from "./jsonFile.ts"
 
 export type WorkspaceStoreOptions = {
+  files: FileStore
+  path: Path
   root: string
 }
 
@@ -26,10 +27,11 @@ export type WorkspaceStore = {
 export function makeWorkspaceStore(
   options: WorkspaceStoreOptions,
 ): WorkspaceStore {
-  const root = Path.resolve(options.root)
+  const path = options.path
+  const root = path.normalize(options.root)
 
   const indexPath = (id: WorkspaceId): string => {
-    return Path.join(root, id, "index.json")
+    return path.join(root, id, "index.json")
   }
 
   const store: WorkspaceStore = {
@@ -38,7 +40,7 @@ export function makeWorkspaceStore(
       const workspace: Workspace = {
         id: makeId("workspace"),
         name: options.name,
-        root: Path.resolve(options.root),
+        root: path.normalize(options.root),
         createdAt: now,
         updatedAt: now,
       }
@@ -64,23 +66,23 @@ export function makeWorkspaceStore(
     async get(id) {
       assertId(id)
 
-      const value = await readJsonFile(indexPath(id))
+      const value = await options.files.readJsonFile(indexPath(id))
       if (value === undefined) return undefined
 
       return value as Workspace
     },
 
     async getByRoot(rootPath) {
-      const resolved = Path.resolve(rootPath)
+      const resolved = path.normalize(rootPath)
       const workspaces = await store.list()
 
       return workspaces.find((workspace) => {
-        return Path.resolve(workspace.root) === resolved
+        return path.normalize(workspace.root) === resolved
       })
     },
 
     async list() {
-      const ids = await listDirectories(root)
+      const ids = await options.files.listDirectories(root)
       const workspaces: Array<Workspace> = []
 
       for (const id of ids) {
@@ -100,12 +102,12 @@ export function makeWorkspaceStore(
 
     async put(workspace) {
       assertId(workspace.id)
-      await writeJsonFile(indexPath(workspace.id), workspace)
+      await options.files.writeJsonFile(indexPath(workspace.id), workspace)
     },
 
     async remove(id) {
       assertId(id)
-      await fs.rm(Path.join(root, id), { recursive: true, force: true })
+      await options.files.remove(path.join(root, id))
     },
   }
 

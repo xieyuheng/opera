@@ -12,7 +12,6 @@ set -e
 ./scripts/run-in.sh semiosis.js format.sh
 ./scripts/run-in.sh fs.js format.sh
 ./scripts/run-in.sh sh.js format.sh
-./scripts/run-in.sh semiosis-api.js format.sh
 ./scripts/run-in.sh windbell-cli.js format.sh
 ./scripts/run-in.sh windbell-api.js format.sh
 ./scripts/run-in.sh windbell-web.js format.sh
@@ -25,7 +24,6 @@ set -e
 ./scripts/run-in.sh semiosis.js check.sh
 ./scripts/run-in.sh fs.js check.sh
 ./scripts/run-in.sh sh.js check.sh
-./scripts/run-in.sh semiosis-api.js check.sh
 ./scripts/run-in.sh windbell-cli.js check.sh
 ./scripts/run-in.sh windbell-api.js check.sh
 ./scripts/run-in.sh windbell-web.js check.sh
@@ -38,7 +36,6 @@ set -e
 ./scripts/run-in.sh http.js test.sh
 ./scripts/run-in.sh cli.js clean.sh test.sh
 ./scripts/run-in.sh semiosis.js clean.sh test.sh
-./scripts/run-in.sh semiosis-api.js clean.sh test.sh
 ./scripts/run-in.sh windbell-cli.js clean.sh test.sh
 ./scripts/run-in.sh windbell-api.js clean.sh test.sh
 

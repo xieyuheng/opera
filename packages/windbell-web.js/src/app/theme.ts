@@ -1,4 +1,4 @@
-import { makeSemiosisClient } from "@windbell/semiosis-api.js/client"
+import { semiosis } from "./semiosis"
 import { computed, reactive, watch } from "vue"
 import { useColorMode, type ColorMode } from "./color-mode.ts"
 
@@ -81,10 +81,6 @@ export type ThemeState = {
   loading: boolean
   error: string | undefined
 }
-
-const semiosis = makeSemiosisClient({
-  baseUrl: "/api/semiosis",
-})
 
 const state = reactive<ThemeState>({
   customThemes: [],

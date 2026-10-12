@@ -3,7 +3,7 @@ import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
-import { makeDatabase, writeApiKey } from "../database/index.ts"
+import { makeNodeDatabase, writeApiKey } from "../database/index.ts"
 import * as DeepSeek from "../providers/deepseek/index.ts"
 import * as OpenRouter from "../providers/openrouter/index.ts"
 import { makeModel } from "./makeModel.ts"
@@ -14,7 +14,7 @@ test("DeepSeek.readModelConfig returns default config when model is not configur
   )
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
     const config = await DeepSeek.readModelConfig(database, "deepseek-flash")
 
     assert.deepEqual(config, {
@@ -34,7 +34,7 @@ test("OpenRouter.readModelConfig returns default config when model is not config
   )
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
     const config = await OpenRouter.readModelConfig(database, "openrouter/free")
 
     assert.deepEqual(config, {
@@ -52,7 +52,7 @@ test("makeModel uses default model config when models.json is missing", async ()
   )
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
     await writeApiKey(database, "deepseek", "sk-test")
 
     const model = await makeModel(

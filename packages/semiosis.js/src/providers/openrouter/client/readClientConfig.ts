@@ -1,5 +1,5 @@
 import type { Database } from "../../../database/index.ts"
-import { readApiKey } from "../../../database/index.ts"
+import { readApiKey } from "../../../database/apiKey.ts"
 import { readProviderConfig } from "../../../provider/index.ts"
 import type { ClientConfig } from "./ClientConfig.ts"
 

@@ -2,7 +2,7 @@ import { makeAgent, type Agent } from "../agent/index.ts"
 import type { Database } from "../database/index.ts"
 import type { Model } from "../model/index.ts"
 import type { ToolRouter } from "../tool/index.ts"
-import { assertSessionToolPlatform } from "../tools/index.ts"
+import { assertSessionShellName } from "../tools/assertSessionShellName.ts"
 import type { Workspace } from "../workspace/Workspace.ts"
 import type { Session, SessionId } from "./Session.ts"
 import { makeSessionContext } from "./makeSessionContext.ts"
@@ -15,6 +15,7 @@ export type MakeAgentFromSessionOptions = {
     session: Session
     workspace: Workspace
   }) => ToolRouter | Promise<ToolRouter>
+  shellName?: string
 }
 
 export async function makeAgentFromSession(
@@ -34,7 +35,9 @@ export async function makeAgentFromSession(
     )
   }
 
-  assertSessionToolPlatform(session.context)
+  if (options.shellName !== undefined) {
+    assertSessionShellName(session.context, options.shellName)
+  }
 
   const toolRouter = await options.makeToolRouter({ session, workspace })
 

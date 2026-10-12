@@ -21,7 +21,7 @@ export type ResolveTurnResult =
 export async function resolveTurn(
   options: ResolveTurnOptions,
 ): Promise<ResolveTurnResult> {
-  const inputHash = makeInputHash(options.input)
+  const inputHash = await makeInputHash(options.input)
   const existingTurn = await options.sessions.getTurn(
     options.sessionId,
     options.turnId,

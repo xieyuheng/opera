@@ -1,4 +1,4 @@
-import { makeSemiosisClient } from "@windbell/semiosis-api.js/client"
+import { semiosis } from "../../app/semiosis"
 import type * as S from "@windbell/semiosis.js/node"
 import { reactive } from "vue"
 
@@ -11,10 +11,6 @@ export type HomeState = {
   requestId: number
   error: string | undefined
 }
-
-const semiosis = makeSemiosisClient({
-  baseUrl: "/api/semiosis",
-})
 
 export function makeHomeState(): HomeState {
   return reactive<HomeState>({

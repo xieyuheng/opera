@@ -3,7 +3,7 @@ import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
-import { makeDatabase } from "../database/index.ts"
+import { makeNodeDatabase } from "../database/index.ts"
 import { readProviderConfig } from "./readProviderConfig.ts"
 
 test("readProviderConfig returns default config without stored file", async () => {
@@ -12,7 +12,7 @@ test("readProviderConfig returns default config without stored file", async () =
   )
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
 
     assert.deepEqual(await readProviderConfig(database, "deepseek"), {
       name: "deepseek",
@@ -30,7 +30,7 @@ test("readProviderConfig returns stored config when file exists", async () => {
   )
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
 
     await database.providers.put("deepseek", {
       name: "deepseek",
@@ -54,7 +54,7 @@ test("readProviderConfig rejects unknown provider", async () => {
   )
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
 
     await assert.rejects(
       () => readProviderConfig(database, "unknown"),

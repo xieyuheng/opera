@@ -1,5 +1,6 @@
+import process from "node:process"
 import { makeHttpFileSystemRouter } from "@windbell/fs.js/http-fs/router"
-import { makeSemiosisRouter } from "@windbell/semiosis-api.js"
+import { makeShellRouter } from "@windbell/sh.js/http-sh/router"
 import { Hono } from "hono"
 import { cors } from "hono/cors"
 import Path from "node:path"
@@ -20,12 +21,14 @@ export function makeWindbellRouter(options: WindbellRouterOptions): Hono {
 
   app.route("/api/fs", makeHttpFileSystemRouter())
 
-  app.route(
-    "/api/semiosis",
-    makeSemiosisRouter({
-      database: options.database,
-    }),
-  )
+  app.route("/api/sh", makeShellRouter())
+
+  app.get("/api/config", (c) => {
+    return c.json({
+      databaseRoot: options.database.root,
+      shellName: process.platform === "win32" ? "pwsh" : "bash",
+    })
+  })
 
   app.route(
     "/api/themes",

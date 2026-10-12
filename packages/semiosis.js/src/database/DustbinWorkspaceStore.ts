@@ -1,20 +1,15 @@
-import fs from "node:fs/promises"
-import Path from "node:path"
+import type { Path } from "@windbell/std.js/path"
 import type {
   DustbinWorkspace,
   Workspace,
   WorkspaceId,
 } from "../workspace/Workspace.ts"
+import type { FileStore } from "./fileStore.ts"
 import { assertId, isValidId } from "./id.ts"
-import {
-  ensureDir,
-  isEnoent,
-  listDirectories,
-  readJsonFile,
-  writeJsonFile,
-} from "./jsonFile.ts"
 
 export type DustbinWorkspaceStoreOptions = {
+  files: FileStore
+  path: Path
   workspacesRoot: string
   dustbinWorkspacesRoot: string
 }
@@ -39,36 +34,27 @@ export class DustbinWorkspaceError extends Error {
   }
 }
 
-async function pathExists(path: string): Promise<boolean> {
-  try {
-    await fs.access(path)
-    return true
-  } catch (error) {
-    if (isEnoent(error)) return false
-    throw error
-  }
-}
-
 export function makeDustbinWorkspaceStore(
   options: DustbinWorkspaceStoreOptions,
 ): DustbinWorkspaceStore {
-  const workspacesRoot = Path.resolve(options.workspacesRoot)
-  const dustbinWorkspacesRoot = Path.resolve(options.dustbinWorkspacesRoot)
+  const paths = options.path
+  const workspacesRoot = paths.normalize(options.workspacesRoot)
+  const dustbinWorkspacesRoot = paths.normalize(options.dustbinWorkspacesRoot)
 
   const workspaceDir = (id: WorkspaceId): string => {
-    return Path.join(workspacesRoot, id)
+    return paths.join(workspacesRoot, id)
   }
 
   const dustbinWorkspaceDir = (id: WorkspaceId): string => {
-    return Path.join(dustbinWorkspacesRoot, id)
+    return paths.join(dustbinWorkspacesRoot, id)
   }
 
   const workspaceIndexPath = (id: WorkspaceId): string => {
-    return Path.join(workspaceDir(id), "index.json")
+    return paths.join(workspaceDir(id), "index.json")
   }
 
   const dustbinWorkspaceIndexPath = (id: WorkspaceId): string => {
-    return Path.join(dustbinWorkspaceDir(id), "index.json")
+    return paths.join(dustbinWorkspaceDir(id), "index.json")
   }
 
   const readWorkspace = async (
@@ -76,7 +62,7 @@ export function makeDustbinWorkspaceStore(
   ): Promise<Workspace | undefined> => {
     assertId(id)
 
-    const value = await readJsonFile(workspaceIndexPath(id))
+    const value = await options.files.readJsonFile(workspaceIndexPath(id))
     if (value === undefined) return undefined
 
     return value as Workspace
@@ -87,7 +73,9 @@ export function makeDustbinWorkspaceStore(
   ): Promise<DustbinWorkspace | undefined> => {
     assertId(id)
 
-    const value = await readJsonFile(dustbinWorkspaceIndexPath(id))
+    const value = await options.files.readJsonFile(
+      dustbinWorkspaceIndexPath(id),
+    )
     if (value === undefined) return undefined
 
     return value as DustbinWorkspace
@@ -97,7 +85,7 @@ export function makeDustbinWorkspaceStore(
     get: (id) => readDustbinWorkspace(id),
 
     async list() {
-      const ids = await listDirectories(dustbinWorkspacesRoot)
+      const ids = await options.files.listDirectories(dustbinWorkspacesRoot)
       const workspaces: Array<DustbinWorkspace> = []
 
       for (const id of ids) {
@@ -126,15 +114,15 @@ export function makeDustbinWorkspaceStore(
       }
 
       const target = dustbinWorkspaceDir(id)
-      if (await pathExists(target)) {
+      if (await options.files.exists(target)) {
         throw new DustbinWorkspaceError(
           "conflict",
           `workspace already in dustbin: ${id}`,
         )
       }
 
-      await ensureDir(dustbinWorkspacesRoot)
-      await fs.rename(workspaceDir(id), target)
+      await options.files.ensureDir(dustbinWorkspacesRoot)
+      await options.files.rename(workspaceDir(id), target)
 
       const dustbinWorkspace: DustbinWorkspace = {
         ...workspace,
@@ -142,9 +130,14 @@ export function makeDustbinWorkspaceStore(
       }
 
       try {
-        await writeJsonFile(dustbinWorkspaceIndexPath(id), dustbinWorkspace)
+        await options.files.writeJsonFile(
+          dustbinWorkspaceIndexPath(id),
+          dustbinWorkspace,
+        )
       } catch (error) {
-        await fs.rename(target, workspaceDir(id)).catch(() => undefined)
+        await options.files
+          .rename(target, workspaceDir(id))
+          .catch(() => undefined)
         throw error
       }
     },
@@ -161,15 +154,15 @@ export function makeDustbinWorkspaceStore(
       }
 
       const target = workspaceDir(id)
-      if (await pathExists(target)) {
+      if (await options.files.exists(target)) {
         throw new DustbinWorkspaceError(
           "conflict",
           `workspace already exists: ${id}`,
         )
       }
 
-      await ensureDir(workspacesRoot)
-      await fs.rename(dustbinWorkspaceDir(id), target)
+      await options.files.ensureDir(workspacesRoot)
+      await options.files.rename(dustbinWorkspaceDir(id), target)
 
       const restoredWorkspace: Workspace = {
         id: workspace.id,
@@ -180,19 +173,21 @@ export function makeDustbinWorkspaceStore(
       }
 
       try {
-        await writeJsonFile(workspaceIndexPath(id), restoredWorkspace)
+        await options.files.writeJsonFile(
+          workspaceIndexPath(id),
+          restoredWorkspace,
+        )
       } catch (error) {
-        await fs.rename(target, dustbinWorkspaceDir(id)).catch(() => undefined)
+        await options.files
+          .rename(target, dustbinWorkspaceDir(id))
+          .catch(() => undefined)
         throw error
       }
     },
 
     async remove(id) {
       assertId(id)
-      await fs.rm(dustbinWorkspaceDir(id), {
-        recursive: true,
-        force: true,
-      })
+      await options.files.remove(dustbinWorkspaceDir(id))
     },
   }
 }

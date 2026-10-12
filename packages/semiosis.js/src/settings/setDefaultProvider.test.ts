@@ -3,7 +3,7 @@ import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
-import { makeDatabase } from "../database/index.ts"
+import { makeNodeDatabase } from "../database/index.ts"
 import { setDefaultProvider } from "./setDefaultProvider.ts"
 
 test("setDefaultProvider writes settings.defaultProvider", async () => {
@@ -12,7 +12,7 @@ test("setDefaultProvider writes settings.defaultProvider", async () => {
   )
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
 
     await setDefaultProvider(database, "deepseek")
 
@@ -31,7 +31,7 @@ test("setDefaultProvider rejects unsupported provider", async () => {
   )
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
 
     await assert.rejects(
       () => setDefaultProvider(database, "unknown"),

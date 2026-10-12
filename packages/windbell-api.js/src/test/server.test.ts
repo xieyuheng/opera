@@ -8,7 +8,7 @@ import { makeWindbellRouter } from "../router/index.ts"
 
 test("windbell router", async (t) => {
   const root = await mkdtemp(Path.join(tmpdir(), "windbell-api-"))
-  const database = S.makeDatabase({ root })
+  const database = S.makeNodeDatabase({ root })
   const app = makeWindbellRouter({
     database,
     corsOrigin: undefined,
@@ -24,15 +24,6 @@ test("windbell router", async (t) => {
     assert.deepEqual(await response.json(), {
       ok: true,
       service: "windbell-api",
-    })
-  }
-
-  {
-    const response = await app.request("/api/semiosis/health")
-    assert.equal(response.status, 200)
-    assert.deepEqual(await response.json(), {
-      ok: true,
-      service: "semiosis-api",
     })
   }
 
@@ -121,19 +112,22 @@ test("windbell router", async (t) => {
   }
 
   {
-    const response = await app.request("/api/semiosis/workspaces/ensure", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: "test",
-        root: Path.join(tmpdir(), "windbell-api-test"),
-      }),
-    })
+    const response = await app.request("/api/config")
 
     assert.equal(response.status, 200)
-    const workspace = (await response.json()) as { id: string }
-    assert.equal(typeof workspace.id, "string")
+    assert.deepEqual(await response.json(), {
+      databaseRoot: database.root,
+      shellName: process.platform === "win32" ? "pwsh" : "bash",
+    })
+  }
+
+  {
+    const response = await app.request("/api/sh/health")
+
+    assert.equal(response.status, 200)
+    assert.deepEqual(await response.json(), {
+      ok: true,
+      service: "sh",
+    })
   }
 })

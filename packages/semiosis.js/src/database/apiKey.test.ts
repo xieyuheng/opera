@@ -10,13 +10,13 @@ import {
   readApiKey,
   writeApiKey,
 } from "./apiKey.ts"
-import { makeDatabase } from "./Database.ts"
+import { makeNodeDatabase } from "./index.ts"
 
 test("write, read and delete provider api key", async () => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-api-key-"))
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
 
     assert.equal(await hasApiKey(database, "deepseek"), false)
 
@@ -41,7 +41,7 @@ test("writeApiKey rejects empty api key", async () => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-api-key-"))
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
 
     await assert.rejects(
       () => writeApiKey(database, "deepseek", "   \n"),
@@ -56,7 +56,7 @@ test("hasApiKey returns false for whitespace-only file", async () => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-api-key-"))
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
     const path = apiKeyPath(database, "deepseek")
 
     await fs.mkdir(Path.dirname(path), { recursive: true })

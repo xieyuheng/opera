@@ -1,19 +1,10 @@
-import fs from "node:fs/promises"
-import Path from "node:path"
+import type { Path } from "@windbell/std.js/path"
 import type { Session, SessionId, SessionIndex } from "../session/Session.ts"
 import type { Turn, TurnId } from "../turn/index.ts"
 import type { Sign } from "../sign/index.ts"
 import type { WorkspaceId } from "../workspace/Workspace.ts"
+import type { FileStore } from "./fileStore.ts"
 import { assertId, isValidId, makeId } from "./id.ts"
-import {
-  ensureDir,
-  listDirectories,
-  listFiles,
-  readJsonFile,
-  readTextFile,
-  writeJsonFile,
-  writeTextFile,
-} from "./jsonFile.ts"
 import {
   formatSignFileName,
   parseSign,
@@ -22,6 +13,8 @@ import {
 } from "./signFile.ts"
 
 export type SessionStoreOptions = {
+  files: FileStore
+  path: Path
   root: string
   onSessionUpdated?: (session: SessionIndex) => Promise<void> | void
 }
@@ -55,27 +48,28 @@ export type SessionStore = {
 }
 
 export function makeSessionStore(options: SessionStoreOptions): SessionStore {
-  const root = Path.resolve(options.root)
+  const paths = options.path
+  const root = paths.normalize(options.root)
   const onSessionUpdated = options.onSessionUpdated
 
   const sessionDir = (id: SessionId): string => {
-    return Path.join(root, id)
+    return paths.join(root, id)
   }
 
   const contextDir = (id: SessionId): string => {
-    return Path.join(sessionDir(id), "context")
+    return paths.join(sessionDir(id), "context")
   }
 
   const turnsDir = (id: SessionId): string => {
-    return Path.join(sessionDir(id), "turns")
+    return paths.join(sessionDir(id), "turns")
   }
 
   const indexPath = (id: SessionId): string => {
-    return Path.join(sessionDir(id), "index.json")
+    return paths.join(sessionDir(id), "index.json")
   }
 
   const turnPath = (sessionId: SessionId, turnId: TurnId): string => {
-    return Path.join(turnsDir(sessionId), `${turnId}.json`)
+    return paths.join(turnsDir(sessionId), `${turnId}.json`)
   }
 
   const readIndex = async (
@@ -83,7 +77,7 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
   ): Promise<SessionIndex | undefined> => {
     assertId(id)
 
-    const value = await readJsonFile(indexPath(id))
+    const value = await options.files.readJsonFile(indexPath(id))
     if (value === undefined) return undefined
 
     return value as SessionIndex
@@ -93,14 +87,16 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
     id: SessionId,
   ): Promise<Array<{ sequence: number; sign: Sign }>> => {
     const directory = contextDir(id)
-    const fileNames = await listFiles(directory)
+    const fileNames = await options.files.listFiles(directory)
     const entries: Array<{ sequence: number; sign: Sign }> = []
 
     for (const fileName of fileNames) {
       const info = parseSignFileName(fileName)
       if (info === undefined) continue
 
-      const text = await readTextFile(Path.join(directory, fileName))
+      const text = await options.files.readTextFile(
+        paths.join(directory, fileName),
+      )
       if (text === undefined) continue
 
       entries.push({
@@ -119,7 +115,7 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
   }
 
   const nextSignSequence = async (id: SessionId): Promise<number> => {
-    const fileNames = await listFiles(contextDir(id))
+    const fileNames = await options.files.listFiles(contextDir(id))
     let maxSequence = -1
 
     for (const fileName of fileNames) {
@@ -164,8 +160,8 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
       }
     },
 
-    async list(options) {
-      const ids = await listDirectories(root)
+    async list(listOptions) {
+      const ids = await options.files.listDirectories(root)
       const indexes: Array<SessionIndex> = []
 
       for (const id of ids) {
@@ -175,8 +171,8 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
         if (index === undefined) continue
 
         if (
-          options.workspaceId !== undefined &&
-          index.workspaceId !== options.workspaceId
+          listOptions.workspaceId !== undefined &&
+          index.workspaceId !== listOptions.workspaceId
         ) {
           continue
         }
@@ -193,9 +189,9 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
     async put(session) {
       assertId(session.id)
 
-      await fs.rm(contextDir(session.id), { recursive: true, force: true })
-      await fs.rm(turnsDir(session.id), { recursive: true, force: true })
-      await ensureDir(contextDir(session.id))
+      await options.files.remove(contextDir(session.id))
+      await options.files.remove(turnsDir(session.id))
+      await options.files.ensureDir(contextDir(session.id))
 
       const index: SessionIndex = {
         id: session.id,
@@ -205,12 +201,12 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
         updatedAt: session.updatedAt,
       }
 
-      await writeJsonFile(indexPath(session.id), index)
+      await options.files.writeJsonFile(indexPath(session.id), index)
 
       for (const [sequence, sign] of session.context.entries()) {
         const fileName = formatSignFileName(sequence, sign)
-        await writeTextFile(
-          Path.join(contextDir(session.id), fileName),
+        await options.files.writeTextFile(
+          paths.join(contextDir(session.id), fileName),
           serializeSign(sign),
         )
       }
@@ -227,8 +223,8 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
       const sequence = await nextSignSequence(id)
       const fileName = formatSignFileName(sequence, sign)
 
-      await writeTextFile(
-        Path.join(contextDir(id), fileName),
+      await options.files.writeTextFile(
+        paths.join(contextDir(id), fileName),
         serializeSign(sign),
       )
 
@@ -237,7 +233,7 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
         updatedAt: Date.now(),
       }
 
-      await writeJsonFile(indexPath(id), updatedIndex)
+      await options.files.writeJsonFile(indexPath(id), updatedIndex)
       await onSessionUpdated?.(updatedIndex)
 
       return sequence
@@ -260,7 +256,9 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
       assertId(sessionId)
       assertId(turnId)
 
-      const value = await readJsonFile(turnPath(sessionId, turnId))
+      const value = await options.files.readJsonFile(
+        turnPath(sessionId, turnId),
+      )
       if (value === undefined) return undefined
 
       return value as Turn
@@ -270,20 +268,20 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
       assertId(turn.sessionId)
       assertId(turn.id)
 
-      await writeJsonFile(turnPath(turn.sessionId, turn.id), turn)
+      await options.files.writeJsonFile(turnPath(turn.sessionId, turn.id), turn)
     },
 
     async listTurns(sessionId) {
       assertId(sessionId)
 
-      const fileNames = await listFiles(turnsDir(sessionId))
+      const fileNames = await options.files.listFiles(turnsDir(sessionId))
       const turns: Array<Turn> = []
 
       for (const fileName of fileNames) {
         if (!fileName.endsWith(".json")) continue
 
-        const value = await readJsonFile(
-          Path.join(turnsDir(sessionId), fileName),
+        const value = await options.files.readJsonFile(
+          paths.join(turnsDir(sessionId), fileName),
         )
         if (value === undefined) continue
 
@@ -306,13 +304,13 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
         updatedAt: Date.now(),
       }
 
-      await writeJsonFile(indexPath(id), updatedIndex)
+      await options.files.writeJsonFile(indexPath(id), updatedIndex)
       await onSessionUpdated?.(updatedIndex)
     },
 
     async remove(id) {
       assertId(id)
-      await fs.rm(sessionDir(id), { recursive: true, force: true })
+      await options.files.remove(sessionDir(id))
     },
   }
 

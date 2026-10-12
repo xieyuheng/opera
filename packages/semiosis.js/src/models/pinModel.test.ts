@@ -3,7 +3,7 @@ import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
-import { makeDatabase, type Database } from "../database/index.ts"
+import { makeNodeDatabase, type Database } from "../database/index.ts"
 import * as DeepSeek from "../providers/deepseek/index.ts"
 import * as OpenRouter from "../providers/openrouter/index.ts"
 import { isModelPinned } from "./isModelPinned.ts"
@@ -15,7 +15,7 @@ test("unpinModel marks a pinned model as unpinned", async () => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-pin-model-"))
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
 
     await pinModel(database, "deepseek", "deepseek-flash")
 
@@ -39,7 +39,7 @@ test("unpinModel preserves model config", async () => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-pin-model-"))
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
 
     await writeModelConfigsFile(database, "deepseek", {
       "deepseek-flash": {
@@ -69,7 +69,7 @@ test("unpinModel does not clear matching default model", async () => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-pin-model-"))
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
 
     await database.providers.put("deepseek", {
       name: "deepseek",
@@ -96,7 +96,7 @@ test("unpinModel returns false when model is already unpinned", async () => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-pin-model-"))
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
 
     await writeModelConfigsFile(database, "deepseek", {
       "deepseek-flash": {
@@ -118,7 +118,7 @@ test("pinModel re-pins an unpinned model and preserves config", async () => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-pin-model-"))
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
 
     await writeModelConfigsFile(database, "deepseek", {
       "deepseek-flash": {

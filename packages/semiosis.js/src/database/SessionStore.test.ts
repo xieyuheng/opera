@@ -3,14 +3,14 @@ import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
-import { makeDatabase } from "./Database.ts"
+import { makeNodeDatabase } from "./index.ts"
 import { UserSign } from "../sign/index.ts"
 
 test("SessionStore stores turns and slices context by sequence", async () => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "semiosis-turn-"))
 
   try {
-    const database = makeDatabase({ root })
+    const database = makeNodeDatabase({ root })
     const workspace = await database.workspaces.make({
       name: "test",
       root: Path.join(root, "workspace"),

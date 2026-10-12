@@ -1,5 +1,3 @@
-import { randomUUID } from "node:crypto"
-
 export function isValidId(id: string): boolean {
   return /^[a-zA-Z0-9_-]+$/.test(id)
 }
@@ -11,7 +9,7 @@ export function assertId(id: string): void {
 }
 
 export function makeId(prefix: string): string {
-  const id = `${prefix}-${randomUUID()}`
+  const id = `${prefix}-${globalThis.crypto.randomUUID()}`
   assertId(id)
   return id
 }
