@@ -18,12 +18,19 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@windbell/std.js": "workspace:*"
+    "@windbell/std.js": "workspace:*",
+    "@hono/node-server": "2.1.4",
+    "@windbell/http.js": "workspace:*",
+    "hono": "4.13.13",
+    "zod": "^4.6.5"
   },
   "exports": {
     ".": "./src/index.ts",
     "./fs": "./src/fs/index.ts",
     "./result": "./src/result/index.ts",
-    "./local-fs": "./src/local-fs/index.ts"
+    "./local-fs": "./src/local-fs/index.ts",
+    "./http-fs/client": "./src/http-fs/client/index.ts",
+    "./http-fs/router": "./src/http-fs/router/index.ts",
+    "./http-fs/server": "./src/http-fs/server/index.ts"
   }
 }
