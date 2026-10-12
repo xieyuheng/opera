@@ -1,12 +1,10 @@
-import {
-  makeFileSystemClient,
-  type FileSystemEntry,
-} from "@windbell/fs-api.js/client"
+import { makeHttpFileSystemClient } from "@windbell/fs.js/http-fs/client"
+import type { FileSystemEntry } from "@windbell/fs.js/fs"
 import type { Component } from "vue"
 import MarkdownView from "./MarkdownView.vue"
 import TextView from "./TextView.vue"
 
-const fileSystem = makeFileSystemClient({
+const fs = makeHttpFileSystemClient({
   baseUrl: "/api/fs",
 })
 
@@ -76,12 +74,8 @@ export async function resolveFileView(
   if (extension === "md" || extension === "markdown") return MarkdownView
   if (textExtensions.has(extension)) return TextView
 
-  try {
-    const info = await fileSystem.inspectFile(entry.path)
-    if (info.kind === "Text") return TextView
-  } catch {
-    return undefined
-  }
+  const result = await fs.classifyFile(entry.path)
+  if (result.kind === "OkResult" && result.value === "text") return TextView
 
   return undefined
 }

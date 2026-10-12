@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import {
-  makeFileSystemClient,
-  type FileSystemEntry,
-} from "@windbell/fs-api.js/client"
+import { makeHttpFileSystemClient } from "@windbell/fs.js/http-fs/client"
+import type { FileSystemEntry } from "@windbell/fs.js/fs"
+import { unwrap } from "@windbell/std.js/result"
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
 import MediumButton from "../../components/buttons/MediumButton.vue"
@@ -23,7 +22,7 @@ const { t } = useI18n({
   useScope: "local",
 })
 
-const fileSystem = makeFileSystemClient({
+const fs = makeHttpFileSystemClient({
   baseUrl: "/api/fs",
 })
 
@@ -53,7 +52,7 @@ async function loadDirectory(path: string): Promise<void> {
   loadError.value = undefined
 
   try {
-    const nextEntries = await fileSystem.listEntries(path)
+    const nextEntries = unwrap(await fs.listEntries(path))
     const directories = directoryEntries(nextEntries)
 
     currentDirectory.value = path
@@ -81,7 +80,7 @@ async function loadPreview(): Promise<void> {
   previewLoading.value = true
 
   try {
-    const nextEntries = await fileSystem.listEntries(entry.path)
+    const nextEntries = unwrap(await fs.listEntries(entry.path))
 
     if (requestId !== previewRequestId) return
 
@@ -221,7 +220,7 @@ onMounted(async () => {
   window.addEventListener("keydown", onKeydown)
 
   try {
-    await loadDirectory(await fileSystem.home())
+    await loadDirectory(unwrap(await fs.home()))
   } catch (error) {
     loadError.value = error instanceof Error ? error.message : String(error)
   }

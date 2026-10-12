@@ -1,7 +1,5 @@
-import {
-  makeFileSystemClient,
-  type FileSystemEntry,
-} from "@windbell/fs-api.js/client"
+import { makeHttpFileSystemClient } from "@windbell/fs.js/http-fs/client"
+import type { FileSystemEntry } from "@windbell/fs.js/fs"
 import { reactive } from "vue"
 import { isSamePath, parentPath } from "./RangerPath.ts"
 import {
@@ -26,7 +24,7 @@ export type RangerState = {
   error: string | undefined
 }
 
-const fileSystem = makeFileSystemClient({
+const fs = makeHttpFileSystemClient({
   baseUrl: "/api/fs",
 })
 
@@ -107,9 +105,16 @@ export async function loadDirectory(
   state.error = undefined
 
   try {
-    const entries = await fileSystem.listEntries(path)
+    const result = await fs.listEntries(path)
 
     if (requestId !== state.requestId) return false
+
+    if (result.kind === "ErrorResult") {
+      state.error = result.error.message
+      return false
+    }
+
+    const entries = result.value
 
     const selectedIndex =
       options.selectPath === undefined
@@ -125,11 +130,6 @@ export async function loadDirectory(
 
     persistLocation(state)
     return true
-  } catch (error) {
-    if (requestId !== state.requestId) return false
-
-    state.error = error instanceof Error ? error.message : String(error)
-    return false
   } finally {
     if (requestId === state.requestId) {
       state.isLoading = false
@@ -142,47 +142,40 @@ export async function refreshRanger(state: RangerState): Promise<void> {
   if (state.currentDirectory === "") return
 
   const directory = state.currentDirectory
+  const result = await fs.listEntries(directory)
 
-  try {
-    const entries = await fileSystem.listEntries(directory)
+  if (
+    state.isLoading ||
+    state.isPending ||
+    directory !== state.currentDirectory
+  ) {
+    return
+  }
 
-    if (
-      state.isLoading ||
-      state.isPending ||
-      directory !== state.currentDirectory
-    ) {
-      return
-    }
-
-    const selectedPath = state.selectedEntry?.path
-    const selectedIndex =
-      selectedPath === undefined
-        ? -1
-        : entries.findIndex((entry) => entry.path === selectedPath)
-    const index = selectedIndex === -1 ? 0 : selectedIndex
-
-    state.entries = entries
-    state.selectedIndex = entries.length > 0 ? index : -1
-    state.selectedEntry = entries[index]
-    state.error = undefined
-
-    persistLocation(state)
-  } catch (error) {
-    if (
-      state.isLoading ||
-      state.isPending ||
-      directory !== state.currentDirectory
-    ) {
-      return
-    }
-
+  if (result.kind === "ErrorResult") {
     if (!isSamePath(directory, state.root)) {
       await loadDirectory(state, state.root)
       return
     }
 
-    state.error = error instanceof Error ? error.message : String(error)
+    state.error = result.error.message
+    return
   }
+
+  const entries = result.value
+  const selectedPath = state.selectedEntry?.path
+  const selectedIndex =
+    selectedPath === undefined
+      ? -1
+      : entries.findIndex((entry) => entry.path === selectedPath)
+  const index = selectedIndex === -1 ? 0 : selectedIndex
+
+  state.entries = entries
+  state.selectedIndex = entries.length > 0 ? index : -1
+  state.selectedEntry = entries[index]
+  state.error = undefined
+
+  persistLocation(state)
 }
 
 export function watchRanger(
@@ -191,37 +184,49 @@ export function watchRanger(
 ): () => void {
   if (state.root === "") return () => {}
 
+  const controller = new AbortController()
   let refreshTimer: ReturnType<typeof setTimeout> | undefined
 
-  const stop = fileSystem.watch(
-    state.root,
-    (event) => {
-      if (event.type === "watch-error") {
-        onError?.(new Error(event.message))
-        return
+  function scheduleRefresh(): void {
+    if (refreshTimer !== undefined) {
+      clearTimeout(refreshTimer)
+    }
+
+    refreshTimer = setTimeout(() => {
+      refreshTimer = undefined
+
+      if (!state.isLoading && !state.isPending) {
+        void refreshRanger(state)
       }
+    }, 150)
+  }
 
-      if (event.type === "ready") {
-        state.error = undefined
-        return
+  void (async () => {
+    for await (const event of fs.watch(state.root, {
+      signal: controller.signal,
+    })) {
+      switch (event.type) {
+        case "error":
+          state.error = event.error.message
+          onError?.(new Error(event.error.message))
+          break
+
+        case "ready":
+          state.error = undefined
+          scheduleRefresh()
+          break
+
+        case "change":
+          scheduleRefresh()
+          break
+
+        case "reconnecting":
+        case "ping":
+        case "close":
+          break
       }
-
-      if (event.type !== "change") return
-
-      if (refreshTimer !== undefined) {
-        clearTimeout(refreshTimer)
-      }
-
-      refreshTimer = setTimeout(() => {
-        refreshTimer = undefined
-
-        if (!state.isLoading && !state.isPending) {
-          void refreshRanger(state)
-        }
-      }, 150)
-    },
-    onError,
-  )
+    }
+  })()
 
   return () => {
     if (refreshTimer !== undefined) {
@@ -229,7 +234,7 @@ export function watchRanger(
       refreshTimer = undefined
     }
 
-    stop()
+    controller.abort()
   }
 }
 

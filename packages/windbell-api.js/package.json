@@ -13,10 +13,10 @@
   },
   "dependencies": {
     "@hono/node-server": "2.1.4",
-    "@windbell/fs-api.js": "workspace:*",
     "@windbell/semiosis-api.js": "workspace:*",
     "@windbell/semiosis.js": "workspace:*",
-    "hono": "4.13.13"
+    "hono": "4.13.13",
+    "@windbell/fs.js": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

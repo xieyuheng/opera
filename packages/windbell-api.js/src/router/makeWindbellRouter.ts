@@ -1,4 +1,4 @@
-import { makeFileSystemRouter } from "@windbell/fs-api.js"
+import { makeHttpFileSystemRouter } from "@windbell/fs.js/http-fs/router"
 import { makeSemiosisRouter } from "@windbell/semiosis-api.js"
 import { Hono } from "hono"
 import { cors } from "hono/cors"
@@ -18,7 +18,7 @@ export function makeWindbellRouter(options: WindbellRouterOptions): Hono {
     return c.json(await health())
   })
 
-  app.route("/api/fs", makeFileSystemRouter())
+  app.route("/api/fs", makeHttpFileSystemRouter())
 
   app.route(
     "/api/semiosis",

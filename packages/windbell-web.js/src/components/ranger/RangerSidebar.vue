@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FileSystemEntry } from "@windbell/fs-api.js/client"
+import type { FileSystemEntry } from "@windbell/fs.js/fs"
 import { computed, nextTick, ref, watch } from "vue"
 import { isSamePath } from "./RangerPath.ts"
 

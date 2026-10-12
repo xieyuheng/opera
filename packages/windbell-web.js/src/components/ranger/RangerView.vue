@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import {
-  makeFileSystemClient,
-  type FileSystemEntry,
-} from "@windbell/fs-api.js/client"
+import { makeHttpFileSystemClient } from "@windbell/fs.js/http-fs/client"
+import type { FileSystemEntry } from "@windbell/fs.js/fs"
+import { unwrap } from "@windbell/std.js/result"
 import type { Component } from "vue"
 import { ref, shallowRef, watch } from "vue"
 import { useI18n } from "vue-i18n"
@@ -21,7 +20,7 @@ const props = defineProps<{
   entry: FileSystemEntry | undefined
 }>()
 
-const fileSystem = makeFileSystemClient({
+const fs = makeHttpFileSystemClient({
   baseUrl: "/api/fs",
 })
 
@@ -40,7 +39,7 @@ async function loadEntryView(
   entry: FileSystemEntry,
 ): Promise<DisplayedRangerView> {
   if (entry.kind === "Directory") {
-    const entries = await fileSystem.listEntries(entry.path)
+    const entries = unwrap(await fs.listEntries(entry.path))
 
     return {
       component: DirectoryView,
@@ -56,7 +55,7 @@ async function loadEntryView(
     }
   }
 
-  const bytes = await fileSystem.readBytes(entry.path)
+  const bytes = unwrap(await fs.readBytes(entry.path))
 
   return {
     component: view,

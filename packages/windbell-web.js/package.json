@@ -6,7 +6,6 @@
   "dependencies": {
     "@lucide/vue": "1.55.0",
     "@unhead/vue": "3.4.2",
-    "@windbell/fs-api.js": "workspace:*",
     "@windbell/semiosis-api.js": "workspace:*",
     "@windbell/semiosis.js": "workspace:*",
     "ajv": "8.20.0",
@@ -18,7 +17,9 @@
     "vue": "3.5.43",
     "vue-i18n": "11.4.14",
     "vue-router": "5.4.0",
-    "yaml": "2.9.1"
+    "yaml": "2.9.1",
+    "@windbell/fs.js": "workspace:*",
+    "@windbell/std.js": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.3.3",

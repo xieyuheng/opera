@@ -48,7 +48,10 @@ test("windbell router", async (t) => {
     })
 
     assert.equal(response.status, 200)
-    assert.equal(await response.json(), true)
+    assert.deepEqual(await response.json(), {
+      kind: "OkResult",
+      value: true,
+    })
   }
 
   {
