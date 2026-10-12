@@ -166,9 +166,36 @@ function DeepSeek.makeModel(options): Model {
 }
 ```
 
+## 类似的写法
+
 写 http client 的时候，也经常用到这种方式，
 先分散实现，再用 currying 来打包 client 的能力。
 
 当然，对于 http client 来收，
 最好有更通用的高阶函数，
 来从 API 接口生成 client 能力。
+
+# 依赖注入
+
+deepseek-harness [插件机制](https://deepseek-harness.github.io/deepseek-harness/develop/basic/)
+就体现了「OOP 的本质」。
+
+每个插件要用 `inject` 声明自己所依赖的其他插件：
+
+```typescript
+import type { Context } from '@deepseek-ai/cordis'
+
+export const name = 'my-tool-plugin'
+export const inject = ['tools']
+
+export function apply(ctx: Context) {
+  // ctx.tools is ready here.
+  ctx.tools.register(/* ... */)
+}
+```
+
+这相当于把需要在部用代码处理的日常函数，
+改为了由注册机制管理的全局系统。
+
+这个系统是全局的，所有代码都要依赖这个全局系统；
+而使用模块系统与函数的日常写法是更灵活的。
