@@ -81,7 +81,7 @@ export async function loadProviderState(state: ProviderState): Promise<void> {
     let models = localModels
     let warning: string | undefined = undefined
 
-    if (apiKeyStatus.configured) {
+    if (apiKeyStatus) {
       try {
         models = await semiosis.providers.listModels({
           providerName: state.providerName,
@@ -99,7 +99,7 @@ export async function loadProviderState(state: ProviderState): Promise<void> {
     if (requestId !== state.requestId) return
 
     state.providerConfig = providerConfig
-    state.apiKeyConfigured = apiKeyStatus.configured
+    state.apiKeyConfigured = apiKeyStatus
     state.isDefaultProvider = settings.defaultProvider === state.providerName
     state.models = models
     state.warning = warning

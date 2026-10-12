@@ -74,7 +74,7 @@ export async function loadProviderListState(
           name: providerConfig.name,
           baseUrl: providerConfig.baseUrl,
           defaultModel: providerConfig.defaultModel,
-          apiKeyConfigured: apiKeyStatus.configured,
+          apiKeyConfigured: apiKeyStatus,
           isDefaultProvider: settings.defaultProvider === providerConfig.name,
           models: models.map((model) => ({
             name: model.name,
