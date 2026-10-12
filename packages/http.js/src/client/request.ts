@@ -7,10 +7,19 @@ export type HttpRequestOptions = {
   method: string
   path: string
   query?: URLSearchParams
-  body?: unknown
+  body?: BodyInit | null
   headers?: HeadersInit
   signal?: AbortSignal
 }
+
+export type JsonRequestOptions = Omit<HttpRequestOptions, "body"> & {
+  body?: unknown
+}
+
+export type RequestErrorOptions = Pick<
+  HttpRequestOptions,
+  "baseUrl" | "method" | "path" | "query"
+>
 
 export function withQuery(path: string, query?: URLSearchParams): string {
   const text = query?.toString() ?? ""
@@ -52,6 +61,22 @@ export function makeRequest(options: HttpRequestOptions): {
 } {
   const url = makeUrl(options.baseUrl, options.path, options.query)
   const headers = mergeHeaders(options.headers)
+
+  return {
+    url,
+    init: {
+      method: options.method,
+      headers,
+      body: options.body,
+      signal: options.signal,
+    },
+  }
+}
+
+export function makeJsonRequestOptions(
+  options: JsonRequestOptions,
+): HttpRequestOptions {
+  const headers = mergeHeaders(options.headers)
   const body =
     options.body === undefined ? undefined : JSON.stringify(options.body)
 
@@ -60,13 +85,9 @@ export function makeRequest(options: HttpRequestOptions): {
   }
 
   return {
-    url,
-    init: {
-      method: options.method,
-      headers,
-      body,
-      signal: options.signal,
-    },
+    ...options,
+    headers,
+    body,
   }
 }
 
@@ -106,7 +127,7 @@ function readErrorMessage(value: unknown, fallback: string): string {
 
 export async function throwResponseError(
   response: Response,
-  options: HttpRequestOptions,
+  options: RequestErrorOptions,
 ): Promise<never> {
   const text = await response.text()
   const value = text === "" ? null : parseJsonOrUndefined(text)
@@ -122,15 +143,16 @@ export async function throwResponseError(
 }
 
 export async function requestJson<T = unknown>(
-  options: HttpRequestOptions,
+  options: JsonRequestOptions,
 ): Promise<T> {
+  const requestOptions = makeJsonRequestOptions(options)
   const headers = mergeHeaders(
     new Headers({ Accept: "application/json" }),
-    options.headers,
+    requestOptions.headers,
   )
 
   const response = await sendRequest({
-    ...options,
+    ...requestOptions,
     headers,
   })
 
@@ -160,7 +182,7 @@ export async function requestJson<T = unknown>(
 }
 
 export async function requestJsonOptional<T = unknown>(
-  options: HttpRequestOptions,
+  options: JsonRequestOptions,
 ): Promise<T | undefined> {
   try {
     return await requestJson<T>(options)
@@ -172,12 +194,13 @@ export async function requestJsonOptional<T = unknown>(
 }
 
 export async function requestBytes(
-  options: HttpRequestOptions,
+  options: JsonRequestOptions,
 ): Promise<Uint8Array> {
-  const response = await sendRequest(options)
+  const requestOptions = makeJsonRequestOptions(options)
+  const response = await sendRequest(requestOptions)
 
   if (!response.ok) {
-    await throwResponseError(response, options)
+    await throwResponseError(response, requestOptions)
   }
 
   return new Uint8Array(await response.arrayBuffer())

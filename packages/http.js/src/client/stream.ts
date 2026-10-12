@@ -1,6 +1,8 @@
 import { HttpRequestError } from "./HttpRequestError.ts"
 import {
-  type HttpRequestOptions,
+  type JsonRequestOptions,
+  type RequestErrorOptions,
+  makeJsonRequestOptions,
   makeUrl,
   mergeHeaders,
   requestOperation,
@@ -49,24 +51,25 @@ export async function* readNdjson<T>(
 }
 
 export async function* requestNdjson<T>(
-  options: HttpRequestOptions,
+  options: JsonRequestOptions,
 ): AsyncGenerator<T> {
+  const requestOptions = makeJsonRequestOptions(options)
   const headers = mergeHeaders(
     new Headers({ Accept: "application/x-ndjson" }),
-    options.headers,
+    requestOptions.headers,
   )
 
   const response = await sendRequest({
-    ...options,
+    ...requestOptions,
     headers,
   })
 
   if (!response.ok) {
-    await throwResponseError(response, options)
+    await throwResponseError(response, requestOptions)
   }
 
   if (response.body === null) {
-    throw makeNullBodyError(options)
+    throw makeNullBodyError(requestOptions)
   }
 
   yield* readNdjson<T>(response.body)
@@ -106,24 +109,25 @@ export async function* readServerSentEvents(
 }
 
 export async function* requestServerSentEvents(
-  options: HttpRequestOptions,
+  options: JsonRequestOptions,
 ): AsyncGenerator<ServerSentEvent> {
+  const requestOptions = makeJsonRequestOptions(options)
   const headers = mergeHeaders(
     new Headers({ Accept: "text/event-stream" }),
-    options.headers,
+    requestOptions.headers,
   )
 
   const response = await sendRequest({
-    ...options,
+    ...requestOptions,
     headers,
   })
 
   if (!response.ok) {
-    await throwResponseError(response, options)
+    await throwResponseError(response, requestOptions)
   }
 
   if (response.body === null) {
-    throw makeNullBodyError(options)
+    throw makeNullBodyError(requestOptions)
   }
 
   yield* readServerSentEvents(response.body)
@@ -218,7 +222,7 @@ function normalizeNewlines(text: string): string {
   return text.replace(/\r\n/g, "\n").replace(/\r/g, "\n")
 }
 
-function makeNullBodyError(options: HttpRequestOptions): HttpRequestError {
+function makeNullBodyError(options: RequestErrorOptions): HttpRequestError {
   return new HttpRequestError({
     operation: requestOperation(options),
     method: options.method,

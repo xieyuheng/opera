@@ -1,8 +1,8 @@
 import {
   HttpRequestError,
   makeJsonEndpoint,
-  makeUrl,
   requestServerSentEvents,
+  sendRequest,
 } from "@windbell/http.js"
 import type { JsonObject } from "@windbell/std.js/json"
 import type {
@@ -286,8 +286,10 @@ export function makeHttpFileSystemClient(
     path: string,
   ): Promise<Result<Uint8Array, FileSystemError>> {
     try {
-      const response = await fetch(makeUrl(config.baseUrl, "/read-bytes"), {
+      const response = await sendRequest({
+        baseUrl: config.baseUrl,
         method: "POST",
+        path: "/read-bytes",
         headers: new Headers({
           "Content-Type": "application/json",
         }),
@@ -309,13 +311,13 @@ export function makeHttpFileSystemClient(
     bytes: Uint8Array,
   ): Promise<Result<void, FileSystemError>> {
     try {
-      const response = await fetch(
-        makeUrl(config.baseUrl, "/write-bytes", new URLSearchParams({ path })),
-        {
-          method: "POST",
-          body: bytes as BodyInit,
-        },
-      )
+      const response = await sendRequest({
+        baseUrl: config.baseUrl,
+        method: "POST",
+        path: "/write-bytes",
+        query: new URLSearchParams({ path }),
+        body: bytes as BodyInit,
+      })
 
       if (!response.ok) {
         return err(await readErrorResponse("write-bytes", response, { path }))

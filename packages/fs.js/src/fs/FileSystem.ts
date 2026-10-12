@@ -16,7 +16,10 @@ export type FileSystem = {
   ): Promise<Record<string, Result<Uint8Array, FileSystemError>>>
 
   write(path: string, text: string): Promise<Result<void, FileSystemError>>
-  writeBytes(path: string, bytes: Uint8Array): Promise<Result<void, FileSystemError>>
+  writeBytes(
+    path: string,
+    bytes: Uint8Array,
+  ): Promise<Result<void, FileSystemError>>
   batchWrite(
     files: Record<string, string>,
   ): Promise<Record<string, Result<void, FileSystemError>>>
@@ -25,7 +28,9 @@ export type FileSystem = {
   ): Promise<Record<string, Result<void, FileSystemError>>>
 
   list(path: string): Promise<Result<Array<string>, FileSystemError>>
-  listEntries(path: string): Promise<Result<Array<FileSystemEntry>, FileSystemError>>
+  listEntries(
+    path: string,
+  ): Promise<Result<Array<FileSystemEntry>, FileSystemError>>
   listRecursive(path: string): Promise<Result<Array<string>, FileSystemError>>
   classifyFile(path: string): Promise<Result<FileType, FileSystemError>>
 
@@ -55,10 +60,10 @@ export type FileType =
 export type FileSystemWatchEvent =
   | { type: "ready"; path: string }
   | {
-    type: "change"
-    path: string
-    changeType: "rename" | "change"
-    filename: string | null
-  }
+      type: "change"
+      path: string
+      changeType: "rename" | "change"
+      filename: string | null
+    }
   | { type: "error"; error: FileSystemError }
   | { type: "close" }
