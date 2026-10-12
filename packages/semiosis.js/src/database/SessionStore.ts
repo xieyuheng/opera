@@ -3,7 +3,7 @@ import type { Session, SessionId, SessionIndex } from "../session/Session.ts"
 import type { Turn, TurnId } from "../turn/index.ts"
 import type { Sign } from "../sign/index.ts"
 import type { WorkspaceId } from "../workspace/Workspace.ts"
-import type { FileStore } from "./fileStore.ts"
+import type { FileStore } from "./FileStore.ts"
 import { assertId, isValidId, makeId } from "./id.ts"
 import {
   formatSignFileName,

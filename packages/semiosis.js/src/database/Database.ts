@@ -8,7 +8,7 @@ import {
   makeDustbinWorkspaceStore,
   type DustbinWorkspaceStore,
 } from "./DustbinWorkspaceStore.ts"
-import { makeFileStore, type FileStore } from "./fileStore.ts"
+import { makeFileStore, type FileStore } from "./FileStore.ts"
 import { makeProviderStore, type ProviderStore } from "./ProviderStore.ts"
 import { makeSessionStore, type SessionStore } from "./SessionStore.ts"
 import { makeSettingsStore, type SettingsStore } from "./SettingsStore.ts"

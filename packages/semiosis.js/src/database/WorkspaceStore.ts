@@ -1,6 +1,6 @@
 import type { Path } from "@windbell/std.js/path"
 import type { Workspace, WorkspaceId } from "../workspace/Workspace.ts"
-import type { FileStore } from "./fileStore.ts"
+import type { FileStore } from "./FileStore.ts"
 import { assertId, isValidId, makeId } from "./id.ts"
 
 export type WorkspaceStoreOptions = {

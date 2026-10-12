@@ -1,1 +1,7 @@
 export * from "./Semiosis.ts"
+export * from "./ProvidersService.ts"
+export * from "./SettingsService.ts"
+export * from "./WorkspacesService.ts"
+export * from "./SessionsService.ts"
+export * from "./DustbinSessionsService.ts"
+export * from "./DustbinWorkspacesService.ts"

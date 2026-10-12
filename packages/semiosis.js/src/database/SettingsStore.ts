@@ -1,6 +1,6 @@
 import type { Path } from "@windbell/std.js/path"
 import type { Settings } from "../settings/Settings.ts"
-import type { FileStore } from "./fileStore.ts"
+import type { FileStore } from "./FileStore.ts"
 
 export type SettingsStoreOptions = {
   files: FileStore

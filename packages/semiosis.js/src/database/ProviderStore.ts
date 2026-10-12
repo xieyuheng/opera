@@ -1,7 +1,7 @@
 import type { Path } from "@windbell/std.js/path"
 import type { ProviderConfig } from "../provider/index.ts"
 import { parseProviderConfig } from "../provider/index.ts"
-import type { FileStore } from "./fileStore.ts"
+import type { FileStore } from "./FileStore.ts"
 import { assertId, isValidId } from "./id.ts"
 
 export type ProviderStoreOptions = {

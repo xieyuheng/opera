@@ -6,7 +6,7 @@ import type {
   SessionIndex,
 } from "../session/Session.ts"
 import type { WorkspaceId } from "../workspace/Workspace.ts"
-import type { FileStore } from "./fileStore.ts"
+import type { FileStore } from "./FileStore.ts"
 import { assertId, isValidId } from "./id.ts"
 import { makeSessionStore } from "./SessionStore.ts"
 
