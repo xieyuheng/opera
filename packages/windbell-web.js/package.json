@@ -16,7 +16,7 @@
     "micromark-extension-frontmatter": "2.0.0",
     "micromark-extension-gfm": "3.0.0",
     "vue": "3.5.43",
-    "vue-i18n": "11.4.13",
+    "vue-i18n": "11.4.14",
     "vue-router": "5.4.0",
     "yaml": "2.9.1"
   },
@@ -29,7 +29,7 @@
     "tailwindcss": "4.3.3",
     "typescript": "7.0.2",
     "vite": "8.3.4",
-    "vue-tsc": "^3.3.12"
+    "vue-tsc": "^3.3.13"
   },
   "prettier": {
     "semi": false,
