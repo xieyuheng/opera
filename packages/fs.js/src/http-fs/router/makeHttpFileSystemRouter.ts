@@ -90,6 +90,7 @@ export function makeHttpFileSystemRouter(
   })
 
   const handlers: Record<string, Handler> = {
+    platform: async () => fs.platform(),
     home: async () => fs.home(),
     exists: async (body) => fs.exists(readPath(body)),
     "is-file": async (body) => fs.isFile(readPath(body)),

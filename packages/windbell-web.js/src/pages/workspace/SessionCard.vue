@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Pencil, Trash2 } from "@lucide/vue"
-import type * as S from "@windbell/semiosis.js"
+import type * as S from "@windbell/semiosis.js/node"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 import { RouterLink } from "vue-router"

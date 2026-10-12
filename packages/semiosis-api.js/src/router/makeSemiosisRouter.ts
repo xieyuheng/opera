@@ -1,4 +1,4 @@
-import * as S from "@windbell/semiosis.js"
+import * as S from "@windbell/semiosis.js/node"
 import { Hono, type Context } from "hono"
 import { stream } from "hono/streaming"
 import { HTTPException } from "hono/http-exception"

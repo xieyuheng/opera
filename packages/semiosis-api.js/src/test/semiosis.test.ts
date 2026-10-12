@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
-import * as S from "@windbell/semiosis.js"
+import * as S from "@windbell/semiosis.js/node"
 import { makeSemiosisClient, startSemiosisServer } from "../index.ts"
 
 test("semiosis client and server", async (t) => {

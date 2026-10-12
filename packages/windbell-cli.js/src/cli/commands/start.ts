@@ -1,5 +1,5 @@
 import type * as Cli from "@windbell/cli.js"
-import * as S from "@windbell/semiosis.js"
+import * as S from "@windbell/semiosis.js/node"
 import { startWindbellServer } from "@windbell/windbell-api.js"
 import { existsSync } from "node:fs"
 import Path from "node:path"

@@ -1,5 +1,5 @@
 import type { Component } from "vue"
-import type * as S from "@windbell/semiosis.js"
+import type * as S from "@windbell/semiosis.js/node"
 import SignMarkdownView from "./SignMarkdownView.vue"
 import SignProviderDataView from "./SignProviderDataView.vue"
 import SignToolCallView from "./SignToolCallView.vue"

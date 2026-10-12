@@ -1,4 +1,4 @@
-import * as S from "@windbell/semiosis.js"
+import * as S from "@windbell/semiosis.js/node"
 import { closeServer, startWindbellServer } from "@windbell/windbell-api.js"
 import Path from "node:path"
 import { createServer, type ViteDevServer } from "vite"

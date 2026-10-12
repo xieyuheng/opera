@@ -1,4 +1,4 @@
-import type * as S from "@windbell/semiosis.js"
+import type * as S from "@windbell/semiosis.js/node"
 import { makeJsonEndpoint, withNotFoundAsUndefined } from "@windbell/http.js"
 import type { SemiosisClientConfig } from "./SemiosisClient.ts"
 import {

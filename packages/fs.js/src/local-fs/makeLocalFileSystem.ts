@@ -7,6 +7,7 @@ import type { JsonObject } from "@windbell/std.js/json"
 import type {
   FileSystem,
   FileSystemEntry,
+  FileSystemPlatform,
   FileSystemWatchEvent,
   FileType,
 } from "../fs/index.ts"
@@ -34,6 +35,7 @@ const errorTypeByCode: Record<string, string> = {
 
 export function makeLocalFileSystem(): FileSystem {
   return {
+    platform,
     home,
     exists,
     isFile,
@@ -70,6 +72,15 @@ async function run<T>(
   } catch (error) {
     return err(toFileSystemError(who, error, info))
   }
+}
+
+async function platform(): Promise<
+  Result<FileSystemPlatform, FileSystemError>
+> {
+  return run("platform", async () => ({
+    name: Os.platform(),
+    pathStyle: Os.platform() === "win32" ? "win32" : "posix",
+  }))
 }
 
 async function home(): Promise<Result<string, FileSystemError>> {

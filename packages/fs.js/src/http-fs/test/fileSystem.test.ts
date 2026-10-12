@@ -99,6 +99,10 @@ test("fileSystem client and server", async (t) => {
   })
 
   assert.equal(await value(client.home()), Os.homedir())
+  assert.deepEqual(await value(client.platform()), {
+    name: Os.platform(),
+    pathStyle: Os.platform() === "win32" ? "win32" : "posix",
+  })
   assert.equal(await value(client.exists(root)), true)
   assert.equal(await value(client.isDirectory(root)), true)
   assert.equal(await value(client.isFile(root)), false)

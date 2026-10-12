@@ -1,1 +1,1 @@
-export * from "./pathRelativeToCwd.ts"
+export * from "./Path.ts"

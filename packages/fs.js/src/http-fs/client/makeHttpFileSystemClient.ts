@@ -9,6 +9,7 @@ import type { JsonObject } from "@windbell/std.js/json"
 import type {
   FileSystem,
   FileSystemEntry,
+  FileSystemPlatform,
   FileSystemWatchEvent,
   FileType,
 } from "../../fs/index.ts"
@@ -21,6 +22,7 @@ import {
   ErrorResultSchema,
   FileSystemErrorSchema,
   FileSystemEntryListSchema,
+  FileSystemPlatformSchema,
   FileTypeSchema,
   ResultRecordSchema,
   ResultSchema,
@@ -58,6 +60,16 @@ type BatchWriteInput<T> = {
 export function makeHttpFileSystemClient(
   config: HttpFileSystemClientConfig,
 ): FileSystem {
+  const platformEndpoint = makeJsonEndpoint<
+    void,
+    Result<FileSystemPlatform, FileSystemError>
+  >(config, {
+    method: "POST",
+    path: "/platform",
+    body: () => ({}),
+    output: ResultSchema(FileSystemPlatformSchema),
+  })
+
   const homeEndpoint = makeJsonEndpoint<void, Result<string, FileSystemError>>(
     config,
     {
@@ -413,7 +425,17 @@ export function makeHttpFileSystemClient(
     yield { type: "close" }
   }
 
+  let platformCache:
+    Promise<Result<FileSystemPlatform, FileSystemError>> | undefined
+
+  function platform(): Promise<Result<FileSystemPlatform, FileSystemError>> {
+    platformCache ??= callResult("platform", platformEndpoint, undefined, {})
+
+    return platformCache
+  }
+
   return {
+    platform,
     home: () => callResult("home", homeEndpoint, undefined, {}),
     exists: (path) => callResult("exists", existsEndpoint, { path }, { path }),
     isFile: (path) => callResult("is-file", isFileEndpoint, { path }, { path }),

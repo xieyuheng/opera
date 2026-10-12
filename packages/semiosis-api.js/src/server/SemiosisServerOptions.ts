@@ -1,4 +1,4 @@
-import type * as S from "@windbell/semiosis.js"
+import type * as S from "@windbell/semiosis.js/node"
 
 export type SemiosisServerOptions = {
   database: S.Database

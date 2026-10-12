@@ -1,7 +1,15 @@
 import type { Result } from "@windbell/std.js/result"
 import type { FileSystemError } from "./FileSystemError.ts"
 
+export type PathStyle = "posix" | "win32"
+
+export type FileSystemPlatform = {
+  name: string
+  pathStyle: PathStyle
+}
+
 export type FileSystem = {
+  platform(): Promise<Result<FileSystemPlatform, FileSystemError>>
   home(): Promise<Result<string, FileSystemError>>
   exists(path: string): Promise<Result<boolean, FileSystemError>>
   isFile(path: string): Promise<Result<boolean, FileSystemError>>

@@ -1,4 +1,4 @@
-import type * as S from "@windbell/semiosis.js"
+import type * as S from "@windbell/semiosis.js/node"
 
 export function signBody(sign: S.Sign): string {
   switch (sign.kind) {

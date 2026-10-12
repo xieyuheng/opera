@@ -3,7 +3,7 @@ import { mkdtemp, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
-import * as S from "@windbell/semiosis.js"
+import * as S from "@windbell/semiosis.js/node"
 import { makeWindbellRouter } from "../router/index.ts"
 
 test("windbell router", async (t) => {

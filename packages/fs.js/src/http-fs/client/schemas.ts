@@ -24,6 +24,13 @@ const JsonObjectSchema: z.ZodType<JsonObject> = z.record(
   JsonValueSchema,
 )
 
+export const PathStyleSchema = z.enum(["posix", "win32"])
+
+export const FileSystemPlatformSchema = z.object({
+  name: z.string(),
+  pathStyle: PathStyleSchema,
+})
+
 export const FileSystemErrorSchema: z.ZodType<FileSystemError> = z.object({
   type: z.string(),
   who: z.string(),

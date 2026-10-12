@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DeepSeekProviderModelEntry } from "@windbell/semiosis.js"
+import type { DeepSeekProviderModelEntry } from "@windbell/semiosis.js/node"
 import Card from "../../components/card/Card.vue"
 import ModelCardToolbar from "./ModelCardToolbar.vue"
 import { useI18n } from "vue-i18n"
