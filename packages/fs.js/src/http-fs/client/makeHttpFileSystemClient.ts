@@ -18,6 +18,8 @@ import { encodeBase64 } from "@windbell/std.js/base64"
 import {
   Base64BytesSchema,
   BooleanSchema,
+  ErrorResultSchema,
+  FileSystemErrorSchema,
   FileSystemEntryListSchema,
   FileTypeSchema,
   ResultRecordSchema,
@@ -370,7 +372,7 @@ export function makeHttpFileSystemClient(
           body: { path },
           signal: options.signal,
         })) {
-          const watchEvent = parseFileSystemWatchEvent(event)
+          const watchEvent = parseFileSystemWatchEvent(event, path)
           if (watchEvent === undefined) continue
 
           if (!connected) {
@@ -504,9 +506,10 @@ async function readErrorResponse(
 
   try {
     const value: unknown = JSON.parse(text)
+    const parsed = ErrorResultSchema.safeParse(value)
 
-    if (isRecord(value) && isFileSystemError(value.error)) {
-      return value.error
+    if (parsed.success) {
+      return parsed.data.error
     }
   } catch {
     // Fall through to a generic HTTP error.
@@ -549,20 +552,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value)
 }
 
-function isFileSystemError(value: unknown): value is FileSystemError {
-  if (!isRecord(value)) return false
-
-  return (
-    typeof value.type === "string" &&
-    typeof value.who === "string" &&
-    typeof value.message === "string" &&
-    (value.info === undefined ||
-      (value.info !== null && typeof value.info === "object"))
-  )
-}
-
 function parseFileSystemWatchEvent(
   event: ServerSentEvent,
+  path: string,
 ): FileSystemWatchEvent | undefined {
   let value: unknown
 
@@ -599,10 +591,23 @@ function parseFileSystemWatchEvent(
       }
     }
 
-    case "error":
-      return isFileSystemError(value.error)
-        ? { type: "error", error: value.error }
-        : undefined
+    case "error": {
+      const parsed = FileSystemErrorSchema.safeParse(value.error)
+
+      if (parsed.success) {
+        return { type: "error", error: parsed.data }
+      }
+
+      return {
+        type: "error",
+        error: {
+          type: "invalid-response",
+          who: "watch",
+          message: parsed.error.message,
+          info: { path },
+        },
+      }
+    }
 
     case "reconnecting":
       return typeof value.path === "string" &&

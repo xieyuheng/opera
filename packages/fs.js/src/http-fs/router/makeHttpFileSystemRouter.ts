@@ -30,6 +30,7 @@ export function makeHttpFileSystemRouter(
 
     if (result.kind === "ErrorResult") {
       return sendJson(statusCodeFromFileSystemError(result.error), {
+        kind: "ErrorResult",
         error: result.error,
       })
     }

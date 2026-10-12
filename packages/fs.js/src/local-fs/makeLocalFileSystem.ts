@@ -634,8 +634,6 @@ function toFileSystemError(
   error: unknown,
   info: JsonObject = {},
 ): FileSystemError {
-  if (isFileSystemError(error)) return error
-
   const code = readErrorCode(error)
   const fileSystemError: FileSystemError = {
     type: errorTypeFromError(error),
@@ -652,20 +650,6 @@ function toFileSystemError(
   }
 
   return fileSystemError
-}
-
-function isFileSystemError(value: unknown): value is FileSystemError {
-  if (value === null || typeof value !== "object") return false
-
-  const record = value as Record<string, unknown>
-
-  return (
-    typeof record.type === "string" &&
-    typeof record.who === "string" &&
-    typeof record.message === "string" &&
-    (record.info === undefined ||
-      (record.info !== null && typeof record.info === "object"))
-  )
 }
 
 function errorTypeFromError(error: unknown): string {

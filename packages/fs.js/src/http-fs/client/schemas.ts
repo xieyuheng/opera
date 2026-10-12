@@ -31,6 +31,11 @@ export const FileSystemErrorSchema: z.ZodType<FileSystemError> = z.object({
   info: JsonObjectSchema.optional(),
 })
 
+export const ErrorResultSchema = z.object({
+  kind: z.literal("ErrorResult"),
+  error: FileSystemErrorSchema,
+})
+
 export function ResultSchema<T>(
   value: z.ZodType<T>,
 ): z.ZodType<Result<T, FileSystemError>> {
