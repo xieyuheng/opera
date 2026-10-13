@@ -145,7 +145,7 @@ export function makeDomainRouter(options: DomainRouterOptions): Hono {
           JSON.stringify({
             type: "error",
             message: error instanceof Error ? error.message : String(error),
-            retryable: isRetryableError(error),
+            retryable: false,
             inputPersisted: false,
           }),
         )
@@ -281,17 +281,4 @@ function getHttpStatus(error: unknown): number {
   }
 
   return 500
-}
-
-function isRetryableError(error: unknown): boolean {
-  if (error instanceof TypeError) return true
-
-  if (error !== null && typeof error === "object") {
-    const status = (error as { status?: unknown }).status
-    if (typeof status === "number") {
-      return status === 408 || status === 429 || status >= 500
-    }
-  }
-
-  return false
 }

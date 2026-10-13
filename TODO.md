@@ -1,34 +1,8 @@
 # usage
 
-目前我们的 agent interpret 只是返回一个 stream，
-而 vercel 的 `streamText` 返回的是一个 `StreamTextResult`：
-
-```typescript
-const result = streamText({
-  model: 'deepseek/deepseek-flash',
-  prompt: 'Write a short poem about the ocean.',
-});
-
-for await (const chunk of result.textStream) {
-  process.stdout.write(chunk);
-}
-```
-
-返回 object，object 的 method 之间可以共享 state。
-返回一组函数，多个函数之间可以通过闭包来共享 state。
-
-我们是否要通过这种方式来支持 usage？
-或者说，我们应该通过给 agent interpret 增加 callback 来支持 usage？
-
-不对，这是 clinet 的设计，
-api 本身必须用 event stream 来实现。
-也就是把 usage 相关的信息作为 event 在 stream 中返回。
-
-# semiosis-api.js
-
-refactor makeSemiosisRouter.ts
-
-- learn about hono/streaming
+我们的 model interpret 和 agent interpret
+可否用 event 的形式支持 usage？
+把 usage 相关的信息作为 event 在 stream 中返回。
 
 # 文学式编程
 

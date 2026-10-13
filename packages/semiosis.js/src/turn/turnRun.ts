@@ -1,6 +1,7 @@
 import { agentContinue, agentInterpret } from "../agent/agentInterpret.ts"
 import type { Agent } from "../agent/Agent.ts"
 import type { SessionStore } from "../database/SessionStore.ts"
+import type { ModelError } from "../model/index.ts"
 import type { Sign } from "../sign/index.ts"
 import type { Turn } from "./Turn.ts"
 import type { TurnEvent } from "./TurnEvent.ts"
@@ -17,7 +18,6 @@ export type TurnRunOptions = {
   turn: Turn
   input: Array<Sign>
   signal?: AbortSignal
-  isRetryable?: (error: unknown) => boolean
 }
 
 export async function* turnRun(
@@ -36,6 +36,18 @@ export async function* turnRun(
       : agentInterpret(agent, input, { signal })
 
     for await (const event of interpreter) {
+      if (event.type === "error") {
+        await markFailedTurn(sessions, turn, event.error.message)
+
+        yield {
+          type: "error",
+          message: event.error.message,
+          retryable: isRetryableModelError(event.error),
+          inputPersisted: turn.inputPersisted,
+        }
+        return
+      }
+
       if (event.type === "input-persisted") {
         turn.inputPersisted = true
         turn.endSequence = unwrap(
@@ -65,10 +77,18 @@ export async function* turnRun(
     yield {
       type: "error",
       message: errorMessage(error),
-      retryable: options.isRetryable?.(error) ?? false,
+      retryable: false,
       inputPersisted: turn.inputPersisted,
     }
   }
+}
+
+export function isRetryableModelError(error: ModelError): boolean {
+  if (error.type === "network") return true
+  if (error.type !== "http") return false
+  if (error.status === undefined) return false
+
+  return error.status === 408 || error.status === 429 || error.status >= 500
 }
 
 export async function markCompletedTurn(

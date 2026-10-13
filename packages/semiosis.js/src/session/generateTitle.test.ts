@@ -40,18 +40,33 @@ test("generateTitle returns empty when no assistant sign is present", async () =
   assert.deepEqual(result, { kind: "empty" })
 })
 
-test("generateTitle returns error when model.interpret throws", async () => {
-  const error = new Error("boom")
-  const model = makeModel(async () => {
-    throw error
-  })
+test("generateTitle returns error from model error event", async () => {
+  const model: Model = {
+    providerName: "test",
+    name: "test",
+    interpret: async function* () {
+      yield {
+        type: "error",
+        error: {
+          type: "http",
+          message: "rate limited",
+          status: 429,
+        },
+      }
+    },
+  }
 
   const result = await generateTitle({
     model,
     context: [],
   })
 
-  assert.equal(result.kind, "error")
-  if (result.kind !== "error") return
-  assert.equal(result.error, error)
+  assert.deepEqual(result, {
+    kind: "error",
+    error: {
+      type: "http",
+      message: "rate limited",
+      status: 429,
+    },
+  })
 })

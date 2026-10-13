@@ -7,6 +7,7 @@ import {
   type SignDelta,
   type ToolCallSign,
 } from "../sign/index.ts"
+import type { ModelError } from "../model/index.ts"
 import type { Agent } from "./Agent.ts"
 import { repairOrphanToolCalls } from "./repairOrphanToolCalls.ts"
 
@@ -18,6 +19,9 @@ export type AgentInterpretEvent =
   | { type: "delta"; delta: SignDelta }
   | { type: "sign"; sign: Sign }
   | { type: "input-persisted" }
+  | { type: "error"; error: ModelError }
+
+type CollectModelOutputResult = { kind: "completed" } | { kind: "error" }
 
 export async function* agentInterpret(
   agent: Agent,
@@ -29,7 +33,8 @@ export async function* agentInterpret(
   const context = [...(await agent.getContext()), ...input]
   const output: Array<Sign> = []
 
-  yield* collectModelOutput(agent, context, output, options)
+  const result = yield* collectModelOutput(agent, context, output, options)
+  if (result.kind === "error") return
 
   await agent.appendContext(input)
   yield { type: "input-persisted" }
@@ -49,7 +54,14 @@ export async function* agentContinue(
 
   const output: Array<Sign> = []
 
-  yield* collectModelOutput(agent, await agent.getContext(), output, options)
+  const result = yield* collectModelOutput(
+    agent,
+    await agent.getContext(),
+    output,
+    options,
+  )
+  if (result.kind === "error") return
+
   yield* agentLoop(agent, output, options)
 }
 
@@ -66,10 +78,15 @@ async function* collectModelOutput(
   context: Array<Sign>,
   output: Array<Sign>,
   options: AgentInterpretOptions,
-): AsyncGenerator<AgentInterpretEvent> {
+): AsyncGenerator<AgentInterpretEvent, CollectModelOutputResult> {
   for await (const event of agent.model.interpret(context, {
     signal: options.signal,
   })) {
+    if (event.type === "error") {
+      yield { type: "error", error: event.error }
+      return { kind: "error" }
+    }
+
     if (event.type === "delta") {
       yield { type: "delta", delta: event.delta }
       continue
@@ -77,6 +94,8 @@ async function* collectModelOutput(
 
     output.push(event.sign)
   }
+
+  return { kind: "completed" }
 }
 
 function assertModelOutputSign(sign: Sign): void {
@@ -121,12 +140,14 @@ async function* agentLoop(
     if (options.signal?.aborted) return
 
     const nextOutput: Array<Sign> = []
-    yield* collectModelOutput(
+    const result = yield* collectModelOutput(
       agent,
       await agent.getContext(),
       nextOutput,
       options,
     )
+    if (result.kind === "error") return
+
     output = nextOutput
   }
 }

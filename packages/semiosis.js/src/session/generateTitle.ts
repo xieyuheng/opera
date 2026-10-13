@@ -1,4 +1,4 @@
-import type { Model } from "../model/index.ts"
+import type { Model, ModelError } from "../model/index.ts"
 import { isAssistantSign, UserSign, type Sign } from "../sign/index.ts"
 
 export type GenerateTitleOptions = {
@@ -9,37 +9,37 @@ export type GenerateTitleOptions = {
 export type GenerateTitleResult =
   | { kind: "ok"; title: string }
   | { kind: "empty" }
-  | { kind: "error"; error: unknown }
+  | { kind: "error"; error: ModelError }
 
 export async function generateTitle(
   options: GenerateTitleOptions,
 ): Promise<GenerateTitleResult> {
-  try {
-    const output: Array<Sign> = []
+  const output: Array<Sign> = []
 
-    for await (const event of options.model.interpret([
-      ...options.context,
-      UserSign(
-        "Generate a short title that summarizes the conversation above. Use the conversation's language. Reply with the title only.",
-      ),
-    ])) {
-      if (event.type === "sign") {
-        output.push(event.sign)
-      }
+  for await (const event of options.model.interpret([
+    ...options.context,
+    UserSign(
+      "Generate a short title that summarizes the conversation above. Use the conversation's language. Reply with the title only.",
+    ),
+  ])) {
+    if (event.type === "error") {
+      return { kind: "error", error: event.error }
     }
 
-    const assistantSign = output.find(isAssistantSign)
-    if (assistantSign === undefined) {
-      return { kind: "empty" }
+    if (event.type === "sign") {
+      output.push(event.sign)
     }
-
-    const title = assistantSign.content.trim()
-    if (title === "") {
-      return { kind: "empty" }
-    }
-
-    return { kind: "ok", title }
-  } catch (error) {
-    return { kind: "error", error }
   }
+
+  const assistantSign = output.find(isAssistantSign)
+  if (assistantSign === undefined) {
+    return { kind: "empty" }
+  }
+
+  const title = assistantSign.content.trim()
+  if (title === "") {
+    return { kind: "empty" }
+  }
+
+  return { kind: "ok", title }
 }

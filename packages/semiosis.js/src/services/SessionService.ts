@@ -164,7 +164,6 @@ export function makeSessionService(
       turn: resolved.turn,
       input: interpretOptions.input,
       signal: interpretOptions.signal,
-      isRetryable: isRetryableError,
     })
   }
 
@@ -259,6 +258,15 @@ export function makeSessionService(
           context: sessionResult.value.context,
         })
 
+        if (result.kind === "error") {
+          return err(
+            makeServiceError({
+              type: "model-error",
+              message: result.error.message,
+            }),
+          )
+        }
+
         const title = result.kind === "ok" ? result.title : ""
         if (title !== "") {
           const updateResult = await database.sessions.updateTitle(
@@ -283,19 +291,6 @@ export function makeSessionService(
 
     interpret: (interpretOptions) => interpretWithLock(interpretOptions),
   }
-}
-
-function isRetryableError(error: unknown): boolean {
-  if (error instanceof TypeError) return true
-
-  if (error !== null && typeof error === "object") {
-    const status = (error as { status?: unknown }).status
-    if (typeof status === "number") {
-      return status === 408 || status === 429 || status >= 500
-    }
-  }
-
-  return false
 }
 
 function lockErrorEvent(message: string): TurnEvent {

@@ -86,6 +86,11 @@ export function makeBatchHandler(options: BatchCommandOptions) {
 
           try {
             for await (const event of agentInterpret(agent, [userSign])) {
+              if (event.type === "error") {
+                console.error(`[error] ${event.error.message}`)
+                return
+              }
+
               if (event.type !== "sign") continue
 
               console.log(formatSign(event.sign))

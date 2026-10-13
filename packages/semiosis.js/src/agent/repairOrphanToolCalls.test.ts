@@ -344,24 +344,31 @@ test("agentInterpret marks remaining tool calls cancelled after abort", async ()
   assert.match(outputs[1]?.content ?? "", /not executed/)
 })
 
-test("agentInterpret throws when model.interpret throws", async () => {
-  const error = new Error("boom")
-  const model: Model = makeArrayModel(async () => {
-    throw error
-  })
+test("agentInterpret stops when model emits an error event", async () => {
+  const model: Model = {
+    providerName: "test",
+    name: "test",
+    interpret: async function* () {
+      yield {
+        type: "error",
+        error: { type: "network", message: "boom" },
+      }
+    },
+  }
   const context: Array<Sign> = []
   const agent = makeTestAgent(context, model)
-  let caughtError: unknown = undefined
+  const events: Array<AgentInterpretEvent> = []
 
-  try {
-    for await (const _event of agentInterpret(agent, [UserSign("hello")])) {
-      // drain
-    }
-  } catch (caught) {
-    caughtError = caught
+  for await (const event of agentInterpret(agent, [UserSign("hello")])) {
+    events.push(event)
   }
 
-  assert.equal(caughtError, error)
+  assert.deepEqual(events, [
+    {
+      type: "error",
+      error: { type: "network", message: "boom" },
+    },
+  ])
   assert.deepEqual(context, [])
 })
 
