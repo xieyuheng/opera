@@ -1,7 +1,6 @@
 export * from "./api/types.ts"
 export * from "./client/index.ts"
 export * from "./controllers/index.ts"
-export * from "./errors/ServiceError.ts"
 export * from "./http/makeAction.ts"
 export * from "./router/index.ts"
 export * from "./server/index.ts"

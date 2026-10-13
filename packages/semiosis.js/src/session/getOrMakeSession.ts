@@ -3,6 +3,7 @@ import type { Sign } from "../sign/index.ts"
 import { assertSessionToolPlatform } from "../tools/assertSessionToolPlatform.ts"
 import type { Workspace } from "../workspace/Workspace.ts"
 import type { Session, SessionId } from "./Session.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 export type LoadSessionOptions = {
   database: Database
@@ -13,7 +14,7 @@ export type LoadSessionOptions = {
 export async function loadSession(
   options: LoadSessionOptions,
 ): Promise<Session> {
-  const session = await options.database.sessions.get(options.sessionId)
+  const session = unwrap(await options.database.sessions.get(options.sessionId))
 
   if (session === undefined) {
     throw new Error(`session not found: ${options.sessionId}`)
@@ -40,13 +41,15 @@ export type CreateSessionOptions = {
 export async function createSession(
   options: CreateSessionOptions,
 ): Promise<Session> {
-  const session = await options.database.sessions.make({
-    workspaceId: options.workspace.id,
-    title: options.title,
-  })
+  const session = unwrap(
+    await options.database.sessions.make({
+      workspaceId: options.workspace.id,
+      title: options.title,
+    }),
+  )
 
   session.context = [...options.initialSigns]
-  await options.database.sessions.put(session)
+  unwrap(await options.database.sessions.put(session))
   return session
 }
 

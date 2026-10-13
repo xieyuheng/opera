@@ -1,6 +1,7 @@
 import type { Database } from "../database/index.ts"
 import { readProviderConfig } from "../provider/index.ts"
 import { providerNames } from "../providers/providerNames.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 export async function setDefaultModel(
   database: Database,
@@ -13,8 +14,10 @@ export async function setDefaultModel(
 
   const providerConfig = await readProviderConfig(database, providerName)
 
-  await database.providers.put(providerName, {
-    ...providerConfig,
-    defaultModel: name,
-  })
+  unwrap(
+    await database.providers.put(providerName, {
+      ...providerConfig,
+      defaultModel: name,
+    }),
+  )
 }

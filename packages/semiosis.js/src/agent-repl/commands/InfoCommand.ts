@@ -3,6 +3,7 @@ import { formatModelRef, type Model } from "../../model/index.ts"
 import type { Repl, ReplCommand } from "../../repl/Repl.ts"
 import type { SessionId } from "../../session/index.ts"
 import type { Workspace } from "../../workspace/Workspace.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 export function makeInfoCommand(
   repl: Repl,
@@ -23,7 +24,9 @@ export function makeInfoCommand(
       repl.println(`  root: ${options.workspace.root}`)
 
       if (options.sessionId) {
-        const session = await options.database.sessions.get(options.sessionId)
+        const session = unwrap(
+          await options.database.sessions.get(options.sessionId),
+        )
         if (session === undefined) {
           throw new Error(`session not found: ${options.sessionId}`)
         }

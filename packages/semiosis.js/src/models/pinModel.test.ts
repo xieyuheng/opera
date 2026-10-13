@@ -11,6 +11,7 @@ import { isModelPinned } from "./isModelPinned.ts"
 import { pinModel } from "./pinModel.ts"
 import { setDefaultModel } from "./setDefaultModel.ts"
 import { unpinModel } from "./unpinModel.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 test("unpinModel marks a pinned model as unpinned", async () => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-pin-model-"))
@@ -72,18 +73,20 @@ test("unpinModel does not clear matching default model", async () => {
   try {
     const database = makeNodeDatabase({ root })
 
-    await database.providers.put("deepseek", {
-      name: "deepseek",
-      baseUrl: "https://api.deepseek.com",
-      defaultModel: null,
-    })
+    unwrap(
+      await database.providers.put("deepseek", {
+        name: "deepseek",
+        baseUrl: "https://api.deepseek.com",
+        defaultModel: null,
+      }),
+    )
     await pinModel(database, "deepseek", "deepseek-flash")
     await setDefaultModel(database, "deepseek", "deepseek-flash")
 
     const result = await unpinModel(database, "deepseek", "deepseek-flash")
 
     assert.equal(result, true)
-    assert.deepEqual(await database.providers.get("deepseek"), {
+    assert.deepEqual(unwrap(await database.providers.get("deepseek")), {
       name: "deepseek",
       baseUrl: "https://api.deepseek.com",
       defaultModel: "deepseek-flash",

@@ -5,6 +5,7 @@ import type { Sign } from "../sign/index.ts"
 import type { Turn } from "./Turn.ts"
 import type { TurnEvent } from "./TurnEvent.ts"
 import { turnReplay } from "./turnReplay.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
@@ -37,9 +38,11 @@ export async function* turnRun(
     for await (const event of interpreter) {
       if (event.type === "input-persisted") {
         turn.inputPersisted = true
-        turn.endSequence = await sessions.nextSignSequence(turn.sessionId)
+        turn.endSequence = unwrap(
+          await sessions.nextSignSequence(turn.sessionId),
+        )
         turn.updatedAt = Date.now()
-        await sessions.putTurn(turn)
+        unwrap(await sessions.putTurn(turn))
         continue
       }
 
@@ -48,9 +51,9 @@ export async function* turnRun(
         continue
       }
 
-      turn.endSequence = await sessions.nextSignSequence(turn.sessionId)
+      turn.endSequence = unwrap(await sessions.nextSignSequence(turn.sessionId))
       turn.updatedAt = Date.now()
-      await sessions.putTurn(turn)
+      unwrap(await sessions.putTurn(turn))
 
       yield { type: "sign", sign: event.sign }
     }
@@ -74,9 +77,9 @@ export async function markCompletedTurn(
 ): Promise<void> {
   turn.status = "completed"
   turn.completedAt = Date.now()
-  turn.endSequence = await sessions.nextSignSequence(turn.sessionId)
+  turn.endSequence = unwrap(await sessions.nextSignSequence(turn.sessionId))
   turn.updatedAt = Date.now()
-  await sessions.putTurn(turn)
+  unwrap(await sessions.putTurn(turn))
 }
 
 export async function markFailedTurn(
@@ -86,7 +89,7 @@ export async function markFailedTurn(
 ): Promise<void> {
   turn.status = "failed"
   turn.error = { message: errorMessage(error) }
-  turn.endSequence = await sessions.nextSignSequence(turn.sessionId)
+  turn.endSequence = unwrap(await sessions.nextSignSequence(turn.sessionId))
   turn.updatedAt = Date.now()
-  await sessions.putTurn(turn)
+  unwrap(await sessions.putTurn(turn))
 }

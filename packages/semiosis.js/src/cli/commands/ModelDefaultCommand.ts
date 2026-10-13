@@ -2,6 +2,7 @@ import type * as Cli from "@windbell/cli.js"
 import type { Database } from "../../database/index.ts"
 import { setDefaultModel } from "../../models/index.ts"
 import { readOptionalOption } from "../options.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 export type ModelDefaultCommandOptions = {
   database: Database
@@ -16,7 +17,7 @@ export function makeModelDefaultHandler(options: ModelDefaultCommandOptions) {
     }
 
     const providerOption = readOptionalOption(context.options, "--provider")
-    const settings = await options.database.settings.get()
+    const settings = unwrap(await options.database.settings.get())
     const providerName = providerOption ?? settings?.defaultProvider
 
     if (providerName === undefined || providerName === null) {

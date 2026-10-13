@@ -3,6 +3,7 @@ import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
+import { unwrap } from "@windbell/std.js/result"
 import { makeNodeDatabase } from "../node/makeNodeDatabase.ts"
 import { pinModel } from "./pinModel.ts"
 import { setDefaultModel } from "./setDefaultModel.ts"
@@ -15,15 +16,17 @@ test("setDefaultModel writes provider defaultModel", async () => {
   try {
     const database = makeNodeDatabase({ root })
 
-    await database.providers.put("deepseek", {
-      name: "deepseek",
-      baseUrl: "https://api.deepseek.com",
-      defaultModel: null,
-    })
+    unwrap(
+      await database.providers.put("deepseek", {
+        name: "deepseek",
+        baseUrl: "https://api.deepseek.com",
+        defaultModel: null,
+      }),
+    )
     await pinModel(database, "deepseek", "deepseek-flash")
     await setDefaultModel(database, "deepseek", "deepseek-flash")
 
-    assert.deepEqual(await database.providers.get("deepseek"), {
+    assert.deepEqual(unwrap(await database.providers.get("deepseek")), {
       name: "deepseek",
       baseUrl: "https://api.deepseek.com",
       defaultModel: "deepseek-flash",
@@ -41,14 +44,16 @@ test("setDefaultModel accepts model that is not pinned", async () => {
   try {
     const database = makeNodeDatabase({ root })
 
-    await database.providers.put("deepseek", {
-      name: "deepseek",
-      baseUrl: "https://api.deepseek.com",
-      defaultModel: null,
-    })
+    unwrap(
+      await database.providers.put("deepseek", {
+        name: "deepseek",
+        baseUrl: "https://api.deepseek.com",
+        defaultModel: null,
+      }),
+    )
     await setDefaultModel(database, "deepseek", "deepseek-flash")
 
-    assert.deepEqual(await database.providers.get("deepseek"), {
+    assert.deepEqual(unwrap(await database.providers.get("deepseek")), {
       name: "deepseek",
       baseUrl: "https://api.deepseek.com",
       defaultModel: "deepseek-flash",

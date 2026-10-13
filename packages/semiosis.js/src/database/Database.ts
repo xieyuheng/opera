@@ -13,6 +13,7 @@ import { makeProviderStore, type ProviderStore } from "./ProviderStore.ts"
 import { makeSessionStore, type SessionStore } from "./SessionStore.ts"
 import { makeSettingsStore, type SettingsStore } from "./SettingsStore.ts"
 import { makeWorkspaceStore, type WorkspaceStore } from "./WorkspaceStore.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 export type DatabaseOptions = {
   fs: FileSystem
@@ -55,16 +56,18 @@ export function makeDatabase(options: DatabaseOptions): Database {
     path: options.path,
     root: options.path.join(root, "sessions"),
     async onSessionUpdated(session) {
-      const workspace = await workspaces.get(session.workspaceId)
+      const workspace = unwrap(await workspaces.get(session.workspaceId))
       if (workspace === undefined) return
 
       const updatedAt = Math.max(workspace.updatedAt, session.updatedAt)
       if (updatedAt === workspace.updatedAt) return
 
-      await workspaces.put({
-        ...workspace,
-        updatedAt,
-      })
+      unwrap(
+        await workspaces.put({
+          ...workspace,
+          updatedAt,
+        }),
+      )
     },
   })
 

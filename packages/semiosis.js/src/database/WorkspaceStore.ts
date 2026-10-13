@@ -1,7 +1,9 @@
 import type { Path } from "@windbell/std.js/path"
+import { err, isError, ok, type Result } from "@windbell/std.js/result"
 import type { Workspace, WorkspaceId } from "../workspace/Workspace.ts"
+import { makeDatabaseError, type DatabaseError } from "./DatabaseError.ts"
 import type { FileStore } from "./FileStore.ts"
-import { assertId, isValidId, makeId } from "./id.ts"
+import { isValidId, makeId, validateId } from "./id.ts"
 
 export type WorkspaceStoreOptions = {
   files: FileStore
@@ -15,13 +17,15 @@ export type MakeWorkspaceOptions = {
 }
 
 export type WorkspaceStore = {
-  make(options: MakeWorkspaceOptions): Promise<Workspace>
-  ensure(options: MakeWorkspaceOptions): Promise<Workspace>
-  get(id: WorkspaceId): Promise<Workspace | undefined>
-  getByRoot(root: string): Promise<Workspace | undefined>
-  list(): Promise<Array<Workspace>>
-  put(workspace: Workspace): Promise<void>
-  remove(id: WorkspaceId): Promise<void>
+  make(options: MakeWorkspaceOptions): Promise<Result<Workspace, DatabaseError>>
+  ensure(
+    options: MakeWorkspaceOptions,
+  ): Promise<Result<Workspace, DatabaseError>>
+  get(id: WorkspaceId): Promise<Result<Workspace | undefined, DatabaseError>>
+  getByRoot(root: string): Promise<Result<Workspace | undefined, DatabaseError>>
+  list(): Promise<Result<Array<Workspace>, DatabaseError>>
+  put(workspace: Workspace): Promise<Result<void, DatabaseError>>
+  remove(id: WorkspaceId): Promise<Result<void, DatabaseError>>
 }
 
 export function makeWorkspaceStore(
@@ -35,79 +39,102 @@ export function makeWorkspaceStore(
   }
 
   const store: WorkspaceStore = {
-    async make(options) {
+    async make(makeOptions) {
       const now = Date.now()
       const workspace: Workspace = {
         id: makeId("workspace"),
-        name: options.name,
-        root: path.normalize(options.root),
+        name: makeOptions.name,
+        root: path.normalize(makeOptions.root),
         createdAt: now,
         updatedAt: now,
       }
 
-      const existing = await store.getByRoot(workspace.root)
-      if (existing !== undefined) {
-        throw new Error(
-          `[WorkspaceStore] duplicate workspace root: ${workspace.root}`,
+      const existingResult = await store.getByRoot(workspace.root)
+      if (isError(existingResult)) return existingResult
+      if (existingResult.value !== undefined) {
+        return err(
+          makeDatabaseError({
+            type: "workspace-root-already-exists",
+            message: `workspace root already exists: ${workspace.root}`,
+            info: { root: workspace.root },
+          }),
         )
       }
 
-      await store.put(workspace)
-      return workspace
+      const putResult = await store.put(workspace)
+      if (isError(putResult)) return putResult
+      return ok(workspace)
     },
 
-    async ensure(options) {
-      const existing = await store.getByRoot(options.root)
-      if (existing !== undefined) return existing
+    async ensure(ensureOptions) {
+      const existingResult = await store.getByRoot(ensureOptions.root)
+      if (isError(existingResult)) return existingResult
+      if (existingResult.value !== undefined) return ok(existingResult.value)
 
-      return await store.make(options)
+      return await store.make(ensureOptions)
     },
 
     async get(id) {
-      assertId(id)
+      const idResult = validateId(id)
+      if (isError(idResult)) return idResult
 
-      const value = await options.files.readJsonFile(indexPath(id))
-      if (value === undefined) return undefined
+      const valueResult = await options.files.readJsonFile(indexPath(id))
+      if (isError(valueResult)) return valueResult
+      if (valueResult.value === undefined) return ok(undefined)
 
-      return value as Workspace
+      return ok(valueResult.value as Workspace)
     },
 
     async getByRoot(rootPath) {
-      const resolved = path.normalize(rootPath)
-      const workspaces = await store.list()
+      const listResult = await store.list()
+      if (isError(listResult)) return listResult
 
-      return workspaces.find((workspace) => {
-        return path.normalize(workspace.root) === resolved
-      })
+      const resolved = path.normalize(rootPath)
+      return ok(
+        listResult.value.find((workspace) => {
+          return path.normalize(workspace.root) === resolved
+        }),
+      )
     },
 
     async list() {
-      const ids = await options.files.listDirectories(root)
+      const idsResult = await options.files.listDirectories(root)
+      if (isError(idsResult)) return idsResult
+
       const workspaces: Array<Workspace> = []
 
-      for (const id of ids) {
+      for (const id of idsResult.value) {
         if (!isValidId(id)) continue
 
-        const workspace = await store.get(id)
-        if (workspace !== undefined) {
-          workspaces.push(workspace)
+        const workspaceResult = await store.get(id)
+        if (isError(workspaceResult)) return workspaceResult
+
+        if (workspaceResult.value !== undefined) {
+          workspaces.push(workspaceResult.value)
         }
       }
 
       workspaces.sort(
         (a, b) => b.updatedAt - a.updatedAt || b.createdAt - a.createdAt,
       )
-      return workspaces
+      return ok(workspaces)
     },
 
     async put(workspace) {
-      assertId(workspace.id)
-      await options.files.writeJsonFile(indexPath(workspace.id), workspace)
+      const idResult = validateId(workspace.id)
+      if (isError(idResult)) return idResult
+
+      return await options.files.writeJsonFile(
+        indexPath(workspace.id),
+        workspace,
+      )
     },
 
     async remove(id) {
-      assertId(id)
-      await options.files.remove(path.join(root, id))
+      const idResult = validateId(id)
+      if (isError(idResult)) return idResult
+
+      return await options.files.remove(path.join(root, id))
     },
   }
 

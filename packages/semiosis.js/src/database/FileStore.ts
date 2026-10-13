@@ -1,24 +1,29 @@
 import type { FileSystem, FileSystemError } from "@windbell/fs.js/fs"
 import type { Path } from "@windbell/std.js/path"
+import { err, isError, ok, type Result } from "@windbell/std.js/result"
 import {
-  ResultUnwrapError,
-  isError,
-  unwrap,
-  type Result,
-} from "@windbell/std.js/result"
+  makeDatabaseErrorFromFileSystemError,
+  type DatabaseError,
+} from "./DatabaseError.ts"
 
 export type FileStore = {
-  ensureDir(path: string): Promise<void>
-  listDirectories(path: string): Promise<Array<string>>
-  listFiles(path: string): Promise<Array<string>>
-  readTextFile(path: string): Promise<string | undefined>
-  writeTextFile(path: string, text: string): Promise<void>
-  readJsonFile(path: string): Promise<unknown | undefined>
-  writeJsonFile(path: string, value: unknown): Promise<void>
-  exists(path: string): Promise<boolean>
-  remove(path: string): Promise<void>
-  removeDirectory(path: string): Promise<void>
-  rename(path: string, newPath: string): Promise<void>
+  ensureDir(path: string): Promise<Result<void, DatabaseError>>
+  listDirectories(path: string): Promise<Result<Array<string>, DatabaseError>>
+  listFiles(path: string): Promise<Result<Array<string>, DatabaseError>>
+  readTextFile(path: string): Promise<Result<string | undefined, DatabaseError>>
+  writeTextFile(
+    path: string,
+    text: string,
+  ): Promise<Result<void, DatabaseError>>
+  readJsonFile(path: string): Promise<Result<unknown, DatabaseError>>
+  writeJsonFile(
+    path: string,
+    value: unknown,
+  ): Promise<Result<void, DatabaseError>>
+  exists(path: string): Promise<Result<boolean, DatabaseError>>
+  remove(path: string): Promise<Result<void, DatabaseError>>
+  removeDirectory(path: string): Promise<Result<void, DatabaseError>>
+  rename(path: string, newPath: string): Promise<Result<void, DatabaseError>>
 }
 
 export type FileStoreOptions = {
@@ -26,98 +31,127 @@ export type FileStoreOptions = {
   path: Path
 }
 
+function fromFileSystemError(
+  error: FileSystemError,
+): Result<never, DatabaseError> {
+  return err(makeDatabaseErrorFromFileSystemError(error))
+}
+
 export function makeFileStore(options: FileStoreOptions): FileStore {
   const { fs, path } = options
 
-  function expectOk<T>(result: Result<T, FileSystemError>): T {
-    return unwrap(result)
-  }
-
-  async function isNotFound(path: string): Promise<boolean> {
-    const result = await fs.exists(path)
-    return result.kind === "OkResult" ? !result.value : false
-  }
-
   return {
     async ensureDir(path) {
-      expectOk(await fs.ensureDirectory(path))
+      const result = await fs.ensureDirectory(path)
+      if (isError(result)) return fromFileSystemError(result.error)
+      return ok(undefined)
     },
 
     async listDirectories(path) {
       const result = await fs.listEntries(path)
       if (isError(result)) {
-        if (result.error.type === "not-found") return []
-        throw new ResultUnwrapError(result.error)
+        if (result.error.type === "not-found") return ok([])
+        return fromFileSystemError(result.error)
       }
 
-      return result.value
-        .filter((entry) => entry.kind === "Directory")
-        .map((entry) => entry.name)
+      return ok(
+        result.value
+          .filter((entry) => entry.kind === "Directory")
+          .map((entry) => entry.name),
+      )
     },
 
     async listFiles(path) {
       const result = await fs.listEntries(path)
       if (isError(result)) {
-        if (result.error.type === "not-found") return []
-        throw new ResultUnwrapError(result.error)
+        if (result.error.type === "not-found") return ok([])
+        return fromFileSystemError(result.error)
       }
 
-      return result.value
-        .filter((entry) => entry.kind === "File")
-        .map((entry) => entry.name)
+      return ok(
+        result.value
+          .filter((entry) => entry.kind === "File")
+          .map((entry) => entry.name),
+      )
     },
 
     async readTextFile(path) {
       const result = await fs.read(path)
       if (isError(result)) {
-        if (result.error.type === "not-found") return undefined
-        throw new ResultUnwrapError(result.error)
+        if (result.error.type === "not-found") return ok(undefined)
+        return fromFileSystemError(result.error)
       }
 
-      return result.value
+      return ok(result.value)
     },
 
     async writeTextFile(filePath, text) {
-      await this.ensureDir(path.dirname(filePath))
-      expectOk(await fs.write(filePath, text))
+      const ensureResult = await this.ensureDir(path.dirname(filePath))
+      if (isError(ensureResult)) return ensureResult
+
+      const writeResult = await fs.write(filePath, text)
+      if (isError(writeResult)) return fromFileSystemError(writeResult.error)
+      return ok(undefined)
     },
 
     async readJsonFile(path) {
-      const text = await this.readTextFile(path)
-      if (text === undefined) return undefined
+      const textResult = await this.readTextFile(path)
+      if (isError(textResult)) return textResult
+      if (textResult.value === undefined) return ok(undefined)
 
-      return JSON.parse(text)
+      try {
+        return ok(JSON.parse(textResult.value) as unknown)
+      } catch (error) {
+        return err({
+          type: "invalid-json",
+          message: error instanceof Error ? error.message : String(error),
+        })
+      }
     },
 
     async writeJsonFile(path, value) {
-      await this.writeTextFile(path, `${JSON.stringify(value, null, 2)}\n`)
+      return await this.writeTextFile(
+        path,
+        `${JSON.stringify(value, null, 2)}\n`,
+      )
     },
 
     async exists(path) {
       const result = await fs.exists(path)
-      return expectOk(result)
+      if (isError(result)) return fromFileSystemError(result.error)
+      return ok(result.value)
     },
 
     async remove(path) {
-      if (await isNotFound(path)) return
+      const existsResult = await this.exists(path)
+      if (isError(existsResult)) return existsResult
+      if (!existsResult.value) return ok(undefined)
 
       const result = await fs.delete(path)
       if (isError(result) && result.error.type !== "not-found") {
-        throw new ResultUnwrapError(result.error)
+        return fromFileSystemError(result.error)
       }
+
+      return ok(undefined)
     },
 
     async removeDirectory(path) {
-      if (await isNotFound(path)) return
+      const existsResult = await this.exists(path)
+      if (isError(existsResult)) return existsResult
+      if (!existsResult.value) return ok(undefined)
 
       const result = await fs.deleteDirectory(path)
       if (isError(result) && result.error.type !== "not-found") {
-        throw new ResultUnwrapError(result.error)
+        return fromFileSystemError(result.error)
       }
+
+      return ok(undefined)
     },
 
     async rename(path, newPath) {
-      expectOk(await fs.rename(path, newPath))
+      const result = await fs.rename(path, newPath)
+      if (isError(result)) return fromFileSystemError(result.error)
+      return ok(undefined)
     },
   }
 }

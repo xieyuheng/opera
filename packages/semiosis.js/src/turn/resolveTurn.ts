@@ -4,6 +4,7 @@ import type { SessionId } from "../session/Session.ts"
 import type { Sign } from "../sign/index.ts"
 import type { Turn, TurnId } from "./Turn.ts"
 import { makeInputHash } from "./Turn.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 export type ResolveTurnOptions = {
   sessions: SessionStore
@@ -22,9 +23,8 @@ export async function resolveTurn(
   options: ResolveTurnOptions,
 ): Promise<ResolveTurnResult> {
   const inputHash = await makeInputHash(options.input)
-  const existingTurn = await options.sessions.getTurn(
-    options.sessionId,
-    options.turnId,
+  const existingTurn = unwrap(
+    await options.sessions.getTurn(options.sessionId, options.turnId),
   )
 
   if (existingTurn !== undefined) {
@@ -53,8 +53,8 @@ export async function resolveTurn(
   const now = Date.now()
 
   if (existingTurn === undefined) {
-    const startSequence = await options.sessions.nextSignSequence(
-      options.sessionId,
+    const startSequence = unwrap(
+      await options.sessions.nextSignSequence(options.sessionId),
     )
     const turn: Turn = {
       id: options.turnId,
@@ -69,7 +69,7 @@ export async function resolveTurn(
       updatedAt: now,
     }
 
-    await options.sessions.putTurn(turn)
+    unwrap(await options.sessions.putTurn(turn))
     return { kind: "run", turn }
   }
 
@@ -80,6 +80,6 @@ export async function resolveTurn(
     updatedAt: now,
   }
 
-  await options.sessions.putTurn(turn)
+  unwrap(await options.sessions.putTurn(turn))
   return { kind: "run", turn }
 }

@@ -36,12 +36,12 @@ test("sessions interpret locks the session and rejects concurrent runs", async (
     sessions: {
       async get() {
         await gate
-        return undefined
+        return ok(undefined)
       },
     },
     workspaces: {
       async get() {
-        return undefined
+        return ok(undefined)
       },
     },
   } as unknown as Database

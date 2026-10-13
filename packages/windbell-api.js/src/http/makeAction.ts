@@ -1,7 +1,8 @@
-import type { z } from "zod"
 import type { MaybePromise } from "@windbell/std.js/promise"
 import type { Result } from "@windbell/std.js/result"
-import type { ServiceError } from "../errors/ServiceError.ts"
+import type * as S from "@windbell/semiosis.js"
+import type { z } from "zod"
+import { serviceErrorStatus } from "./serviceErrorStatus.ts"
 
 export type MakeActionOptions = {
   status?: number
@@ -9,7 +10,7 @@ export type MakeActionOptions = {
 
 export function makeAction<Input, Output>(
   schema: z.ZodType<Input>,
-  service: (input: Input) => MaybePromise<Result<Output, ServiceError>>,
+  service: (input: Input) => MaybePromise<Result<Output, S.ServiceError>>,
   options: MakeActionOptions = {},
 ): (input: unknown) => Promise<Response> {
   return async (input) => {
@@ -42,7 +43,7 @@ export function makeAction<Input, Output>(
               info: result.error.info,
             },
           },
-          { status: result.error.status },
+          { status: serviceErrorStatus(result.error) },
         )
       }
 

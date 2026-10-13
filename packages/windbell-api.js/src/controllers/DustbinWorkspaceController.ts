@@ -1,5 +1,6 @@
+import { makeServiceError } from "@windbell/semiosis.js"
 import type * as S from "@windbell/semiosis.js"
-import { err, ok } from "@windbell/std.js/result"
+import { err } from "@windbell/std.js/result"
 import { z } from "zod"
 import { makeAction } from "../http/makeAction.ts"
 
@@ -27,38 +28,36 @@ export function makeDustbinWorkspaceController(
   options: DustbinWorkspaceControllerOptions,
 ) {
   return {
-    list: makeAction(z.object({}), async () => {
-      return ok(await options.dustbinWorkspaces.list())
-    }),
+    list: makeAction(z.object({}), () => options.dustbinWorkspaces.list()),
 
     get: makeAction(GetDustbinWorkspaceInputSchema, async (input) => {
-      const workspace = await options.dustbinWorkspaces.get(input.workspaceId)
-
-      if (workspace === undefined) {
-        return err({
-          type: "dustbin-workspace-not-found",
-          status: 404,
-          message: "workspace not found",
-          info: { workspaceId: input.workspaceId },
-        })
+      const result = await options.dustbinWorkspaces.get(input.workspaceId)
+      if (result.kind === "ErrorResult") return result
+      if (result.value === undefined) {
+        return err(
+          makeServiceError({
+            type: "dustbin-workspace-not-found",
+            message: "workspace not found",
+            info: {
+              workspaceId: input.workspaceId,
+            },
+          }),
+        )
       }
 
-      return ok(workspace)
+      return result
     }),
 
-    trash: makeAction(TrashDustbinWorkspaceInputSchema, async (input) => {
-      await options.dustbinWorkspaces.trash(input.workspaceId)
-      return ok(null)
-    }),
+    trash: makeAction(TrashDustbinWorkspaceInputSchema, (input) =>
+      options.dustbinWorkspaces.trash(input.workspaceId),
+    ),
 
-    restore: makeAction(RestoreDustbinWorkspaceInputSchema, async (input) => {
-      await options.dustbinWorkspaces.restore(input.workspaceId)
-      return ok(null)
-    }),
+    restore: makeAction(RestoreDustbinWorkspaceInputSchema, (input) =>
+      options.dustbinWorkspaces.restore(input.workspaceId),
+    ),
 
-    remove: makeAction(RemoveDustbinWorkspaceInputSchema, async (input) => {
-      await options.dustbinWorkspaces.remove(input.workspaceId)
-      return ok(null)
-    }),
+    remove: makeAction(RemoveDustbinWorkspaceInputSchema, (input) =>
+      options.dustbinWorkspaces.remove(input.workspaceId),
+    ),
   }
 }

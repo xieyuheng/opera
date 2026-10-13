@@ -5,6 +5,7 @@ import Path from "node:path"
 import { test } from "node:test"
 import * as S from "@windbell/semiosis.js/node"
 import { makeWindbellRouter } from "../router/index.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 test("windbell router", async (t) => {
   const root = await mkdtemp(Path.join(tmpdir(), "windbell-api-"))
@@ -123,14 +124,18 @@ test("windbell router", async (t) => {
   }
 
   {
-    const pageWorkspace = await database.workspaces.make({
-      name: "page-test",
-      root: Path.join(root, "page-test"),
-    })
-    const session = await database.sessions.make({
-      workspaceId: pageWorkspace.id,
-      title: "page-test-session",
-    })
+    const pageWorkspace = unwrap(
+      await database.workspaces.make({
+        name: "page-test",
+        root: Path.join(root, "page-test"),
+      }),
+    )
+    const session = unwrap(
+      await database.sessions.make({
+        workspaceId: pageWorkspace.id,
+        title: "page-test-session",
+      }),
+    )
 
     const homeResponse = await app.request("/api/pages/home")
     assert.equal(homeResponse.status, 200)

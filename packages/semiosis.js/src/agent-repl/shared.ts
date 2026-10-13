@@ -2,13 +2,14 @@ import { errorReport } from "@windbell/std.js/error"
 import type { Database } from "../database/index.ts"
 import type { Repl } from "../repl/Repl.ts"
 import type { Session } from "../session/index.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 export function makeTitleChangeHandler(
   database: Database,
   session: Session,
 ): (title: string) => Promise<void> {
   return async (title) => {
-    await database.sessions.updateTitle(session.id, title)
+    unwrap(await database.sessions.updateTitle(session.id, title))
     session.title = title
   }
 }

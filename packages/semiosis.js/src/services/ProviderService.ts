@@ -1,33 +1,45 @@
-import type { ProviderConfig } from "../provider/index.ts"
-import { readProviderConfig } from "../provider/index.ts"
+import { err, isError, ok, type Result } from "@windbell/std.js/result"
+import type { Database } from "../database/Database.ts"
+import { deleteApiKey, hasApiKey, writeApiKey } from "../database/apiKey.ts"
 import type { ProviderModelEntry } from "../models/ProviderModelEntry.ts"
 import { listProviderModelEntries } from "../models/listProviderModelEntries.ts"
 import { pinModel } from "../models/pinModel.ts"
 import { setDefaultModel } from "../models/setDefaultModel.ts"
 import { unpinModel } from "../models/unpinModel.ts"
+import type { ProviderConfig } from "../provider/index.ts"
+import { readProviderConfig } from "../provider/index.ts"
 import { providerNames } from "../providers/providerNames.ts"
-import { deleteApiKey, hasApiKey, writeApiKey } from "../database/apiKey.ts"
-import type { Database } from "../database/Database.ts"
+import {
+  makeServiceError,
+  makeServiceErrorFromDatabaseError,
+  type ServiceError,
+} from "./ServiceError.ts"
 
 export type ProviderService = {
-  list(): Promise<Array<ProviderConfig>>
-  get(providerName: string): Promise<ProviderConfig>
-  getApiKeyStatus(providerName: string): Promise<boolean>
+  list(): Promise<Result<Array<ProviderConfig>, ServiceError>>
+  get(providerName: string): Promise<Result<ProviderConfig, ServiceError>>
+  getApiKeyStatus(providerName: string): Promise<Result<boolean, ServiceError>>
   listModels(options: {
     providerName: string
     all?: boolean
-  }): Promise<Array<ProviderModelEntry>>
-  pinModel(options: { providerName: string; modelName: string }): Promise<void>
+  }): Promise<Result<Array<ProviderModelEntry>, ServiceError>>
+  pinModel(options: {
+    providerName: string
+    modelName: string
+  }): Promise<Result<void, ServiceError>>
   unpinModel(options: {
     providerName: string
     modelName: string
-  }): Promise<void>
+  }): Promise<Result<void, ServiceError>>
   setDefaultModel(options: {
     providerName: string
     modelName: string
-  }): Promise<void>
-  putApiKey(options: { providerName: string; key: string }): Promise<void>
-  deleteApiKey(providerName: string): Promise<void>
+  }): Promise<Result<void, ServiceError>>
+  putApiKey(options: {
+    providerName: string
+    key: string
+  }): Promise<Result<void, ServiceError>>
+  deleteApiKey(providerName: string): Promise<Result<void, ServiceError>>
 }
 
 export type ProviderServiceOptions = {
@@ -41,47 +53,132 @@ export function makeProviderService(
 
   return {
     async list() {
-      const configs: Array<ProviderConfig> = []
+      try {
+        const configs: Array<ProviderConfig> = []
 
-      for (const providerName of providerNames) {
-        configs.push(await readProviderConfig(database, providerName))
+        for (const providerName of providerNames) {
+          configs.push(await readProviderConfig(database, providerName))
+        }
+
+        return ok(configs)
+      } catch (error) {
+        return err(
+          makeServiceError({
+            type: "provider-config-invalid",
+            message: error instanceof Error ? error.message : String(error),
+          }),
+        )
       }
-
-      return configs
     },
 
     async get(providerName) {
-      return await readProviderConfig(database, providerName)
+      try {
+        return ok(await readProviderConfig(database, providerName))
+      } catch (error) {
+        return err(
+          makeServiceError({
+            type: "provider-not-found",
+            message: error instanceof Error ? error.message : String(error),
+            info: { providerName },
+          }),
+        )
+      }
     },
 
     async getApiKeyStatus(providerName) {
-      return await hasApiKey(database, providerName)
+      const result = await hasApiKey(database, providerName)
+      if (isError(result)) {
+        return err(makeServiceErrorFromDatabaseError(result.error))
+      }
+      return ok(result.value)
     },
 
-    async listModels(options) {
-      return await listProviderModelEntries(database, options.providerName, {
-        all: options.all,
-      })
+    async listModels(listOptions) {
+      try {
+        return ok(
+          await listProviderModelEntries(database, listOptions.providerName, {
+            all: listOptions.all,
+          }),
+        )
+      } catch (error) {
+        return err(
+          makeServiceError({
+            type: "model-error",
+            message: error instanceof Error ? error.message : String(error),
+            info: { providerName: listOptions.providerName },
+          }),
+        )
+      }
     },
 
-    async pinModel(options) {
-      await pinModel(database, options.providerName, options.modelName)
+    async pinModel(pinOptions) {
+      try {
+        await pinModel(database, pinOptions.providerName, pinOptions.modelName)
+        return ok(undefined)
+      } catch (error) {
+        return err(
+          makeServiceError({
+            type: "model-error",
+            message: error instanceof Error ? error.message : String(error),
+          }),
+        )
+      }
     },
 
-    async unpinModel(options) {
-      await unpinModel(database, options.providerName, options.modelName)
+    async unpinModel(unpinOptions) {
+      try {
+        await unpinModel(
+          database,
+          unpinOptions.providerName,
+          unpinOptions.modelName,
+        )
+        return ok(undefined)
+      } catch (error) {
+        return err(
+          makeServiceError({
+            type: "model-error",
+            message: error instanceof Error ? error.message : String(error),
+          }),
+        )
+      }
     },
 
-    async setDefaultModel(options) {
-      await setDefaultModel(database, options.providerName, options.modelName)
+    async setDefaultModel(defaultOptions) {
+      try {
+        await setDefaultModel(
+          database,
+          defaultOptions.providerName,
+          defaultOptions.modelName,
+        )
+        return ok(undefined)
+      } catch (error) {
+        return err(
+          makeServiceError({
+            type: "model-error",
+            message: error instanceof Error ? error.message : String(error),
+          }),
+        )
+      }
     },
 
-    async putApiKey(options) {
-      await writeApiKey(database, options.providerName, options.key)
+    async putApiKey(apiKeyOptions) {
+      const result = await writeApiKey(
+        database,
+        apiKeyOptions.providerName,
+        apiKeyOptions.key,
+      )
+      if (isError(result)) {
+        return err(makeServiceErrorFromDatabaseError(result.error))
+      }
+      return ok(undefined)
     },
 
     async deleteApiKey(providerName) {
-      await deleteApiKey(database, providerName)
+      const result = await deleteApiKey(database, providerName)
+      if (isError(result)) {
+        return err(makeServiceErrorFromDatabaseError(result.error))
+      }
+      return ok(undefined)
     },
   }
 }

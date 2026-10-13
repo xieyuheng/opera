@@ -7,7 +7,7 @@ import { makeLocalFileSystem } from "@windbell/fs.js/local-fs"
 import type { LockService } from "@windbell/lock.js/lock"
 import { makeBash } from "@windbell/sh.js/bash"
 import { makePath } from "@windbell/std.js/path"
-import { ok } from "@windbell/std.js/result"
+import { ok, unwrap } from "@windbell/std.js/result"
 import { makeSemiosisService } from "./SemiosisService.ts"
 
 test("makeSemiosisService manages workspaces and sessions", async (t) => {
@@ -25,36 +25,44 @@ test("makeSemiosisService manages workspaces and sessions", async (t) => {
     sh: makeBash(),
   })
 
-  const workspace = await semiosis.workspaces.ensure({
-    name: "test",
-    root: path.join(root, "workspace"),
-  })
+  const workspace = unwrap(
+    await semiosis.workspaces.ensure({
+      name: "test",
+      root: path.join(root, "workspace"),
+    }),
+  )
 
-  const session = await semiosis.sessions.make({
-    workspaceId: workspace.id,
-    title: "test",
-  })
+  const session = unwrap(
+    await semiosis.sessions.make({
+      workspaceId: workspace.id,
+      title: "test",
+    }),
+  )
 
   assert.equal(session.context.length, 2)
   assert.equal(session.context[0]?.kind, "ToolSign")
   assert.equal(session.context[1]?.kind, "PersonaSign")
 
-  const sessions = await semiosis.sessions.list({
-    workspaceId: workspace.id,
-  })
+  const sessions = unwrap(
+    await semiosis.sessions.list({
+      workspaceId: workspace.id,
+    }),
+  )
 
   assert.equal(sessions.length, 1)
   assert.equal(sessions[0]?.id, session.id)
 
-  await semiosis.dustbin.sessions.trash(session.id)
+  unwrap(await semiosis.dustbin.sessions.trash(session.id))
   assert.equal(
-    (await semiosis.sessions.list({ workspaceId: workspace.id })).length,
+    unwrap(await semiosis.sessions.list({ workspaceId: workspace.id })).length,
     0,
   )
 
-  const dustbin = await semiosis.dustbin.sessions.list({
-    workspaceId: workspace.id,
-  })
+  const dustbin = unwrap(
+    await semiosis.dustbin.sessions.list({
+      workspaceId: workspace.id,
+    }),
+  )
 
   assert.equal(dustbin.length, 1)
 })

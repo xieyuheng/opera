@@ -1,5 +1,7 @@
 import type { Path } from "@windbell/std.js/path"
+import { isError, ok, type Result } from "@windbell/std.js/result"
 import type { Settings } from "../settings/Settings.ts"
+import type { DatabaseError } from "./DatabaseError.ts"
 import type { FileStore } from "./FileStore.ts"
 
 export type SettingsStoreOptions = {
@@ -9,8 +11,8 @@ export type SettingsStoreOptions = {
 }
 
 export type SettingsStore = {
-  get(): Promise<Settings | undefined>
-  put(settings: Settings): Promise<void>
+  get(): Promise<Result<Settings | undefined, DatabaseError>>
+  put(settings: Settings): Promise<Result<void, DatabaseError>>
 }
 
 export function makeSettingsStore(
@@ -20,28 +22,29 @@ export function makeSettingsStore(
 
   return {
     async get() {
-      const value = await options.files.readJsonFile(filePath)
-      if (value === undefined) return undefined
+      const valueResult = await options.files.readJsonFile(filePath)
+      if (isError(valueResult)) return valueResult
+      if (valueResult.value === undefined) return ok(undefined)
       if (
-        value === null ||
-        typeof value !== "object" ||
-        value instanceof Array
+        valueResult.value === null ||
+        typeof valueResult.value !== "object" ||
+        valueResult.value instanceof Array
       ) {
-        return undefined
+        return ok(undefined)
       }
 
-      const record = value as Record<string, unknown>
-      return {
+      const record = valueResult.value as Record<string, unknown>
+      return ok({
         defaultProvider:
           typeof record.defaultProvider === "string"
             ? record.defaultProvider
             : null,
         themeId: typeof record.themeId === "string" ? record.themeId : null,
-      }
+      })
     },
 
     async put(settings) {
-      await options.files.writeJsonFile(filePath, settings)
+      return await options.files.writeJsonFile(filePath, settings)
     },
   }
 }

@@ -1,5 +1,9 @@
+import {
+  makeServiceError,
+  makeServiceErrorFromDatabaseError,
+} from "@windbell/semiosis.js"
 import type * as S from "@windbell/semiosis.js"
-import { err, ok, type Result } from "@windbell/std.js/result"
+import { err, isError, ok, type Result } from "@windbell/std.js/result"
 import type {
   DustbinSessionDataItem,
   HomeData,
@@ -10,7 +14,6 @@ import type {
   WorkspaceData,
   WorkspaceDustbinData,
 } from "../api/types.ts"
-import type { ServiceError } from "../errors/ServiceError.ts"
 
 export type PageDataServiceOptions = {
   database: S.Database
@@ -21,16 +24,30 @@ export type PageProviderServiceOptions = {
   settings: S.SettingsService
 }
 
+function fromDatabase<Output>(
+  result: Result<Output, S.DatabaseError>,
+): Result<Output, S.ServiceError> {
+  if (isError(result)) {
+    return err(makeServiceErrorFromDatabaseError(result.error))
+  }
+  return ok(result.value)
+}
+
 export function LoadHomeData(options: PageDataServiceOptions) {
-  return async (): Promise<Result<HomeData, ServiceError>> => {
-    const [workspaces, sessions] = await Promise.all([
-      options.database.workspaces.list(),
-      options.database.sessions.list({ workspaceId: undefined }),
-    ])
+  return async (): Promise<Result<HomeData, S.ServiceError>> => {
+    const workspacesResult = fromDatabase(
+      await options.database.workspaces.list(),
+    )
+    if (isError(workspacesResult)) return workspacesResult
+
+    const sessionsResult = fromDatabase(
+      await options.database.sessions.list({ workspaceId: undefined }),
+    )
+    if (isError(sessionsResult)) return sessionsResult
 
     return ok({
-      workspaces,
-      sessionsByWorkspaceId: groupSessionsByWorkspace(sessions),
+      workspaces: workspacesResult.value,
+      sessionsByWorkspaceId: groupSessionsByWorkspace(sessionsResult.value),
     })
   }
 }
@@ -38,26 +55,38 @@ export function LoadHomeData(options: PageDataServiceOptions) {
 export function LoadWorkspaceData(options: PageDataServiceOptions) {
   return async (input: {
     workspaceId: S.WorkspaceId
-  }): Promise<Result<WorkspaceData, ServiceError>> => {
-    const workspace = await options.database.workspaces.get(input.workspaceId)
+  }): Promise<Result<WorkspaceData, S.ServiceError>> => {
+    const workspaceResult = fromDatabase(
+      await options.database.workspaces.get(input.workspaceId),
+    )
+    if (isError(workspaceResult)) return workspaceResult
+    const workspace = workspaceResult.value
 
     if (workspace === undefined) {
-      return err({
-        type: "workspace-not-found",
-        status: 404,
-        message: "workspace not found",
-        info: { workspaceId: input.workspaceId },
-      })
+      return err(
+        makeServiceError({
+          type: "workspace-not-found",
+          message: "workspace not found",
+          info: { workspaceId: input.workspaceId },
+        }),
+      )
     }
 
-    const indexes = await options.database.sessions.list({
-      workspaceId: input.workspaceId,
-    })
+    const indexesResult = fromDatabase(
+      await options.database.sessions.list({
+        workspaceId: input.workspaceId,
+      }),
+    )
+    if (isError(indexesResult)) return indexesResult
+
     const sessions: Array<S.Session> = []
 
-    for (const index of indexes) {
-      const session = await options.database.sessions.get(index.id)
-      if (session !== undefined) sessions.push(session)
+    for (const index of indexesResult.value) {
+      const sessionResult = fromDatabase(
+        await options.database.sessions.get(index.id),
+      )
+      if (isError(sessionResult)) return sessionResult
+      if (sessionResult.value !== undefined) sessions.push(sessionResult.value)
     }
 
     return ok({ workspace, sessions })
@@ -67,27 +96,37 @@ export function LoadWorkspaceData(options: PageDataServiceOptions) {
 export function LoadSessionData(options: PageDataServiceOptions) {
   return async (input: {
     sessionId: S.SessionId
-  }): Promise<Result<SessionData, ServiceError>> => {
-    const session = await options.database.sessions.get(input.sessionId)
+  }): Promise<Result<SessionData, S.ServiceError>> => {
+    const sessionResult = fromDatabase(
+      await options.database.sessions.get(input.sessionId),
+    )
+    if (isError(sessionResult)) return sessionResult
+    const session = sessionResult.value
 
     if (session === undefined) {
-      return err({
-        type: "session-not-found",
-        status: 404,
-        message: "session not found",
-        info: { sessionId: input.sessionId },
-      })
+      return err(
+        makeServiceError({
+          type: "session-not-found",
+          message: "session not found",
+          info: { sessionId: input.sessionId },
+        }),
+      )
     }
 
-    const workspace = await options.database.workspaces.get(session.workspaceId)
+    const workspaceResult = fromDatabase(
+      await options.database.workspaces.get(session.workspaceId),
+    )
+    if (isError(workspaceResult)) return workspaceResult
+    const workspace = workspaceResult.value
 
     if (workspace === undefined) {
-      return err({
-        type: "workspace-not-found",
-        status: 404,
-        message: "workspace not found",
-        info: { workspaceId: session.workspaceId },
-      })
+      return err(
+        makeServiceError({
+          type: "workspace-not-found",
+          message: "workspace not found",
+          info: { workspaceId: session.workspaceId },
+        }),
+      )
     }
 
     return ok({ session, workspace })
@@ -97,15 +136,23 @@ export function LoadSessionData(options: PageDataServiceOptions) {
 export function LoadSessionDustbinData(options: PageDataServiceOptions) {
   return async (input: {
     workspaceId: S.WorkspaceId | undefined
-  }): Promise<Result<SessionDustbinData, ServiceError>> => {
-    const indexes = await options.database.dustbin.sessions.list(input)
+  }): Promise<Result<SessionDustbinData, S.ServiceError>> => {
+    const indexesResult = fromDatabase(
+      await options.database.dustbin.sessions.list(input),
+    )
+    if (isError(indexesResult)) return indexesResult
+
     const sessions: Array<DustbinSessionDataItem> = []
 
-    for (const index of indexes) {
-      const session = await options.database.dustbin.sessions.get(index.id)
+    for (const index of indexesResult.value) {
+      const sessionResult = fromDatabase(
+        await options.database.dustbin.sessions.get(index.id),
+      )
+      if (isError(sessionResult)) return sessionResult
+
       sessions.push({
         ...index,
-        context: session?.context ?? [],
+        context: sessionResult.value?.context ?? [],
       })
     }
 
@@ -114,41 +161,56 @@ export function LoadSessionDustbinData(options: PageDataServiceOptions) {
 }
 
 export function LoadWorkspaceDustbinData(options: PageDataServiceOptions) {
-  return async (): Promise<Result<WorkspaceDustbinData, ServiceError>> => {
-    const [workspaces, sessions] = await Promise.all([
-      options.database.dustbin.workspaces.list(),
-      options.database.dustbin.sessions.list({ workspaceId: undefined }),
-    ])
+  return async (): Promise<Result<WorkspaceDustbinData, S.ServiceError>> => {
+    const workspacesResult = fromDatabase(
+      await options.database.dustbin.workspaces.list(),
+    )
+    if (isError(workspacesResult)) return workspacesResult
+
+    const sessionsResult = fromDatabase(
+      await options.database.dustbin.sessions.list({
+        workspaceId: undefined,
+      }),
+    )
+    if (isError(sessionsResult)) return sessionsResult
 
     return ok({
-      workspaces,
-      sessionsByWorkspaceId: groupSessionsByWorkspace(sessions),
+      workspaces: workspacesResult.value,
+      sessionsByWorkspaceId: groupSessionsByWorkspace(sessionsResult.value),
     })
   }
 }
 
 export function LoadProviderListData(options: PageProviderServiceOptions) {
-  return async (): Promise<Result<ProviderListData, ServiceError>> => {
-    const [providerConfigs, currentSettings] = await Promise.all([
-      options.providers.list(),
-      options.settings.get(),
-    ])
+  return async (): Promise<Result<ProviderListData, S.ServiceError>> => {
+    const providerConfigsResult = await options.providers.list()
+    if (isError(providerConfigsResult)) return providerConfigsResult
+
+    const currentSettingsResult = await options.settings.get()
+    if (isError(currentSettingsResult)) return currentSettingsResult
+    const currentSettings = currentSettingsResult.value
+
     const entries = []
 
-    for (const providerConfig of providerConfigs) {
-      const [apiKeyConfigured, models] = await Promise.all([
-        options.providers.getApiKeyStatus(providerConfig.name),
-        options.providers.listModels({ providerName: providerConfig.name }),
-      ])
+    for (const providerConfig of providerConfigsResult.value) {
+      const apiKeyConfiguredResult = await options.providers.getApiKeyStatus(
+        providerConfig.name,
+      )
+      if (isError(apiKeyConfiguredResult)) return apiKeyConfiguredResult
+
+      const modelsResult = await options.providers.listModels({
+        providerName: providerConfig.name,
+      })
+      if (isError(modelsResult)) return modelsResult
 
       entries.push({
         name: providerConfig.name,
         baseUrl: providerConfig.baseUrl,
         defaultModel: providerConfig.defaultModel,
-        apiKeyConfigured,
+        apiKeyConfigured: apiKeyConfiguredResult.value,
         isDefaultProvider:
           currentSettings.defaultProvider === providerConfig.name,
-        models: models.map((model) => ({
+        models: modelsResult.value.map((model) => ({
           name: model.name,
           pinned: model.pinned,
           isDefault: providerConfig.defaultModel === model.name,
@@ -163,38 +225,50 @@ export function LoadProviderListData(options: PageProviderServiceOptions) {
 export function LoadProviderData(options: PageProviderServiceOptions) {
   return async (input: {
     providerName: string
-  }): Promise<Result<ProviderData, ServiceError>> => {
-    const [providerConfigs, currentSettings, apiKeyConfigured, localModels] =
-      await Promise.all([
-        options.providers.list(),
-        options.settings.get(),
-        options.providers.getApiKeyStatus(input.providerName),
-        options.providers.listModels({ providerName: input.providerName }),
-      ])
-    const providerConfig = providerConfigs.find(
+  }): Promise<Result<ProviderData, S.ServiceError>> => {
+    const providerConfigsResult = await options.providers.list()
+    if (isError(providerConfigsResult)) return providerConfigsResult
+
+    const currentSettingsResult = await options.settings.get()
+    if (isError(currentSettingsResult)) return currentSettingsResult
+    const currentSettings = currentSettingsResult.value
+
+    const apiKeyConfiguredResult = await options.providers.getApiKeyStatus(
+      input.providerName,
+    )
+    if (isError(apiKeyConfiguredResult)) return apiKeyConfiguredResult
+
+    const localModelsResult = await options.providers.listModels({
+      providerName: input.providerName,
+    })
+    if (isError(localModelsResult)) return localModelsResult
+
+    const providerConfig = providerConfigsResult.value.find(
       (config) => config.name === input.providerName,
     )
 
     if (providerConfig === undefined) {
-      return err({
-        type: "provider-not-found",
-        status: 404,
-        message: "provider not found",
-        info: { providerName: input.providerName },
-      })
+      return err(
+        makeServiceError({
+          type: "provider-not-found",
+          message: "provider not found",
+          info: { providerName: input.providerName },
+        }),
+      )
     }
 
-    let models = localModels
+    let models = localModelsResult.value
     let warning: string | undefined
 
-    if (apiKeyConfigured) {
-      try {
-        models = await options.providers.listModels({
-          providerName: input.providerName,
-          all: true,
-        })
-      } catch (error) {
-        warning = error instanceof Error ? error.message : String(error)
+    if (apiKeyConfiguredResult.value) {
+      const allModelsResult = await options.providers.listModels({
+        providerName: input.providerName,
+        all: true,
+      })
+      if (isError(allModelsResult)) {
+        warning = allModelsResult.error.message
+      } else {
+        models = allModelsResult.value
       }
     } else {
       warning = "api key is not configured; showing local models only"
@@ -202,7 +276,7 @@ export function LoadProviderData(options: PageProviderServiceOptions) {
 
     return ok({
       providerConfig,
-      apiKeyConfigured,
+      apiKeyConfigured: apiKeyConfiguredResult.value,
       isDefaultProvider: currentSettings.defaultProvider === input.providerName,
       warning,
       models,

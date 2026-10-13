@@ -1,11 +1,13 @@
 import type { Path } from "@windbell/std.js/path"
+import { err, isError, ok, type Result } from "@windbell/std.js/result"
 import type {
   DustbinWorkspace,
   Workspace,
   WorkspaceId,
 } from "../workspace/Workspace.ts"
+import { makeDatabaseError, type DatabaseError } from "./DatabaseError.ts"
 import type { FileStore } from "./FileStore.ts"
-import { assertId, isValidId } from "./id.ts"
+import { isValidId, validateId } from "./id.ts"
 
 export type DustbinWorkspaceStoreOptions = {
   files: FileStore
@@ -15,23 +17,13 @@ export type DustbinWorkspaceStoreOptions = {
 }
 
 export type DustbinWorkspaceStore = {
-  get(id: WorkspaceId): Promise<DustbinWorkspace | undefined>
-  list(): Promise<Array<DustbinWorkspace>>
-  trash(id: WorkspaceId): Promise<void>
-  restore(id: WorkspaceId): Promise<void>
-  remove(id: WorkspaceId): Promise<void>
-}
-
-export type DustbinWorkspaceErrorCode = "not-found" | "conflict"
-
-export class DustbinWorkspaceError extends Error {
-  code: DustbinWorkspaceErrorCode
-
-  constructor(code: DustbinWorkspaceErrorCode, message: string) {
-    super(message)
-    this.name = "DustbinWorkspaceError"
-    this.code = code
-  }
+  get(
+    id: WorkspaceId,
+  ): Promise<Result<DustbinWorkspace | undefined, DatabaseError>>
+  list(): Promise<Result<Array<DustbinWorkspace>, DatabaseError>>
+  trash(id: WorkspaceId): Promise<Result<void, DatabaseError>>
+  restore(id: WorkspaceId): Promise<Result<void, DatabaseError>>
+  remove(id: WorkspaceId): Promise<Result<void, DatabaseError>>
 }
 
 export function makeDustbinWorkspaceStore(
@@ -59,39 +51,51 @@ export function makeDustbinWorkspaceStore(
 
   const readWorkspace = async (
     id: WorkspaceId,
-  ): Promise<Workspace | undefined> => {
-    assertId(id)
+  ): Promise<Result<Workspace | undefined, DatabaseError>> => {
+    const idResult = validateId(id)
+    if (isError(idResult)) return idResult
 
-    const value = await options.files.readJsonFile(workspaceIndexPath(id))
-    if (value === undefined) return undefined
+    const valueResult = await options.files.readJsonFile(workspaceIndexPath(id))
+    if (isError(valueResult)) return valueResult
+    if (valueResult.value === undefined) return ok(undefined)
 
-    return value as Workspace
+    return ok(valueResult.value as Workspace)
   }
 
   const readDustbinWorkspace = async (
     id: WorkspaceId,
-  ): Promise<DustbinWorkspace | undefined> => {
-    assertId(id)
+  ): Promise<Result<DustbinWorkspace | undefined, DatabaseError>> => {
+    const idResult = validateId(id)
+    if (isError(idResult)) return idResult
 
-    const value = await options.files.readJsonFile(
+    const valueResult = await options.files.readJsonFile(
       dustbinWorkspaceIndexPath(id),
     )
-    if (value === undefined) return undefined
+    if (isError(valueResult)) return valueResult
+    if (valueResult.value === undefined) return ok(undefined)
 
-    return value as DustbinWorkspace
+    return ok(valueResult.value as DustbinWorkspace)
   }
 
   return {
-    get: (id) => readDustbinWorkspace(id),
+    async get(id) {
+      return await readDustbinWorkspace(id)
+    },
 
     async list() {
-      const ids = await options.files.listDirectories(dustbinWorkspacesRoot)
+      const idsResult = await options.files.listDirectories(
+        dustbinWorkspacesRoot,
+      )
+      if (isError(idsResult)) return idsResult
+
       const workspaces: Array<DustbinWorkspace> = []
 
-      for (const id of ids) {
+      for (const id of idsResult.value) {
         if (!isValidId(id)) continue
 
-        const workspace = await readDustbinWorkspace(id)
+        const workspaceResult = await readDustbinWorkspace(id)
+        if (isError(workspaceResult)) return workspaceResult
+        const workspace = workspaceResult.value
         if (workspace === undefined) continue
         if (typeof workspace.deletedAt !== "number") continue
 
@@ -99,95 +103,124 @@ export function makeDustbinWorkspaceStore(
       }
 
       workspaces.sort((a, b) => b.deletedAt - a.deletedAt)
-      return workspaces
+      return ok(workspaces)
     },
 
     async trash(id) {
-      assertId(id)
+      const idResult = validateId(id)
+      if (isError(idResult)) return idResult
 
-      const workspace = await readWorkspace(id)
-      if (workspace === undefined) {
-        throw new DustbinWorkspaceError(
-          "not-found",
-          `workspace not found: ${id}`,
+      const workspaceResult = await readWorkspace(id)
+      if (isError(workspaceResult)) return workspaceResult
+      if (workspaceResult.value === undefined) {
+        return err(
+          makeDatabaseError({
+            type: "workspace-not-found",
+            message: `workspace not found: ${id}`,
+            info: { workspaceId: id },
+          }),
         )
       }
 
       const target = dustbinWorkspaceDir(id)
-      if (await options.files.exists(target)) {
-        throw new DustbinWorkspaceError(
-          "conflict",
-          `workspace already in dustbin: ${id}`,
+      const targetExistsResult = await options.files.exists(target)
+      if (isError(targetExistsResult)) return targetExistsResult
+      if (targetExistsResult.value) {
+        return err(
+          makeDatabaseError({
+            type: "workspace-already-in-dustbin",
+            message: `workspace already in dustbin: ${id}`,
+            info: { workspaceId: id },
+          }),
         )
       }
 
-      await options.files.ensureDir(dustbinWorkspacesRoot)
-      await options.files.rename(workspaceDir(id), target)
+      const ensureResult = await options.files.ensureDir(dustbinWorkspacesRoot)
+      if (isError(ensureResult)) return ensureResult
+
+      const renameResult = await options.files.rename(workspaceDir(id), target)
+      if (isError(renameResult)) return renameResult
 
       const dustbinWorkspace: DustbinWorkspace = {
-        ...workspace,
+        ...workspaceResult.value,
         deletedAt: Date.now(),
       }
 
-      try {
-        await options.files.writeJsonFile(
-          dustbinWorkspaceIndexPath(id),
-          dustbinWorkspace,
-        )
-      } catch (error) {
-        await options.files
-          .rename(target, workspaceDir(id))
-          .catch(() => undefined)
-        throw error
+      const writeResult = await options.files.writeJsonFile(
+        dustbinWorkspaceIndexPath(id),
+        dustbinWorkspace,
+      )
+      if (isError(writeResult)) {
+        await options.files.rename(target, workspaceDir(id))
+        return writeResult
       }
+
+      return ok(undefined)
     },
 
     async restore(id) {
-      assertId(id)
+      const idResult = validateId(id)
+      if (isError(idResult)) return idResult
 
-      const workspace = await readDustbinWorkspace(id)
-      if (workspace === undefined) {
-        throw new DustbinWorkspaceError(
-          "not-found",
-          `workspace not found in dustbin: ${id}`,
+      const workspaceResult = await readDustbinWorkspace(id)
+      if (isError(workspaceResult)) return workspaceResult
+      if (workspaceResult.value === undefined) {
+        return err(
+          makeDatabaseError({
+            type: "workspace-not-in-dustbin",
+            message: `workspace not found in dustbin: ${id}`,
+            info: { workspaceId: id },
+          }),
         )
       }
 
       const target = workspaceDir(id)
-      if (await options.files.exists(target)) {
-        throw new DustbinWorkspaceError(
-          "conflict",
-          `workspace already exists: ${id}`,
+      const targetExistsResult = await options.files.exists(target)
+      if (isError(targetExistsResult)) return targetExistsResult
+      if (targetExistsResult.value) {
+        return err(
+          makeDatabaseError({
+            type: "workspace-already-exists",
+            message: `workspace already exists: ${id}`,
+            info: { workspaceId: id },
+          }),
         )
       }
 
-      await options.files.ensureDir(workspacesRoot)
-      await options.files.rename(dustbinWorkspaceDir(id), target)
+      const ensureResult = await options.files.ensureDir(workspacesRoot)
+      if (isError(ensureResult)) return ensureResult
+
+      const renameResult = await options.files.rename(
+        dustbinWorkspaceDir(id),
+        target,
+      )
+      if (isError(renameResult)) return renameResult
 
       const restoredWorkspace: Workspace = {
-        id: workspace.id,
-        name: workspace.name,
-        root: workspace.root,
-        createdAt: workspace.createdAt,
-        updatedAt: workspace.updatedAt,
+        id: workspaceResult.value.id,
+        name: workspaceResult.value.name,
+        root: workspaceResult.value.root,
+        createdAt: workspaceResult.value.createdAt,
+        updatedAt: workspaceResult.value.updatedAt,
       }
 
-      try {
-        await options.files.writeJsonFile(
-          workspaceIndexPath(id),
-          restoredWorkspace,
-        )
-      } catch (error) {
-        await options.files
-          .rename(target, dustbinWorkspaceDir(id))
-          .catch(() => undefined)
-        throw error
+      const writeResult = await options.files.writeJsonFile(
+        workspaceIndexPath(id),
+        restoredWorkspace,
+      )
+      if (isError(writeResult)) {
+        await options.files.rename(target, dustbinWorkspaceDir(id))
+        return writeResult
       }
+
+      return ok(undefined)
     },
 
     async remove(id) {
-      assertId(id)
-      await options.files.remove(dustbinWorkspaceDir(id))
+      const idResult = validateId(id)
+      if (isError(idResult)) return idResult
+
+      return await options.files.remove(dustbinWorkspaceDir(id))
     },
   }
 }

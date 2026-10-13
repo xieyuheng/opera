@@ -4,6 +4,6 @@ export function JsonDataSchema<T>(): z.ZodType<T> {
   return z.custom<T>(() => true)
 }
 
-export const VoidSchema = z
+export const VoidSchema: z.ZodType<void> = z
   .null()
-  .transform((): void => undefined) as unknown as z.ZodType<void>
+  .transform((): void => undefined)

@@ -3,6 +3,7 @@ import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
+import { unwrap } from "@windbell/std.js/result"
 import { makeNodeDatabase } from "../node/makeNodeDatabase.ts"
 import { setDefaultProvider } from "./setDefaultProvider.ts"
 
@@ -16,7 +17,7 @@ test("setDefaultProvider writes settings.defaultProvider", async () => {
 
     await setDefaultProvider(database, "deepseek")
 
-    assert.deepEqual(await database.settings.get(), {
+    assert.deepEqual(unwrap(await database.settings.get()), {
       defaultProvider: "deepseek",
       themeId: null,
     })

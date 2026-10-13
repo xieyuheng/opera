@@ -9,6 +9,7 @@ import { makeAgentFromSession } from "../session/index.ts"
 import type { ToolRouter } from "../tool/index.ts"
 import type { Workspace } from "../workspace/Workspace.ts"
 import { readOptionalOption } from "./options.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 export async function makeModelFromOptions(options: {
   database: Database
@@ -17,7 +18,7 @@ export async function makeModelFromOptions(options: {
   const providerOption = readOptionalOption(options.cliOptions, "--provider")
   const modelOption = readOptionalOption(options.cliOptions, "--model")
 
-  const settings = await options.database.settings.get()
+  const settings = unwrap(await options.database.settings.get())
   const providerName = providerOption ?? settings?.defaultProvider
 
   if (providerName === undefined || providerName === null) {
@@ -56,10 +57,12 @@ export async function ensureWorkspace(options: {
 }): Promise<Workspace> {
   const root = Path.resolve(options.cwd)
 
-  return await options.database.workspaces.ensure({
-    name: workspaceNameFromRoot(root),
-    root,
-  })
+  return unwrap(
+    await options.database.workspaces.ensure({
+      name: workspaceNameFromRoot(root),
+      root,
+    }),
+  )
 }
 
 export async function makeAgentForCli(options: {

@@ -1,8 +1,10 @@
 import type { Path } from "@windbell/std.js/path"
+import { err, isError, ok, type Result } from "@windbell/std.js/result"
 import type { ProviderConfig } from "../provider/index.ts"
 import { parseProviderConfig } from "../provider/index.ts"
+import { makeDatabaseError, type DatabaseError } from "./DatabaseError.ts"
 import type { FileStore } from "./FileStore.ts"
-import { assertId, isValidId } from "./id.ts"
+import { isValidId, validateId } from "./id.ts"
 
 export type ProviderStoreOptions = {
   files: FileStore
@@ -11,10 +13,15 @@ export type ProviderStoreOptions = {
 }
 
 export type ProviderStore = {
-  get(providerName: string): Promise<ProviderConfig | undefined>
-  put(providerName: string, value: ProviderConfig): Promise<void>
-  list(): Promise<Array<string>>
-  remove(providerName: string): Promise<void>
+  get(
+    providerName: string,
+  ): Promise<Result<ProviderConfig | undefined, DatabaseError>>
+  put(
+    providerName: string,
+    value: ProviderConfig,
+  ): Promise<Result<void, DatabaseError>>
+  list(): Promise<Result<Array<string>, DatabaseError>>
+  remove(providerName: string): Promise<Result<void, DatabaseError>>
 }
 
 export function makeProviderStore(
@@ -32,44 +39,65 @@ export function makeProviderStore(
 
   const store: ProviderStore = {
     async get(providerName) {
-      assertId(providerName)
+      const idResult = validateId(providerName)
+      if (isError(idResult)) return idResult
 
-      const value = await options.files.readJsonFile(providerPath(providerName))
-      if (value === undefined) return undefined
+      const valueResult = await options.files.readJsonFile(
+        providerPath(providerName),
+      )
+      if (isError(valueResult)) return valueResult
+      if (valueResult.value === undefined) return ok(undefined)
 
-      return parseProviderConfig(value)
+      return ok(parseProviderConfig(valueResult.value))
     },
 
     async put(providerName, value) {
-      assertId(providerName)
+      const idResult = validateId(providerName)
+      if (isError(idResult)) return idResult
 
       if (value.name !== providerName) {
-        throw new Error(
-          `[ProviderStore] provider name mismatch: expected ${providerName}, got ${value.name}`,
+        return err(
+          makeDatabaseError({
+            type: "provider-name-mismatch",
+            message: `provider name mismatch: expected ${providerName}, got ${value.name}`,
+            info: { providerName, actual: value.name },
+          }),
         )
       }
 
-      await options.files.writeJsonFile(providerPath(providerName), value)
+      return await options.files.writeJsonFile(
+        providerPath(providerName),
+        value,
+      )
     },
 
     async list() {
-      const directoryNames = await options.files.listDirectories(root)
+      const directoryNamesResult = await options.files.listDirectories(root)
+      if (isError(directoryNamesResult)) return directoryNamesResult
+
       const providerNames: Array<string> = []
 
-      for (const providerName of directoryNames) {
+      for (const providerName of directoryNamesResult.value) {
         if (!isValidId(providerName)) continue
-        if (!(await options.files.exists(providerPath(providerName)))) continue
+
+        const existsResult = await options.files.exists(
+          providerPath(providerName),
+        )
+        if (isError(existsResult)) return existsResult
+        if (!existsResult.value) continue
 
         providerNames.push(providerName)
       }
 
       providerNames.sort()
-      return providerNames
+      return ok(providerNames)
     },
 
     async remove(providerName) {
-      assertId(providerName)
-      await options.files.remove(providerDir(providerName))
+      const idResult = validateId(providerName)
+      if (isError(idResult)) return idResult
+
+      return await options.files.remove(providerDir(providerName))
     },
   }
 

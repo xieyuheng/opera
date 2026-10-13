@@ -1,3 +1,4 @@
+import { makeServiceError } from "@windbell/semiosis.js"
 import { err, ok } from "@windbell/std.js/result"
 import { z } from "zod"
 import { makeAction } from "../http/makeAction.ts"
@@ -37,74 +38,100 @@ export const RemoveThemeInputSchema = z.object({
 export function makeThemeController(options: ThemeControllerOptions) {
   return {
     list: makeAction(z.object({}), async () => {
-      return ok(await options.store.list())
+      try {
+        return ok(await options.store.list())
+      } catch (error) {
+        return err(unknownServiceError(error))
+      }
     }),
 
     get: makeAction(GetThemeInputSchema, async (input) => {
-      const theme = await options.store.get(input.themeId)
-
-      if (theme === undefined) {
-        return err({
-          type: "theme-not-found",
-          status: 404,
-          message: "theme not found",
-          info: { themeId: input.themeId },
-        })
+      try {
+        const theme = await options.store.get(input.themeId)
+        if (theme === undefined) {
+          return err(
+            makeServiceError({
+              type: "theme-not-found",
+              message: "theme not found",
+              info: { themeId: input.themeId },
+            }),
+          )
+        }
+        return ok(theme)
+      } catch (error) {
+        return err(unknownServiceError(error))
       }
-
-      return ok(theme)
     }),
 
     create: makeAction(
       ThemeInputSchema,
       async (input) => {
-        return ok(await options.store.create(input))
+        try {
+          return ok(await options.store.create(input))
+        } catch (error) {
+          return err(unknownServiceError(error))
+        }
       },
       { status: 201 },
     ),
 
     put: makeAction(PutThemeInputSchema, async (input) => {
-      const current = await options.store.get(input.themeId)
+      try {
+        const current = await options.store.get(input.themeId)
+        if (current === undefined) {
+          return err(
+            makeServiceError({
+              type: "theme-not-found",
+              message: "theme not found",
+              info: { themeId: input.themeId },
+            }),
+          )
+        }
 
-      if (current === undefined) {
-        return err({
-          type: "theme-not-found",
-          status: 404,
-          message: "theme not found",
-          info: { themeId: input.themeId },
-        })
+        const theme: Theme = {
+          id: input.themeId,
+          name: input.theme.name,
+          colors: input.theme.colors,
+          createdAt: current.createdAt,
+          updatedAt: Date.now(),
+        }
+
+        await options.store.put(theme)
+        return ok(theme)
+      } catch (error) {
+        return err(unknownServiceError(error))
       }
-
-      const theme: Theme = {
-        id: input.themeId,
-        name: input.theme.name,
-        colors: input.theme.colors,
-        createdAt: current.createdAt,
-        updatedAt: Date.now(),
-      }
-
-      await options.store.put(theme)
-      return ok(theme)
     }),
 
     remove: makeAction(
       RemoveThemeInputSchema,
       async (input) => {
-        const current = await options.store.get(input.themeId)
+        try {
+          const current = await options.store.get(input.themeId)
+          if (current === undefined) {
+            return err(
+              makeServiceError({
+                type: "theme-not-found",
+                message: "theme not found",
+                info: { themeId: input.themeId },
+              }),
+            )
+          }
 
-        if (current === undefined) {
-          return err({
-            type: "theme-not-found",
-            status: 404,
-            message: "theme not found",
-            info: { themeId: input.themeId },
-          })
+          await options.store.remove(input.themeId)
+          return ok(null)
+        } catch (error) {
+          return err(unknownServiceError(error))
         }
-
-        await options.store.remove(input.themeId)
-        return ok(null)
       },
       { status: 204 },
     ),
   }
+}
+
+function unknownServiceError(error: unknown) {
+  return makeServiceError({
+    type: "unknown",
+    message: error instanceof Error ? error.message : String(error),
+  })
 }

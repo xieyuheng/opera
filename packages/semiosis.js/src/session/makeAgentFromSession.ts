@@ -6,6 +6,7 @@ import { assertSessionShellName } from "../tools/assertSessionShellName.ts"
 import type { Workspace } from "../workspace/Workspace.ts"
 import type { Session, SessionId } from "./Session.ts"
 import { makeSessionContext } from "./makeSessionContext.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 export type MakeAgentFromSessionOptions = {
   database: Database
@@ -21,14 +22,16 @@ export type MakeAgentFromSessionOptions = {
 export async function makeAgentFromSession(
   options: MakeAgentFromSessionOptions,
 ): Promise<Agent> {
-  const session = await options.database.sessions.get(options.sessionId)
+  const session = unwrap(await options.database.sessions.get(options.sessionId))
   if (session === undefined) {
     throw new Error(
       `[makeAgentFromSession] session not found: ${options.sessionId}`,
     )
   }
 
-  const workspace = await options.database.workspaces.get(session.workspaceId)
+  const workspace = unwrap(
+    await options.database.workspaces.get(session.workspaceId),
+  )
   if (workspace === undefined) {
     throw new Error(
       `[makeAgentFromSession] workspace not found: ${session.workspaceId}`,

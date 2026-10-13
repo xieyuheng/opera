@@ -1,3 +1,5 @@
+import { err, isError, ok, type Result } from "@windbell/std.js/result"
+import { makeDatabaseError, type DatabaseError } from "./DatabaseError.ts"
 import type { Database } from "./Database.ts"
 import { assertId } from "./id.ts"
 
@@ -9,43 +11,63 @@ export function apiKeyPath(database: Database, providerName: string): string {
 export async function readApiKey(
   database: Database,
   providerName: string,
-): Promise<string> {
-  const value = await database.files.readTextFile(
+): Promise<Result<string, DatabaseError>> {
+  const valueResult = await database.files.readTextFile(
     apiKeyPath(database, providerName),
   )
-  if (value === undefined) {
-    throw new Error(`[readApiKey] api key not found: ${providerName}`)
+  if (isError(valueResult)) return valueResult
+  if (valueResult.value === undefined) {
+    return err(
+      makeDatabaseError({
+        type: "api-key-not-found",
+        message: `api key not found: ${providerName}`,
+        info: { providerName },
+      }),
+    )
   }
 
-  const key = value.trim()
+  const key = valueResult.value.trim()
   if (key === "") {
-    throw new Error(`[readApiKey] api key is empty: ${providerName}`)
+    return err(
+      makeDatabaseError({
+        type: "api-key-empty",
+        message: `api key is empty: ${providerName}`,
+        info: { providerName },
+      }),
+    )
   }
 
-  return key
+  return ok(key)
 }
 
 export async function hasApiKey(
   database: Database,
   providerName: string,
-): Promise<boolean> {
-  const value = await database.files.readTextFile(
+): Promise<Result<boolean, DatabaseError>> {
+  const valueResult = await database.files.readTextFile(
     apiKeyPath(database, providerName),
   )
-  return value !== undefined && value.trim() !== ""
+  if (isError(valueResult)) return valueResult
+  return ok(valueResult.value !== undefined && valueResult.value.trim() !== "")
 }
 
 export async function writeApiKey(
   database: Database,
   providerName: string,
   key: string,
-): Promise<void> {
+): Promise<Result<void, DatabaseError>> {
   const value = key.trim()
   if (value === "") {
-    throw new Error(`[writeApiKey] api key is empty: ${providerName}`)
+    return err(
+      makeDatabaseError({
+        type: "api-key-empty",
+        message: `api key is empty: ${providerName}`,
+        info: { providerName },
+      }),
+    )
   }
 
-  await database.files.writeTextFile(
+  return await database.files.writeTextFile(
     apiKeyPath(database, providerName),
     `${value}\n`,
   )
@@ -54,10 +76,13 @@ export async function writeApiKey(
 export async function deleteApiKey(
   database: Database,
   providerName: string,
-): Promise<boolean> {
+): Promise<Result<boolean, DatabaseError>> {
   const path = apiKeyPath(database, providerName)
-  if (!(await database.files.exists(path))) return false
+  const existsResult = await database.files.exists(path)
+  if (isError(existsResult)) return existsResult
+  if (!existsResult.value) return ok(false)
 
-  await database.files.remove(path)
-  return true
+  const removeResult = await database.files.remove(path)
+  if (isError(removeResult)) return removeResult
+  return ok(true)
 }

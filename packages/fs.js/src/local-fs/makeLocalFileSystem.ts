@@ -12,10 +12,10 @@ import type {
   FileSystemWatchEvent,
   FileType,
 } from "../fs/index.ts"
-import type { FileSystemError } from "../fs/index.ts"
+import type { FileSystemError, FileSystemErrorType } from "../fs/index.ts"
 import { err, isError, ok, type Result } from "@windbell/std.js/result"
 
-const errorTypeByCode: Record<string, string> = {
+const errorTypeByCode: Record<string, FileSystemErrorType> = {
   ENOENT: "not-found",
   EACCES: "permission-denied",
   EPERM: "permission-denied",
@@ -650,7 +650,7 @@ function toFileSystemError(
   return fileSystemError
 }
 
-function errorTypeFromError(error: unknown): string {
+function errorTypeFromError(error: unknown): FileSystemErrorType {
   if (error instanceof Error && error.name === "AbortError") {
     return "aborted"
   }

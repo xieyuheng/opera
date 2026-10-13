@@ -3,6 +3,7 @@ import type { Database } from "../../database/index.ts"
 import { hasApiKey } from "../../database/index.ts"
 import { readProviderConfig } from "../../provider/index.ts"
 import { providerNames } from "../../providers/providerNames.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 export type ProviderListCommandOptions = {
   database: Database
@@ -10,7 +11,7 @@ export type ProviderListCommandOptions = {
 
 export function makeProviderListHandler(options: ProviderListCommandOptions) {
   return async (_context: Cli.HandlerContext) => {
-    const settings = await options.database.settings.get()
+    const settings = unwrap(await options.database.settings.get())
     const defaultProvider = settings?.defaultProvider
 
     for (const providerName of providerNames) {
@@ -18,7 +19,9 @@ export function makeProviderListHandler(options: ProviderListCommandOptions) {
         options.database,
         providerName,
       )
-      const apiKeyConfigured = await hasApiKey(options.database, providerName)
+      const apiKeyConfigured = unwrap(
+        await hasApiKey(options.database, providerName),
+      )
       const defaultSuffix = providerName === defaultProvider ? " (default)" : ""
 
       console.log(`${providerName}${defaultSuffix}`)

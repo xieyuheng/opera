@@ -1,3 +1,4 @@
+export * from "./DatabaseError.ts"
 export * from "./Database.ts"
 export * from "./DustbinSessionStore.ts"
 export * from "./DustbinWorkspaceStore.ts"

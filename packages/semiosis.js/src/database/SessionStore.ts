@@ -1,10 +1,12 @@
 import type { Path } from "@windbell/std.js/path"
+import { err, isError, ok, type Result } from "@windbell/std.js/result"
 import type { Session, SessionId, SessionIndex } from "../session/Session.ts"
 import type { Turn, TurnId } from "../turn/index.ts"
 import type { Sign } from "../sign/index.ts"
 import type { WorkspaceId } from "../workspace/Workspace.ts"
+import { makeDatabaseError, type DatabaseError } from "./DatabaseError.ts"
 import type { FileStore } from "./FileStore.ts"
-import { assertId, isValidId, makeId } from "./id.ts"
+import { isValidId, makeId, validateId } from "./id.ts"
 import {
   formatSignFileName,
   parseSign,
@@ -29,22 +31,30 @@ export type ListSessionOptions = {
 }
 
 export type SessionStore = {
-  make(options: MakeSessionOptions): Promise<Session>
-  get(id: SessionId): Promise<Session | undefined>
-  list(options: ListSessionOptions): Promise<Array<SessionIndex>>
-  put(session: Session): Promise<void>
-  appendSign(id: SessionId, sign: Sign): Promise<number>
-  nextSignSequence(id: SessionId): Promise<number>
+  make(options: MakeSessionOptions): Promise<Result<Session, DatabaseError>>
+  get(id: SessionId): Promise<Result<Session | undefined, DatabaseError>>
+  list(
+    options: ListSessionOptions,
+  ): Promise<Result<Array<SessionIndex>, DatabaseError>>
+  put(session: Session): Promise<Result<void, DatabaseError>>
+  appendSign(id: SessionId, sign: Sign): Promise<Result<number, DatabaseError>>
+  nextSignSequence(id: SessionId): Promise<Result<number, DatabaseError>>
   sliceContextBySequence(
     id: SessionId,
     startSequence: number,
     endSequence: number,
-  ): Promise<Array<Sign>>
-  getTurn(sessionId: SessionId, turnId: TurnId): Promise<Turn | undefined>
-  putTurn(turn: Turn): Promise<void>
-  listTurns(sessionId: SessionId): Promise<Array<Turn>>
-  updateTitle(id: SessionId, title: string): Promise<void>
-  remove(id: SessionId): Promise<void>
+  ): Promise<Result<Array<Sign>, DatabaseError>>
+  getTurn(
+    sessionId: SessionId,
+    turnId: TurnId,
+  ): Promise<Result<Turn | undefined, DatabaseError>>
+  putTurn(turn: Turn): Promise<Result<void, DatabaseError>>
+  listTurns(sessionId: SessionId): Promise<Result<Array<Turn>, DatabaseError>>
+  updateTitle(
+    id: SessionId,
+    title: string,
+  ): Promise<Result<void, DatabaseError>>
+  remove(id: SessionId): Promise<Result<void, DatabaseError>>
 }
 
 export function makeSessionStore(options: SessionStoreOptions): SessionStore {
@@ -74,100 +84,122 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
 
   const readIndex = async (
     id: SessionId,
-  ): Promise<SessionIndex | undefined> => {
-    assertId(id)
+  ): Promise<Result<SessionIndex | undefined, DatabaseError>> => {
+    const idResult = validateId(id)
+    if (isError(idResult)) return idResult
 
-    const value = await options.files.readJsonFile(indexPath(id))
-    if (value === undefined) return undefined
+    const valueResult = await options.files.readJsonFile(indexPath(id))
+    if (isError(valueResult)) return valueResult
+    if (valueResult.value === undefined) return ok(undefined)
 
-    return value as SessionIndex
+    return ok(valueResult.value as SessionIndex)
   }
 
   const readContextEntries = async (
     id: SessionId,
-  ): Promise<Array<{ sequence: number; sign: Sign }>> => {
+  ): Promise<
+    Result<Array<{ sequence: number; sign: Sign }>, DatabaseError>
+  > => {
     const directory = contextDir(id)
-    const fileNames = await options.files.listFiles(directory)
+    const fileNamesResult = await options.files.listFiles(directory)
+    if (isError(fileNamesResult)) return fileNamesResult
+
     const entries: Array<{ sequence: number; sign: Sign }> = []
 
-    for (const fileName of fileNames) {
+    for (const fileName of fileNamesResult.value) {
       const info = parseSignFileName(fileName)
       if (info === undefined) continue
 
-      const text = await options.files.readTextFile(
+      const textResult = await options.files.readTextFile(
         paths.join(directory, fileName),
       )
-      if (text === undefined) continue
+      if (isError(textResult)) return textResult
+      if (textResult.value === undefined) continue
 
       entries.push({
         sequence: info.sequence,
-        sign: parseSign(fileName, text),
+        sign: parseSign(fileName, textResult.value),
       })
     }
 
     entries.sort((a, b) => a.sequence - b.sequence)
-    return entries
+    return ok(entries)
   }
 
-  const readContext = async (id: SessionId): Promise<Array<Sign>> => {
-    const entries = await readContextEntries(id)
-    return entries.map((entry) => entry.sign)
+  const readContext = async (
+    id: SessionId,
+  ): Promise<Result<Array<Sign>, DatabaseError>> => {
+    const entriesResult = await readContextEntries(id)
+    if (isError(entriesResult)) return entriesResult
+    return ok(entriesResult.value.map((entry) => entry.sign))
   }
 
-  const nextSignSequence = async (id: SessionId): Promise<number> => {
-    const fileNames = await options.files.listFiles(contextDir(id))
+  const nextSignSequenceInternal = async (
+    id: SessionId,
+  ): Promise<Result<number, DatabaseError>> => {
+    const fileNamesResult = await options.files.listFiles(contextDir(id))
+    if (isError(fileNamesResult)) return fileNamesResult
+
     let maxSequence = -1
 
-    for (const fileName of fileNames) {
+    for (const fileName of fileNamesResult.value) {
       const info = parseSignFileName(fileName)
       if (info !== undefined && info.sequence > maxSequence) {
         maxSequence = info.sequence
       }
     }
 
-    return maxSequence + 1
+    return ok(maxSequence + 1)
   }
 
   const store: SessionStore = {
-    async make(options) {
+    async make(makeOptions) {
       const now = Date.now()
       const session: Session = {
         id: makeId("session"),
-        workspaceId: options.workspaceId,
-        title: options.title,
+        workspaceId: makeOptions.workspaceId,
+        title: makeOptions.title,
         context: [],
         createdAt: now,
         updatedAt: now,
       }
 
-      await store.put(session)
-      return session
+      const putResult = await store.put(session)
+      if (isError(putResult)) return putResult
+      return ok(session)
     },
 
     async get(id) {
-      const index = await readIndex(id)
-      if (index === undefined) return undefined
+      const indexResult = await readIndex(id)
+      if (isError(indexResult)) return indexResult
+      if (indexResult.value === undefined) return ok(undefined)
 
-      const context = await readContext(id)
+      const contextResult = await readContext(id)
+      if (isError(contextResult)) return contextResult
 
-      return {
+      const index = indexResult.value
+      return ok({
         id: index.id,
         workspaceId: index.workspaceId,
         title: index.title,
-        context,
+        context: contextResult.value,
         createdAt: index.createdAt,
         updatedAt: index.updatedAt,
-      }
+      })
     },
 
     async list(listOptions) {
-      const ids = await options.files.listDirectories(root)
+      const idsResult = await options.files.listDirectories(root)
+      if (isError(idsResult)) return idsResult
+
       const indexes: Array<SessionIndex> = []
 
-      for (const id of ids) {
+      for (const id of idsResult.value) {
         if (!isValidId(id)) continue
 
-        const index = await readIndex(id)
+        const indexResult = await readIndex(id)
+        if (isError(indexResult)) return indexResult
+        const index = indexResult.value
         if (index === undefined) continue
 
         if (
@@ -183,15 +215,23 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
       indexes.sort(
         (a, b) => b.updatedAt - a.updatedAt || b.createdAt - a.createdAt,
       )
-      return indexes
+      return ok(indexes)
     },
 
     async put(session) {
-      assertId(session.id)
+      const idResult = validateId(session.id)
+      if (isError(idResult)) return idResult
 
-      await options.files.remove(contextDir(session.id))
-      await options.files.remove(turnsDir(session.id))
-      await options.files.ensureDir(contextDir(session.id))
+      const removeContextResult = await options.files.remove(
+        contextDir(session.id),
+      )
+      if (isError(removeContextResult)) return removeContextResult
+
+      const removeTurnsResult = await options.files.remove(turnsDir(session.id))
+      if (isError(removeTurnsResult)) return removeTurnsResult
+
+      const ensureResult = await options.files.ensureDir(contextDir(session.id))
+      if (isError(ensureResult)) return ensureResult
 
       const index: SessionIndex = {
         id: session.id,
@@ -201,116 +241,170 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
         updatedAt: session.updatedAt,
       }
 
-      await options.files.writeJsonFile(indexPath(session.id), index)
+      const writeIndexResult = await options.files.writeJsonFile(
+        indexPath(session.id),
+        index,
+      )
+      if (isError(writeIndexResult)) return writeIndexResult
 
       for (const [sequence, sign] of session.context.entries()) {
         const fileName = formatSignFileName(sequence, sign)
-        await options.files.writeTextFile(
+        const writeSignResult = await options.files.writeTextFile(
           paths.join(contextDir(session.id), fileName),
           serializeSign(sign),
         )
+        if (isError(writeSignResult)) return writeSignResult
       }
 
       await onSessionUpdated?.(index)
+      return ok(undefined)
     },
 
     async appendSign(id, sign) {
-      const index = await readIndex(id)
-      if (index === undefined) {
-        throw new Error(`[SessionStore] session not found: ${id}`)
+      const indexResult = await readIndex(id)
+      if (isError(indexResult)) return indexResult
+      if (indexResult.value === undefined) {
+        return err(
+          makeDatabaseError({
+            type: "session-not-found",
+            message: `session not found: ${id}`,
+            info: { sessionId: id },
+          }),
+        )
       }
 
-      const sequence = await nextSignSequence(id)
-      const fileName = formatSignFileName(sequence, sign)
+      const sequenceResult = await nextSignSequenceInternal(id)
+      if (isError(sequenceResult)) return sequenceResult
+      const sequence = sequenceResult.value
 
-      await options.files.writeTextFile(
+      const fileName = formatSignFileName(sequence, sign)
+      const writeSignResult = await options.files.writeTextFile(
         paths.join(contextDir(id), fileName),
         serializeSign(sign),
       )
+      if (isError(writeSignResult)) return writeSignResult
 
       const updatedIndex: SessionIndex = {
-        ...index,
+        ...indexResult.value,
         updatedAt: Date.now(),
       }
 
-      await options.files.writeJsonFile(indexPath(id), updatedIndex)
-      await onSessionUpdated?.(updatedIndex)
+      const writeIndexResult = await options.files.writeJsonFile(
+        indexPath(id),
+        updatedIndex,
+      )
+      if (isError(writeIndexResult)) return writeIndexResult
 
-      return sequence
+      await onSessionUpdated?.(updatedIndex)
+      return ok(sequence)
     },
 
-    nextSignSequence,
+    async nextSignSequence(id) {
+      return await nextSignSequenceInternal(id)
+    },
 
     async sliceContextBySequence(id, startSequence, endSequence) {
-      const entries = await readContextEntries(id)
+      const entriesResult = await readContextEntries(id)
+      if (isError(entriesResult)) return entriesResult
 
-      return entries
-        .filter(
-          (entry) =>
-            entry.sequence >= startSequence && entry.sequence < endSequence,
-        )
-        .map((entry) => entry.sign)
+      return ok(
+        entriesResult.value
+          .filter(
+            (entry) =>
+              entry.sequence >= startSequence && entry.sequence < endSequence,
+          )
+          .map((entry) => entry.sign),
+      )
     },
 
     async getTurn(sessionId, turnId) {
-      assertId(sessionId)
-      assertId(turnId)
+      const sessionIdResult = validateId(sessionId)
+      if (isError(sessionIdResult)) return sessionIdResult
 
-      const value = await options.files.readJsonFile(
+      const turnIdResult = validateId(turnId)
+      if (isError(turnIdResult)) return turnIdResult
+
+      const valueResult = await options.files.readJsonFile(
         turnPath(sessionId, turnId),
       )
-      if (value === undefined) return undefined
+      if (isError(valueResult)) return valueResult
+      if (valueResult.value === undefined) return ok(undefined)
 
-      return value as Turn
+      return ok(valueResult.value as Turn)
     },
 
     async putTurn(turn) {
-      assertId(turn.sessionId)
-      assertId(turn.id)
+      const sessionIdResult = validateId(turn.sessionId)
+      if (isError(sessionIdResult)) return sessionIdResult
 
-      await options.files.writeJsonFile(turnPath(turn.sessionId, turn.id), turn)
+      const turnIdResult = validateId(turn.id)
+      if (isError(turnIdResult)) return turnIdResult
+
+      return await options.files.writeJsonFile(
+        turnPath(turn.sessionId, turn.id),
+        turn,
+      )
     },
 
     async listTurns(sessionId) {
-      assertId(sessionId)
+      const sessionIdResult = validateId(sessionId)
+      if (isError(sessionIdResult)) return sessionIdResult
 
-      const fileNames = await options.files.listFiles(turnsDir(sessionId))
+      const fileNamesResult = await options.files.listFiles(turnsDir(sessionId))
+      if (isError(fileNamesResult)) return fileNamesResult
+
       const turns: Array<Turn> = []
 
-      for (const fileName of fileNames) {
+      for (const fileName of fileNamesResult.value) {
         if (!fileName.endsWith(".json")) continue
 
-        const value = await options.files.readJsonFile(
+        const valueResult = await options.files.readJsonFile(
           paths.join(turnsDir(sessionId), fileName),
         )
-        if (value === undefined) continue
+        if (isError(valueResult)) return valueResult
+        if (valueResult.value === undefined) continue
 
-        turns.push(value as Turn)
+        turns.push(valueResult.value as Turn)
       }
 
       turns.sort((a, b) => a.createdAt - b.createdAt)
-      return turns
+      return ok(turns)
     },
 
     async updateTitle(id, title) {
-      const index = await readIndex(id)
-      if (index === undefined) {
-        throw new Error(`[SessionStore] session not found: ${id}`)
+      const indexResult = await readIndex(id)
+      if (isError(indexResult)) return indexResult
+      if (indexResult.value === undefined) {
+        return err(
+          makeDatabaseError({
+            type: "session-not-found",
+            message: `session not found: ${id}`,
+            info: { sessionId: id },
+          }),
+        )
       }
 
       const updatedIndex: SessionIndex = {
-        ...index,
+        ...indexResult.value,
         title,
         updatedAt: Date.now(),
       }
 
-      await options.files.writeJsonFile(indexPath(id), updatedIndex)
+      const writeResult = await options.files.writeJsonFile(
+        indexPath(id),
+        updatedIndex,
+      )
+      if (isError(writeResult)) return writeResult
+
       await onSessionUpdated?.(updatedIndex)
+      return ok(undefined)
     },
 
     async remove(id) {
-      assertId(id)
-      await options.files.remove(sessionDir(id))
+      const idResult = validateId(id)
+      if (isError(idResult)) return idResult
+
+      return await options.files.remove(sessionDir(id))
     },
   }
 

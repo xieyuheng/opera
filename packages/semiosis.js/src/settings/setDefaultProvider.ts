@@ -1,5 +1,6 @@
 import type { Database } from "../database/index.ts"
 import { providerNames } from "../providers/providerNames.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 export async function setDefaultProvider(
   database: Database,
@@ -9,10 +10,12 @@ export async function setDefaultProvider(
     throw new Error(`unsupported provider: ${providerName}`)
   }
 
-  const settings = await database.settings.get()
+  const settings = unwrap(await database.settings.get())
 
-  await database.settings.put({
-    ...(settings ?? { defaultProvider: null, themeId: null }),
-    defaultProvider: providerName,
-  })
+  unwrap(
+    await database.settings.put({
+      ...(settings ?? { defaultProvider: null, themeId: null }),
+      defaultProvider: providerName,
+    }),
+  )
 }

@@ -1,6 +1,7 @@
 import type { Database } from "../../../database/index.ts"
 import { parseModelConfig } from "./parseModelConfig.ts"
 import { readModelConfigs } from "./readModelConfigs.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 export async function pinModel(
   database: Database,
@@ -20,7 +21,9 @@ export async function pinModel(
     configs[name] = { pinned: true }
   }
 
-  await database.files.writeJsonFile(modelConfigsPath(database), configs)
+  unwrap(
+    await database.files.writeJsonFile(modelConfigsPath(database), configs),
+  )
 }
 
 function modelConfigsPath(database: Database): string {

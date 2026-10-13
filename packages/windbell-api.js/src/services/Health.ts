@@ -1,5 +1,5 @@
+import type * as S from "@windbell/semiosis.js"
 import { ok, type Result } from "@windbell/std.js/result"
-import type { ServiceError } from "../errors/ServiceError.ts"
 
 export type WindbellHealth = {
   ok: boolean
@@ -7,7 +7,7 @@ export type WindbellHealth = {
 }
 
 export function GetHealth() {
-  return async (): Promise<Result<WindbellHealth, ServiceError>> => {
+  return async (): Promise<Result<WindbellHealth, S.ServiceError>> => {
     return ok({
       ok: true,
       service: "windbell-api",

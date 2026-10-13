@@ -1,4 +1,5 @@
 import type { Path } from "@windbell/std.js/path"
+import { err, isError, ok, type Result } from "@windbell/std.js/result"
 import type {
   DustbinSessionIndex,
   Session,
@@ -6,8 +7,9 @@ import type {
   SessionIndex,
 } from "../session/Session.ts"
 import type { WorkspaceId } from "../workspace/Workspace.ts"
+import { makeDatabaseError, type DatabaseError } from "./DatabaseError.ts"
 import type { FileStore } from "./FileStore.ts"
-import { assertId, isValidId } from "./id.ts"
+import { isValidId, validateId } from "./id.ts"
 import { makeSessionStore } from "./SessionStore.ts"
 
 export type DustbinSessionStoreOptions = {
@@ -26,23 +28,16 @@ export type TrashSessionOptions = {
 }
 
 export type DustbinSessionStore = {
-  get(sessionId: SessionId): Promise<Session | undefined>
-  trash(sessionId: SessionId, options?: TrashSessionOptions): Promise<void>
-  list(options: ListDustbinSessionOptions): Promise<Array<DustbinSessionIndex>>
-  restore(sessionId: SessionId): Promise<void>
-  remove(sessionId: SessionId): Promise<void>
-}
-
-export type DustbinSessionErrorCode = "not-found" | "conflict"
-
-export class DustbinSessionError extends Error {
-  code: DustbinSessionErrorCode
-
-  constructor(code: DustbinSessionErrorCode, message: string) {
-    super(message)
-    this.name = "DustbinSessionError"
-    this.code = code
-  }
+  get(sessionId: SessionId): Promise<Result<Session | undefined, DatabaseError>>
+  trash(
+    sessionId: SessionId,
+    options?: TrashSessionOptions,
+  ): Promise<Result<void, DatabaseError>>
+  list(
+    options: ListDustbinSessionOptions,
+  ): Promise<Result<Array<DustbinSessionIndex>, DatabaseError>>
+  restore(sessionId: SessionId): Promise<Result<void, DatabaseError>>
+  remove(sessionId: SessionId): Promise<Result<void, DatabaseError>>
 }
 
 export function makeDustbinSessionStore(
@@ -75,80 +70,107 @@ export function makeDustbinSessionStore(
 
   const readSessionIndex = async (
     id: SessionId,
-  ): Promise<SessionIndex | undefined> => {
-    assertId(id)
+  ): Promise<Result<SessionIndex | undefined, DatabaseError>> => {
+    const idResult = validateId(id)
+    if (isError(idResult)) return idResult
 
-    const value = await options.files.readJsonFile(sessionIndexPath(id))
-    if (value === undefined) return undefined
+    const valueResult = await options.files.readJsonFile(sessionIndexPath(id))
+    if (isError(valueResult)) return valueResult
+    if (valueResult.value === undefined) return ok(undefined)
 
-    return value as SessionIndex
+    return ok(valueResult.value as SessionIndex)
   }
 
   const readDustbinSessionIndex = async (
     id: SessionId,
-  ): Promise<DustbinSessionIndex | undefined> => {
-    assertId(id)
+  ): Promise<Result<DustbinSessionIndex | undefined, DatabaseError>> => {
+    const idResult = validateId(id)
+    if (isError(idResult)) return idResult
 
-    const value = await options.files.readJsonFile(dustbinSessionIndexPath(id))
-    if (value === undefined) return undefined
+    const valueResult = await options.files.readJsonFile(
+      dustbinSessionIndexPath(id),
+    )
+    if (isError(valueResult)) return valueResult
+    if (valueResult.value === undefined) return ok(undefined)
 
-    return value as DustbinSessionIndex
+    return ok(valueResult.value as DustbinSessionIndex)
   }
 
   return {
-    get: (sessionId) => sessionStore.get(sessionId),
+    async get(sessionId) {
+      return await sessionStore.get(sessionId)
+    },
 
     async trash(sessionId, trashOptions) {
-      assertId(sessionId)
+      const idResult = validateId(sessionId)
+      if (isError(idResult)) return idResult
 
-      const index = await readSessionIndex(sessionId)
-      if (index === undefined) {
-        throw new DustbinSessionError(
-          "not-found",
-          `session not found: ${sessionId}`,
+      const indexResult = await readSessionIndex(sessionId)
+      if (isError(indexResult)) return indexResult
+      if (indexResult.value === undefined) {
+        return err(
+          makeDatabaseError({
+            type: "session-not-found",
+            message: `session not found: ${sessionId}`,
+            info: { sessionId },
+          }),
         )
       }
 
       const target = dustbinSessionDir(sessionId)
-      if (await options.files.exists(target)) {
-        throw new DustbinSessionError(
-          "conflict",
-          `session already in dustbin: ${sessionId}`,
+      const targetExistsResult = await options.files.exists(target)
+      if (isError(targetExistsResult)) return targetExistsResult
+      if (targetExistsResult.value) {
+        return err(
+          makeDatabaseError({
+            type: "session-already-in-dustbin",
+            message: `session already in dustbin: ${sessionId}`,
+            info: { sessionId },
+          }),
         )
       }
 
-      await options.files.ensureDir(dustbinSessionsRoot)
-      await options.files.rename(sessionDir(sessionId), target)
+      const ensureResult = await options.files.ensureDir(dustbinSessionsRoot)
+      if (isError(ensureResult)) return ensureResult
+
+      const renameResult = await options.files.rename(
+        sessionDir(sessionId),
+        target,
+      )
+      if (isError(renameResult)) return renameResult
 
       const dustbinIndex: DustbinSessionIndex = {
-        ...index,
+        ...indexResult.value,
         deletedAt: Date.now(),
         ...(trashOptions?.trashedWithWorkspace === true
           ? { trashedWithWorkspace: true }
           : {}),
       }
 
-      try {
-        await options.files.writeJsonFile(
-          dustbinSessionIndexPath(sessionId),
-          dustbinIndex,
-        )
-      } catch (error) {
-        await options.files
-          .rename(target, sessionDir(sessionId))
-          .catch(() => undefined)
-        throw error
+      const writeResult = await options.files.writeJsonFile(
+        dustbinSessionIndexPath(sessionId),
+        dustbinIndex,
+      )
+      if (isError(writeResult)) {
+        await options.files.rename(target, sessionDir(sessionId))
+        return writeResult
       }
+
+      return ok(undefined)
     },
 
     async list(listOptions) {
-      const ids = await options.files.listDirectories(dustbinSessionsRoot)
+      const idsResult = await options.files.listDirectories(dustbinSessionsRoot)
+      if (isError(idsResult)) return idsResult
+
       const indexes: Array<DustbinSessionIndex> = []
 
-      for (const id of ids) {
+      for (const id of idsResult.value) {
         if (!isValidId(id)) continue
 
-        const index = await readDustbinSessionIndex(id)
+        const indexResult = await readDustbinSessionIndex(id)
+        if (isError(indexResult)) return indexResult
+        const index = indexResult.value
         if (index === undefined) continue
 
         if (typeof index.deletedAt !== "number") continue
@@ -164,55 +186,72 @@ export function makeDustbinSessionStore(
       }
 
       indexes.sort((a, b) => b.deletedAt - a.deletedAt)
-      return indexes
+      return ok(indexes)
     },
 
     async restore(sessionId) {
-      assertId(sessionId)
+      const idResult = validateId(sessionId)
+      if (isError(idResult)) return idResult
 
-      const index = await readDustbinSessionIndex(sessionId)
-      if (index === undefined) {
-        throw new DustbinSessionError(
-          "not-found",
-          `session not found in dustbin: ${sessionId}`,
+      const indexResult = await readDustbinSessionIndex(sessionId)
+      if (isError(indexResult)) return indexResult
+      if (indexResult.value === undefined) {
+        return err(
+          makeDatabaseError({
+            type: "session-not-in-dustbin",
+            message: `session not found in dustbin: ${sessionId}`,
+            info: { sessionId },
+          }),
         )
       }
 
       const target = sessionDir(sessionId)
-      if (await options.files.exists(target)) {
-        throw new DustbinSessionError(
-          "conflict",
-          `session already exists: ${sessionId}`,
+      const targetExistsResult = await options.files.exists(target)
+      if (isError(targetExistsResult)) return targetExistsResult
+      if (targetExistsResult.value) {
+        return err(
+          makeDatabaseError({
+            type: "session-already-in-dustbin",
+            message: `session already exists: ${sessionId}`,
+            info: { sessionId },
+          }),
         )
       }
 
-      await options.files.ensureDir(sessionsRoot)
-      await options.files.rename(dustbinSessionDir(sessionId), target)
+      const ensureResult = await options.files.ensureDir(sessionsRoot)
+      if (isError(ensureResult)) return ensureResult
+
+      const renameResult = await options.files.rename(
+        dustbinSessionDir(sessionId),
+        target,
+      )
+      if (isError(renameResult)) return renameResult
 
       const restoredIndex: SessionIndex = {
-        id: index.id,
-        workspaceId: index.workspaceId,
-        title: index.title,
-        createdAt: index.createdAt,
-        updatedAt: index.updatedAt,
+        id: indexResult.value.id,
+        workspaceId: indexResult.value.workspaceId,
+        title: indexResult.value.title,
+        createdAt: indexResult.value.createdAt,
+        updatedAt: indexResult.value.updatedAt,
       }
 
-      try {
-        await options.files.writeJsonFile(
-          sessionIndexPath(sessionId),
-          restoredIndex,
-        )
-      } catch (error) {
-        await options.files
-          .rename(target, dustbinSessionDir(sessionId))
-          .catch(() => undefined)
-        throw error
+      const writeResult = await options.files.writeJsonFile(
+        sessionIndexPath(sessionId),
+        restoredIndex,
+      )
+      if (isError(writeResult)) {
+        await options.files.rename(target, dustbinSessionDir(sessionId))
+        return writeResult
       }
+
+      return ok(undefined)
     },
 
     async remove(sessionId) {
-      assertId(sessionId)
-      await options.files.remove(dustbinSessionDir(sessionId))
+      const idResult = validateId(sessionId)
+      if (isError(idResult)) return idResult
+
+      return await options.files.remove(dustbinSessionDir(sessionId))
     },
   }
 }

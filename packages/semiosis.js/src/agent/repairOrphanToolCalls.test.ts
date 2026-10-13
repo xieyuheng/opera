@@ -24,6 +24,7 @@ import {
   type AgentInterpretEvent,
 } from "./agentInterpret.ts"
 import { repairOrphanToolCalls } from "./repairOrphanToolCalls.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 const emptyObjectSchema = {
   type: "object",
@@ -206,22 +207,28 @@ test("agentInterpret repairs persisted orphan tool calls and yields input", asyn
 
   try {
     const database = makeNodeDatabase({ root })
-    const workspace = await database.workspaces.make({
-      name: "test",
-      root: Path.join(root, "workspace"),
-    })
-    const session = await database.sessions.make({
-      workspaceId: workspace.id,
-      title: "test",
-    })
-
-    await database.sessions.appendSign(
-      session.id,
-      ToolCallSign({
-        callId: "call-orphan",
-        name: "bash",
-        arguments: '{"command":"pwd"}',
+    const workspace = unwrap(
+      await database.workspaces.make({
+        name: "test",
+        root: Path.join(root, "workspace"),
       }),
+    )
+    const session = unwrap(
+      await database.sessions.make({
+        workspaceId: workspace.id,
+        title: "test",
+      }),
+    )
+
+    unwrap(
+      await database.sessions.appendSign(
+        session.id,
+        ToolCallSign({
+          callId: "call-orphan",
+          name: "bash",
+          arguments: '{"command":"pwd"}',
+        }),
+      ),
     )
 
     let interpretedContext: Array<Sign> = []
@@ -237,7 +244,7 @@ test("agentInterpret repairs persisted orphan tool calls and yields input", asyn
       makeToolRouter: () => makeToolRouter(),
     })
 
-    const before = await database.sessions.get(session.id)
+    const before = unwrap(await database.sessions.get(session.id))
     assert.deepEqual(
       before?.context.map((sign) => sign.kind),
       ["ToolCallSign"],
@@ -256,7 +263,7 @@ test("agentInterpret repairs persisted orphan tool calls and yields input", asyn
       ["ToolCallSign", "ToolOutputSign", "UserSign"],
     )
 
-    const loaded = await database.sessions.get(session.id)
+    const loaded = unwrap(await database.sessions.get(session.id))
     assert.deepEqual(
       loaded?.context.map((sign) => sign.kind),
       ["ToolCallSign", "ToolOutputSign", "UserSign"],

@@ -1,9 +1,12 @@
 import type { Database } from "../../../database/index.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 export async function readModelConfigs(
   database: Database,
 ): Promise<Record<string, unknown>> {
-  const value = await database.files.readJsonFile(modelConfigsPath(database))
+  const value = unwrap(
+    await database.files.readJsonFile(modelConfigsPath(database)),
+  )
   if (value === undefined) return {}
 
   if (typeof value !== "object" || value === null || value instanceof Array) {

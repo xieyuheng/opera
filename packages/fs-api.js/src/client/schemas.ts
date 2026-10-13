@@ -3,6 +3,7 @@ import type { Json, JsonObject } from "@windbell/std.js/json"
 import type {
   FileSystemEntry,
   FileSystemError,
+  FileSystemErrorType,
   FileType,
 } from "@windbell/fs.js/fs"
 import type { Result } from "@windbell/std.js/result"
@@ -36,8 +37,31 @@ export const FileSystemStatSchema = z.object({
   mtimeMs: z.number(),
 })
 
-export const FileSystemErrorSchema: z.ZodType<FileSystemError> = z.object({
-  type: z.string(),
+const fileSystemErrorTypes = [
+  "aborted",
+  "not-found",
+  "permission-denied",
+  "read-only",
+  "already-exists",
+  "directory-not-empty",
+  "busy",
+  "not-a-directory",
+  "not-a-file",
+  "is-a-directory",
+  "invalid-path",
+  "no-space",
+  "too-many-open-files",
+  "cross-device",
+  "too-many-symbolic-links",
+  "http-error",
+  "invalid-response",
+  "unknown",
+] as const satisfies readonly FileSystemErrorType[]
+
+export const FileSystemErrorTypeSchema = z.enum(fileSystemErrorTypes)
+
+export const FileSystemErrorSchema = z.object({
+  type: FileSystemErrorTypeSchema,
   who: z.string(),
   message: z.string(),
   info: JsonObjectSchema.optional(),
@@ -54,7 +78,7 @@ export function ResultSchema<T>(
   return z.discriminatedUnion("kind", [
     z.object({ kind: z.literal("OkResult"), value }),
     z.object({ kind: z.literal("ErrorResult"), error: FileSystemErrorSchema }),
-  ]) as z.ZodType<Result<T, FileSystemError>>
+  ])
 }
 
 export const StringSchema = z.string()

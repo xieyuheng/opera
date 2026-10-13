@@ -1,5 +1,6 @@
 import type { LockService } from "@windbell/lock.js/lock"
 import type { Shell } from "@windbell/sh.js/sh"
+import { err, isError, ok, unwrap, type Result } from "@windbell/std.js/result"
 import type { Database } from "../database/Database.ts"
 import { makeModel } from "../models/makeModel.ts"
 import { PersonaSign, type Sign } from "../sign/index.ts"
@@ -12,18 +13,26 @@ import { turnReplay } from "../turn/turnReplay.ts"
 import { turnRun } from "../turn/turnRun.ts"
 import type { TurnEvent } from "../turn/TurnEvent.ts"
 import type { Workspace, WorkspaceId } from "../workspace/Workspace.ts"
+import {
+  makeServiceError,
+  makeServiceErrorFromDatabaseError,
+  type ServiceError,
+} from "./ServiceError.ts"
 
 export type SessionService = {
   list(options: {
     workspaceId: WorkspaceId | undefined
-  }): Promise<Array<SessionIndex>>
-  make(options: { workspaceId: WorkspaceId; title: string }): Promise<Session>
-  get(id: SessionId): Promise<Session | undefined>
-  put(session: Session): Promise<void>
+  }): Promise<Result<Array<SessionIndex>, ServiceError>>
+  make(options: {
+    workspaceId: WorkspaceId
+    title: string
+  }): Promise<Result<Session, ServiceError>>
+  get(id: SessionId): Promise<Result<Session | undefined, ServiceError>>
+  put(session: Session): Promise<Result<void, ServiceError>>
   generateTitle(options: {
     sessionId: SessionId
     model: { providerName: string; name: string }
-  }): Promise<string>
+  }): Promise<Result<string, ServiceError>>
   interpret(options: {
     sessionId: SessionId
     model: { providerName: string; name: string }
@@ -31,7 +40,7 @@ export type SessionService = {
     input: Array<Sign>
     signal?: AbortSignal
   }): AsyncIterable<TurnEvent>
-  remove(id: SessionId): Promise<void>
+  remove(id: SessionId): Promise<Result<void, ServiceError>>
 }
 
 export type SessionServiceOptions = {
@@ -100,12 +109,14 @@ export function makeSessionService(
   async function* interpretUnlocked(
     interpretOptions: Parameters<SessionService["interpret"]>[0],
   ): AsyncGenerator<TurnEvent> {
-    const session = await database.sessions.get(interpretOptions.sessionId)
+    const session = unwrap(
+      await database.sessions.get(interpretOptions.sessionId),
+    )
     if (session === undefined) {
       throw new Error(`session not found: ${interpretOptions.sessionId}`)
     }
 
-    const workspace = await database.workspaces.get(session.workspaceId)
+    const workspace = unwrap(await database.workspaces.get(session.workspaceId))
     if (workspace === undefined) {
       throw new Error(`workspace not found: ${session.workspaceId}`)
     }
@@ -157,51 +168,121 @@ export function makeSessionService(
     })
   }
 
-  const sessions: SessionService = {
-    list: (listOptions) => database.sessions.list(listOptions),
-    get: (id) => database.sessions.get(id),
-    put: (session) => database.sessions.put(session),
-    remove: (id) => database.sessions.remove(id),
+  return {
+    async list(listOptions) {
+      const result = await database.sessions.list(listOptions)
+      if (isError(result)) {
+        return err(makeServiceErrorFromDatabaseError(result.error))
+      }
+      return ok(result.value)
+    },
+
+    async get(id) {
+      const result = await database.sessions.get(id)
+      if (isError(result)) {
+        return err(makeServiceErrorFromDatabaseError(result.error))
+      }
+      return ok(result.value)
+    },
+
+    async put(session) {
+      const result = await database.sessions.put(session)
+      if (isError(result)) {
+        return err(makeServiceErrorFromDatabaseError(result.error))
+      }
+      return ok(undefined)
+    },
+
+    async remove(id) {
+      const result = await database.sessions.remove(id)
+      if (isError(result)) {
+        return err(makeServiceErrorFromDatabaseError(result.error))
+      }
+      return ok(undefined)
+    },
 
     async make(makeOptions) {
-      const workspace = await database.workspaces.get(makeOptions.workspaceId)
-      if (workspace === undefined) {
-        throw new Error(`workspace not found: ${makeOptions.workspaceId}`)
+      const workspaceResult = await database.workspaces.get(
+        makeOptions.workspaceId,
+      )
+      if (isError(workspaceResult)) {
+        return err(makeServiceErrorFromDatabaseError(workspaceResult.error))
+      }
+      if (workspaceResult.value === undefined) {
+        return err(
+          makeServiceError({
+            type: "workspace-not-found",
+            message: "workspace not found",
+            info: { workspaceId: makeOptions.workspaceId },
+          }),
+        )
       }
 
-      const session = await database.sessions.make({
+      const sessionResult = await database.sessions.make({
         workspaceId: makeOptions.workspaceId,
         title: makeOptions.title,
       })
-      session.context = makeInitialSigns(workspace)
-      await database.sessions.put(session)
-      return session
+      if (isError(sessionResult)) {
+        return err(makeServiceErrorFromDatabaseError(sessionResult.error))
+      }
+
+      const session = sessionResult.value
+      session.context = makeInitialSigns(workspaceResult.value)
+
+      const putResult = await database.sessions.put(session)
+      if (isError(putResult)) {
+        return err(makeServiceErrorFromDatabaseError(putResult.error))
+      }
+
+      return ok(session)
     },
 
     async generateTitle(titleOptions) {
-      const session = await database.sessions.get(titleOptions.sessionId)
-      if (session === undefined) {
-        throw new Error(`session not found: ${titleOptions.sessionId}`)
+      const sessionResult = await database.sessions.get(titleOptions.sessionId)
+      if (isError(sessionResult)) {
+        return err(makeServiceErrorFromDatabaseError(sessionResult.error))
+      }
+      if (sessionResult.value === undefined) {
+        return err(
+          makeServiceError({
+            type: "session-not-found",
+            message: "session not found",
+            info: { sessionId: titleOptions.sessionId },
+          }),
+        )
       }
 
-      const model = await makeModel(titleOptions.model, { database })
-      const result = await generateTitle({
-        model,
-        context: session.context,
-      })
+      try {
+        const model = await makeModel(titleOptions.model, { database })
+        const result = await generateTitle({
+          model,
+          context: sessionResult.value.context,
+        })
 
-      const title = result.kind === "ok" ? result.title : ""
-      if (title !== "") {
-        await database.sessions.updateTitle(titleOptions.sessionId, title)
+        const title = result.kind === "ok" ? result.title : ""
+        if (title !== "") {
+          const updateResult = await database.sessions.updateTitle(
+            titleOptions.sessionId,
+            title,
+          )
+          if (isError(updateResult)) {
+            return err(makeServiceErrorFromDatabaseError(updateResult.error))
+          }
+        }
+
+        return ok(title)
+      } catch (error) {
+        return err(
+          makeServiceError({
+            type: "model-error",
+            message: error instanceof Error ? error.message : String(error),
+          }),
+        )
       }
-
-      return title
     },
 
     interpret: (interpretOptions) => interpretWithLock(interpretOptions),
   }
-
-  return sessions
 }
 
 function isRetryableError(error: unknown): boolean {

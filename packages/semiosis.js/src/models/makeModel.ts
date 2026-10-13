@@ -3,6 +3,7 @@ import { readProviderConfig } from "../provider/index.ts"
 import type { Model, ModelRef } from "../model/index.ts"
 import * as DeepSeek from "../providers/deepseek/index.ts"
 import * as OpenRouter from "../providers/openrouter/index.ts"
+import { unwrap } from "@windbell/std.js/result"
 
 export type MakeModelOptions = {
   database: Database
@@ -40,7 +41,7 @@ export async function makeModel(
 export async function readDefaultModelRef(
   database: Database,
 ): Promise<ModelRef | undefined> {
-  const settings = await database.settings.get()
+  const settings = unwrap(await database.settings.get())
   const providerName = settings?.defaultProvider
 
   if (providerName === undefined || providerName === null) {
