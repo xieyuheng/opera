@@ -18,18 +18,11 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@hono/node-server": "2.1.4",
-    "@windbell/http.js": "workspace:*",
-    "@windbell/std.js": "workspace:*",
-    "hono": "4.13.13"
+    "@windbell/std.js": "workspace:*"
   },
   "exports": {
     ".": "./src/index.ts",
     "./sh": "./src/sh/index.ts",
-    "./local-sh": "./src/local-sh/index.ts",
-    "./http-sh": "./src/http-sh/index.ts",
-    "./http-sh/client": "./src/http-sh/client/index.ts",
-    "./http-sh/router": "./src/http-sh/router/index.ts",
-    "./http-sh/server": "./src/http-sh/server/index.ts"
+    "./local-sh": "./src/local-sh/index.ts"
   }
 }
