@@ -1,18 +1,12 @@
 import type * as S from "@windbell/semiosis.js"
 import { Hono } from "hono"
 import { stream } from "hono/streaming"
-import * as SessionsServices from "../services/Sessions.ts"
-import * as WorkspacesServices from "../services/Workspaces.ts"
-import * as DustbinSessionsServices from "../services/DustbinSessions.ts"
-import * as DustbinWorkspacesServices from "../services/DustbinWorkspaces.ts"
-import * as ProvidersServices from "../services/Providers.ts"
-import * as SettingsServices from "../services/Settings.ts"
 import { makeDustbinSessionsController } from "../controllers/DustbinSessionsController.ts"
 import { makeDustbinWorkspacesController } from "../controllers/DustbinWorkspacesController.ts"
 import { makeProvidersController } from "../controllers/ProvidersController.ts"
 import { makeSessionsController } from "../controllers/SessionsController.ts"
 import { makeSettingsController } from "../controllers/SettingsController.ts"
-import { makeWorkspacesController } from "../controllers/WorkspacesController.ts"
+import { makeWorkspaceController } from "../controllers/WorkspaceController.ts"
 import { readJsonBody, readRecord, readString } from "./readJson.ts"
 
 export type DomainRouterOptions = {
@@ -36,130 +30,54 @@ export function makeDomainRouter(options: DomainRouterOptions): Hono {
     settings: settingsService,
   } = options
 
-  const workspaces = makeWorkspacesController({
-    listWorkspaces: WorkspacesServices.ListWorkspaces({
-      workspaces: workspacesService,
-    }),
-    ensureWorkspace: WorkspacesServices.EnsureWorkspace({
-      workspaces: workspacesService,
-    }),
-    getWorkspace: WorkspacesServices.GetWorkspace({
-      workspaces: workspacesService,
-    }),
-    putWorkspace: WorkspacesServices.PutWorkspace({
-      workspaces: workspacesService,
-    }),
-    removeWorkspace: WorkspacesServices.RemoveWorkspace({
-      workspaces: workspacesService,
-    }),
+  const workspaceController = makeWorkspaceController({
+    workspaces: workspacesService,
   })
 
   const sessions = makeSessionsController({
-    listSessions: SessionsServices.ListSessions({ sessions: sessionsService }),
-    makeSession: SessionsServices.MakeSession({ sessions: sessionsService }),
-    getSession: SessionsServices.GetSession({ sessions: sessionsService }),
-    putSession: SessionsServices.PutSession({ sessions: sessionsService }),
-    removeSession: SessionsServices.RemoveSession({
-      sessions: sessionsService,
-    }),
-    generateSessionTitle: SessionsServices.GenerateSessionTitle({
-      sessions: sessionsService,
-    }),
+    sessions: sessionsService,
   })
 
   const dustbinSessions = makeDustbinSessionsController({
-    listDustbinSessions: DustbinSessionsServices.ListDustbinSessions({
-      dustbinSessions: dustbinSessionsService,
-    }),
-    getDustbinSession: DustbinSessionsServices.GetDustbinSession({
-      dustbinSessions: dustbinSessionsService,
-    }),
-    trashDustbinSession: DustbinSessionsServices.TrashDustbinSession({
-      dustbinSessions: dustbinSessionsService,
-    }),
-    restoreDustbinSession: DustbinSessionsServices.RestoreDustbinSession({
-      dustbinSessions: dustbinSessionsService,
-    }),
-    removeDustbinSession: DustbinSessionsServices.RemoveDustbinSession({
-      dustbinSessions: dustbinSessionsService,
-    }),
+    dustbinSessions: dustbinSessionsService,
   })
 
   const dustbinWorkspaces = makeDustbinWorkspacesController({
-    listDustbinWorkspaces: DustbinWorkspacesServices.ListDustbinWorkspaces({
-      dustbinWorkspaces: dustbinWorkspacesService,
-    }),
-    getDustbinWorkspace: DustbinWorkspacesServices.GetDustbinWorkspace({
-      dustbinWorkspaces: dustbinWorkspacesService,
-    }),
-    trashDustbinWorkspace: DustbinWorkspacesServices.TrashDustbinWorkspace({
-      dustbinWorkspaces: dustbinWorkspacesService,
-    }),
-    restoreDustbinWorkspace: DustbinWorkspacesServices.RestoreDustbinWorkspace({
-      dustbinWorkspaces: dustbinWorkspacesService,
-    }),
-    removeDustbinWorkspace: DustbinWorkspacesServices.RemoveDustbinWorkspace({
-      dustbinWorkspaces: dustbinWorkspacesService,
-    }),
+    dustbinWorkspaces: dustbinWorkspacesService,
   })
 
   const providers = makeProvidersController({
-    listProviders: ProvidersServices.ListProviders({
-      providers: providersService,
-    }),
-    getProvider: ProvidersServices.GetProvider({ providers: providersService }),
-    getProviderApiKeyStatus: ProvidersServices.GetProviderApiKeyStatus({
-      providers: providersService,
-    }),
-    putProviderApiKey: ProvidersServices.PutProviderApiKey({
-      providers: providersService,
-    }),
-    deleteProviderApiKey: ProvidersServices.DeleteProviderApiKey({
-      providers: providersService,
-    }),
-    listProviderModels: ProvidersServices.ListProviderModels({
-      providers: providersService,
-    }),
-    pinProviderModel: ProvidersServices.PinProviderModel({
-      providers: providersService,
-    }),
-    unpinProviderModel: ProvidersServices.UnpinProviderModel({
-      providers: providersService,
-    }),
-    setProviderDefaultModel: ProvidersServices.SetProviderDefaultModel({
-      providers: providersService,
-    }),
+    providers: providersService,
   })
 
   const settings = makeSettingsController({
-    getSettings: SettingsServices.GetSettings({ settings: settingsService }),
-    putSettings: SettingsServices.PutSettings({ settings: settingsService }),
+    settings: settingsService,
   })
 
-  app.get("/workspaces", () => workspaces.list({}))
+  app.get("/workspaces", () => workspaceController.list({}))
 
   app.post("/workspaces/ensure", async (c) => {
     const body = readRecord(await readJsonBody(c))
-    return workspaces.ensure({
+    return workspaceController.ensure({
       name: readString(body, "name"),
       root: readString(body, "root"),
     })
   })
 
   app.get("/workspaces/:workspaceId", (c) =>
-    workspaces.get({ workspaceId: c.req.param("workspaceId") }),
+    workspaceController.get({ workspaceId: c.req.param("workspaceId") }),
   )
 
   app.put("/workspaces/:workspaceId", async (c) => {
     const workspace = (await readJsonBody(c)) as S.Workspace
-    return workspaces.put({
+    return workspaceController.put({
       workspaceId: c.req.param("workspaceId"),
       workspace,
     })
   })
 
   app.delete("/workspaces/:workspaceId", (c) =>
-    workspaces.remove({ workspaceId: c.req.param("workspaceId") }),
+    workspaceController.remove({ workspaceId: c.req.param("workspaceId") }),
   )
 
   app.get("/sessions", (c) =>

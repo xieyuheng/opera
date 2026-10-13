@@ -1,6 +1,5 @@
 import { Hono } from "hono"
 import { makeThemesController } from "../controllers/ThemesController.ts"
-import * as ThemesServices from "../services/Themes.ts"
 import { makeThemeStore } from "../theme/ThemeStore.ts"
 import { readJsonBody, readRecord, readString } from "./readJson.ts"
 
@@ -12,13 +11,7 @@ export function makeThemesRouter(options: ThemesRouterOptions): Hono {
   const app = new Hono()
   const store = makeThemeStore({ root: options.root })
 
-  const themes = makeThemesController({
-    listThemes: ThemesServices.ListThemes({ store }),
-    getTheme: ThemesServices.GetTheme({ store }),
-    createTheme: ThemesServices.CreateTheme({ store }),
-    putTheme: ThemesServices.PutTheme({ store }),
-    removeTheme: ThemesServices.RemoveTheme({ store }),
-  })
+  const themes = makeThemesController({ store })
 
   app.get("/", () => themes.list({}))
 

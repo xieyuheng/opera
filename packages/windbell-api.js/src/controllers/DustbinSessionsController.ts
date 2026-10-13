@@ -1,19 +1,10 @@
+import type * as S from "@windbell/semiosis.js"
+import { err, ok } from "@windbell/std.js/result"
 import { z } from "zod"
 import { makeAction } from "../http/makeAction.ts"
-import type {
-  GetDustbinSession,
-  ListDustbinSessions,
-  RemoveDustbinSession,
-  RestoreDustbinSession,
-  TrashDustbinSession,
-} from "../services/DustbinSessions.ts"
 
 export type DustbinSessionsControllerOptions = {
-  listDustbinSessions: ReturnType<typeof ListDustbinSessions>
-  getDustbinSession: ReturnType<typeof GetDustbinSession>
-  trashDustbinSession: ReturnType<typeof TrashDustbinSession>
-  restoreDustbinSession: ReturnType<typeof RestoreDustbinSession>
-  removeDustbinSession: ReturnType<typeof RemoveDustbinSession>
+  dustbinSessions: S.DustbinSessionsService
 }
 
 export const ListDustbinSessionsInputSchema = z
@@ -44,24 +35,38 @@ export function makeDustbinSessionsController(
   options: DustbinSessionsControllerOptions,
 ) {
   return {
-    list: makeAction(ListDustbinSessionsInputSchema, (input) =>
-      options.listDustbinSessions(input),
-    ),
+    list: makeAction(ListDustbinSessionsInputSchema, async (input) => {
+      return ok(await options.dustbinSessions.list(input))
+    }),
 
-    get: makeAction(GetDustbinSessionInputSchema, (input) =>
-      options.getDustbinSession(input),
-    ),
+    get: makeAction(GetDustbinSessionInputSchema, async (input) => {
+      const session = await options.dustbinSessions.get(input.sessionId)
 
-    trash: makeAction(TrashDustbinSessionInputSchema, (input) =>
-      options.trashDustbinSession(input),
-    ),
+      if (session === undefined) {
+        return err({
+          type: "dustbin-session-not-found",
+          status: 404,
+          message: "session not found",
+          info: { sessionId: input.sessionId },
+        })
+      }
 
-    restore: makeAction(RestoreDustbinSessionInputSchema, (input) =>
-      options.restoreDustbinSession(input),
-    ),
+      return ok(session)
+    }),
 
-    remove: makeAction(RemoveDustbinSessionInputSchema, (input) =>
-      options.removeDustbinSession(input),
-    ),
+    trash: makeAction(TrashDustbinSessionInputSchema, async (input) => {
+      await options.dustbinSessions.trash(input.sessionId)
+      return ok(null)
+    }),
+
+    restore: makeAction(RestoreDustbinSessionInputSchema, async (input) => {
+      await options.dustbinSessions.restore(input.sessionId)
+      return ok(null)
+    }),
+
+    remove: makeAction(RemoveDustbinSessionInputSchema, async (input) => {
+      await options.dustbinSessions.remove(input.sessionId)
+      return ok(null)
+    }),
   }
 }

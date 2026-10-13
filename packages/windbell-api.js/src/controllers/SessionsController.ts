@@ -1,22 +1,10 @@
 import type * as S from "@windbell/semiosis.js"
+import { err, ok } from "@windbell/std.js/result"
 import { z } from "zod"
 import { makeAction } from "../http/makeAction.ts"
-import type {
-  GenerateSessionTitle,
-  GetSession,
-  ListSessions,
-  MakeSession,
-  PutSession,
-  RemoveSession,
-} from "../services/Sessions.ts"
 
 export type SessionsControllerOptions = {
-  listSessions: ReturnType<typeof ListSessions>
-  makeSession: ReturnType<typeof MakeSession>
-  getSession: ReturnType<typeof GetSession>
-  putSession: ReturnType<typeof PutSession>
-  removeSession: ReturnType<typeof RemoveSession>
-  generateSessionTitle: ReturnType<typeof GenerateSessionTitle>
+  sessions: S.SessionsService
 }
 
 export const ListSessionsInputSchema = z
@@ -55,30 +43,65 @@ export const GenerateSessionTitleInputSchema = z.object({
 
 export function makeSessionsController(options: SessionsControllerOptions) {
   return {
-    list: makeAction(ListSessionsInputSchema, (input) =>
-      options.listSessions(input),
-    ),
+    list: makeAction(ListSessionsInputSchema, async (input) => {
+      return ok(await options.sessions.list(input))
+    }),
 
     make: makeAction(
       MakeSessionInputSchema,
-      (input) => options.makeSession(input),
+      async (input) => {
+        try {
+          return ok(await options.sessions.make(input))
+        } catch (error) {
+          return err({
+            type: "session-make-failed",
+            status: 400,
+            message: error instanceof Error ? error.message : String(error),
+          })
+        }
+      },
       { status: 201 },
     ),
 
-    get: makeAction(GetSessionInputSchema, (input) =>
-      options.getSession(input),
-    ),
+    get: makeAction(GetSessionInputSchema, async (input) => {
+      const session = await options.sessions.get(input.sessionId)
 
-    put: makeAction(PutSessionInputSchema, (input) =>
-      options.putSession(input),
-    ),
+      if (session === undefined) {
+        return err({
+          type: "session-not-found",
+          status: 404,
+          message: "session not found",
+          info: { sessionId: input.sessionId },
+        })
+      }
 
-    remove: makeAction(RemoveSessionInputSchema, (input) =>
-      options.removeSession(input),
-    ),
+      return ok(session)
+    }),
 
-    generateTitle: makeAction(GenerateSessionTitleInputSchema, (input) =>
-      options.generateSessionTitle(input),
+    put: makeAction(PutSessionInputSchema, async (input) => {
+      if (input.session.id !== input.sessionId) {
+        return err({
+          type: "session-id-mismatch",
+          status: 400,
+          message: "session id mismatch",
+        })
+      }
+
+      await options.sessions.put(input.session)
+      return ok(null)
+    }),
+
+    remove: makeAction(RemoveSessionInputSchema, async (input) => {
+      await options.sessions.remove(input.sessionId)
+      return ok(null)
+    }),
+
+    generateTitle: makeAction(
+      GenerateSessionTitleInputSchema,
+      async (input) => {
+        const title = await options.sessions.generateTitle(input)
+        return ok({ title })
+      },
     ),
   }
 }

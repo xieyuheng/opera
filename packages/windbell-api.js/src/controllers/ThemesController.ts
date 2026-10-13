@@ -1,19 +1,11 @@
+import { err, ok } from "@windbell/std.js/result"
 import { z } from "zod"
 import { makeAction } from "../http/makeAction.ts"
-import type {
-  CreateTheme,
-  GetTheme,
-  ListThemes,
-  PutTheme,
-  RemoveTheme,
-} from "../services/Themes.ts"
+import type { Theme } from "../theme/Theme.ts"
+import type { ThemeStore } from "../theme/ThemeStore.ts"
 
 export type ThemesControllerOptions = {
-  listThemes: ReturnType<typeof ListThemes>
-  getTheme: ReturnType<typeof GetTheme>
-  createTheme: ReturnType<typeof CreateTheme>
-  putTheme: ReturnType<typeof PutTheme>
-  removeTheme: ReturnType<typeof RemoveTheme>
+  store: ThemeStore
 }
 
 const ThemeColorRecordInputSchema = z.record(
@@ -44,21 +36,74 @@ export const RemoveThemeInputSchema = z.object({
 
 export function makeThemesController(options: ThemesControllerOptions) {
   return {
-    list: makeAction(z.object({}), () => options.listThemes()),
+    list: makeAction(z.object({}), async () => {
+      return ok(await options.store.list())
+    }),
 
-    get: makeAction(GetThemeInputSchema, (input) => options.getTheme(input)),
+    get: makeAction(GetThemeInputSchema, async (input) => {
+      const theme = await options.store.get(input.themeId)
+
+      if (theme === undefined) {
+        return err({
+          type: "theme-not-found",
+          status: 404,
+          message: "theme not found",
+          info: { themeId: input.themeId },
+        })
+      }
+
+      return ok(theme)
+    }),
 
     create: makeAction(
       ThemeInputSchema,
-      (input) => options.createTheme(input),
+      async (input) => {
+        return ok(await options.store.create(input))
+      },
       { status: 201 },
     ),
 
-    put: makeAction(PutThemeInputSchema, (input) => options.putTheme(input)),
+    put: makeAction(PutThemeInputSchema, async (input) => {
+      const current = await options.store.get(input.themeId)
+
+      if (current === undefined) {
+        return err({
+          type: "theme-not-found",
+          status: 404,
+          message: "theme not found",
+          info: { themeId: input.themeId },
+        })
+      }
+
+      const theme: Theme = {
+        id: input.themeId,
+        name: input.theme.name,
+        colors: input.theme.colors,
+        createdAt: current.createdAt,
+        updatedAt: Date.now(),
+      }
+
+      await options.store.put(theme)
+      return ok(theme)
+    }),
 
     remove: makeAction(
       RemoveThemeInputSchema,
-      (input) => options.removeTheme(input),
+      async (input) => {
+        const current = await options.store.get(input.themeId)
+
+        if (current === undefined) {
+          return err({
+            type: "theme-not-found",
+            status: 404,
+            message: "theme not found",
+            info: { themeId: input.themeId },
+          })
+        }
+
+        await options.store.remove(input.themeId)
+        return ok(null)
+      },
       { status: 204 },
     ),
   }

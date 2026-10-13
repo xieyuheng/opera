@@ -1,27 +1,10 @@
+import type * as S from "@windbell/semiosis.js"
+import { err, ok } from "@windbell/std.js/result"
 import { z } from "zod"
 import { makeAction } from "../http/makeAction.ts"
-import type {
-  DeleteProviderApiKey,
-  GetProvider,
-  GetProviderApiKeyStatus,
-  ListProviderModels,
-  ListProviders,
-  PinProviderModel,
-  PutProviderApiKey,
-  SetProviderDefaultModel,
-  UnpinProviderModel,
-} from "../services/Providers.ts"
 
 export type ProvidersControllerOptions = {
-  listProviders: ReturnType<typeof ListProviders>
-  getProvider: ReturnType<typeof GetProvider>
-  getProviderApiKeyStatus: ReturnType<typeof GetProviderApiKeyStatus>
-  putProviderApiKey: ReturnType<typeof PutProviderApiKey>
-  deleteProviderApiKey: ReturnType<typeof DeleteProviderApiKey>
-  listProviderModels: ReturnType<typeof ListProviderModels>
-  pinProviderModel: ReturnType<typeof PinProviderModel>
-  unpinProviderModel: ReturnType<typeof UnpinProviderModel>
-  setProviderDefaultModel: ReturnType<typeof SetProviderDefaultModel>
+  providers: S.ProvidersService
 }
 
 export const GetProviderInputSchema = z.object({
@@ -63,38 +46,64 @@ export const SetProviderDefaultModelInputSchema = z.object({
 
 export function makeProvidersController(options: ProvidersControllerOptions) {
   return {
-    list: makeAction(z.object({}), () => options.listProviders()),
+    list: makeAction(z.object({}), async () => {
+      return ok(await options.providers.list())
+    }),
 
-    get: makeAction(GetProviderInputSchema, (input) =>
-      options.getProvider(input),
+    get: makeAction(GetProviderInputSchema, async (input) => {
+      try {
+        return ok(await options.providers.get(input.providerName))
+      } catch (error) {
+        return err({
+          type: "provider-not-found",
+          status: 404,
+          message: error instanceof Error ? error.message : String(error),
+          info: { providerName: input.providerName },
+        })
+      }
+    }),
+
+    getApiKeyStatus: makeAction(
+      GetProviderApiKeyStatusInputSchema,
+      async (input) => {
+        return ok({
+          configured: await options.providers.getApiKeyStatus(
+            input.providerName,
+          ),
+        })
+      },
     ),
 
-    getApiKeyStatus: makeAction(GetProviderApiKeyStatusInputSchema, (input) =>
-      options.getProviderApiKeyStatus(input),
-    ),
+    putApiKey: makeAction(PutProviderApiKeyInputSchema, async (input) => {
+      await options.providers.putApiKey(input)
+      return ok(null)
+    }),
 
-    putApiKey: makeAction(PutProviderApiKeyInputSchema, (input) =>
-      options.putProviderApiKey(input),
-    ),
+    deleteApiKey: makeAction(DeleteProviderApiKeyInputSchema, async (input) => {
+      await options.providers.deleteApiKey(input.providerName)
+      return ok(null)
+    }),
 
-    deleteApiKey: makeAction(DeleteProviderApiKeyInputSchema, (input) =>
-      options.deleteProviderApiKey(input),
-    ),
+    listModels: makeAction(ListProviderModelsInputSchema, async (input) => {
+      return ok(await options.providers.listModels(input))
+    }),
 
-    listModels: makeAction(ListProviderModelsInputSchema, (input) =>
-      options.listProviderModels(input),
-    ),
+    pinModel: makeAction(PinProviderModelInputSchema, async (input) => {
+      await options.providers.pinModel(input)
+      return ok(null)
+    }),
 
-    pinModel: makeAction(PinProviderModelInputSchema, (input) =>
-      options.pinProviderModel(input),
-    ),
+    unpinModel: makeAction(UnpinProviderModelInputSchema, async (input) => {
+      await options.providers.unpinModel(input)
+      return ok(null)
+    }),
 
-    unpinModel: makeAction(UnpinProviderModelInputSchema, (input) =>
-      options.unpinProviderModel(input),
-    ),
-
-    setDefaultModel: makeAction(SetProviderDefaultModelInputSchema, (input) =>
-      options.setProviderDefaultModel(input),
+    setDefaultModel: makeAction(
+      SetProviderDefaultModelInputSchema,
+      async (input) => {
+        await options.providers.setDefaultModel(input)
+        return ok(null)
+      },
     ),
   }
 }

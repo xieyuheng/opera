@@ -1,11 +1,10 @@
 import type * as S from "@windbell/semiosis.js"
+import { ok } from "@windbell/std.js/result"
 import { z } from "zod"
 import { makeAction } from "../http/makeAction.ts"
-import type { GetSettings, PutSettings } from "../services/Settings.ts"
 
 export type SettingsControllerOptions = {
-  getSettings: ReturnType<typeof GetSettings>
-  putSettings: ReturnType<typeof PutSettings>
+  settings: S.SettingsService
 }
 
 export const PutSettingsInputSchema = z.object({
@@ -14,10 +13,13 @@ export const PutSettingsInputSchema = z.object({
 
 export function makeSettingsController(options: SettingsControllerOptions) {
   return {
-    get: makeAction(z.object({}), () => options.getSettings()),
+    get: makeAction(z.object({}), async () => {
+      return ok(await options.settings.get())
+    }),
 
-    put: makeAction(PutSettingsInputSchema, (input) =>
-      options.putSettings(input),
-    ),
+    put: makeAction(PutSettingsInputSchema, async (input) => {
+      await options.settings.put(input.settings)
+      return ok(null)
+    }),
   }
 }
