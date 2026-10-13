@@ -14,6 +14,7 @@
   "dependencies": {
     "@hono/node-server": "2.1.4",
     "@windbell/cli.js": "workspace:*",
+    "@windbell/fs.js": "workspace:*",
     "@windbell/semiosis.js": "workspace:*",
     "@windbell/std.js": "workspace:*",
     "@windbell/windbell-api.js": "workspace:*",

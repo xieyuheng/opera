@@ -1,9 +1,12 @@
+import process from "node:process"
+import { makePath } from "@windbell/std.js/path"
+import { makeLocalFileSystem } from "@windbell/fs.js/local-fs"
+import { makeDatabase } from "../database/index.ts"
 import assert from "node:assert/strict"
 import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
-import { makeNodeDatabase } from "../node/makeNodeDatabase.ts"
 import { readProviderConfig } from "./readProviderConfig.ts"
 
 test("readProviderConfig returns default config without stored file", async () => {
@@ -12,7 +15,11 @@ test("readProviderConfig returns default config without stored file", async () =
   )
 
   try {
-    const database = makeNodeDatabase({ root })
+    const database = makeDatabase({
+      fs: makeLocalFileSystem(),
+      path: makePath(process.platform === "win32" ? "win32" : "posix"),
+      root,
+    })
 
     assert.deepEqual(await readProviderConfig(database, "deepseek"), {
       name: "deepseek",
@@ -30,7 +37,11 @@ test("readProviderConfig returns stored config when file exists", async () => {
   )
 
   try {
-    const database = makeNodeDatabase({ root })
+    const database = makeDatabase({
+      fs: makeLocalFileSystem(),
+      path: makePath(process.platform === "win32" ? "win32" : "posix"),
+      root,
+    })
 
     await database.providers.put("deepseek", {
       name: "deepseek",
@@ -54,7 +65,11 @@ test("readProviderConfig rejects unknown provider", async () => {
   )
 
   try {
-    const database = makeNodeDatabase({ root })
+    const database = makeDatabase({
+      fs: makeLocalFileSystem(),
+      path: makePath(process.platform === "win32" ? "win32" : "posix"),
+      root,
+    })
 
     await assert.rejects(
       () => readProviderConfig(database, "unknown"),

@@ -1,8 +1,11 @@
+import process from "node:process"
+import { makePath } from "@windbell/std.js/path"
+import { makeLocalFileSystem } from "@windbell/fs.js/local-fs"
+import { makeDatabase } from "../database/index.ts"
 import * as Cli from "@windbell/cli.js"
 import { getPackageJson } from "@windbell/std.js/node"
 import { fileURLToPath } from "node:url"
 import { resolveAppPaths, defaultAppRoot } from "../app/defaultAppRoot.ts"
-import { makeNodeDatabase } from "../node/makeNodeDatabase.ts"
 import { makeBatchHandler } from "./commands/BatchCommand.ts"
 import { makeModelDefaultHandler } from "./commands/ModelDefaultCommand.ts"
 import { makeModelPinHandler } from "./commands/ModelPinCommand.ts"
@@ -16,7 +19,11 @@ import { makeReplHandler } from "./commands/ReplCommand.ts"
 
 export function makeCli() {
   const paths = resolveAppPaths(defaultAppRoot())
-  const database = makeNodeDatabase({ root: paths.databaseRoot })
+  const database = makeDatabase({
+    fs: makeLocalFileSystem(),
+    path: makePath(process.platform === "win32" ? "win32" : "posix"),
+    root: paths.databaseRoot,
+  })
   const { version } = getPackageJson(fileURLToPath(import.meta.url))
   const router = Cli.makeRouter("semiosis.js", version)
 

@@ -1,5 +1,7 @@
 export * from "./bash/index.ts"
 export * from "./pwsh/index.ts"
 export * from "./assertSessionShellName.ts"
+export * from "./assertSessionToolPlatform.ts"
 export * from "./formatShellOutput.ts"
 export * from "./makeShellToolRouter.ts"
+export * from "./makeDefaultToolRouter.ts"

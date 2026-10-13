@@ -1,7 +1,10 @@
 import assert from "node:assert/strict"
+import { makeLocalFileSystem } from "@windbell/fs.js/local-fs"
+import { makePath } from "@windbell/std.js/path"
 import { mkdtemp, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import Path from "node:path"
+import process from "node:process"
 import { test } from "node:test"
 import * as S from "@windbell/semiosis.js"
 import { makeWindbellRouter } from "../router/index.ts"
@@ -9,7 +12,11 @@ import { unwrap } from "@windbell/std.js/result"
 
 test("windbell router", async (t) => {
   const root = await mkdtemp(Path.join(tmpdir(), "windbell-api-"))
-  const database = S.makeNodeDatabase({ root })
+  const database = S.makeDatabase({
+    fs: makeLocalFileSystem(),
+    path: makePath(process.platform === "win32" ? "win32" : "posix"),
+    root,
+  })
   const lockRoot = Path.join(root, "locks")
   const app = makeWindbellRouter({
     database,

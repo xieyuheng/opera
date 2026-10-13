@@ -1,9 +1,12 @@
+import process from "node:process"
+import { makePath } from "@windbell/std.js/path"
+import { makeLocalFileSystem } from "@windbell/fs.js/local-fs"
+import { makeDatabase } from "./index.ts"
 import assert from "node:assert/strict"
 import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
-import { makeNodeDatabase } from "../node/makeNodeDatabase.ts"
 import { UserSign } from "../sign/index.ts"
 import { unwrap } from "@windbell/std.js/result"
 
@@ -11,7 +14,11 @@ test("SessionStore stores turns and slices context by sequence", async () => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "semiosis-turn-"))
 
   try {
-    const database = makeNodeDatabase({ root })
+    const database = makeDatabase({
+      fs: makeLocalFileSystem(),
+      path: makePath(process.platform === "win32" ? "win32" : "posix"),
+      root,
+    })
     const workspace = unwrap(
       await database.workspaces.make({
         name: "test",

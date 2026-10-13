@@ -1,9 +1,12 @@
+import process from "node:process"
+import { makePath } from "@windbell/std.js/path"
+import { makeLocalFileSystem } from "@windbell/fs.js/local-fs"
+import { makeDatabase } from "../database/index.ts"
 import assert from "node:assert/strict"
 import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
-import { makeNodeDatabase } from "../node/makeNodeDatabase.ts"
 import { listProviderModelEntries } from "./listProviderModelEntries.ts"
 import { pinModel } from "./pinModel.ts"
 import { unpinModel } from "./unpinModel.ts"
@@ -14,7 +17,11 @@ test("listProviderModelEntries sorts pinned models before unpinned models", asyn
   )
 
   try {
-    const database = makeNodeDatabase({ root })
+    const database = makeDatabase({
+      fs: makeLocalFileSystem(),
+      path: makePath(process.platform === "win32" ? "win32" : "posix"),
+      root,
+    })
 
     await pinModel(database, "deepseek", "deepseek-model-a")
     await unpinModel(database, "deepseek", "deepseek-model-a")
@@ -48,7 +55,7 @@ test("listProviderModelEntries sorts pinned models before unpinned models", asyn
   }
 })
 
-async function summary(database: ReturnType<typeof makeNodeDatabase>) {
+async function summary(database: ReturnType<typeof makeDatabase>) {
   const entries = await listProviderModelEntries(database, "deepseek")
 
   return entries.map((entry) => ({

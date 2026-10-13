@@ -180,6 +180,9 @@ importers:
       '@windbell/fs-api.js':
         specifier: workspace:*
         version: link:../fs-api.js
+      '@windbell/fs.js':
+        specifier: workspace:*
+        version: link:../fs.js
       '@windbell/http.js':
         specifier: workspace:*
         version: link:../http.js
@@ -217,6 +220,9 @@ importers:
       '@windbell/cli.js':
         specifier: workspace:*
         version: link:../cli.js
+      '@windbell/fs.js':
+        specifier: workspace:*
+        version: link:../fs.js
       '@windbell/semiosis.js':
         specifier: workspace:*
         version: link:../semiosis.js

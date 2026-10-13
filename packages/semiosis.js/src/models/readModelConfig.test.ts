@@ -1,10 +1,13 @@
+import process from "node:process"
+import { makePath } from "@windbell/std.js/path"
+import { makeLocalFileSystem } from "@windbell/fs.js/local-fs"
+import { makeDatabase } from "../database/index.ts"
 import assert from "node:assert/strict"
 import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
 import { writeApiKey } from "../database/index.ts"
-import { makeNodeDatabase } from "../node/makeNodeDatabase.ts"
 import * as DeepSeek from "../providers/deepseek/index.ts"
 import * as OpenRouter from "../providers/openrouter/index.ts"
 import { makeModel } from "./makeModel.ts"
@@ -15,7 +18,11 @@ test("DeepSeek.readModelConfig returns default config when model is not configur
   )
 
   try {
-    const database = makeNodeDatabase({ root })
+    const database = makeDatabase({
+      fs: makeLocalFileSystem(),
+      path: makePath(process.platform === "win32" ? "win32" : "posix"),
+      root,
+    })
     const config = await DeepSeek.readModelConfig(database, "deepseek-flash")
 
     assert.deepEqual(config, {
@@ -35,7 +42,11 @@ test("OpenRouter.readModelConfig returns default config when model is not config
   )
 
   try {
-    const database = makeNodeDatabase({ root })
+    const database = makeDatabase({
+      fs: makeLocalFileSystem(),
+      path: makePath(process.platform === "win32" ? "win32" : "posix"),
+      root,
+    })
     const config = await OpenRouter.readModelConfig(database, "openrouter/free")
 
     assert.deepEqual(config, {
@@ -53,7 +64,11 @@ test("makeModel uses default model config when models.json is missing", async ()
   )
 
   try {
-    const database = makeNodeDatabase({ root })
+    const database = makeDatabase({
+      fs: makeLocalFileSystem(),
+      path: makePath(process.platform === "win32" ? "win32" : "posix"),
+      root,
+    })
     await writeApiKey(database, "deepseek", "sk-test")
 
     const model = await makeModel(

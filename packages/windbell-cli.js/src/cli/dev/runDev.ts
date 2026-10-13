@@ -1,12 +1,17 @@
 import * as S from "@windbell/semiosis.js"
+import { makeLocalFileSystem } from "@windbell/fs.js/local-fs"
+import { makePath } from "@windbell/std.js/path"
 import { closeServer, startWindbellServer } from "@windbell/windbell-api.js"
 import Path from "node:path"
+import process from "node:process"
 import { createServer, type ViteDevServer } from "vite"
 import type { DevOptions } from "./resolveDevOptions.ts"
 import type { ServerType } from "@hono/node-server"
 
 export async function runDev(options: DevOptions): Promise<void> {
-  const database = S.makeNodeDatabase({
+  const database = S.makeDatabase({
+    fs: makeLocalFileSystem(),
+    path: makePath(process.platform === "win32" ? "win32" : "posix"),
     root: options.databaseRoot,
   })
 

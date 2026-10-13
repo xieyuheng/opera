@@ -1,3 +1,7 @@
+import process from "node:process"
+import { makePath } from "@windbell/std.js/path"
+import { makeLocalFileSystem } from "@windbell/fs.js/local-fs"
+import { makeDatabase } from "./index.ts"
 import assert from "node:assert/strict"
 import fs from "node:fs/promises"
 import Os from "node:os"
@@ -11,13 +15,16 @@ import {
   readApiKey,
   writeApiKey,
 } from "./apiKey.ts"
-import { makeNodeDatabase } from "../node/makeNodeDatabase.ts"
 
 test("write, read and delete provider api key", async () => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-api-key-"))
 
   try {
-    const database = makeNodeDatabase({ root })
+    const database = makeDatabase({
+      fs: makeLocalFileSystem(),
+      path: makePath(process.platform === "win32" ? "win32" : "posix"),
+      root,
+    })
 
     assert.equal(unwrap(await hasApiKey(database, "deepseek")), false)
 
@@ -41,7 +48,11 @@ test("writeApiKey rejects empty api key", async () => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-api-key-"))
 
   try {
-    const database = makeNodeDatabase({ root })
+    const database = makeDatabase({
+      fs: makeLocalFileSystem(),
+      path: makePath(process.platform === "win32" ? "win32" : "posix"),
+      root,
+    })
 
     const result = await writeApiKey(database, "deepseek", "   \n")
     assert.equal(result.kind, "ErrorResult")
@@ -55,7 +66,11 @@ test("hasApiKey returns false for whitespace-only file", async () => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-api-key-"))
 
   try {
-    const database = makeNodeDatabase({ root })
+    const database = makeDatabase({
+      fs: makeLocalFileSystem(),
+      path: makePath(process.platform === "win32" ? "win32" : "posix"),
+      root,
+    })
     const path = apiKeyPath(database, "deepseek")
 
     await fs.mkdir(Path.dirname(path), { recursive: true })

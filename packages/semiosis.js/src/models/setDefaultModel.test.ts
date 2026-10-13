@@ -1,10 +1,13 @@
+import process from "node:process"
+import { makePath } from "@windbell/std.js/path"
+import { makeLocalFileSystem } from "@windbell/fs.js/local-fs"
+import { makeDatabase } from "../database/index.ts"
 import assert from "node:assert/strict"
 import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
 import { unwrap } from "@windbell/std.js/result"
-import { makeNodeDatabase } from "../node/makeNodeDatabase.ts"
 import { pinModel } from "./pinModel.ts"
 import { setDefaultModel } from "./setDefaultModel.ts"
 
@@ -14,7 +17,11 @@ test("setDefaultModel writes provider defaultModel", async () => {
   )
 
   try {
-    const database = makeNodeDatabase({ root })
+    const database = makeDatabase({
+      fs: makeLocalFileSystem(),
+      path: makePath(process.platform === "win32" ? "win32" : "posix"),
+      root,
+    })
 
     unwrap(
       await database.providers.put("deepseek", {
@@ -42,7 +49,11 @@ test("setDefaultModel accepts model that is not pinned", async () => {
   )
 
   try {
-    const database = makeNodeDatabase({ root })
+    const database = makeDatabase({
+      fs: makeLocalFileSystem(),
+      path: makePath(process.platform === "win32" ? "win32" : "posix"),
+      root,
+    })
 
     unwrap(
       await database.providers.put("deepseek", {
@@ -69,7 +80,11 @@ test("setDefaultModel rejects unsupported provider", async () => {
   )
 
   try {
-    const database = makeNodeDatabase({ root })
+    const database = makeDatabase({
+      fs: makeLocalFileSystem(),
+      path: makePath(process.platform === "win32" ? "win32" : "posix"),
+      root,
+    })
 
     await assert.rejects(
       () => setDefaultModel(database, "unknown", "deepseek-flash"),

@@ -1,4 +1,6 @@
 import type * as Cli from "@windbell/cli.js"
+import { makeLocalFileSystem } from "@windbell/fs.js/local-fs"
+import { makePath } from "@windbell/std.js/path"
 import * as S from "@windbell/semiosis.js"
 import { startWindbellServer } from "@windbell/windbell-api.js"
 import { existsSync } from "node:fs"
@@ -43,7 +45,9 @@ export function makeStartHandler() {
       )
     }
 
-    const database = S.makeNodeDatabase({
+    const database = S.makeDatabase({
+      fs: makeLocalFileSystem(),
+      path: makePath(process.platform === "win32" ? "win32" : "posix"),
       root: appPaths.databaseRoot,
     })
 
