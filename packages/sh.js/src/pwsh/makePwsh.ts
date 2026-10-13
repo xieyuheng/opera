@@ -2,8 +2,8 @@ import process from "node:process"
 import { ok } from "@windbell/std.js/result"
 import type { Shell } from "../sh/index.ts"
 import { resolvePwshPath } from "./resolvePwshPath.ts"
-import { runChildProcess } from "./runChildProcess.ts"
-import { toShellError } from "./toShellError.ts"
+import { runChildProcess } from "../child-process/runChildProcess.ts"
+import { toShellError } from "../child-process/toShellError.ts"
 
 export const defaultPwshTimeoutMs = 300_000
 export const defaultPwshMaxOutputChars = 200_000
@@ -18,11 +18,11 @@ const envOverrides = {
   GIT_PAGER: "cat",
 }
 
-export type MakeLocalPwshOptions = {
+export type MakePwshOptions = {
   executable?: string
 }
 
-export function makeLocalPwsh(options: MakeLocalPwshOptions = {}): Shell {
+export function makePwsh(options: MakePwshOptions = {}): Shell {
   return {
     name: "pwsh",
     async run(command, runOptions) {

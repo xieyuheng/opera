@@ -1,4 +1,4 @@
-import { makeLocalPwsh } from "@windbell/sh.js/local-sh"
+import { makePwsh } from "@windbell/sh.js/pwsh"
 import { formatShellOutput } from "../formatShellOutput.ts"
 import type { ToolHandler } from "../../tool/index.ts"
 
@@ -12,7 +12,7 @@ export type PwshToolHandlerOptions = {
 export function makePwshToolHandler(
   options: PwshToolHandlerOptions,
 ): ToolHandler {
-  const sh = makeLocalPwsh({ executable: options.executable })
+  const sh = makePwsh({ executable: options.executable })
 
   return async (args, handlerOptions) => {
     const command = args.command as string

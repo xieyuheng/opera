@@ -9,7 +9,8 @@ import {
   makeWorkspacesService,
 } from "@windbell/semiosis.js"
 import { defaultWindbellRoot } from "@windbell/semiosis.js/node"
-import { makeLocalBash, makeLocalPwsh } from "@windbell/sh.js/local-sh"
+import { makeBash } from "@windbell/sh.js/bash"
+import { makePwsh } from "@windbell/sh.js/pwsh"
 import { Hono } from "hono"
 import { cors } from "hono/cors"
 import Path from "node:path"
@@ -23,7 +24,7 @@ export function makeWindbellRouter(options: WindbellRouterOptions): Hono {
   const app = new Hono()
   const windbellRoot = options.windbellRoot ?? defaultWindbellRoot()
   const lockRoot = options.lockRoot ?? Path.join(windbellRoot, "var", "locks")
-  const sh = process.platform === "win32" ? makeLocalPwsh() : makeLocalBash()
+  const sh = process.platform === "win32" ? makePwsh() : makeBash()
   const sessions = makeSessionsService({ database: options.database, sh })
   const workspaces = makeWorkspacesService({ database: options.database })
   const dustbinSessions = makeDustbinSessionsService({

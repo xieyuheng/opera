@@ -1,13 +1,13 @@
 import { ok } from "@windbell/std.js/result"
 import type { Shell } from "../sh/index.ts"
-import { runChildProcess } from "./runChildProcess.ts"
-import { toShellError } from "./toShellError.ts"
+import { runChildProcess } from "../child-process/runChildProcess.ts"
+import { toShellError } from "../child-process/toShellError.ts"
 import process from "node:process"
 
 export const defaultBashTimeoutMs = 300_000
 export const defaultMaxOutputChars = 200_000
 
-export function makeLocalBash(): Shell {
+export function makeBash(): Shell {
   return {
     name: "bash",
     async run(command, options) {

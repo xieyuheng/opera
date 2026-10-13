@@ -1,7 +1,7 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 import type { LockService } from "@windbell/lock.js/lock"
-import { makeLocalBash } from "@windbell/sh.js/local-sh"
+import { makeBash } from "@windbell/sh.js/bash"
 import { ok } from "@windbell/std.js/result"
 import type { Database } from "../database/Database.ts"
 import { makeSessionsService } from "./SessionsService.ts"
@@ -48,7 +48,7 @@ test("sessions interpret locks the session and rejects concurrent runs", async (
 
   const sessions = makeSessionsService({
     database,
-    sh: makeLocalBash(),
+    sh: makeBash(),
     lock,
   })
 

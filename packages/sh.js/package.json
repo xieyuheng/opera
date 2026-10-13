@@ -23,6 +23,7 @@
   "exports": {
     ".": "./src/index.ts",
     "./sh": "./src/sh/index.ts",
-    "./local-sh": "./src/local-sh/index.ts"
+    "./bash": "./src/bash/index.ts",
+    "./pwsh": "./src/pwsh/index.ts"
   }
 }

@@ -5,7 +5,7 @@ import Path from "node:path"
 import { test } from "node:test"
 import { makeLocalFileSystem } from "@windbell/fs.js/local-fs"
 import type { LockService } from "@windbell/lock.js/lock"
-import { makeLocalBash } from "@windbell/sh.js/local-sh"
+import { makeBash } from "@windbell/sh.js/bash"
 import { makePath } from "@windbell/std.js/path"
 import { ok } from "@windbell/std.js/result"
 import { makeSemiosis } from "./Semiosis.ts"
@@ -22,7 +22,7 @@ test("makeSemiosis manages workspaces and sessions", async (t) => {
     fs: makeLocalFileSystem(),
     path,
     root,
-    sh: makeLocalBash(),
+    sh: makeBash(),
   })
 
   const workspace = await semiosis.workspaces.ensure({
@@ -82,7 +82,7 @@ test("makeSemiosis propagates a lock service to sessions", async (t) => {
     fs: makeLocalFileSystem(),
     path,
     root,
-    sh: makeLocalBash(),
+    sh: makeBash(),
     lock,
   })
 
@@ -112,7 +112,7 @@ test("makeSemiosis creates a file lock from lockRoot", async (t) => {
     fs: makeLocalFileSystem(),
     path,
     root,
-    sh: makeLocalBash(),
+    sh: makeBash(),
     lockRoot,
   })
 

@@ -1,4 +1,4 @@
-import { makeLocalBash } from "@windbell/sh.js/local-sh"
+import { makeBash } from "@windbell/sh.js/bash"
 import { formatShellOutput } from "../formatShellOutput.ts"
 import type { ToolHandler } from "../../tool/index.ts"
 
@@ -11,7 +11,7 @@ export type BashToolHandlerOptions = {
 export function makeBashToolHandler(
   options: BashToolHandlerOptions,
 ): ToolHandler {
-  const sh = makeLocalBash()
+  const sh = makeBash()
 
   return async (args, handlerOptions) => {
     const command = args.command as string

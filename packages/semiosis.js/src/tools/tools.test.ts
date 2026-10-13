@@ -10,7 +10,7 @@ import {
   makeDefaultToolRouter,
 } from "./makeDefaultToolRouter.ts"
 import { makePwshToolSign } from "./pwsh/index.ts"
-import { resolvePwshPath } from "@windbell/sh.js/local-sh"
+import { resolvePwshPath } from "@windbell/sh.js/pwsh"
 
 test("platformShellName chooses bash on posix and pwsh on win32", () => {
   assert.equal(platformShellName("linux"), "bash")
