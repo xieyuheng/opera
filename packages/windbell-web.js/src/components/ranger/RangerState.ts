@@ -1,4 +1,4 @@
-import { makeHttpFileSystemClient } from "@windbell/fs.js/http-fs/client"
+import { makeHttpFileSystemClient } from "@windbell/fs-api.js/client"
 import type { FileSystemEntry } from "@windbell/fs.js/fs"
 import { reactive } from "vue"
 import { isSamePath, parentPath } from "./RangerPath.ts"

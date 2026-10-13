@@ -20,7 +20,8 @@
     "@windbell/fs.js": "workspace:*",
     "@windbell/std.js": "workspace:*",
     "@windbell/sh.js": "workspace:*",
-    "@windbell/windbell-api.js": "workspace:*"
+    "@windbell/windbell-api.js": "workspace:*",
+    "@windbell/fs-api.js": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.3.3",

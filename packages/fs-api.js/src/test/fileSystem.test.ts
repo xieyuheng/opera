@@ -5,7 +5,7 @@ import Path from "node:path"
 import { test } from "node:test"
 import type { Result } from "@windbell/std.js/result"
 import { unwrap } from "@windbell/std.js/result"
-import type { FileSystemError, FileSystemWatchEvent } from "../../fs/index.ts"
+import type { FileSystemError, FileSystemWatchEvent } from "@windbell/fs.js/fs"
 import { makeHttpFileSystemClient } from "../client/index.ts"
 import { makeHttpFileSystemRouter } from "../router/index.ts"
 import { startHttpFileSystemServer } from "../server/index.ts"
@@ -23,7 +23,7 @@ test("GET /health", async () => {
   assert.equal(response.status, 200)
   assert.deepEqual(await response.json(), {
     ok: true,
-    service: "http-fs",
+    service: "fs-api",
   })
 })
 

@@ -13,8 +13,8 @@ import type {
   FileSystemStat,
   FileSystemWatchEvent,
   FileType,
-} from "../../fs/index.ts"
-import type { FileSystemError } from "../../fs/index.ts"
+} from "@windbell/fs.js/fs"
+import type { FileSystemError } from "@windbell/fs.js/fs"
 import { err, ok, type Result } from "@windbell/std.js/result"
 import {
   BooleanSchema,

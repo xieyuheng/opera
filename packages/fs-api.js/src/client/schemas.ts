@@ -4,7 +4,7 @@ import type {
   FileSystemEntry,
   FileSystemError,
   FileType,
-} from "../../fs/index.ts"
+} from "@windbell/fs.js/fs"
 import type { Result } from "@windbell/std.js/result"
 
 const JsonValueSchema: z.ZodType<Json> = z.lazy(() =>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { makeHttpFileSystemClient } from "@windbell/fs.js/http-fs/client"
+import { makeHttpFileSystemClient } from "@windbell/fs-api.js/client"
 import type { FileSystemEntry } from "@windbell/fs.js/fs"
 import { unwrap } from "@windbell/std.js/result"
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"

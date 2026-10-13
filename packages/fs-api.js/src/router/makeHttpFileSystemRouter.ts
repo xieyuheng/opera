@@ -1,9 +1,9 @@
 import { Hono, type Context } from "hono"
 import { HTTPException } from "hono/http-exception"
 import { streamSSE } from "hono/streaming"
-import type { FileSystem } from "../../fs/index.ts"
-import type { FileSystemError } from "../../fs/index.ts"
-import { makeLocalFileSystem } from "../../local-fs/index.ts"
+import type { FileSystem } from "@windbell/fs.js/fs"
+import type { FileSystemError } from "@windbell/fs.js/fs"
+import { makeLocalFileSystem } from "@windbell/fs.js/local-fs"
 
 export type HttpFileSystemRouterOptions = {
   fs?: FileSystem
@@ -18,7 +18,7 @@ export function makeHttpFileSystemRouter(
   const fs = options.fs ?? makeLocalFileSystem()
 
   app.get("/health", (c) => {
-    return c.json({ ok: true, service: "http-fs" })
+    return c.json({ ok: true, service: "fs-api" })
   })
 
   app.post("/read-bytes", async (c) => {

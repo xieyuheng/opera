@@ -15,10 +15,10 @@
     "@hono/node-server": "2.1.4",
     "@windbell/semiosis.js": "workspace:*",
     "hono": "4.13.13",
-    "@windbell/fs.js": "workspace:*",
     "@windbell/sh.js": "workspace:*",
     "@windbell/http.js": "workspace:*",
-    "zod": "^4.6.5"
+    "zod": "^4.6.5",
+    "@windbell/fs-api.js": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

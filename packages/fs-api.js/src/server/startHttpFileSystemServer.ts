@@ -1,5 +1,5 @@
 import { Hono } from "hono"
-import type { FileSystem } from "../../fs/index.ts"
+import type { FileSystem } from "@windbell/fs.js/fs"
 import { makeHttpFileSystemRouter } from "../router/index.ts"
 import { serveAndWait } from "./serveAndWait.ts"
 

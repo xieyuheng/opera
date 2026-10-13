@@ -1,5 +1,5 @@
 import process from "node:process"
-import { makeHttpFileSystemRouter } from "@windbell/fs.js/http-fs/router"
+import { makeHttpFileSystemRouter } from "@windbell/fs-api.js/router"
 import {
   makeDustbinSessionsService,
   makeDustbinWorkspacesService,

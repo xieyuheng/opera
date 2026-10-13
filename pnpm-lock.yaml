@@ -25,11 +25,14 @@ importers:
         specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
         version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
 
-  packages/fs.js:
+  packages/fs-api.js:
     dependencies:
       '@hono/node-server':
         specifier: 2.1.4
         version: 2.1.4(hono@4.13.13)
+      '@windbell/fs.js':
+        specifier: workspace:*
+        version: link:../fs.js
       '@windbell/http.js':
         specifier: workspace:*
         version: link:../http.js
@@ -42,6 +45,22 @@ importers:
       zod:
         specifier: ^4.6.5
         version: 4.6.5
+    devDependencies:
+      '@types/node':
+        specifier: ^26.6.5
+        version: 26.6.5
+      prettier:
+        specifier: ^3.9.10
+        version: 3.9.10
+      typescript:
+        specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
+        version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
+
+  packages/fs.js:
+    dependencies:
+      '@windbell/std.js':
+        specifier: workspace:*
+        version: link:../std.js
     devDependencies:
       '@types/node':
         specifier: ^26.6.5
@@ -158,9 +177,9 @@ importers:
       '@hono/node-server':
         specifier: 2.1.4
         version: 2.1.4(hono@4.13.13)
-      '@windbell/fs.js':
+      '@windbell/fs-api.js':
         specifier: workspace:*
-        version: link:../fs.js
+        version: link:../fs-api.js
       '@windbell/http.js':
         specifier: workspace:*
         version: link:../http.js
@@ -226,6 +245,9 @@ importers:
       '@unhead/vue':
         specifier: 3.4.2
         version: 3.4.2(@oxc-project/types@0.153.0)(lightningcss@1.33.0)(rolldown@1.2.13)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(yaml@2.9.1))(vue@3.5.43(typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2))
+      '@windbell/fs-api.js':
+        specifier: workspace:*
+        version: link:../fs-api.js
       '@windbell/fs.js':
         specifier: workspace:*
         version: link:../fs.js
