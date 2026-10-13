@@ -14,7 +14,7 @@ import type {
   WorkspaceData,
   WorkspaceDustbinData,
 } from "../api/types.ts"
-import type { WindbellHealth } from "../service/health.ts"
+import type { WindbellHealth } from "../services/Health.ts"
 import { JsonDataSchema, VoidSchema } from "./schemas.ts"
 
 export type WindbellClientConfig = {

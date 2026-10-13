@@ -189,6 +189,9 @@ importers:
       '@windbell/sh.js':
         specifier: workspace:*
         version: link:../sh.js
+      '@windbell/std.js':
+        specifier: workspace:*
+        version: link:../std.js
       hono:
         specifier: 4.13.13
         version: 4.13.13

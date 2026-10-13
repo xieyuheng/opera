@@ -14,7 +14,8 @@ import { makePwsh } from "@windbell/sh.js/pwsh"
 import { Hono } from "hono"
 import { cors } from "hono/cors"
 import Path from "node:path"
-import { health } from "../service/index.ts"
+import { makeConfigController } from "../controllers/ConfigController.ts"
+import { makeHealthController } from "../controllers/HealthController.ts"
 import type { WindbellRouterOptions } from "./WindbellRouterOptions.ts"
 import { makeDomainRouter } from "./makeDomainRouter.ts"
 import { makePageRouter } from "./makePageRouter.ts"
@@ -36,23 +37,22 @@ export function makeWindbellRouter(options: WindbellRouterOptions): Hono {
   const providers = makeProvidersService({ database: options.database })
   const settings = makeSettingsService({ database: options.database })
 
+  const health = makeHealthController()
+  const config = makeConfigController({
+    databaseRoot: options.database.root,
+    lockRoot,
+    shellName: process.platform === "win32" ? "pwsh" : "bash",
+  })
+
   if (options.corsOrigin !== undefined) {
     app.use("*", cors({ origin: options.corsOrigin }))
   }
 
-  app.get("/api/health", async (c) => {
-    return c.json(await health())
-  })
+  app.get("/api/health", () => health.get({}))
 
   app.route("/api/fs", makeHttpFileSystemRouter())
 
-  app.get("/api/config", (c) => {
-    return c.json({
-      databaseRoot: options.database.root,
-      lockRoot,
-      shellName: process.platform === "win32" ? "pwsh" : "bash",
-    })
-  })
+  app.get("/api/config", () => config.get({}))
 
   app.route(
     "/api/themes",

@@ -1,16 +1,7 @@
 import type * as S from "@windbell/semiosis.js"
 import { Hono } from "hono"
-import { HTTPException } from "hono/http-exception"
-import type {
-  DustbinSessionDataItem,
-  HomeData,
-  ProviderData,
-  ProviderListData,
-  SessionData,
-  SessionDustbinData,
-  WorkspaceData,
-  WorkspaceDustbinData,
-} from "../api/types.ts"
+import { makePagesController } from "../controllers/PagesController.ts"
+import * as PagesServices from "../services/Pages.ts"
 
 export type PageRouterOptions = {
   database: S.Database
@@ -20,186 +11,72 @@ export type PageRouterOptions = {
 
 export function makePageRouter(options: PageRouterOptions): Hono {
   const app = new Hono()
-  const { database, providers, settings } = options
-
-  app.get("/home", async () => {
-    const [workspaces, sessions] = await Promise.all([
-      database.workspaces.list(),
-      database.sessions.list({ workspaceId: undefined }),
-    ])
-
-    const data: HomeData = {
-      workspaces,
-      sessionsByWorkspaceId: groupSessionsByWorkspace(sessions),
-    }
-
-    return Response.json(data)
+  const pages = makePagesController({
+    loadHomeData: PagesServices.LoadHomeData({
+      database: options.database,
+    }),
+    loadWorkspaceData: PagesServices.LoadWorkspaceData({
+      database: options.database,
+    }),
+    loadSessionData: PagesServices.LoadSessionData({
+      database: options.database,
+    }),
+    loadSessionDustbinData: PagesServices.LoadSessionDustbinData({
+      database: options.database,
+    }),
+    loadWorkspaceDustbinData: PagesServices.LoadWorkspaceDustbinData({
+      database: options.database,
+    }),
+    loadProviderListData: PagesServices.LoadProviderListData({
+      providers: options.providers,
+      settings: options.settings,
+    }),
+    loadProviderData: PagesServices.LoadProviderData({
+      providers: options.providers,
+      settings: options.settings,
+    }),
   })
 
-  app.get("/workspaces/:workspaceId", async (c) => {
-    const workspaceId = c.req.param("workspaceId")
-    const workspace = await database.workspaces.get(workspaceId)
+  app.get("/home", () => pages.home({}))
 
-    if (workspace === undefined) {
-      throw new HTTPException(404, { message: "workspace not found" })
-    }
+  app.get("/workspaces/:workspaceId", (c) =>
+    pages.workspace({ workspaceId: c.req.param("workspaceId") }),
+  )
 
-    const indexes = await database.sessions.list({ workspaceId })
-    const sessions: Array<S.Session> = []
+  app.get("/sessions/:sessionId", (c) =>
+    pages.session({ sessionId: c.req.param("sessionId") }),
+  )
 
-    for (const index of indexes) {
-      const session = await database.sessions.get(index.id)
-      if (session !== undefined) sessions.push(session)
-    }
+  app.get("/session-dustbin", (c) =>
+    pages.sessionDustbin({
+      workspaceId: c.req.query("workspaceId") || undefined,
+    }),
+  )
 
-    const data: WorkspaceData = { workspace, sessions }
-    return Response.json(data)
-  })
+  app.get("/workspace-dustbin", () => pages.workspaceDustbin({}))
 
-  app.get("/sessions/:sessionId", async (c) => {
-    const sessionId = c.req.param("sessionId")
-    const session = await database.sessions.get(sessionId)
+  app.get("/provider-list", () => pages.providerList({}))
 
-    if (session === undefined) {
-      throw new HTTPException(404, { message: "session not found" })
-    }
+  app.get("/providers/:providerName", (c) =>
+    pages.provider({ providerName: c.req.param("providerName") }),
+  )
 
-    const workspace = await database.workspaces.get(session.workspaceId)
-    if (workspace === undefined) {
-      throw new HTTPException(404, { message: "workspace not found" })
-    }
-
-    const data: SessionData = { session, workspace }
-    return Response.json(data)
-  })
-
-  app.get("/session-dustbin", async (c) => {
-    const workspaceId = c.req.query("workspaceId")
-    const indexes = await database.dustbin.sessions.list({
-      workspaceId: workspaceId === "" ? undefined : workspaceId,
-    })
-    const sessions: Array<DustbinSessionDataItem> = []
-
-    for (const index of indexes) {
-      const session = await database.dustbin.sessions.get(index.id)
-      sessions.push({
-        ...index,
-        context: session?.context ?? [],
-      })
-    }
-
-    const data: SessionDustbinData = { sessions }
-    return Response.json(data)
-  })
-
-  app.get("/workspace-dustbin", async () => {
-    const [workspaces, sessions] = await Promise.all([
-      database.dustbin.workspaces.list(),
-      database.dustbin.sessions.list({ workspaceId: undefined }),
-    ])
-
-    const data: WorkspaceDustbinData = {
-      workspaces,
-      sessionsByWorkspaceId: groupSessionsByWorkspace(sessions),
-    }
-
-    return Response.json(data)
-  })
-
-  app.get("/provider-list", async () => {
-    const [providerConfigs, currentSettings] = await Promise.all([
-      providers.list(),
-      settings.get(),
-    ])
-    const entries = []
-
-    for (const providerConfig of providerConfigs) {
-      const [apiKeyConfigured, models] = await Promise.all([
-        providers.getApiKeyStatus(providerConfig.name),
-        providers.listModels({ providerName: providerConfig.name }),
-      ])
-
-      entries.push({
-        name: providerConfig.name,
-        baseUrl: providerConfig.baseUrl,
-        defaultModel: providerConfig.defaultModel,
-        apiKeyConfigured,
-        isDefaultProvider:
-          currentSettings.defaultProvider === providerConfig.name,
-        models: models.map((model) => ({
-          name: model.name,
-          pinned: model.pinned,
-          isDefault: providerConfig.defaultModel === model.name,
-        })),
-      })
-    }
-
-    const data: ProviderListData = { providers: entries }
-    return Response.json(data)
-  })
-
-  app.get("/providers/:providerName", async (c) => {
-    const providerName = c.req.param("providerName")
-    const [providerConfigs, currentSettings, apiKeyConfigured, localModels] =
-      await Promise.all([
-        providers.list(),
-        settings.get(),
-        providers.getApiKeyStatus(providerName),
-        providers.listModels({ providerName }),
-      ])
-    const providerConfig = providerConfigs.find(
-      (config) => config.name === providerName,
-    )
-
-    if (providerConfig === undefined) {
-      throw new HTTPException(404, { message: "provider not found" })
-    }
-
-    let models = localModels
-    let warning: string | undefined
-
-    if (apiKeyConfigured) {
-      try {
-        models = await providers.listModels({
-          providerName,
-          all: true,
-        })
-      } catch (error) {
-        warning = error instanceof Error ? error.message : String(error)
-      }
-    } else {
-      warning = "api key is not configured; showing local models only"
-    }
-
-    const data: ProviderData = {
-      providerConfig,
-      apiKeyConfigured,
-      isDefaultProvider: currentSettings.defaultProvider === providerName,
-      warning,
-      models,
-    }
-
-    return Response.json(data)
-  })
-
-  app.onError((error) => {
-    const status = error instanceof HTTPException ? error.status : 500
-    const message = error instanceof Error ? error.message : String(error)
-    return Response.json({ error: { message } }, { status })
-  })
+  app.onError((error) => sendError(error))
 
   return app
 }
 
-function groupSessionsByWorkspace<T extends { workspaceId: S.WorkspaceId }>(
-  sessions: Array<T>,
-): Record<S.WorkspaceId, Array<T>> {
-  const grouped: Record<S.WorkspaceId, Array<T>> = {}
+function sendError(error: unknown): Response {
+  const status = getHttpStatus(error)
+  const message = error instanceof Error ? error.message : String(error)
+  return Response.json({ error: { message } }, { status })
+}
 
-  for (const session of sessions) {
-    grouped[session.workspaceId] ??= []
-    grouped[session.workspaceId].push(session)
+function getHttpStatus(error: unknown): number {
+  if (error !== null && typeof error === "object") {
+    const status = (error as { status?: unknown }).status
+    if (typeof status === "number") return status
   }
 
-  return grouped
+  return 500
 }

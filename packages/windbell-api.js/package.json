@@ -13,12 +13,13 @@
   },
   "dependencies": {
     "@hono/node-server": "2.1.4",
-    "@windbell/semiosis.js": "workspace:*",
-    "hono": "4.13.13",
-    "@windbell/sh.js": "workspace:*",
+    "@windbell/fs-api.js": "workspace:*",
     "@windbell/http.js": "workspace:*",
-    "zod": "^4.6.5",
-    "@windbell/fs-api.js": "workspace:*"
+    "@windbell/semiosis.js": "workspace:*",
+    "@windbell/sh.js": "workspace:*",
+    "@windbell/std.js": "workspace:*",
+    "hono": "4.13.13",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
@@ -30,6 +31,6 @@
     "./client": "./src/client/index.ts",
     "./router": "./src/router/index.ts",
     "./server": "./src/server/index.ts",
-    "./service": "./src/service/index.ts"
+    "./service": "./src/services/index.ts"
   }
 }
