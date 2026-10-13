@@ -7,7 +7,9 @@ export type DevOptions = {
   hostname: string
   apiPort: number
   webPort: number
+  windbellRoot: string
   databaseRoot: string
+  lockRoot: string
   webSourceRoot: string
 }
 
@@ -25,8 +27,10 @@ export function resolveDevOptions(
     readOptionalString(options, "--web-port") ?? process.env.WEB_PORT ?? "5173",
   )
 
-  const databaseRoot =
-    readOptionalString(options, "--database-root") ?? S.defaultDatabaseRoot()
+  const windbellRoot =
+    readOptionalString(options, "--windbell-root") ?? S.defaultWindbellRoot()
+  const databaseRoot = Path.join(windbellRoot, "database")
+  const lockRoot = Path.join(windbellRoot, "var", "locks")
 
   const webSourceRoot =
     readOptionalString(options, "--web-source-root") ?? defaultWebSourceRoot()
@@ -35,7 +39,9 @@ export function resolveDevOptions(
     hostname,
     apiPort,
     webPort,
+    windbellRoot,
     databaseRoot,
+    lockRoot,
     webSourceRoot,
   }
 }

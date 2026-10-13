@@ -8,7 +8,7 @@ Set-Location (Join-Path $PSScriptRoot '..')
 
 $databaseDir = Join-Path ([IO.Path]::GetTempPath()) ([IO.Path]::GetRandomFileName())
 New-Item -ItemType Directory -Path $databaseDir | Out-Null
-$env:WINDBELL_DATABASE = $databaseDir
+$env:WINDBELL_HOME = $databaseDir
 
 try {
   $snapshotDir = 'snapshot/win32'

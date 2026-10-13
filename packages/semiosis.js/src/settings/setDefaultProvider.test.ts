@@ -3,7 +3,7 @@ import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
-import { makeNodeDatabase } from "../database/index.ts"
+import { makeNodeDatabase } from "../node/makeNodeDatabase.ts"
 import { setDefaultProvider } from "./setDefaultProvider.ts"
 
 test("setDefaultProvider writes settings.defaultProvider", async () => {

@@ -1,6 +1,6 @@
 import { makeFileLockService } from "@windbell/lock.js/file-lock"
 import type { Database } from "../database/Database.ts"
-import { defaultLockRoot } from "../database/defaultVarRoot.ts"
+import { defaultLockRoot } from "../node/defaultPaths.ts"
 import type { SessionId } from "./Session.ts"
 
 const lockTtlMs = 60_000

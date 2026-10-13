@@ -15,6 +15,8 @@ export async function runDev(options: DevOptions): Promise<void> {
     hostname: options.hostname,
     port: options.apiPort,
     corsOrigin: undefined,
+    windbellRoot: options.windbellRoot,
+    lockRoot: options.lockRoot,
     webDistRoot: undefined,
   })
 

@@ -10,7 +10,7 @@ import {
   readApiKey,
   writeApiKey,
 } from "./apiKey.ts"
-import { makeNodeDatabase } from "./index.ts"
+import { makeNodeDatabase } from "../node/makeNodeDatabase.ts"
 
 test("write, read and delete provider api key", async () => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-api-key-"))

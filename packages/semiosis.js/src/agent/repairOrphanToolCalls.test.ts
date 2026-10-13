@@ -3,7 +3,7 @@ import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
-import { makeNodeDatabase } from "../database/index.ts"
+import { makeNodeDatabase } from "../node/makeNodeDatabase.ts"
 import type { Model } from "../model/index.ts"
 import {
   AssistantSign,

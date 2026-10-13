@@ -28,9 +28,11 @@ export function makeStartHandler() {
       process.env.CORS_ORIGIN ??
       defaultCorsOrigin
 
-    const databaseRoot =
-      readOptionalString(context.options, "--database-root") ??
-      S.defaultDatabaseRoot()
+    const windbellRoot =
+      readOptionalString(context.options, "--windbell-root") ??
+      S.defaultWindbellRoot()
+    const databaseRoot = Path.join(windbellRoot, "database")
+    const lockRoot = Path.join(windbellRoot, "var", "locks")
 
     const webDistRoot =
       readOptionalString(context.options, "--web-dist-root") ??
@@ -51,6 +53,8 @@ export function makeStartHandler() {
       hostname,
       port,
       corsOrigin,
+      windbellRoot,
+      lockRoot,
       webDistRoot,
     })
 

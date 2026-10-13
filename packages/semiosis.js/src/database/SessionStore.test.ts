@@ -3,7 +3,7 @@ import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
-import { makeNodeDatabase } from "./index.ts"
+import { makeNodeDatabase } from "../node/makeNodeDatabase.ts"
 import { UserSign } from "../sign/index.ts"
 
 test("SessionStore stores turns and slices context by sequence", async () => {

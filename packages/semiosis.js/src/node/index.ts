@@ -1,4 +1,7 @@
 export * from "../index.ts"
+export * from "./defaultPaths.ts"
+export * from "./jsonFile.ts"
+export * from "./makeNodeDatabase.ts"
 export * from "../database/index.ts"
 export * from "../session/index.ts"
 export * from "../turn/index.ts"

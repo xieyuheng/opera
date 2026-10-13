@@ -1,6 +1,6 @@
 import process from "node:process"
 import { makeHttpFileSystemRouter } from "@windbell/fs.js/http-fs/router"
-import { defaultLockRoot } from "@windbell/semiosis.js/node"
+import { defaultWindbellRoot } from "@windbell/semiosis.js/node"
 import { makeShellRouter } from "@windbell/sh.js/http-sh/router"
 import { Hono } from "hono"
 import { cors } from "hono/cors"
@@ -11,7 +11,8 @@ import { makeThemesRouter } from "./makeThemesRouter.ts"
 
 export function makeWindbellRouter(options: WindbellRouterOptions): Hono {
   const app = new Hono()
-  const lockRoot = options.lockRoot ?? defaultLockRoot()
+  const windbellRoot = options.windbellRoot ?? defaultWindbellRoot()
+  const lockRoot = options.lockRoot ?? Path.join(windbellRoot, "var", "locks")
 
   if (options.corsOrigin !== undefined) {
     app.use("*", cors({ origin: options.corsOrigin }))
