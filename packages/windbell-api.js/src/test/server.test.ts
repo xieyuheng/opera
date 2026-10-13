@@ -9,9 +9,11 @@ import { makeWindbellRouter } from "../router/index.ts"
 test("windbell router", async (t) => {
   const root = await mkdtemp(Path.join(tmpdir(), "windbell-api-"))
   const database = S.makeNodeDatabase({ root })
+  const lockRoot = Path.join(root, "locks")
   const app = makeWindbellRouter({
     database,
     corsOrigin: undefined,
+    lockRoot,
   })
 
   t.after(async () => {
@@ -117,6 +119,7 @@ test("windbell router", async (t) => {
     assert.equal(response.status, 200)
     assert.deepEqual(await response.json(), {
       databaseRoot: database.root,
+      lockRoot,
       shellName: process.platform === "win32" ? "pwsh" : "bash",
     })
   }

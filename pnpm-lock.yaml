@@ -69,6 +69,25 @@ importers:
         specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
         version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
 
+  packages/lock.js:
+    dependencies:
+      '@windbell/fs.js':
+        specifier: workspace:*
+        version: link:../fs.js
+      '@windbell/std.js':
+        specifier: workspace:*
+        version: link:../std.js
+    devDependencies:
+      '@types/node':
+        specifier: ^26.6.5
+        version: 26.6.5
+      prettier:
+        specifier: ^3.9.10
+        version: 3.9.10
+      typescript:
+        specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
+        version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
+
   packages/semiosis.js:
     dependencies:
       '@windbell/cli.js':
@@ -80,6 +99,9 @@ importers:
       '@windbell/http.js':
         specifier: workspace:*
         version: link:../http.js
+      '@windbell/lock.js':
+        specifier: workspace:*
+        version: link:../lock.js
       '@windbell/sh.js':
         specifier: workspace:*
         version: link:../sh.js

@@ -101,6 +101,9 @@ export function makeHttpFileSystemRouter(
     "batch-read-bytes": async (body) =>
       encodeBytesRecord(await fs.batchReadBytes(readPaths(body))),
 
+    stat: async (body) => fs.stat(readPath(body)),
+    "create-file-exclusive": async (body) =>
+      fs.createFileExclusive(readPath(body), readText(body)),
     write: async (body) => fs.write(readPath(body), readText(body)),
     "batch-write": async (body) => fs.batchWrite(readFilesText(body)),
     "batch-write-bytes": async (body) =>

@@ -11,6 +11,7 @@ export async function startWindbellServer(
   const app = makeWindbellRouter({
     database: options.database,
     corsOrigin: options.corsOrigin,
+    lockRoot: options.lockRoot,
   })
 
   if (options.webDistRoot !== undefined) {

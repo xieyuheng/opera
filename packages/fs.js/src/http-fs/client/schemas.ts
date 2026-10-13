@@ -31,6 +31,12 @@ export const FileSystemPlatformSchema = z.object({
   pathStyle: PathStyleSchema,
 })
 
+export const FileSystemStatSchema = z.object({
+  kind: z.enum(["File", "Directory"]),
+  size: z.number(),
+  mtimeMs: z.number(),
+})
+
 export const FileSystemErrorSchema: z.ZodType<FileSystemError> = z.object({
   type: z.string(),
   who: z.string(),

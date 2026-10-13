@@ -4,6 +4,7 @@ set -e
 
 database_dir="$(mktemp -d)"
 export WINDBELL_DATABASE="$database_dir"
+export WINDBELL_VAR="$database_dir/var"
 trap 'rm -rf "$database_dir"' EXIT
 
 snapshot_dir="snapshot/linux"

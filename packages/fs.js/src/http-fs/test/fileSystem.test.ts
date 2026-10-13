@@ -122,6 +122,20 @@ test("fileSystem client and server", async (t) => {
   )
   assert.equal(await value(client.classifyFile(textFile)), "text")
 
+  const textFileStat = await value(client.stat(textFile))
+  assert.equal(textFileStat.kind, "File")
+  assert.equal(textFileStat.size, new TextEncoder().encode("# Hello").length)
+  assert.equal(typeof textFileStat.mtimeMs, "number")
+
+  const exclusiveFile = Path.join(root, "exclusive.lock")
+  await value(client.createFileExclusive(exclusiveFile, "first"))
+  const conflict = await client.createFileExclusive(exclusiveFile, "second")
+  assert.equal(conflict.kind, "ErrorResult")
+  if (conflict.kind === "ErrorResult") {
+    assert.equal(conflict.error.type, "already-exists")
+  }
+  await value(client.deleteFile(exclusiveFile))
+
   const emptyFile = Path.join(root, "empty.txt")
   await value(client.ensureFile(emptyFile))
   assert.equal(await value(client.read(emptyFile)), "")

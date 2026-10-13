@@ -8,6 +8,12 @@ export type FileSystemPlatform = {
   pathStyle: PathStyle
 }
 
+export type FileSystemStat = {
+  kind: "File" | "Directory"
+  size: number
+  mtimeMs: number
+}
+
 export type FileSystem = {
   platform(): Promise<Result<FileSystemPlatform, FileSystemError>>
   home(): Promise<Result<string, FileSystemError>>
@@ -24,6 +30,11 @@ export type FileSystem = {
     paths: Array<string>,
   ): Promise<Record<string, Result<Uint8Array, FileSystemError>>>
 
+  stat(path: string): Promise<Result<FileSystemStat, FileSystemError>>
+  createFileExclusive(
+    path: string,
+    text: string,
+  ): Promise<Result<void, FileSystemError>>
   write(path: string, text: string): Promise<Result<void, FileSystemError>>
   writeBytes(
     path: string,

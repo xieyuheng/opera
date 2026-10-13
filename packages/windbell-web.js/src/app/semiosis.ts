@@ -8,6 +8,7 @@ export let semiosis: Semiosis
 
 type WebConfig = {
   databaseRoot: string
+  lockRoot: string
   shellName: string
 }
 
@@ -35,6 +36,7 @@ export async function initSemiosis(): Promise<void> {
     fs,
     path,
     root: config.databaseRoot,
+    lockRoot: config.lockRoot,
     sh,
   })
 }

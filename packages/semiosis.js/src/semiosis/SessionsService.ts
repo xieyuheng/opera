@@ -1,3 +1,4 @@
+import type { LockService } from "@windbell/lock.js/lock"
 import type { Shell } from "@windbell/sh.js/sh"
 import type { Database } from "../database/Database.ts"
 import { makeModel } from "../models/makeModel.ts"
@@ -36,9 +37,12 @@ export type SessionsService = {
 export type SessionsServiceOptions = {
   database: Database
   sh: Shell
+  lock?: LockService
 }
 
 const persona = "You are a helpful software engineer assistant."
+const lockTtlMs = 60_000
+const lockRenewIntervalMs = 20_000
 
 export function makeSessionsService(
   options: SessionsServiceOptions,
@@ -55,7 +59,105 @@ export function makeSessionsService(
     return [...toolRouter.toolSigns, PersonaSign(persona)]
   }
 
-  return {
+  async function* interpretWithLock(
+    interpretOptions: Parameters<SessionsService["interpret"]>[0],
+  ): AsyncGenerator<TurnEvent> {
+    const lockService = options.lock
+
+    if (lockService === undefined) {
+      yield* interpretUnlocked(interpretOptions)
+      return
+    }
+
+    const lockResult = await lockService.tryLock(
+      `session:${interpretOptions.sessionId}`,
+      { ttlMs: lockTtlMs },
+    )
+
+    if (lockResult.kind === "ErrorResult") {
+      yield lockErrorEvent(lockResult.error.message)
+      return
+    }
+
+    const lock = lockResult.value
+    if (lock === undefined) {
+      yield lockErrorEvent("session is already running")
+      return
+    }
+
+    const renewTimer = setInterval(() => {
+      void lock.renew().catch(() => undefined)
+    }, lockRenewIntervalMs)
+
+    try {
+      yield* interpretUnlocked(interpretOptions)
+    } finally {
+      clearInterval(renewTimer)
+      await lock.release().catch(() => undefined)
+    }
+  }
+
+  async function* interpretUnlocked(
+    interpretOptions: Parameters<SessionsService["interpret"]>[0],
+  ): AsyncGenerator<TurnEvent> {
+    const session = await database.sessions.get(interpretOptions.sessionId)
+    if (session === undefined) {
+      throw new Error(`session not found: ${interpretOptions.sessionId}`)
+    }
+
+    const workspace = await database.workspaces.get(session.workspaceId)
+    if (workspace === undefined) {
+      throw new Error(`workspace not found: ${session.workspaceId}`)
+    }
+
+    const resolved = await resolveTurn({
+      sessions: database.sessions,
+      sessionId: interpretOptions.sessionId,
+      turnId: interpretOptions.turnId,
+      model: interpretOptions.model,
+      input: interpretOptions.input,
+    })
+
+    if (resolved.kind === "error") {
+      throw new Error(resolved.message)
+    }
+
+    if (resolved.kind === "replay") {
+      for await (const sign of turnReplay({
+        sessions: database.sessions,
+        turn: resolved.turn,
+      })) {
+        yield { type: "sign", sign }
+      }
+
+      return
+    }
+
+    const model = await makeModel(resolved.turn.model, { database })
+    const toolRouter = makeShellToolRouter({
+      sh,
+      cwd: workspace.root,
+    })
+
+    const agent = await makeAgentFromSession({
+      database,
+      sessionId: interpretOptions.sessionId,
+      model,
+      shellName: sh.name,
+      makeToolRouter: () => toolRouter,
+    })
+
+    yield* turnRun({
+      sessions: database.sessions,
+      agent,
+      turn: resolved.turn,
+      input: interpretOptions.input,
+      signal: interpretOptions.signal,
+      isRetryable: isRetryableError,
+    })
+  }
+
+  const sessions: SessionsService = {
     list: (listOptions) => database.sessions.list(listOptions),
     get: (id) => database.sessions.get(id),
     put: (session) => database.sessions.put(session),
@@ -96,64 +198,10 @@ export function makeSessionsService(
       return title
     },
 
-    async *interpret(interpretOptions) {
-      const session = await database.sessions.get(interpretOptions.sessionId)
-      if (session === undefined) {
-        throw new Error(`session not found: ${interpretOptions.sessionId}`)
-      }
-
-      const workspace = await database.workspaces.get(session.workspaceId)
-      if (workspace === undefined) {
-        throw new Error(`workspace not found: ${session.workspaceId}`)
-      }
-
-      const resolved = await resolveTurn({
-        sessions: database.sessions,
-        sessionId: interpretOptions.sessionId,
-        turnId: interpretOptions.turnId,
-        model: interpretOptions.model,
-        input: interpretOptions.input,
-      })
-
-      if (resolved.kind === "error") {
-        throw new Error(resolved.message)
-      }
-
-      if (resolved.kind === "replay") {
-        for await (const sign of turnReplay({
-          sessions: database.sessions,
-          turn: resolved.turn,
-        })) {
-          yield { type: "sign", sign }
-        }
-
-        return
-      }
-
-      const model = await makeModel(resolved.turn.model, { database })
-      const toolRouter = makeShellToolRouter({
-        sh,
-        cwd: workspace.root,
-      })
-
-      const agent = await makeAgentFromSession({
-        database,
-        sessionId: interpretOptions.sessionId,
-        model,
-        shellName: sh.name,
-        makeToolRouter: () => toolRouter,
-      })
-
-      yield* turnRun({
-        sessions: database.sessions,
-        agent,
-        turn: resolved.turn,
-        input: interpretOptions.input,
-        signal: interpretOptions.signal,
-        isRetryable: isRetryableError,
-      })
-    },
+    interpret: (interpretOptions) => interpretWithLock(interpretOptions),
   }
+
+  return sessions
 }
 
 function isRetryableError(error: unknown): boolean {
@@ -167,4 +215,13 @@ function isRetryableError(error: unknown): boolean {
   }
 
   return false
+}
+
+function lockErrorEvent(message: string): TurnEvent {
+  return {
+    type: "error",
+    message,
+    retryable: false,
+    inputPersisted: false,
+  }
 }

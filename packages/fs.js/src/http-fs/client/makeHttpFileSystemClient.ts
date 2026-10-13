@@ -10,6 +10,7 @@ import type {
   FileSystem,
   FileSystemEntry,
   FileSystemPlatform,
+  FileSystemStat,
   FileSystemWatchEvent,
   FileType,
 } from "../../fs/index.ts"
@@ -23,6 +24,7 @@ import {
   FileSystemErrorSchema,
   FileSystemEntryListSchema,
   FileSystemPlatformSchema,
+  FileSystemStatSchema,
   FileTypeSchema,
   ResultRecordSchema,
   ResultSchema,
@@ -118,6 +120,26 @@ export function makeHttpFileSystemClient(
     path: "/read",
     body: (input) => input,
     output: ResultSchema(StringSchema),
+  })
+
+  const statEndpoint = makeJsonEndpoint<
+    PathInput,
+    Result<FileSystemStat, FileSystemError>
+  >(config, {
+    method: "POST",
+    path: "/stat",
+    body: (input) => input,
+    output: ResultSchema(FileSystemStatSchema),
+  })
+
+  const createFileExclusiveEndpoint = makeJsonEndpoint<
+    WriteInput,
+    Result<void, FileSystemError>
+  >(config, {
+    method: "POST",
+    path: "/create-file-exclusive",
+    body: (input) => input,
+    output: ResultSchema(VoidSchema),
   })
 
   const writeEndpoint = makeJsonEndpoint<
@@ -449,6 +471,14 @@ export function makeHttpFileSystemClient(
     batchReadBytes: (paths) =>
       callBatch("batch-read-bytes", batchReadBytesEndpoint, { paths }, paths),
 
+    stat: (path) => callResult("stat", statEndpoint, { path }, { path }),
+    createFileExclusive: (path, text) =>
+      callResult(
+        "create-file-exclusive",
+        createFileExclusiveEndpoint,
+        { path, text },
+        { path },
+      ),
     write: (path, text) =>
       callResult("write", writeEndpoint, { path, text }, { path }),
     writeBytes,

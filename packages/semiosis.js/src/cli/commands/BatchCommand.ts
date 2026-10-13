@@ -6,7 +6,7 @@ import { agentInterpret } from "../../agent/index.ts"
 import type { Database } from "../../database/index.ts"
 import { formatSign } from "../../format/index.ts"
 import { readPromptBatch } from "../../prompts/index.ts"
-import { getOrMakeSession } from "../../session/index.ts"
+import { getOrMakeSession, withSessionLock } from "../../session/index.ts"
 import { PersonaSign, UserSign, type Sign } from "../../sign/index.ts"
 import { makeDefaultToolRouter } from "../../tools/index.ts"
 import {
@@ -62,31 +62,37 @@ export function makeBatchHandler(options: BatchCommandOptions) {
       initialSigns,
     })
 
-    const agent = await makeAgentForCli({
-      database: options.database,
-      sessionId: session.id,
-      model,
-      toolRouter,
-    })
-
     for (const sign of toolRouter.toolSigns) {
       console.log(formatSign(sign))
     }
     console.log(formatSign(personaSign))
 
-    for (const prompt of promptBatch.prompts) {
-      const userSign = UserSign(prompt)
+    await withSessionLock({
+      database: options.database,
+      sessionId: session.id,
+      action: async () => {
+        const agent = await makeAgentForCli({
+          database: options.database,
+          sessionId: session.id,
+          model,
+          toolRouter,
+        })
 
-      try {
-        for await (const event of agentInterpret(agent, [userSign])) {
-          if (event.type !== "sign") continue
+        for (const prompt of promptBatch.prompts) {
+          const userSign = UserSign(prompt)
 
-          console.log(formatSign(event.sign))
+          try {
+            for await (const event of agentInterpret(agent, [userSign])) {
+              if (event.type !== "sign") continue
+
+              console.log(formatSign(event.sign))
+            }
+          } catch (error) {
+            console.error(`[error] ${errorReport(error)}`)
+            return
+          }
         }
-      } catch (error) {
-        console.error(`[error] ${errorReport(error)}`)
-        return
-      }
-    }
+      },
+    })
   }
 }

@@ -8,6 +8,7 @@ import type {
   FileSystem,
   FileSystemEntry,
   FileSystemPlatform,
+  FileSystemStat,
   FileSystemWatchEvent,
   FileType,
 } from "../fs/index.ts"
@@ -48,6 +49,8 @@ export function makeLocalFileSystem(): FileSystem {
     writeBytes,
     batchWrite,
     batchWriteBytes,
+    stat,
+    createFileExclusive,
     list,
     listEntries,
     listRecursive,
@@ -180,6 +183,42 @@ async function batchReadBytes(
   }
 
   return results
+}
+
+async function stat(
+  path: string,
+): Promise<Result<FileSystemStat, FileSystemError>> {
+  return run(
+    "stat",
+    async () => {
+      const value = await fs.stat(path)
+      return {
+        kind: value.isDirectory() ? "Directory" : "File",
+        size: value.size,
+        mtimeMs: value.mtimeMs,
+      }
+    },
+    { path },
+  )
+}
+
+async function createFileExclusive(
+  path: string,
+  text: string,
+): Promise<Result<void, FileSystemError>> {
+  return run(
+    "create-file-exclusive",
+    async () => {
+      const file = await fs.open(path, "wx")
+
+      try {
+        await file.writeFile(text, "utf8")
+      } finally {
+        await file.close()
+      }
+    },
+    { path },
+  )
 }
 
 async function writeText(

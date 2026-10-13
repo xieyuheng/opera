@@ -2,7 +2,11 @@ import type { Database } from "../database/index.ts"
 import type { Model } from "../model/index.ts"
 import type { Workspace } from "../workspace/Workspace.ts"
 import { PersonaSign } from "../sign/index.ts"
-import { createSession, makeAgentFromSession } from "../session/index.ts"
+import {
+  createSession,
+  makeAgentFromSession,
+  withSessionLock,
+} from "../session/index.ts"
 import { makeDefaultToolRouter } from "../tools/index.ts"
 import { makeExitCommand } from "./commands/ExitCommand.ts"
 import { makeHelpCommand } from "./commands/HelpCommand.ts"
@@ -58,35 +62,42 @@ export async function startAgentRepl(
       title: "untitled",
       initialSigns,
     })
-    const agent = await makeAgentFromSession({
+
+    await withSessionLock({
       database: options.database,
       sessionId: session.id,
-      model: options.model,
-      makeToolRouter: () => toolRouter,
+      action: async () => {
+        const agent = await makeAgentFromSession({
+          database: options.database,
+          sessionId: session.id,
+          model: options.model,
+          makeToolRouter: () => toolRouter,
+        })
+
+        const inputHandler = makeAgentReplInputHandler(agent, repl)
+
+        await inputHandler(firstInput)
+        await generateAndPrintTitle(agent, repl, {
+          onTitleChange: makeTitleChangeHandler(options.database, session),
+        })
+
+        repl.registerCommand(
+          makeTitleCommand(agent, repl, {
+            onTitleChange: makeTitleChangeHandler(options.database, session),
+          }),
+        )
+        repl.registerCommand(
+          makeInfoCommand(repl, {
+            database: options.database,
+            workspace: options.workspace,
+            model: options.model,
+            sessionId: session.id,
+          }),
+        )
+
+        await repl.run(inputHandler, "> ")
+      },
     })
-
-    const inputHandler = makeAgentReplInputHandler(agent, repl)
-
-    await inputHandler(firstInput)
-    await generateAndPrintTitle(agent, repl, {
-      onTitleChange: makeTitleChangeHandler(options.database, session),
-    })
-
-    repl.registerCommand(
-      makeTitleCommand(agent, repl, {
-        onTitleChange: makeTitleChangeHandler(options.database, session),
-      }),
-    )
-    repl.registerCommand(
-      makeInfoCommand(repl, {
-        database: options.database,
-        workspace: options.workspace,
-        model: options.model,
-        sessionId: session.id,
-      }),
-    )
-
-    await repl.run(inputHandler, "> ")
   } catch (error) {
     repl.close()
     throw error
