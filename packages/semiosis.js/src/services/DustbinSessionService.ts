@@ -6,7 +6,7 @@ import type {
 } from "../session/Session.ts"
 import type { WorkspaceId } from "../workspace/Workspace.ts"
 
-export type DustbinSessionsService = {
+export type DustbinSessionService = {
   list(options: {
     workspaceId: WorkspaceId | undefined
   }): Promise<Array<DustbinSessionIndex>>
@@ -16,13 +16,13 @@ export type DustbinSessionsService = {
   remove(sessionId: SessionId): Promise<void>
 }
 
-export type DustbinSessionsServiceOptions = {
+export type DustbinSessionServiceOptions = {
   database: Database
 }
 
-export function makeDustbinSessionsService(
-  options: DustbinSessionsServiceOptions,
-): DustbinSessionsService {
+export function makeDustbinSessionService(
+  options: DustbinSessionServiceOptions,
+): DustbinSessionService {
   const database = options.database
 
   return {

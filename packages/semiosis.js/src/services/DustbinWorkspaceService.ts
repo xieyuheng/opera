@@ -1,7 +1,7 @@
 import type { Database } from "../database/Database.ts"
 import type { DustbinWorkspace, WorkspaceId } from "../workspace/Workspace.ts"
 
-export type DustbinWorkspacesService = {
+export type DustbinWorkspaceService = {
   list(): Promise<Array<DustbinWorkspace>>
   get(id: WorkspaceId): Promise<DustbinWorkspace | undefined>
   trash(id: WorkspaceId): Promise<void>
@@ -9,13 +9,13 @@ export type DustbinWorkspacesService = {
   remove(id: WorkspaceId): Promise<void>
 }
 
-export type DustbinWorkspacesServiceOptions = {
+export type DustbinWorkspaceServiceOptions = {
   database: Database
 }
 
-export function makeDustbinWorkspacesService(
-  options: DustbinWorkspacesServiceOptions,
-): DustbinWorkspacesService {
+export function makeDustbinWorkspaceService(
+  options: DustbinWorkspaceServiceOptions,
+): DustbinWorkspaceService {
   const database = options.database
 
   return {

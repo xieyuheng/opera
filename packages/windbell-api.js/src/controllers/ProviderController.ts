@@ -3,8 +3,8 @@ import { err, ok } from "@windbell/std.js/result"
 import { z } from "zod"
 import { makeAction } from "../http/makeAction.ts"
 
-export type ProvidersControllerOptions = {
-  providers: S.ProvidersService
+export type ProviderControllerOptions = {
+  providers: S.ProviderService
 }
 
 export const GetProviderInputSchema = z.object({
@@ -44,7 +44,7 @@ export const SetProviderDefaultModelInputSchema = z.object({
   modelName: z.string(),
 })
 
-export function makeProvidersController(options: ProvidersControllerOptions) {
+export function makeProviderController(options: ProviderControllerOptions) {
   return {
     list: makeAction(z.object({}), async () => {
       return ok(await options.providers.list())

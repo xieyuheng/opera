@@ -4,7 +4,7 @@ import { makeAction } from "../http/makeAction.ts"
 import type { Theme } from "../theme/Theme.ts"
 import type { ThemeStore } from "../theme/ThemeStore.ts"
 
-export type ThemesControllerOptions = {
+export type ThemeControllerOptions = {
   store: ThemeStore
 }
 
@@ -34,7 +34,7 @@ export const RemoveThemeInputSchema = z.object({
   themeId: z.string(),
 })
 
-export function makeThemesController(options: ThemesControllerOptions) {
+export function makeThemeController(options: ThemeControllerOptions) {
   return {
     list: makeAction(z.object({}), async () => {
       return ok(await options.store.list())

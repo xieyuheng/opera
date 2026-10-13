@@ -4,7 +4,7 @@ import type { LockService } from "@windbell/lock.js/lock"
 import { makeBash } from "@windbell/sh.js/bash"
 import { ok } from "@windbell/std.js/result"
 import type { Database } from "../database/Database.ts"
-import { makeSessionsService } from "./SessionsService.ts"
+import { makeSessionService } from "./SessionService.ts"
 
 test("sessions interpret locks the session and rejects concurrent runs", async () => {
   let releaseGet: () => void = () => {}
@@ -46,7 +46,7 @@ test("sessions interpret locks the session and rejects concurrent runs", async (
     },
   } as unknown as Database
 
-  const sessions = makeSessionsService({
+  const sessions = makeSessionService({
     database,
     sh: makeBash(),
     lock,

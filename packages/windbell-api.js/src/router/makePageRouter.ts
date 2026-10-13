@@ -1,37 +1,37 @@
 import type * as S from "@windbell/semiosis.js"
 import { Hono } from "hono"
-import { makePagesController } from "../controllers/PagesController.ts"
-import * as PagesServices from "../services/Pages.ts"
+import { makePageController } from "../controllers/PageController.ts"
+import * as PageService from "../services/Page.ts"
 
 export type PageRouterOptions = {
   database: S.Database
-  providers: S.ProvidersService
+  providers: S.ProviderService
   settings: S.SettingsService
 }
 
 export function makePageRouter(options: PageRouterOptions): Hono {
   const app = new Hono()
-  const pages = makePagesController({
-    loadHomeData: PagesServices.LoadHomeData({
+  const pages = makePageController({
+    loadHomeData: PageService.LoadHomeData({
       database: options.database,
     }),
-    loadWorkspaceData: PagesServices.LoadWorkspaceData({
+    loadWorkspaceData: PageService.LoadWorkspaceData({
       database: options.database,
     }),
-    loadSessionData: PagesServices.LoadSessionData({
+    loadSessionData: PageService.LoadSessionData({
       database: options.database,
     }),
-    loadSessionDustbinData: PagesServices.LoadSessionDustbinData({
+    loadSessionDustbinData: PageService.LoadSessionDustbinData({
       database: options.database,
     }),
-    loadWorkspaceDustbinData: PagesServices.LoadWorkspaceDustbinData({
+    loadWorkspaceDustbinData: PageService.LoadWorkspaceDustbinData({
       database: options.database,
     }),
-    loadProviderListData: PagesServices.LoadProviderListData({
+    loadProviderListData: PageService.LoadProviderListData({
       providers: options.providers,
       settings: options.settings,
     }),
-    loadProviderData: PagesServices.LoadProviderData({
+    loadProviderData: PageService.LoadProviderData({
       providers: options.providers,
       settings: options.settings,
     }),

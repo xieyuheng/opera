@@ -9,7 +9,7 @@ import { providerNames } from "../providers/providerNames.ts"
 import { deleteApiKey, hasApiKey, writeApiKey } from "../database/apiKey.ts"
 import type { Database } from "../database/Database.ts"
 
-export type ProvidersService = {
+export type ProviderService = {
   list(): Promise<Array<ProviderConfig>>
   get(providerName: string): Promise<ProviderConfig>
   getApiKeyStatus(providerName: string): Promise<boolean>
@@ -30,13 +30,13 @@ export type ProvidersService = {
   deleteApiKey(providerName: string): Promise<void>
 }
 
-export type ProvidersServiceOptions = {
+export type ProviderServiceOptions = {
   database: Database
 }
 
-export function makeProvidersService(
-  options: ProvidersServiceOptions,
-): ProvidersService {
+export function makeProviderService(
+  options: ProviderServiceOptions,
+): ProviderService {
   const database = options.database
 
   return {

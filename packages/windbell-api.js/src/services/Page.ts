@@ -17,7 +17,7 @@ export type PageDataServiceOptions = {
 }
 
 export type PageProviderServiceOptions = {
-  providers: S.ProvidersService
+  providers: S.ProviderService
   settings: S.SettingsService
 }
 

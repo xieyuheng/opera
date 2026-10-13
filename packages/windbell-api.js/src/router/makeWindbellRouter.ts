@@ -1,12 +1,12 @@
 import process from "node:process"
 import { makeHttpFileSystemRouter } from "@windbell/fs-api.js/router"
 import {
-  makeDustbinSessionsService,
-  makeDustbinWorkspacesService,
-  makeProvidersService,
-  makeSessionsService,
+  makeDustbinSessionService,
+  makeDustbinWorkspaceService,
+  makeProviderService,
+  makeSessionService,
   makeSettingsService,
-  makeWorkspacesService,
+  makeWorkspaceService,
 } from "@windbell/semiosis.js"
 import { defaultWindbellRoot } from "@windbell/semiosis.js/node"
 import { makeBash } from "@windbell/sh.js/bash"
@@ -26,15 +26,15 @@ export function makeWindbellRouter(options: WindbellRouterOptions): Hono {
   const windbellRoot = options.windbellRoot ?? defaultWindbellRoot()
   const lockRoot = options.lockRoot ?? Path.join(windbellRoot, "var", "locks")
   const sh = process.platform === "win32" ? makePwsh() : makeBash()
-  const sessions = makeSessionsService({ database: options.database, sh })
-  const workspaces = makeWorkspacesService({ database: options.database })
-  const dustbinSessions = makeDustbinSessionsService({
+  const sessions = makeSessionService({ database: options.database, sh })
+  const workspaces = makeWorkspaceService({ database: options.database })
+  const dustbinSessions = makeDustbinSessionService({
     database: options.database,
   })
-  const dustbinWorkspaces = makeDustbinWorkspacesService({
+  const dustbinWorkspaces = makeDustbinWorkspaceService({
     database: options.database,
   })
-  const providers = makeProvidersService({ database: options.database })
+  const providers = makeProviderService({ database: options.database })
   const settings = makeSettingsService({ database: options.database })
 
   const health = makeHealthController()

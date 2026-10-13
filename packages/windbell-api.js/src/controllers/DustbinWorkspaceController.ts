@@ -3,8 +3,8 @@ import { err, ok } from "@windbell/std.js/result"
 import { z } from "zod"
 import { makeAction } from "../http/makeAction.ts"
 
-export type DustbinWorkspacesControllerOptions = {
-  dustbinWorkspaces: S.DustbinWorkspacesService
+export type DustbinWorkspaceControllerOptions = {
+  dustbinWorkspaces: S.DustbinWorkspaceService
 }
 
 export const GetDustbinWorkspaceInputSchema = z.object({
@@ -23,8 +23,8 @@ export const RemoveDustbinWorkspaceInputSchema = z.object({
   workspaceId: z.string(),
 })
 
-export function makeDustbinWorkspacesController(
-  options: DustbinWorkspacesControllerOptions,
+export function makeDustbinWorkspaceController(
+  options: DustbinWorkspaceControllerOptions,
 ) {
   return {
     list: makeAction(z.object({}), async () => {

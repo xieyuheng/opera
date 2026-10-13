@@ -1,7 +1,7 @@
 import type { Database } from "../database/Database.ts"
 import type { Workspace, WorkspaceId } from "../workspace/Workspace.ts"
 
-export type WorkspacesService = {
+export type WorkspaceService = {
   list(): Promise<Array<Workspace>>
   ensure(options: { name: string; root: string }): Promise<Workspace>
   get(id: WorkspaceId): Promise<Workspace | undefined>
@@ -9,13 +9,13 @@ export type WorkspacesService = {
   remove(id: WorkspaceId): Promise<void>
 }
 
-export type WorkspacesServiceOptions = {
+export type WorkspaceServiceOptions = {
   database: Database
 }
 
-export function makeWorkspacesService(
-  options: WorkspacesServiceOptions,
-): WorkspacesService {
+export function makeWorkspaceService(
+  options: WorkspaceServiceOptions,
+): WorkspaceService {
   const database = options.database
 
   return {

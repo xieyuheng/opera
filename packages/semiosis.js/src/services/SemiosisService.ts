@@ -5,25 +5,22 @@ import type { Shell } from "@windbell/sh.js/sh"
 import type { Path } from "@windbell/std.js/path"
 import { makeDatabase, type Database } from "../database/Database.ts"
 import {
-  makeDustbinSessionsService,
-  type DustbinSessionsService,
-} from "./DustbinSessionsService.ts"
+  makeDustbinSessionService,
+  type DustbinSessionService,
+} from "./DustbinSessionService.ts"
 import {
-  makeDustbinWorkspacesService,
-  type DustbinWorkspacesService,
-} from "./DustbinWorkspacesService.ts"
-import {
-  makeProvidersService,
-  type ProvidersService,
-} from "./ProvidersService.ts"
-import { makeSessionsService, type SessionsService } from "./SessionsService.ts"
+  makeDustbinWorkspaceService,
+  type DustbinWorkspaceService,
+} from "./DustbinWorkspaceService.ts"
+import { makeProviderService, type ProviderService } from "./ProviderService.ts"
+import { makeSessionService, type SessionService } from "./SessionService.ts"
 import { makeSettingsService, type SettingsService } from "./SettingsService.ts"
 import {
-  makeWorkspacesService,
-  type WorkspacesService,
-} from "./WorkspacesService.ts"
+  makeWorkspaceService,
+  type WorkspaceService,
+} from "./WorkspaceService.ts"
 
-export type SemiosisOptions = {
+export type SemiosisServiceOptions = {
   fs: FileSystem
   path: Path
   root: string
@@ -32,19 +29,21 @@ export type SemiosisOptions = {
   lockRoot?: string
 }
 
-export type Semiosis = {
+export type SemiosisService = {
   database: Database
-  providers: ProvidersService
+  providers: ProviderService
   settings: SettingsService
-  workspaces: WorkspacesService
-  sessions: SessionsService
+  workspaces: WorkspaceService
+  sessions: SessionService
   dustbin: {
-    sessions: DustbinSessionsService
-    workspaces: DustbinWorkspacesService
+    sessions: DustbinSessionService
+    workspaces: DustbinWorkspaceService
   }
 }
 
-export function makeSemiosis(options: SemiosisOptions): Semiosis {
+export function makeSemiosisService(
+  options: SemiosisServiceOptions,
+): SemiosisService {
   const database = makeDatabase({
     fs: options.fs,
     path: options.path,
@@ -62,17 +61,17 @@ export function makeSemiosis(options: SemiosisOptions): Semiosis {
 
   return {
     database,
-    providers: makeProvidersService({ database }),
+    providers: makeProviderService({ database }),
     settings: makeSettingsService({ database }),
-    workspaces: makeWorkspacesService({ database }),
-    sessions: makeSessionsService({
+    workspaces: makeWorkspaceService({ database }),
+    sessions: makeSessionService({
       database,
       sh: options.sh,
       lock,
     }),
     dustbin: {
-      sessions: makeDustbinSessionsService({ database }),
-      workspaces: makeDustbinWorkspacesService({ database }),
+      sessions: makeDustbinSessionService({ database }),
+      workspaces: makeDustbinWorkspaceService({ database }),
     },
   }
 }

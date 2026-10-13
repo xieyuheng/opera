@@ -13,7 +13,7 @@ import { turnRun } from "../turn/turnRun.ts"
 import type { TurnEvent } from "../turn/TurnEvent.ts"
 import type { Workspace, WorkspaceId } from "../workspace/Workspace.ts"
 
-export type SessionsService = {
+export type SessionService = {
   list(options: {
     workspaceId: WorkspaceId | undefined
   }): Promise<Array<SessionIndex>>
@@ -34,7 +34,7 @@ export type SessionsService = {
   remove(id: SessionId): Promise<void>
 }
 
-export type SessionsServiceOptions = {
+export type SessionServiceOptions = {
   database: Database
   sh: Shell
   lock?: LockService
@@ -44,9 +44,9 @@ const persona = "You are a helpful software engineer assistant."
 const lockTtlMs = 60_000
 const lockRenewIntervalMs = 20_000
 
-export function makeSessionsService(
-  options: SessionsServiceOptions,
-): SessionsService {
+export function makeSessionService(
+  options: SessionServiceOptions,
+): SessionService {
   const database = options.database
   const sh = options.sh
 
@@ -60,7 +60,7 @@ export function makeSessionsService(
   }
 
   async function* interpretWithLock(
-    interpretOptions: Parameters<SessionsService["interpret"]>[0],
+    interpretOptions: Parameters<SessionService["interpret"]>[0],
   ): AsyncGenerator<TurnEvent> {
     const lockService = options.lock
 
@@ -98,7 +98,7 @@ export function makeSessionsService(
   }
 
   async function* interpretUnlocked(
-    interpretOptions: Parameters<SessionsService["interpret"]>[0],
+    interpretOptions: Parameters<SessionService["interpret"]>[0],
   ): AsyncGenerator<TurnEvent> {
     const session = await database.sessions.get(interpretOptions.sessionId)
     if (session === undefined) {
@@ -157,7 +157,7 @@ export function makeSessionsService(
     })
   }
 
-  const sessions: SessionsService = {
+  const sessions: SessionService = {
     list: (listOptions) => database.sessions.list(listOptions),
     get: (id) => database.sessions.get(id),
     put: (session) => database.sessions.put(session),

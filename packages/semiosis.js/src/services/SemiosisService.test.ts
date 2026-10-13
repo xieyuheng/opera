@@ -8,9 +8,9 @@ import type { LockService } from "@windbell/lock.js/lock"
 import { makeBash } from "@windbell/sh.js/bash"
 import { makePath } from "@windbell/std.js/path"
 import { ok } from "@windbell/std.js/result"
-import { makeSemiosis } from "./Semiosis.ts"
+import { makeSemiosisService } from "./SemiosisService.ts"
 
-test("makeSemiosis manages workspaces and sessions", async (t) => {
+test("makeSemiosisService manages workspaces and sessions", async (t) => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "semiosis-di-"))
 
   t.after(async () => {
@@ -18,7 +18,7 @@ test("makeSemiosis manages workspaces and sessions", async (t) => {
   })
 
   const path = makePath(Os.platform() === "win32" ? "win32" : "posix")
-  const semiosis = makeSemiosis({
+  const semiosis = makeSemiosisService({
     fs: makeLocalFileSystem(),
     path,
     root,
@@ -59,7 +59,7 @@ test("makeSemiosis manages workspaces and sessions", async (t) => {
   assert.equal(dustbin.length, 1)
 })
 
-test("makeSemiosis propagates a lock service to sessions", async (t) => {
+test("makeSemiosisService propagates a lock service to sessions", async (t) => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "semiosis-lock-"))
 
   t.after(async () => {
@@ -78,7 +78,7 @@ test("makeSemiosis propagates a lock service to sessions", async (t) => {
     },
   }
 
-  const semiosis = makeSemiosis({
+  const semiosis = makeSemiosisService({
     fs: makeLocalFileSystem(),
     path,
     root,
@@ -99,7 +99,7 @@ test("makeSemiosis propagates a lock service to sessions", async (t) => {
   assert.deepEqual(lockedKeys, ["session:missing"])
 })
 
-test("makeSemiosis creates a file lock from lockRoot", async (t) => {
+test("makeSemiosisService creates a file lock from lockRoot", async (t) => {
   const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "semiosis-lock-root-"))
 
   t.after(async () => {
@@ -108,7 +108,7 @@ test("makeSemiosis creates a file lock from lockRoot", async (t) => {
 
   const path = makePath(Os.platform() === "win32" ? "win32" : "posix")
   const lockRoot = path.join(root, "locks")
-  const semiosis = makeSemiosis({
+  const semiosis = makeSemiosisService({
     fs: makeLocalFileSystem(),
     path,
     root,

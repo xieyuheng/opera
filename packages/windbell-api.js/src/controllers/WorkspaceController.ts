@@ -4,7 +4,7 @@ import { z } from "zod"
 import { makeAction } from "../http/makeAction.ts"
 
 export type WorkspaceControllerOptions = {
-  workspaces: S.WorkspacesService
+  workspaces: S.WorkspaceService
 }
 
 export const GetWorkspaceInputSchema = z.object({

@@ -3,8 +3,8 @@ import { err, ok } from "@windbell/std.js/result"
 import { z } from "zod"
 import { makeAction } from "../http/makeAction.ts"
 
-export type SessionsControllerOptions = {
-  sessions: S.SessionsService
+export type SessionControllerOptions = {
+  sessions: S.SessionService
 }
 
 export const ListSessionsInputSchema = z
@@ -41,7 +41,7 @@ export const GenerateSessionTitleInputSchema = z.object({
   }),
 })
 
-export function makeSessionsController(options: SessionsControllerOptions) {
+export function makeSessionController(options: SessionControllerOptions) {
   return {
     list: makeAction(ListSessionsInputSchema, async (input) => {
       return ok(await options.sessions.list(input))

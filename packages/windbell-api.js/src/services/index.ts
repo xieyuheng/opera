@@ -1,2 +1,2 @@
 export * from "./Health.ts"
-export * from "./Pages.ts"
+export * from "./Page.ts"

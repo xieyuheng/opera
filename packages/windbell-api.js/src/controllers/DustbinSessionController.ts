@@ -3,8 +3,8 @@ import { err, ok } from "@windbell/std.js/result"
 import { z } from "zod"
 import { makeAction } from "../http/makeAction.ts"
 
-export type DustbinSessionsControllerOptions = {
-  dustbinSessions: S.DustbinSessionsService
+export type DustbinSessionControllerOptions = {
+  dustbinSessions: S.DustbinSessionService
 }
 
 export const ListDustbinSessionsInputSchema = z
@@ -31,8 +31,8 @@ export const RemoveDustbinSessionInputSchema = z.object({
   sessionId: z.string(),
 })
 
-export function makeDustbinSessionsController(
-  options: DustbinSessionsControllerOptions,
+export function makeDustbinSessionController(
+  options: DustbinSessionControllerOptions,
 ) {
   return {
     list: makeAction(ListDustbinSessionsInputSchema, async (input) => {

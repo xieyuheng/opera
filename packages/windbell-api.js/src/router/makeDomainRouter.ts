@@ -1,21 +1,21 @@
 import type * as S from "@windbell/semiosis.js"
 import { Hono } from "hono"
 import { stream } from "hono/streaming"
-import { makeDustbinSessionsController } from "../controllers/DustbinSessionsController.ts"
-import { makeDustbinWorkspacesController } from "../controllers/DustbinWorkspacesController.ts"
-import { makeProvidersController } from "../controllers/ProvidersController.ts"
-import { makeSessionsController } from "../controllers/SessionsController.ts"
+import { makeDustbinSessionController } from "../controllers/DustbinSessionController.ts"
+import { makeDustbinWorkspaceController } from "../controllers/DustbinWorkspaceController.ts"
+import { makeProviderController } from "../controllers/ProviderController.ts"
+import { makeSessionController } from "../controllers/SessionController.ts"
 import { makeSettingsController } from "../controllers/SettingsController.ts"
 import { makeWorkspaceController } from "../controllers/WorkspaceController.ts"
 import { readJsonBody, readRecord, readString } from "./readJson.ts"
 
 export type DomainRouterOptions = {
   database: S.Database
-  sessions: S.SessionsService
-  workspaces: S.WorkspacesService
-  dustbinSessions: S.DustbinSessionsService
-  dustbinWorkspaces: S.DustbinWorkspacesService
-  providers: S.ProvidersService
+  sessions: S.SessionService
+  workspaces: S.WorkspaceService
+  dustbinSessions: S.DustbinSessionService
+  dustbinWorkspaces: S.DustbinWorkspaceService
+  providers: S.ProviderService
   settings: S.SettingsService
 }
 
@@ -24,8 +24,8 @@ export function makeDomainRouter(options: DomainRouterOptions): Hono {
   const {
     sessions: sessionsService,
     workspaces: workspacesService,
-    dustbinSessions: dustbinSessionsService,
-    dustbinWorkspaces: dustbinWorkspacesService,
+    dustbinSessions: dustbinSessionService,
+    dustbinWorkspaces: dustbinWorkspaceService,
     providers: providersService,
     settings: settingsService,
   } = options
@@ -34,19 +34,19 @@ export function makeDomainRouter(options: DomainRouterOptions): Hono {
     workspaces: workspacesService,
   })
 
-  const sessions = makeSessionsController({
+  const sessions = makeSessionController({
     sessions: sessionsService,
   })
 
-  const dustbinSessions = makeDustbinSessionsController({
-    dustbinSessions: dustbinSessionsService,
+  const dustbinSessions = makeDustbinSessionController({
+    dustbinSessions: dustbinSessionService,
   })
 
-  const dustbinWorkspaces = makeDustbinWorkspacesController({
-    dustbinWorkspaces: dustbinWorkspacesService,
+  const dustbinWorkspaces = makeDustbinWorkspaceController({
+    dustbinWorkspaces: dustbinWorkspaceService,
   })
 
-  const providers = makeProvidersController({
+  const providers = makeProviderController({
     providers: providersService,
   })
 

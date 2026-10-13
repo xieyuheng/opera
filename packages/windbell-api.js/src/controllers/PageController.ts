@@ -8,9 +8,9 @@ import type {
   LoadSessionDustbinData,
   LoadWorkspaceData,
   LoadWorkspaceDustbinData,
-} from "../services/Pages.ts"
+} from "../services/Page.ts"
 
-export type PagesControllerOptions = {
+export type PageControllerOptions = {
   loadHomeData: ReturnType<typeof LoadHomeData>
   loadWorkspaceData: ReturnType<typeof LoadWorkspaceData>
   loadSessionData: ReturnType<typeof LoadSessionData>
@@ -40,7 +40,7 @@ export const LoadProviderDataInputSchema = z.object({
   providerName: z.string(),
 })
 
-export function makePagesController(options: PagesControllerOptions) {
+export function makePageController(options: PageControllerOptions) {
   return {
     home: makeAction(z.object({}), () => options.loadHomeData()),
 
