@@ -16,9 +16,7 @@ import type {
 } from "../../fs/index.ts"
 import type { FileSystemError } from "../../fs/index.ts"
 import { err, ok, type Result } from "@windbell/std.js/result"
-import { encodeBase64 } from "@windbell/std.js/base64"
 import {
-  Base64BytesSchema,
   BooleanSchema,
   ErrorResultSchema,
   FileSystemErrorSchema,
@@ -26,7 +24,6 @@ import {
   FileSystemPlatformSchema,
   FileSystemStatSchema,
   FileTypeSchema,
-  ResultRecordSchema,
   ResultSchema,
   StringListSchema,
   StringSchema,
@@ -49,14 +46,6 @@ type WriteInput = {
 type RenameInput = {
   path: string
   newPath: string
-}
-
-type BatchReadInput = {
-  paths: Array<string>
-}
-
-type BatchWriteInput<T> = {
-  files: Record<string, T>
 }
 
 export function makeHttpFileSystemClient(
@@ -150,48 +139,6 @@ export function makeHttpFileSystemClient(
     path: "/write",
     body: (input) => input,
     output: ResultSchema(VoidSchema),
-  })
-
-  const batchReadEndpoint = makeJsonEndpoint<
-    BatchReadInput,
-    Record<string, Result<string, FileSystemError>>
-  >(config, {
-    method: "POST",
-    path: "/batch-read",
-    body: (input) => input,
-    output: ResultRecordSchema(StringSchema),
-  })
-
-  const batchReadBytesEndpoint = makeJsonEndpoint<
-    BatchReadInput,
-    Record<string, Result<Uint8Array, FileSystemError>>
-  >(config, {
-    method: "POST",
-    path: "/batch-read-bytes",
-    body: (input) => input,
-    output: ResultRecordSchema(Base64BytesSchema),
-  })
-
-  const batchWriteEndpoint = makeJsonEndpoint<
-    BatchWriteInput<string>,
-    Record<string, Result<void, FileSystemError>>
-  >(config, {
-    method: "POST",
-    path: "/batch-write",
-    body: (input) => input,
-    output: ResultRecordSchema(VoidSchema),
-  })
-
-  const batchWriteBytesEndpoint = makeJsonEndpoint<
-    BatchWriteInput<Uint8Array>,
-    Record<string, Result<void, FileSystemError>>
-  >(config, {
-    method: "POST",
-    path: "/batch-write-bytes",
-    body: (input) => ({
-      files: encodeByteRecord(input.files),
-    }),
-    output: ResultRecordSchema(VoidSchema),
   })
 
   const listEndpoint = makeJsonEndpoint<
@@ -304,28 +251,6 @@ export function makeHttpFileSystemClient(
       return await endpoint(input)
     } catch (error) {
       return err(toClientError(who, error, info))
-    }
-  }
-
-  async function callBatch<Input, Output>(
-    who: string,
-    endpoint: (
-      input: Input,
-    ) => Promise<Record<string, Result<Output, FileSystemError>>>,
-    input: Input,
-    keys: Array<string>,
-  ): Promise<Record<string, Result<Output, FileSystemError>>> {
-    try {
-      return await endpoint(input)
-    } catch (error) {
-      const fsError = toClientError(who, error)
-      const results: Record<string, Result<Output, FileSystemError>> = {}
-
-      for (const key of keys) {
-        results[key] = err(fsError)
-      }
-
-      return results
     }
   }
 
@@ -466,10 +391,6 @@ export function makeHttpFileSystemClient(
 
     read: (path) => callResult("read", readEndpoint, { path }, { path }),
     readBytes,
-    batchRead: (paths) =>
-      callBatch("batch-read", batchReadEndpoint, { paths }, paths),
-    batchReadBytes: (paths) =>
-      callBatch("batch-read-bytes", batchReadBytesEndpoint, { paths }, paths),
 
     stat: (path) => callResult("stat", statEndpoint, { path }, { path }),
     createFileExclusive: (path, text) =>
@@ -482,20 +403,6 @@ export function makeHttpFileSystemClient(
     write: (path, text) =>
       callResult("write", writeEndpoint, { path, text }, { path }),
     writeBytes,
-    batchWrite: (files) =>
-      callBatch(
-        "batch-write",
-        batchWriteEndpoint,
-        { files },
-        Object.keys(files),
-      ),
-    batchWriteBytes: (files) =>
-      callBatch(
-        "batch-write-bytes",
-        batchWriteBytesEndpoint,
-        { files },
-        Object.keys(files),
-      ),
 
     list: (path) => callResult("list", listEndpoint, { path }, { path }),
     listEntries: (path) =>
@@ -535,18 +442,6 @@ export function makeHttpFileSystemClient(
 
     watch,
   }
-}
-
-function encodeByteRecord(
-  files: Record<string, Uint8Array>,
-): Record<string, string> {
-  const result: Record<string, string> = {}
-
-  for (const [path, bytes] of Object.entries(files)) {
-    result[path] = encodeBase64(bytes)
-  }
-
-  return result
 }
 
 async function readErrorResponse(

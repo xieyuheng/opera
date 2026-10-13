@@ -23,12 +23,6 @@ export type FileSystem = {
 
   read(path: string): Promise<Result<string, FileSystemError>>
   readBytes(path: string): Promise<Result<Uint8Array, FileSystemError>>
-  batchRead(
-    paths: Array<string>,
-  ): Promise<Record<string, Result<string, FileSystemError>>>
-  batchReadBytes(
-    paths: Array<string>,
-  ): Promise<Record<string, Result<Uint8Array, FileSystemError>>>
 
   stat(path: string): Promise<Result<FileSystemStat, FileSystemError>>
   createFileExclusive(
@@ -40,12 +34,6 @@ export type FileSystem = {
     path: string,
     bytes: Uint8Array,
   ): Promise<Result<void, FileSystemError>>
-  batchWrite(
-    files: Record<string, string>,
-  ): Promise<Record<string, Result<void, FileSystemError>>>
-  batchWriteBytes(
-    files: Record<string, Uint8Array>,
-  ): Promise<Record<string, Result<void, FileSystemError>>>
 
   list(path: string): Promise<Result<Array<string>, FileSystemError>>
   listEntries(

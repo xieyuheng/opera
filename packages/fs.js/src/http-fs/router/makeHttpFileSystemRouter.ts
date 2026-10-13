@@ -3,9 +3,7 @@ import { HTTPException } from "hono/http-exception"
 import { streamSSE } from "hono/streaming"
 import type { FileSystem } from "../../fs/index.ts"
 import type { FileSystemError } from "../../fs/index.ts"
-import { ok, type Result } from "@windbell/std.js/result"
 import { makeLocalFileSystem } from "../../local-fs/index.ts"
-import { decodeBase64, encodeBase64 } from "@windbell/std.js/base64"
 
 export type HttpFileSystemRouterOptions = {
   fs?: FileSystem
@@ -97,17 +95,11 @@ export function makeHttpFileSystemRouter(
     "is-directory": async (body) => fs.isDirectory(readPath(body)),
 
     read: async (body) => fs.read(readPath(body)),
-    "batch-read": async (body) => fs.batchRead(readPaths(body)),
-    "batch-read-bytes": async (body) =>
-      encodeBytesRecord(await fs.batchReadBytes(readPaths(body))),
 
     stat: async (body) => fs.stat(readPath(body)),
     "create-file-exclusive": async (body) =>
       fs.createFileExclusive(readPath(body), readText(body)),
     write: async (body) => fs.write(readPath(body), readText(body)),
-    "batch-write": async (body) => fs.batchWrite(readFilesText(body)),
-    "batch-write-bytes": async (body) =>
-      fs.batchWriteBytes(readFilesBytes(body)),
 
     list: async (body) => fs.list(readPath(body)),
     "list-entries": async (body) => fs.listEntries(readPath(body)),
@@ -188,89 +180,6 @@ function readString(record: Record<string, unknown>, name: string): string {
   }
 
   return value
-}
-
-function readPaths(body: unknown): Array<string> {
-  const value = readRecord(body).paths
-
-  if (
-    !Array.isArray(value) ||
-    !value.every((path) => typeof path === "string")
-  ) {
-    throw new HTTPException(400, {
-      message: "field `paths` must be an array of strings",
-    })
-  }
-
-  return value
-}
-
-function readFilesText(body: unknown): Record<string, string> {
-  const record = readStringRecord(readRecord(body).files)
-  const files: Record<string, string> = {}
-
-  for (const [path, value] of Object.entries(record)) {
-    if (typeof value !== "string") {
-      throw new HTTPException(400, {
-        message: `field \`files.${path}\` must be a string`,
-      })
-    }
-
-    files[path] = value
-  }
-
-  return files
-}
-
-function readFilesBytes(body: unknown): Record<string, Uint8Array> {
-  const record = readStringRecord(readRecord(body).files)
-  const files: Record<string, Uint8Array> = {}
-
-  for (const [path, value] of Object.entries(record)) {
-    if (typeof value !== "string") {
-      throw new HTTPException(400, {
-        message: `field \`files.${path}\` must be a base64 string`,
-      })
-    }
-
-    try {
-      files[path] = decodeBase64(value)
-    } catch {
-      throw new HTTPException(400, {
-        message: `field \`files.${path}\` must be a base64 string`,
-      })
-    }
-  }
-
-  return files
-}
-
-function readStringRecord(value: unknown): Record<string, unknown> {
-  if (value === null || typeof value !== "object" || Array.isArray(value)) {
-    throw new HTTPException(400, {
-      message: "field `files` must be a JSON object",
-    })
-  }
-
-  return value as Record<string, unknown>
-}
-
-function encodeBytesResult(
-  result: Result<Uint8Array, FileSystemError>,
-): Result<string, FileSystemError> {
-  return result.kind === "OkResult" ? ok(encodeBase64(result.value)) : result
-}
-
-function encodeBytesRecord(
-  record: Record<string, Result<Uint8Array, FileSystemError>>,
-): Record<string, Result<string, FileSystemError>> {
-  const result: Record<string, Result<string, FileSystemError>> = {}
-
-  for (const [path, item] of Object.entries(record)) {
-    result[path] = encodeBytesResult(item)
-  }
-
-  return result
 }
 
 function normalizeForJson(value: unknown): unknown {

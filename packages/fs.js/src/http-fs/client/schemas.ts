@@ -6,7 +6,6 @@ import type {
   FileType,
 } from "../../fs/index.ts"
 import type { Result } from "@windbell/std.js/result"
-import { decodeBase64 } from "@windbell/std.js/base64"
 
 const JsonValueSchema: z.ZodType<Json> = z.lazy(() =>
   z.union([
@@ -85,13 +84,3 @@ export const FileSystemEntrySchema: z.ZodType<FileSystemEntry> = z.object({
 
 export const FileSystemEntryListSchema: z.ZodType<Array<FileSystemEntry>> =
   z.array(FileSystemEntrySchema)
-
-export const Base64BytesSchema: z.ZodType<Uint8Array> = z
-  .string()
-  .transform((value) => decodeBase64(value))
-
-export function ResultRecordSchema<T>(
-  value: z.ZodType<T>,
-): z.ZodType<Record<string, Result<T, FileSystemError>>> {
-  return z.record(z.string(), ResultSchema(value))
-}

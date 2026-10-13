@@ -43,12 +43,8 @@ export function makeLocalFileSystem(): FileSystem {
     isDirectory,
     read: readText,
     readBytes,
-    batchRead,
-    batchReadBytes,
     write: writeText,
     writeBytes,
-    batchWrite,
-    batchWriteBytes,
     stat,
     createFileExclusive,
     list,
@@ -161,30 +157,6 @@ async function readBytes(
   )
 }
 
-async function batchRead(
-  paths: Array<string>,
-): Promise<Record<string, Result<string, FileSystemError>>> {
-  const results: Record<string, Result<string, FileSystemError>> = {}
-
-  for (const path of paths) {
-    results[path] = await readText(path)
-  }
-
-  return results
-}
-
-async function batchReadBytes(
-  paths: Array<string>,
-): Promise<Record<string, Result<Uint8Array, FileSystemError>>> {
-  const results: Record<string, Result<Uint8Array, FileSystemError>> = {}
-
-  for (const path of paths) {
-    results[path] = await readBytes(path)
-  }
-
-  return results
-}
-
 async function stat(
   path: string,
 ): Promise<Result<FileSystemStat, FileSystemError>> {
@@ -245,30 +217,6 @@ async function writeBytes(
     },
     { path },
   )
-}
-
-async function batchWrite(
-  files: Record<string, string>,
-): Promise<Record<string, Result<void, FileSystemError>>> {
-  const results: Record<string, Result<void, FileSystemError>> = {}
-
-  for (const [path, text] of Object.entries(files)) {
-    results[path] = await writeText(path, text)
-  }
-
-  return results
-}
-
-async function batchWriteBytes(
-  files: Record<string, Uint8Array>,
-): Promise<Record<string, Result<void, FileSystemError>>> {
-  const results: Record<string, Result<void, FileSystemError>> = {}
-
-  for (const [path, bytes] of Object.entries(files)) {
-    results[path] = await writeBytes(path, bytes)
-  }
-
-  return results
 }
 
 async function list(

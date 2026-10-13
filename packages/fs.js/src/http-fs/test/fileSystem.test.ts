@@ -180,29 +180,6 @@ test("fileSystem client and server", async (t) => {
     textFile,
   ])
 
-  const batchFile = Path.join(root, "batch.txt")
-  const batchResult = await client.batchWrite({
-    [batchFile]: "batch",
-  })
-
-  assert.equal(unwrap(batchResult[batchFile]), undefined)
-  assert.equal(
-    unwrap((await client.batchRead([batchFile]))[batchFile]),
-    "batch",
-  )
-
-  const bytesFile = Path.join(root, "bytes.bin")
-  const bytes = new Uint8Array([0, 1, 2, 255])
-  const batchBytesResult = await client.batchWriteBytes({
-    [bytesFile]: bytes,
-  })
-
-  assert.equal(unwrap(batchBytesResult[bytesFile]), undefined)
-  assert.deepEqual(
-    unwrap((await client.batchReadBytes([bytesFile]))[bytesFile]),
-    bytes,
-  )
-
   const renamedFile = Path.join(root, "renamed.md")
   await value(client.rename(textFile, renamedFile))
   assert.equal(await value(client.exists(textFile)), false)
