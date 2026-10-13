@@ -1,23 +1,9 @@
-# 学习
-
-hono api，尤其是 hono streaming api
-
-- 为了看懂 stream 相关的代码，从而 refactor 相关的代码
-
 # model 接口的边界
-
-对于有 exception 机制的语言来说，
-model 接口的边界，不只包含显式声明参数类型，
-还包括 throw 的 error 类型。
 
 model 不应该把 http 相关的错误 throw 出来，
 让 turn 相关的函数处理，
 应该在 provider 阶段就处理好所有的错误类型，
 把错误归一化，作为 event 发出来。
-
----
-
-关于能力边界的笔记。
 
 # usage
 
