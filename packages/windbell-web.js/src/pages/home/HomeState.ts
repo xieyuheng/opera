@@ -1,4 +1,4 @@
-import { semiosis } from "../../app/semiosis"
+import { windbell } from "../../app/windbell"
 import type * as S from "@windbell/semiosis.js"
 import { reactive } from "vue"
 
@@ -62,16 +62,13 @@ export async function loadHomeState(state: HomeState): Promise<void> {
   state.error = undefined
 
   try {
-    const [workspaces, sessions] = await Promise.all([
-      semiosis.workspaces.list(),
-      semiosis.sessions.list({ workspaceId: undefined }),
-    ])
+    const data = await windbell.pages.loadHomeData()
 
     if (requestId !== state.requestId) return
 
-    sortWorkspacesByUpdatedAt(workspaces)
-    state.workspaces = workspaces
-    state.sessionsByWorkspaceId = groupSessionsByWorkspace(sessions)
+    sortWorkspacesByUpdatedAt(data.workspaces)
+    state.workspaces = data.workspaces
+    state.sessionsByWorkspaceId = data.sessionsByWorkspaceId
     state.hasLoaded = true
   } catch (error) {
     if (requestId !== state.requestId) return
@@ -92,7 +89,7 @@ export async function ensureWorkspace(
     root: string
   },
 ): Promise<S.Workspace> {
-  const workspace = await semiosis.workspaces.ensure(options)
+  const workspace = await windbell.workspaces.ensure(options)
   const index = state.workspaces.findIndex((item) => item.id === workspace.id)
 
   if (index === -1) {
@@ -111,7 +108,7 @@ export async function trashWorkspace(
   state: HomeState,
   workspaceId: S.WorkspaceId,
 ): Promise<void> {
-  await semiosis.dustbin.workspaces.trash(workspaceId)
+  await windbell.dustbin.workspaces.trash(workspaceId)
   state.workspaces = state.workspaces.filter(
     (workspace) => workspace.id !== workspaceId,
   )
@@ -136,7 +133,7 @@ export async function updateWorkspaceTitle(
     updatedAt: Date.now(),
   }
 
-  await semiosis.workspaces.put(workspace)
+  await windbell.workspaces.put(workspace)
   state.workspaces[index] = workspace
   sortWorkspacesByUpdatedAt(state.workspaces)
 }

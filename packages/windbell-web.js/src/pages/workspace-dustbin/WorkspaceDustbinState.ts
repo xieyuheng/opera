@@ -1,4 +1,4 @@
-import { semiosis } from "../../app/semiosis"
+import { windbell } from "../../app/windbell"
 import type * as S from "@windbell/semiosis.js"
 import { reactive } from "vue"
 
@@ -58,15 +58,12 @@ export async function loadWorkspaceDustbin(
   state.error = undefined
 
   try {
-    const [workspaces, sessions] = await Promise.all([
-      semiosis.dustbin.workspaces.list(),
-      semiosis.dustbin.sessions.list({ workspaceId: undefined }),
-    ])
+    const data = await windbell.pages.loadWorkspaceDustbinData()
 
     if (requestId !== state.requestId) return
 
-    state.workspaces = workspaces
-    state.sessionsByWorkspaceId = groupSessionsByWorkspace(sessions)
+    state.workspaces = data.workspaces
+    state.sessionsByWorkspaceId = data.sessionsByWorkspaceId
     state.hasLoaded = true
   } catch (error) {
     if (requestId !== state.requestId) return
@@ -84,7 +81,7 @@ export async function restoreWorkspace(
   state: WorkspaceDustbinState,
   workspaceId: S.WorkspaceId,
 ): Promise<void> {
-  await semiosis.dustbin.workspaces.restore(workspaceId)
+  await windbell.dustbin.workspaces.restore(workspaceId)
   state.workspaces = state.workspaces.filter(
     (workspace) => workspace.id !== workspaceId,
   )
@@ -95,7 +92,7 @@ export async function removeWorkspace(
   state: WorkspaceDustbinState,
   workspaceId: S.WorkspaceId,
 ): Promise<void> {
-  await semiosis.dustbin.workspaces.remove(workspaceId)
+  await windbell.dustbin.workspaces.remove(workspaceId)
   state.workspaces = state.workspaces.filter(
     (workspace) => workspace.id !== workspaceId,
   )

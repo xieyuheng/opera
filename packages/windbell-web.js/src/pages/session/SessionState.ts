@@ -1,4 +1,4 @@
-import { semiosis } from "../../app/semiosis"
+import { windbell } from "../../app/windbell"
 import type * as S from "@windbell/semiosis.js"
 import { reactive } from "vue"
 
@@ -115,14 +115,14 @@ function beginActiveTurn(
 }
 
 async function readSessionModelRef(): Promise<S.ModelRef> {
-  const settings = await semiosis.settings.get()
+  const settings = await windbell.settings.get()
   const providerName = settings.defaultProvider
 
   if (providerName === null) {
     throw new Error("default provider is not configured")
   }
 
-  const providerConfig = await semiosis.providers.get(providerName)
+  const providerConfig = await windbell.providers.get(providerName)
 
   if (providerConfig === undefined) {
     throw new Error(`provider not found: ${providerName}`)
@@ -169,35 +169,15 @@ export async function loadSessionState(
   clearSessionError(state)
 
   try {
-    const session = await semiosis.sessions.get(sessionId)
+    const data = await windbell.pages.loadSessionData({ sessionId })
 
     if (requestId !== state.requestId) return
 
-    if (session === undefined) {
-      state.title = ""
-      state.context = []
-      state.activeTurn = undefined
-      state.workspaceId = ""
-      state.workspaceRoot = ""
-      state.modelRef = undefined
-      state.error = `session not found: ${sessionId}`
-      return
-    }
-
-    const workspace = await semiosis.workspaces.get(session.workspaceId)
-
-    if (requestId !== state.requestId) return
-
-    if (workspace === undefined) {
-      state.error = `workspace not found: ${session.workspaceId}`
-      return
-    }
-
-    state.workspaceId = session.workspaceId
-    state.title = session.title
-    state.context = session.context
+    state.workspaceId = data.session.workspaceId
+    state.title = data.session.title
+    state.context = data.session.context
     state.activeTurn = undefined
-    state.workspaceRoot = workspace.root
+    state.workspaceRoot = data.workspace.root
     state.hasLoaded = true
   } catch (error) {
     if (requestId !== state.requestId) return
@@ -221,7 +201,7 @@ async function runInterpretAttempt(options: {
   const { state, activeTurn, modelRef, input, signal } = options
 
   try {
-    for await (const event of semiosis.sessions.interpret({
+    for await (const event of windbell.sessions.interpret({
       sessionId: state.sessionId,
       model: modelRef,
       turnId: activeTurn.turnId,
@@ -394,7 +374,7 @@ export async function generateSessionTitle(state: SessionState): Promise<void> {
 
   try {
     const title = (
-      await semiosis.sessions.generateTitle({
+      await windbell.sessions.generateTitle({
         sessionId: state.sessionId,
         model: state.modelRef,
       })

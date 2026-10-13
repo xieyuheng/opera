@@ -1,3 +1,5 @@
 export * from "./makeWindbellRouter.ts"
 export * from "./WindbellRouterOptions.ts"
 export * from "./makeThemesRouter.ts"
+export * from "./makePageRouter.ts"
+export * from "./makeDomainRouter.ts"

@@ -4,7 +4,7 @@ import {
   loadWorkspaceDustbin,
 } from "./WorkspaceDustbinState.ts"
 
-export const useWorkspaceDustbinData = defineBasicLoader(async () => {
+export const useWorkspaceDustbinState = defineBasicLoader(async () => {
   const state = getWorkspaceDustbinState()
 
   if (state.hasLoaded) {

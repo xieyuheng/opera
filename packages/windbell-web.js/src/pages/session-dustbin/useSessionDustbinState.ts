@@ -4,7 +4,7 @@ import {
   loadSessionDustbin,
 } from "./SessionDustbinState.ts"
 
-export const useSessionDustbinData = defineBasicLoader(async (to) => {
+export const useSessionDustbinState = defineBasicLoader(async (to) => {
   const workspaceId = String(to.params.workspaceId ?? "")
   const state = getSessionDustbinState(workspaceId)
 

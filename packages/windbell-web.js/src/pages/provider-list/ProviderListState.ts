@@ -1,4 +1,4 @@
-import { semiosis } from "../../app/semiosis"
+import { windbell } from "../../app/windbell"
 import { reactive } from "vue"
 
 export type ProviderModelLine = {
@@ -56,38 +56,11 @@ export async function loadProviderListState(
   state.error = undefined
 
   try {
-    const [providerConfigs, settings] = await Promise.all([
-      semiosis.providers.list(),
-      semiosis.settings.get(),
-    ])
+    const data = await windbell.pages.loadProviderListData()
 
     if (requestId !== state.requestId) return
 
-    const providers = await Promise.all(
-      providerConfigs.map(async (providerConfig) => {
-        const [apiKeyStatus, models] = await Promise.all([
-          semiosis.providers.getApiKeyStatus(providerConfig.name),
-          semiosis.providers.listModels({ providerName: providerConfig.name }),
-        ])
-
-        return {
-          name: providerConfig.name,
-          baseUrl: providerConfig.baseUrl,
-          defaultModel: providerConfig.defaultModel,
-          apiKeyConfigured: apiKeyStatus,
-          isDefaultProvider: settings.defaultProvider === providerConfig.name,
-          models: models.map((model) => ({
-            name: model.name,
-            pinned: model.pinned,
-            isDefault: providerConfig.defaultModel === model.name,
-          })),
-        }
-      }),
-    )
-
-    if (requestId !== state.requestId) return
-
-    state.providers = providers
+    state.providers = data.providers
     state.hasLoaded = true
   } catch (error) {
     if (requestId !== state.requestId) return
@@ -105,8 +78,8 @@ export async function selectDefaultProvider(
   state: ProviderListState,
   providerName: string,
 ): Promise<void> {
-  const settings = await semiosis.settings.get()
-  await semiosis.settings.put({
+  const settings = await windbell.settings.get()
+  await windbell.settings.put({
     ...settings,
     defaultProvider: providerName,
   })
@@ -121,7 +94,7 @@ export async function putProviderApiKey(
   providerName: string,
   key: string,
 ): Promise<void> {
-  await semiosis.providers.putApiKey({ providerName, key })
+  await windbell.providers.putApiKey({ providerName, key })
 
   const provider = state.providers.find((item) => item.name === providerName)
   if (provider !== undefined) {
@@ -133,7 +106,7 @@ export async function deleteProviderApiKey(
   state: ProviderListState,
   providerName: string,
 ): Promise<void> {
-  await semiosis.providers.deleteApiKey(providerName)
+  await windbell.providers.deleteApiKey(providerName)
 
   const provider = state.providers.find((item) => item.name === providerName)
   if (provider !== undefined) {

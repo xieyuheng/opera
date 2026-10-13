@@ -114,6 +114,90 @@ test("windbell router", async (t) => {
   }
 
   {
+    const response = await app.request("/api/settings")
+    assert.equal(response.status, 200)
+    assert.deepEqual(await response.json(), {
+      defaultProvider: null,
+      themeId: null,
+    })
+  }
+
+  {
+    const pageWorkspace = await database.workspaces.make({
+      name: "page-test",
+      root: Path.join(root, "page-test"),
+    })
+    const session = await database.sessions.make({
+      workspaceId: pageWorkspace.id,
+      title: "page-test-session",
+    })
+
+    const homeResponse = await app.request("/api/pages/home")
+    assert.equal(homeResponse.status, 200)
+    const home = (await homeResponse.json()) as {
+      workspaces: Array<{ id: string }>
+      sessionsByWorkspaceId: Record<string, Array<{ id: string }>>
+    }
+    assert.equal(
+      home.workspaces.some((item) => item.id === pageWorkspace.id),
+      true,
+    )
+    assert.equal(
+      home.sessionsByWorkspaceId[pageWorkspace.id]?.[0]?.id,
+      session.id,
+    )
+
+    const workspaceResponse = await app.request(
+      `/api/pages/workspaces/${pageWorkspace.id}`,
+    )
+    assert.equal(workspaceResponse.status, 200)
+    const workspaceData = (await workspaceResponse.json()) as {
+      workspace: { id: string }
+      sessions: Array<{ id: string }>
+    }
+    assert.equal(workspaceData.workspace.id, pageWorkspace.id)
+    assert.equal(workspaceData.sessions[0]?.id, session.id)
+
+    const sessionResponse = await app.request(
+      `/api/pages/sessions/${session.id}`,
+    )
+    assert.equal(sessionResponse.status, 200)
+    const sessionData = (await sessionResponse.json()) as {
+      session: { id: string }
+      workspace: { id: string }
+    }
+    assert.equal(sessionData.session.id, session.id)
+    assert.equal(sessionData.workspace.id, pageWorkspace.id)
+
+    const createSessionResponse = await app.request("/api/sessions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        workspaceId: pageWorkspace.id,
+        title: "created-through-domain-api",
+      }),
+    })
+    assert.equal(createSessionResponse.status, 201)
+    const createdSession = (await createSessionResponse.json()) as {
+      id: string
+      title: string
+    }
+    assert.equal(createdSession.title, "created-through-domain-api")
+
+    const domainSessionsResponse = await app.request("/api/sessions")
+    assert.equal(domainSessionsResponse.status, 200)
+    const domainSessions = (await domainSessionsResponse.json()) as Array<{
+      id: string
+    }>
+    assert.equal(
+      domainSessions.some((item) => item.id === session.id),
+      true,
+    )
+  }
+
+  {
     const response = await app.request("/api/config")
 
     assert.equal(response.status, 200)
@@ -121,16 +205,6 @@ test("windbell router", async (t) => {
       databaseRoot: database.root,
       lockRoot,
       shellName: process.platform === "win32" ? "pwsh" : "bash",
-    })
-  }
-
-  {
-    const response = await app.request("/api/sh/health")
-
-    assert.equal(response.status, 200)
-    assert.deepEqual(await response.json(), {
-      ok: true,
-      service: "sh",
     })
   }
 })

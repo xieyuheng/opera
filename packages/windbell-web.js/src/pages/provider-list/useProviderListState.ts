@@ -4,7 +4,7 @@ import {
   loadProviderListState,
 } from "./ProviderListState.ts"
 
-export const useProviderListData = defineBasicLoader(async () => {
+export const useProviderListState = defineBasicLoader(async () => {
   const state = getProviderListState()
 
   if (state.hasLoaded) {

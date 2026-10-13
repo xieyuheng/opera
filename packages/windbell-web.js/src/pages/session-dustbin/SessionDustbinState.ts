@@ -1,4 +1,4 @@
-import { semiosis } from "../../app/semiosis"
+import { windbell } from "../../app/windbell"
 import type * as S from "@windbell/semiosis.js"
 import { reactive } from "vue"
 
@@ -59,25 +59,13 @@ export async function loadSessionDustbin(
   state.error = undefined
 
   try {
-    const sessions = await semiosis.dustbin.sessions.list({
+    const data = await windbell.pages.loadSessionDustbinData({
       workspaceId: state.workspaceId,
     })
 
     if (requestId !== state.requestId) return
 
-    const loaded = await Promise.all(
-      sessions.map(async (session) => {
-        const detail = await semiosis.dustbin.sessions.get(session.id)
-        return {
-          ...session,
-          context: detail?.context ?? [],
-        }
-      }),
-    )
-
-    if (requestId !== state.requestId) return
-
-    state.sessions = loaded
+    state.sessions = data.sessions
     state.hasLoaded = true
   } catch (error) {
     if (requestId !== state.requestId) return
@@ -95,7 +83,7 @@ export async function restoreSession(
   state: SessionDustbinState,
   sessionId: S.SessionId,
 ): Promise<void> {
-  await semiosis.dustbin.sessions.restore(sessionId)
+  await windbell.dustbin.sessions.restore(sessionId)
   state.sessions = state.sessions.filter((session) => session.id !== sessionId)
 }
 
@@ -103,6 +91,6 @@ export async function removeSession(
   state: SessionDustbinState,
   sessionId: S.SessionId,
 ): Promise<void> {
-  await semiosis.dustbin.sessions.remove(sessionId)
+  await windbell.dustbin.sessions.remove(sessionId)
   state.sessions = state.sessions.filter((session) => session.id !== sessionId)
 }

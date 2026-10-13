@@ -16,11 +16,20 @@
     "@windbell/semiosis.js": "workspace:*",
     "hono": "4.13.13",
     "@windbell/fs.js": "workspace:*",
-    "@windbell/sh.js": "workspace:*"
+    "@windbell/sh.js": "workspace:*",
+    "@windbell/http.js": "workspace:*",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
     "prettier": "^3.9.10",
     "typescript": "^7.0.2"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client/index.ts",
+    "./router": "./src/router/index.ts",
+    "./server": "./src/server/index.ts",
+    "./service": "./src/service/index.ts"
   }
 }

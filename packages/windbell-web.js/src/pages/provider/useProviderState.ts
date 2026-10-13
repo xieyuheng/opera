@@ -1,7 +1,7 @@
 import { defineBasicLoader } from "vue-router/experimental"
 import { getProviderState, loadProviderState } from "./ProviderState.ts"
 
-export const useProviderData = defineBasicLoader(async (to) => {
+export const useProviderState = defineBasicLoader(async (to) => {
   const providerName = String(to.params.providerName ?? "")
   const state = getProviderState(providerName)
 

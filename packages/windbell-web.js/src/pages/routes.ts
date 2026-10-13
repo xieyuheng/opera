@@ -1,24 +1,24 @@
 import type { RouteRecordRaw } from "vue-router"
 import HomePage from "./home/HomePage.vue"
-import { useHomeData } from "./home/homeData.ts"
+import { useHomeState } from "./home/useHomeState.ts"
 import MarkdownRenderPage from "./markdown/MarkdownRenderPage.vue"
 import ProviderListPage from "./provider-list/ProviderListPage.vue"
-import { useProviderListData } from "./provider-list/providerListData.ts"
+import { useProviderListState } from "./provider-list/useProviderListState.ts"
 import ProviderPage from "./provider/ProviderPage.vue"
-import { useProviderData } from "./provider/providerData.ts"
+import { useProviderState } from "./provider/useProviderState.ts"
 import NotFoundPage from "./errors/NotFoundPage.vue"
 import SessionDustbinPage from "./session-dustbin/SessionDustbinPage.vue"
-import { useSessionDustbinData } from "./session-dustbin/sessionDustbinData.ts"
+import { useSessionDustbinState } from "./session-dustbin/useSessionDustbinState.ts"
 import WorkspaceDustbinPage from "./workspace-dustbin/WorkspaceDustbinPage.vue"
-import { useWorkspaceDustbinData } from "./workspace-dustbin/workspaceDustbinData.ts"
+import { useWorkspaceDustbinState } from "./workspace-dustbin/useWorkspaceDustbinState.ts"
 import SessionPage from "./session/SessionPage.vue"
-import { useSessionData } from "./session/sessionData.ts"
+import { useSessionState } from "./session/useSessionState.ts"
 import SettingsPage from "./settings/SettingsPage.vue"
 import ToolboxPage from "./toolbox/ToolboxPage.vue"
 import ThemeListPage from "./theme-list/ThemeListPage.vue"
 import ThemePage from "./theme/ThemePage.vue"
 import WorkspacePage from "./workspace/WorkspacePage.vue"
-import { useWorkspaceData } from "./workspace/workspaceData.ts"
+import { useWorkspaceState } from "./workspace/useWorkspaceState.ts"
 
 export const routes: Array<RouteRecordRaw> = [
   {
@@ -30,7 +30,7 @@ export const routes: Array<RouteRecordRaw> = [
     name: "home",
     component: HomePage,
     meta: {
-      loaders: [useHomeData],
+      loaders: [useHomeState],
     },
   },
   {
@@ -47,7 +47,7 @@ export const routes: Array<RouteRecordRaw> = [
     name: "workspace",
     component: WorkspacePage,
     meta: {
-      loaders: [useWorkspaceData],
+      loaders: [useWorkspaceState],
     },
   },
   {
@@ -55,7 +55,7 @@ export const routes: Array<RouteRecordRaw> = [
     name: "workspace-dustbin",
     component: WorkspaceDustbinPage,
     meta: {
-      loaders: [useWorkspaceDustbinData],
+      loaders: [useWorkspaceDustbinState],
     },
   },
   {
@@ -63,7 +63,7 @@ export const routes: Array<RouteRecordRaw> = [
     name: "session-dustbin",
     component: SessionDustbinPage,
     meta: {
-      loaders: [useSessionDustbinData],
+      loaders: [useSessionDustbinState],
     },
   },
   {
@@ -71,7 +71,7 @@ export const routes: Array<RouteRecordRaw> = [
     name: "session",
     component: SessionPage,
     meta: {
-      loaders: [useSessionData],
+      loaders: [useSessionState],
     },
   },
   {
@@ -79,7 +79,7 @@ export const routes: Array<RouteRecordRaw> = [
     name: "provider-list",
     component: ProviderListPage,
     meta: {
-      loaders: [useProviderListData],
+      loaders: [useProviderListState],
     },
   },
   {
@@ -87,7 +87,7 @@ export const routes: Array<RouteRecordRaw> = [
     name: "provider",
     component: ProviderPage,
     meta: {
-      loaders: [useProviderData],
+      loaders: [useProviderState],
     },
   },
   {

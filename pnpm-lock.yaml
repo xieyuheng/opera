@@ -170,6 +170,9 @@ importers:
       '@windbell/fs.js':
         specifier: workspace:*
         version: link:../fs.js
+      '@windbell/http.js':
+        specifier: workspace:*
+        version: link:../http.js
       '@windbell/semiosis.js':
         specifier: workspace:*
         version: link:../semiosis.js
@@ -179,6 +182,9 @@ importers:
       hono:
         specifier: 4.13.13
         version: 4.13.13
+      zod:
+        specifier: ^4.6.5
+        version: 4.6.5
     devDependencies:
       '@types/node':
         specifier: ^26.6.5
@@ -241,6 +247,9 @@ importers:
       '@windbell/std.js':
         specifier: workspace:*
         version: link:../std.js
+      '@windbell/windbell-api.js':
+        specifier: workspace:*
+        version: link:../windbell-api.js
       ajv:
         specifier: 8.20.0
         version: 8.20.0

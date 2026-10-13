@@ -19,7 +19,8 @@
     "yaml": "2.9.1",
     "@windbell/fs.js": "workspace:*",
     "@windbell/std.js": "workspace:*",
-    "@windbell/sh.js": "workspace:*"
+    "@windbell/sh.js": "workspace:*",
+    "@windbell/windbell-api.js": "workspace:*"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.3.3",

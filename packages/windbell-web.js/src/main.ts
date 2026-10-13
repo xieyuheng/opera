@@ -4,7 +4,6 @@ import { createRouter, createWebHistory } from "vue-router"
 import { DataLoaderPlugin } from "vue-router/experimental"
 import App from "./app/App.vue"
 import { i18n } from "./app/i18n.ts"
-import { initSemiosis } from "./app/semiosis.ts"
 import { ensureThemeReady } from "./app/theme.ts"
 import { routes } from "./pages/routes.ts"
 import "./styles/index.css"
@@ -13,8 +12,6 @@ void bootstrap()
 
 async function bootstrap(): Promise<void> {
   try {
-    await initSemiosis()
-
     const router = createRouter({
       history: createWebHistory(import.meta.env.BASE_URL),
       routes,

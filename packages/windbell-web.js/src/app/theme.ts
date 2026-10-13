@@ -1,4 +1,4 @@
-import { semiosis } from "./semiosis"
+import { windbell } from "./windbell"
 import { computed, reactive, watch } from "vue"
 import { useColorMode, type ColorMode } from "./color-mode.ts"
 
@@ -269,7 +269,7 @@ async function refreshThemeFromDatabase(): Promise<void> {
 
   try {
     const [settings, customThemes] = await Promise.all([
-      semiosis.settings.get(),
+      windbell.settings.get(),
       listCustomThemes(),
     ])
 
@@ -301,8 +301,8 @@ export async function activateTheme(themeId: string): Promise<void> {
   applyCurrentTheme()
 
   try {
-    const settings = await semiosis.settings.get()
-    await semiosis.settings.put({
+    const settings = await windbell.settings.get()
+    await windbell.settings.put({
       ...settings,
       themeId: theme.id,
     })

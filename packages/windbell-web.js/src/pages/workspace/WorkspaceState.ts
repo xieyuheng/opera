@@ -1,4 +1,4 @@
-import { semiosis } from "../../app/semiosis"
+import { windbell } from "../../app/windbell"
 import type * as S from "@windbell/semiosis.js"
 import { reactive } from "vue"
 
@@ -57,26 +57,15 @@ export async function loadWorkspaceState(state: WorkspaceState): Promise<void> {
   state.error = undefined
 
   try {
-    const [workspace, sessions] = await Promise.all([
-      semiosis.workspaces.get(state.workspaceId),
-      semiosis.sessions.list({
-        workspaceId: state.workspaceId,
-      }),
-    ])
+    const data = await windbell.pages.loadWorkspaceData({
+      workspaceId: state.workspaceId,
+    })
 
     if (requestId !== state.requestId) return
 
-    const loadedSessions = (
-      await Promise.all(
-        sessions.map((session) => semiosis.sessions.get(session.id)),
-      )
-    ).filter((session): session is S.Session => session !== undefined)
-
-    if (requestId !== state.requestId) return
-
-    sortSessionsByUpdatedAt(loadedSessions)
-    state.workspace = workspace
-    state.sessions = loadedSessions
+    sortSessionsByUpdatedAt(data.sessions)
+    state.workspace = data.workspace
+    state.sessions = data.sessions
     state.hasLoaded = true
   } catch (error) {
     if (requestId !== state.requestId) return
@@ -94,7 +83,7 @@ export async function makeSession(
   state: WorkspaceState,
   title: string,
 ): Promise<S.Session> {
-  const session = await semiosis.sessions.make({
+  const session = await windbell.sessions.make({
     workspaceId: state.workspaceId,
     title,
   })
@@ -108,7 +97,7 @@ export async function trashSession(
   state: WorkspaceState,
   sessionId: S.SessionId,
 ): Promise<void> {
-  await semiosis.dustbin.sessions.trash(sessionId)
+  await windbell.dustbin.sessions.trash(sessionId)
   state.sessions = state.sessions.filter((session) => session.id !== sessionId)
 }
 
@@ -128,7 +117,7 @@ export async function updateSessionTitle(
     updatedAt: Date.now(),
   }
 
-  await semiosis.sessions.put(session)
+  await windbell.sessions.put(session)
   state.sessions[index] = session
   sortSessionsByUpdatedAt(state.sessions)
 }
@@ -146,12 +135,12 @@ export async function updateWorkspaceTitle(
     updatedAt: Date.now(),
   }
 
-  await semiosis.workspaces.put(workspace)
+  await windbell.workspaces.put(workspace)
   state.workspace = workspace
 }
 
 export async function trashWorkspace(state: WorkspaceState): Promise<void> {
-  await semiosis.dustbin.workspaces.trash(state.workspaceId)
+  await windbell.dustbin.workspaces.trash(state.workspaceId)
   state.workspace = undefined
   state.sessions = []
 }
