@@ -99,6 +99,7 @@ function makeChatCompletionBody(
 
   if (input.stream === true) {
     body.stream = true
+    body.stream_options = { include_usage: true }
   }
 
   return body

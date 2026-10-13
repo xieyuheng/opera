@@ -3,7 +3,7 @@ import type { Agent } from "../agent/Agent.ts"
 import type { SessionStore } from "../database/SessionStore.ts"
 import type { ModelError } from "../model/index.ts"
 import type { Sign } from "../sign/index.ts"
-import type { Turn } from "./Turn.ts"
+import { addTurnUsage, type Turn } from "./Turn.ts"
 import type { TurnEvent } from "./TurnEvent.ts"
 import { turnReplay } from "./turnReplay.ts"
 import { unwrap } from "@windbell/std.js/result"
@@ -46,6 +46,12 @@ export async function* turnRun(
           inputPersisted: turn.inputPersisted,
         }
         return
+      }
+
+      if (event.type === "usage") {
+        turn.usage = addTurnUsage(turn.usage, event.usage)
+        yield { type: "usage", usage: event.usage }
+        continue
       }
 
       if (event.type === "input-persisted") {

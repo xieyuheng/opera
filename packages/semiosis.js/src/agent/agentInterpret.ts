@@ -7,7 +7,7 @@ import {
   type SignDelta,
   type ToolCallSign,
 } from "../sign/index.ts"
-import type { ModelError } from "../model/index.ts"
+import type { ModelError, ModelUsage } from "../model/index.ts"
 import type { Agent } from "./Agent.ts"
 import { repairOrphanToolCalls } from "./repairOrphanToolCalls.ts"
 
@@ -20,6 +20,7 @@ export type AgentInterpretEvent =
   | { type: "sign"; sign: Sign }
   | { type: "input-persisted" }
   | { type: "error"; error: ModelError }
+  | { type: "usage"; usage: ModelUsage }
 
 type CollectModelOutputResult = { kind: "completed" } | { kind: "error" }
 
@@ -85,6 +86,11 @@ async function* collectModelOutput(
     if (event.type === "error") {
       yield { type: "error", error: event.error }
       return { kind: "error" }
+    }
+
+    if (event.type === "usage") {
+      yield { type: "usage", usage: event.usage }
+      continue
     }
 
     if (event.type === "delta") {

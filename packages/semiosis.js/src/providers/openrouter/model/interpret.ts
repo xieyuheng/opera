@@ -1,12 +1,14 @@
-import type {
-  ChatCompletionInput,
-  Client,
-  Message,
-  Tool,
+import {
+  UsageSchema,
+  type ChatCompletionInput,
+  type Client,
+  type Message,
+  type Tool,
 } from "../client/index.ts"
 import type {
   ModelInterpretEvent,
   ModelInterpretOptions,
+  ModelUsage,
 } from "../../../model/index.ts"
 import {
   AssistantSign,
@@ -52,12 +54,16 @@ export async function* interpret(
 
   let reasoning = ""
   let content = ""
+  let usage: ModelUsage | undefined
   const reasoningDetails: Array<Record<string, unknown>> = []
   const toolCalls = new Map<number, ToolCallSign>()
 
   for await (const chunk of client.chat.completions.createStream(request, {
     signal: options.signal,
   })) {
+    const nextUsage = makeModelUsage(chunk.usage)
+    if (nextUsage !== undefined) usage = nextUsage
+
     const delta = chunk.choices?.[0]?.delta
     if (delta === undefined) continue
 
@@ -113,6 +119,10 @@ export async function* interpret(
     }
   }
 
+  if (usage !== undefined) {
+    yield { type: "usage", usage }
+  }
+
   if (reasoning !== "") {
     yield { type: "sign", sign: ReasoningSign(reasoning) }
   }
@@ -143,6 +153,28 @@ export async function* interpret(
     }
 
     yield { type: "sign", sign: toolCall }
+  }
+}
+
+function makeModelUsage(value: unknown): ModelUsage | undefined {
+  const result = UsageSchema.safeParse(value)
+  if (!result.success) return undefined
+
+  const usage = result.data
+  const input = usage.prompt_tokens
+  const output = usage.completion_tokens
+  const cacheRead = usage.prompt_tokens_details?.cached_tokens ?? 0
+  const cacheWrite = usage.prompt_tokens_details?.cache_write_tokens ?? 0
+  const cacheMiss = input - cacheRead - cacheWrite
+
+  return {
+    input,
+    output,
+    cacheRead,
+    cacheMiss,
+    cacheWrite,
+    total: input + output,
+    raw: value,
   }
 }
 

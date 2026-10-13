@@ -4,7 +4,7 @@ import { ok } from "@windbell/std.js/result"
 import { makeAgent } from "../agent/index.ts"
 import type { SessionStore } from "../database/index.ts"
 import type { Model, ModelError } from "../model/index.ts"
-import { UserSign } from "../sign/index.ts"
+import { AssistantSign, UserSign } from "../sign/index.ts"
 import { makeToolRouter } from "../tool/index.ts"
 import type { Turn } from "./Turn.ts"
 import { isRetryableModelError, turnRun } from "./turnRun.ts"
@@ -93,6 +93,71 @@ test("turnRun turns a first model error into a failed turn event", async () => {
   ])
   assert.equal(storedTurns.at(-1)?.status, "failed")
   assert.deepEqual(storedTurns.at(-1)?.error, { message: "fetch failed" })
+})
+
+test("turnRun forwards and persists usage", async () => {
+  const storedTurns: Array<Turn> = []
+  const sessions = {
+    async sliceContextBySequence() {
+      return ok([])
+    },
+    async nextSignSequence() {
+      return ok(0)
+    },
+    async putTurn(turn: Turn) {
+      storedTurns.push(turn)
+      return ok(undefined)
+    },
+  } as unknown as SessionStore
+  const raw = { prompt_tokens: 10, completion_tokens: 2, total_tokens: 12 }
+  const usage = {
+    input: 10,
+    output: 2,
+    cacheRead: 4,
+    cacheMiss: 6,
+    cacheWrite: 0,
+    total: 12,
+    raw,
+  }
+  const model: Model = {
+    providerName: "test",
+    name: "test",
+    interpret: async function* () {
+      yield { type: "usage", usage }
+      yield { type: "sign", sign: AssistantSign("answer") }
+    },
+  }
+  const agent = makeAgent({
+    model,
+    toolRouter: makeToolRouter(),
+    getContext: async () => [],
+    appendContext: async () => {},
+  })
+  const events = []
+
+  for await (const event of turnRun({
+    sessions,
+    agent,
+    turn: makeTurn(false),
+    input: [UserSign("hello")],
+  })) {
+    events.push(event)
+  }
+
+  assert.deepEqual(events, [
+    { type: "usage", usage },
+    { type: "sign", sign: UserSign("hello") },
+    { type: "sign", sign: AssistantSign("answer") },
+  ])
+  assert.deepEqual(storedTurns.at(-1)?.usage, {
+    input: 10,
+    output: 2,
+    cacheRead: 4,
+    cacheMiss: 6,
+    cacheWrite: 0,
+    total: 12,
+    raw: [raw],
+  })
 })
 
 test("turnRun preserves inputPersisted for a later model error", async () => {

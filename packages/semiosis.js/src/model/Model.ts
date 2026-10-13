@@ -14,10 +14,21 @@ export type ModelError = {
   status?: number
 }
 
+export type ModelUsage = {
+  input: number
+  output: number
+  cacheRead: number
+  cacheMiss: number
+  cacheWrite: number
+  total: number
+  raw: unknown
+}
+
 export type ModelInterpretEvent =
   | { type: "delta"; delta: SignDelta }
   | { type: "sign"; sign: Sign }
   | { type: "error"; error: ModelError }
+  | { type: "usage"; usage: ModelUsage }
 
 export type Model = ModelRef & {
   interpret: (

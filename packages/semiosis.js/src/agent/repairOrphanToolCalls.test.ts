@@ -394,6 +394,43 @@ test("agentContinue continues from persisted context without appending input", a
   )
 })
 
+test("agentInterpret forwards usage events without persisting them", async () => {
+  const context: Array<Sign> = []
+  const usage = {
+    input: 10,
+    output: 2,
+    cacheRead: 4,
+    cacheMiss: 6,
+    cacheWrite: 0,
+    total: 12,
+    raw: { prompt_tokens: 10 },
+  }
+  const model: Model = {
+    providerName: "test",
+    name: "test",
+    interpret: async function* () {
+      yield { type: "usage", usage }
+      yield { type: "sign", sign: AssistantSign("answer") }
+    },
+  }
+  const agent = makeTestAgent(context, model)
+  const events: Array<AgentInterpretEvent> = []
+
+  for await (const event of agentInterpret(agent, [UserSign("hello")])) {
+    events.push(event)
+  }
+
+  assert.deepEqual(
+    events.map((event) => event.type),
+    ["usage", "input-persisted", "sign", "sign"],
+  )
+  assert.deepEqual(events[0], { type: "usage", usage })
+  assert.deepEqual(
+    context.map((sign) => sign.kind),
+    ["UserSign", "AssistantSign"],
+  )
+})
+
 test("agentInterpret forwards delta model events without persisting them", async () => {
   const context: Array<Sign> = []
   const model: Model = {

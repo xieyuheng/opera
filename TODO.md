@@ -1,9 +1,3 @@
-# usage
-
-我们的 model interpret 和 agent interpret
-可否用 event 的形式支持 usage？
-把 usage 相关的信息作为 event 在 stream 中返回。
-
 # 文学式编程
 
 给出 agent interpret 和 agent loop 和 markdown 文学式编程

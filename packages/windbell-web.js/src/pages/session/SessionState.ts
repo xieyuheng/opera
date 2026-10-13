@@ -215,6 +215,10 @@ async function runInterpretAttempt(options: {
         return event.retryable
       }
 
+      if (event.type === "usage") {
+        continue
+      }
+
       if (event.type === "delta") {
         activeTurn.partialSign = appendSignDelta(
           activeTurn.partialSign,

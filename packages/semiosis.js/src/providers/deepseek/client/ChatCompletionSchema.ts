@@ -9,7 +9,7 @@ const CompletionTokensDetailsSchema = z.object({
   reasoning_tokens: z.number(),
 })
 
-const UsageSchema = z.object({
+export const UsageSchema = z.object({
   prompt_tokens: z.number(),
   completion_tokens: z.number(),
   total_tokens: z.number(),
@@ -18,6 +18,8 @@ const UsageSchema = z.object({
   prompt_cache_hit_tokens: z.number().optional(),
   prompt_cache_miss_tokens: z.number().optional(),
 })
+
+export type Usage = z.infer<typeof UsageSchema>
 
 const ChoiceSchema = z.object({
   index: z.number(),

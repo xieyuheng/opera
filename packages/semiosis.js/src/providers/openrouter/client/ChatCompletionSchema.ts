@@ -20,7 +20,7 @@ const CostDetailsSchema = z.object({
   upstream_inference_completions_cost: z.number().optional(),
 })
 
-const UsageSchema = z.object({
+export const UsageSchema = z.object({
   prompt_tokens: z.number(),
   completion_tokens: z.number(),
   total_tokens: z.number(),
@@ -30,6 +30,8 @@ const UsageSchema = z.object({
   cost_details: CostDetailsSchema.optional(),
   completion_tokens_details: CompletionTokensDetailsSchema.optional(),
 })
+
+export type Usage = z.infer<typeof UsageSchema>
 
 const ChoiceSchema = z.object({
   index: z.number(),
