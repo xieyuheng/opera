@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Pencil, Trash2 } from "@lucide/vue"
-import type * as S from "@windbell/semiosis.js"
+import type * as S from "@windbell/semiosis.js/core"
 import { useHead } from "@unhead/vue"
 import PageLayout from "../../components/layout/PageLayout.vue"
 import { computed, ref } from "vue"

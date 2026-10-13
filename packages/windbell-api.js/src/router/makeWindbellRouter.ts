@@ -8,7 +8,7 @@ import {
   makeSettingsService,
   makeWorkspaceService,
 } from "@windbell/semiosis.js"
-import { defaultWindbellRoot } from "@windbell/semiosis.js/node"
+import { defaultWindbellRoot } from "@windbell/semiosis.js"
 import { makeBash } from "@windbell/sh.js/bash"
 import { makePwsh } from "@windbell/sh.js/pwsh"
 import { Hono } from "hono"

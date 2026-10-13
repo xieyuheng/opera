@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ProviderModelEntry } from "@windbell/semiosis.js"
+import type { ProviderModelEntry } from "@windbell/semiosis.js/core"
 import DeepSeekModelCard from "./DeepSeekModelCard.vue"
 import OpenRouterModelCard from "./OpenRouterModelCard.vue"
 

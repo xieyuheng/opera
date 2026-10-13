@@ -4,7 +4,7 @@
   "private": true,
   "license": "GPL-3.0-or-later",
   "type": "module",
-  "main": "src/index.ts",
+  "main": "./src/exports/default.ts",
   "files": [
     "src"
   ],
@@ -31,8 +31,7 @@
     "semiosis.js": "src/main.ts"
   },
   "exports": {
-    ".": "./src/index.ts",
-    "./node": "./src/node/index.ts",
-    "./src/*": "./src/*"
+    ".": "./src/exports/default.ts",
+    "./core": "./src/exports/core.ts"
   }
 }

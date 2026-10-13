@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type * as S from "@windbell/semiosis.js"
-import { pwshToolParameters } from "@windbell/semiosis.js/src/tools/pwsh/makePwshToolSign.ts"
+import * as S from "@windbell/semiosis.js/core"
 import { Ajv } from "ajv"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
@@ -27,7 +26,7 @@ const ajv = new Ajv({
   strict: false,
 })
 
-const validate = ajv.compile(pwshToolParameters)
+const validate = ajv.compile(S.pwshToolParameters)
 
 const pwshArgs = computed<PwshArguments>(() => {
   if (!validate(props.args)) {

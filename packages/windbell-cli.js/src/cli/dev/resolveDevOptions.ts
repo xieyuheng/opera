@@ -1,4 +1,4 @@
-import * as S from "@windbell/semiosis.js/node"
+import * as S from "@windbell/semiosis.js"
 import Path from "node:path"
 import process from "node:process"
 import { fileURLToPath } from "node:url"

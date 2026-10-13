@@ -1,4 +1,4 @@
-import type * as S from "@windbell/semiosis.js"
+import type * as S from "@windbell/semiosis.js/core"
 
 export function parseToolCallArguments(sign: S.ToolCallSign): unknown {
   try {

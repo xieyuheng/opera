@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type * as S from "@windbell/semiosis.js"
+import type * as S from "@windbell/semiosis.js/core"
 import Markdown from "../../markdown/Markdown.vue"
 import type { SignState } from "../signState.ts"
 

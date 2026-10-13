@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type * as S from "@windbell/semiosis.js"
-import { bashToolParameters } from "@windbell/semiosis.js/src/tools/bash/makeBashToolSign.ts"
+import * as S from "@windbell/semiosis.js/core"
 import { Ajv } from "ajv"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
@@ -27,7 +26,7 @@ const ajv = new Ajv({
   strict: false,
 })
 
-const validate = ajv.compile(bashToolParameters)
+const validate = ajv.compile(S.bashToolParameters)
 
 const bashArgs = computed<BashArguments>(() => {
   if (!validate(props.args)) {

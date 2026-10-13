@@ -1,5 +1,5 @@
 import { windbell } from "../../app/windbell"
-import type * as S from "@windbell/semiosis.js"
+import type * as S from "@windbell/semiosis.js/core"
 import { reactive } from "vue"
 
 export type HomeState = {

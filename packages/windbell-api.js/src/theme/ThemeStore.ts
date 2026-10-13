@@ -1,11 +1,7 @@
 import { randomUUID } from "node:crypto"
 import fs from "node:fs/promises"
 import Path from "node:path"
-import {
-  listFiles,
-  readJsonFile,
-  writeJsonFile,
-} from "@windbell/semiosis.js/node"
+import { listFiles, readJsonFile, writeJsonFile } from "@windbell/semiosis.js"
 import {
   isThemeId,
   parseTheme,
