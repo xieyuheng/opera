@@ -20,6 +20,7 @@ import { makeTitleChangeHandler } from "./shared.ts"
 
 export type ResumeAgentReplOptions = {
   database: Database
+  lockRoot: string
   workspace: Workspace
   model: Model
   repl: Repl
@@ -42,6 +43,7 @@ export async function resumeAgentRepl(
   try {
     await withSessionLock({
       database: options.database,
+      lockRoot: options.lockRoot,
       sessionId: session.id,
       action: async () => {
         const agent = await makeAgentFromSession({

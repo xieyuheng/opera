@@ -1,6 +1,5 @@
 import { makeFileLockService } from "@windbell/lock.js/file-lock"
 import type { Database } from "../database/Database.ts"
-import { defaultLockRoot } from "../node/defaultPaths.ts"
 import type { SessionId } from "./Session.ts"
 
 const lockTtlMs = 60_000
@@ -13,7 +12,7 @@ export type SessionLease = {
 export type SessionLockOptions = {
   database: Database
   sessionId: SessionId
-  lockRoot?: string
+  lockRoot: string
 }
 
 export async function acquireSessionLease(
@@ -22,7 +21,7 @@ export async function acquireSessionLease(
   const lockService = makeFileLockService({
     fs: options.database.fs,
     path: options.database.path,
-    root: options.lockRoot ?? defaultLockRoot(),
+    root: options.lockRoot,
   })
 
   const result = await lockService.tryLock(`session:${options.sessionId}`, {

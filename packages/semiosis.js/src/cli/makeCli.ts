@@ -1,8 +1,8 @@
 import * as Cli from "@windbell/cli.js"
 import { getPackageJson } from "@windbell/std.js/node"
 import { fileURLToPath } from "node:url"
+import { resolveAppPaths, defaultAppRoot } from "../app/defaultAppRoot.ts"
 import { makeNodeDatabase } from "../node/makeNodeDatabase.ts"
-import { defaultDatabaseRoot } from "../node/defaultPaths.ts"
 import { makeBatchHandler } from "./commands/BatchCommand.ts"
 import { makeModelDefaultHandler } from "./commands/ModelDefaultCommand.ts"
 import { makeModelPinHandler } from "./commands/ModelPinCommand.ts"
@@ -15,7 +15,8 @@ import { makeProviderListHandler } from "./commands/ProviderListCommand.ts"
 import { makeReplHandler } from "./commands/ReplCommand.ts"
 
 export function makeCli() {
-  const database = makeNodeDatabase({ root: defaultDatabaseRoot() })
+  const paths = resolveAppPaths(defaultAppRoot())
+  const database = makeNodeDatabase({ root: paths.databaseRoot })
   const { version } = getPackageJson(fileURLToPath(import.meta.url))
   const router = Cli.makeRouter("semiosis.js", version)
 
@@ -87,7 +88,7 @@ export function makeCli() {
         "--session": { valueName: "session-id" },
       },
       description: "start agent repl in current directory",
-      handler: makeReplHandler({ database }),
+      handler: makeReplHandler({ database, lockRoot: paths.lockRoot }),
     },
     {
       path: ["batch"],
@@ -99,7 +100,7 @@ export function makeCli() {
         "--max-output-chars": { valueName: "n" },
       },
       description: "run prompts through agent",
-      handler: makeBatchHandler({ database }),
+      handler: makeBatchHandler({ database, lockRoot: paths.lockRoot }),
     },
   ])
 

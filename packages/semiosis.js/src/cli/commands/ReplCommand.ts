@@ -8,6 +8,7 @@ import { ensureWorkspace, makeModelFromOptions } from "../shared.ts"
 
 export type ReplCommandOptions = {
   database: Database
+  lockRoot: string
 }
 
 export function makeReplHandler(options: ReplCommandOptions) {
@@ -33,6 +34,7 @@ export function makeReplHandler(options: ReplCommandOptions) {
     if (sessionId === undefined) {
       return startAgentRepl({
         database: options.database,
+        lockRoot: options.lockRoot,
         workspace,
         model,
         repl,
@@ -41,6 +43,7 @@ export function makeReplHandler(options: ReplCommandOptions) {
 
     return resumeAgentRepl({
       database: options.database,
+      lockRoot: options.lockRoot,
       workspace,
       model,
       repl,

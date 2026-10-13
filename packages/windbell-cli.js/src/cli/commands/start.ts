@@ -28,11 +28,10 @@ export function makeStartHandler() {
       process.env.CORS_ORIGIN ??
       defaultCorsOrigin
 
-    const windbellRoot =
+    const appPaths = S.resolveAppPaths(
       readOptionalString(context.options, "--windbell-root") ??
-      S.defaultWindbellRoot()
-    const databaseRoot = Path.join(windbellRoot, "database")
-    const lockRoot = Path.join(windbellRoot, "var", "locks")
+        S.defaultAppRoot(),
+    )
 
     const webDistRoot =
       readOptionalString(context.options, "--web-dist-root") ??
@@ -45,7 +44,7 @@ export function makeStartHandler() {
     }
 
     const database = S.makeNodeDatabase({
-      root: databaseRoot,
+      root: appPaths.databaseRoot,
     })
 
     const { info } = await startWindbellServer({
@@ -53,8 +52,8 @@ export function makeStartHandler() {
       hostname,
       port,
       corsOrigin,
-      windbellRoot,
-      lockRoot,
+      windbellRoot: appPaths.root,
+      lockRoot: appPaths.lockRoot,
       webDistRoot,
     })
 

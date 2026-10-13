@@ -1,4 +1,4 @@
-export * from "./defaultPaths.ts"
+export * from "../app/defaultAppRoot.ts"
 export * from "./makeNodeDatabase.ts"
 export * from "../models/readMockModel.ts"
 export * from "../prompts/readPromptBatch.ts"

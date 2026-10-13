@@ -8,7 +8,7 @@ import {
   makeSettingsService,
   makeWorkspaceService,
 } from "@windbell/semiosis.js"
-import { defaultWindbellRoot } from "@windbell/semiosis.js"
+import { defaultAppRoot, resolveAppPaths } from "@windbell/semiosis.js"
 import { makeBash } from "@windbell/sh.js/bash"
 import { makePwsh } from "@windbell/sh.js/pwsh"
 import { Hono } from "hono"
@@ -23,8 +23,8 @@ import { makeThemesRouter } from "./makeThemesRouter.ts"
 
 export function makeWindbellRouter(options: WindbellRouterOptions): Hono {
   const app = new Hono()
-  const windbellRoot = options.windbellRoot ?? defaultWindbellRoot()
-  const lockRoot = options.lockRoot ?? Path.join(windbellRoot, "var", "locks")
+  const appPaths = resolveAppPaths(options.windbellRoot ?? defaultAppRoot())
+  const lockRoot = options.lockRoot ?? appPaths.lockRoot
   const sh = process.platform === "win32" ? makePwsh() : makeBash()
   const sessions = makeSessionService({ database: options.database, sh })
   const workspaces = makeWorkspaceService({ database: options.database })

@@ -23,6 +23,7 @@ import {
 
 export type BatchCommandOptions = {
   database: Database
+  lockRoot: string
 }
 
 export function makeBatchHandler(options: BatchCommandOptions) {
@@ -70,6 +71,7 @@ export function makeBatchHandler(options: BatchCommandOptions) {
 
     await withSessionLock({
       database: options.database,
+      lockRoot: options.lockRoot,
       sessionId: session.id,
       action: async () => {
         const agent = await makeAgentForCli({
