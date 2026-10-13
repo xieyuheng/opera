@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type * as S from "@windbell/semiosis.js/node"
+import type * as S from "@windbell/semiosis.js"
 import { pwshToolParameters } from "@windbell/semiosis.js/src/tools/pwsh/makePwshToolSign.ts"
 import { Ajv } from "ajv"
 import { computed } from "vue"

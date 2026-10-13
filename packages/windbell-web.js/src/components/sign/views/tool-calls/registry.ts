@@ -1,5 +1,5 @@
 import type { Component } from "vue"
-import type * as S from "@windbell/semiosis.js/node"
+import type * as S from "@windbell/semiosis.js"
 import BashToolCallView from "./BashToolCallView.vue"
 import PwshToolCallView from "./PwshToolCallView.vue"
 import DefaultToolCallView from "./DefaultToolCallView.vue"

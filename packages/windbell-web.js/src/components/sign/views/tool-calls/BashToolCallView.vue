@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type * as S from "@windbell/semiosis.js/node"
+import type * as S from "@windbell/semiosis.js"
 import { bashToolParameters } from "@windbell/semiosis.js/src/tools/bash/makeBashToolSign.ts"
 import { Ajv } from "ajv"
 import { computed } from "vue"

@@ -3,13 +3,13 @@ import type { Database } from "../database/index.ts"
 import { formatSign } from "../format/index.ts"
 import type { Model } from "../model/index.ts"
 import type { Workspace } from "../workspace/Workspace.ts"
+import { withSessionLock } from "../node/sessionLock.ts"
 import {
   loadSession,
   makeAgentFromSession,
-  withSessionLock,
   type SessionId,
 } from "../session/index.ts"
-import { makeDefaultToolRouter } from "../tools/index.ts"
+import { makeDefaultToolRouter } from "../tools/makeDefaultToolRouter.ts"
 import { makeExitCommand } from "./commands/ExitCommand.ts"
 import { makeHelpCommand } from "./commands/HelpCommand.ts"
 import { makeInfoCommand } from "./commands/InfoCommand.ts"

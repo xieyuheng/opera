@@ -1,4 +1,4 @@
-import type * as S from "@windbell/semiosis.js/node"
+import type * as S from "@windbell/semiosis.js"
 
 export type PendingInterpret = {
   kind: "PendingInterpret"

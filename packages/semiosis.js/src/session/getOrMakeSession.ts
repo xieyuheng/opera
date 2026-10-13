@@ -1,6 +1,6 @@
 import type { Database } from "../database/index.ts"
 import type { Sign } from "../sign/index.ts"
-import { assertSessionToolPlatform } from "../tools/index.ts"
+import { assertSessionToolPlatform } from "../tools/assertSessionToolPlatform.ts"
 import type { Workspace } from "../workspace/Workspace.ts"
 import type { Session, SessionId } from "./Session.ts"
 

@@ -6,9 +6,10 @@ import { agentInterpret } from "../../agent/index.ts"
 import type { Database } from "../../database/index.ts"
 import { formatSign } from "../../format/index.ts"
 import { readPromptBatch } from "../../prompts/index.ts"
-import { getOrMakeSession, withSessionLock } from "../../session/index.ts"
+import { withSessionLock } from "../../node/sessionLock.ts"
+import { getOrMakeSession } from "../../session/index.ts"
 import { PersonaSign, UserSign, type Sign } from "../../sign/index.ts"
-import { makeDefaultToolRouter } from "../../tools/index.ts"
+import { makeDefaultToolRouter } from "../../tools/makeDefaultToolRouter.ts"
 import {
   parsePositiveInt,
   readOptionalOption,
