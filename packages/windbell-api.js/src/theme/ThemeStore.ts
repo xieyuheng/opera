@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto"
-import fs from "node:fs/promises"
 import Path from "node:path"
-import { listFiles, readJsonFile, writeJsonFile } from "@windbell/semiosis.js"
+import type * as S from "@windbell/semiosis.js"
+import { unwrap } from "@windbell/std.js/result"
 import {
   isThemeId,
   parseTheme,
@@ -11,6 +11,7 @@ import {
 } from "./Theme.ts"
 
 export type ThemeStoreOptions = {
+  files: S.Database["files"]
   root: string
 }
 
@@ -31,7 +32,7 @@ export function makeThemeStore(options: ThemeStoreOptions): ThemeStore {
 
   return {
     async list() {
-      const fileNames = await listFiles(root)
+      const fileNames = unwrap(await options.files.listFiles(root))
       const themes: Array<Theme> = []
 
       for (const fileName of fileNames) {
@@ -40,7 +41,7 @@ export function makeThemeStore(options: ThemeStoreOptions): ThemeStore {
         const id = fileName.slice(0, -".json".length)
         if (!isThemeId(id)) continue
 
-        const theme = await readThemeFile(themePath(id))
+        const theme = await readThemeFile(options.files, themePath(id))
         if (theme === undefined) continue
 
         themes.push(theme)
@@ -55,7 +56,7 @@ export function makeThemeStore(options: ThemeStoreOptions): ThemeStore {
 
     async get(id) {
       if (!isThemeId(id)) return undefined
-      return readThemeFile(themePath(id))
+      return readThemeFile(options.files, themePath(id))
     },
 
     async create(input) {
@@ -78,18 +79,21 @@ export function makeThemeStore(options: ThemeStoreOptions): ThemeStore {
         throw new Error(`invalid theme id: ${theme.id}`)
       }
 
-      await writeJsonFile(themePath(theme.id), theme)
+      unwrap(await options.files.writeJsonFile(themePath(theme.id), theme))
     },
 
     async remove(id) {
       if (!isThemeId(id)) return
-      await fs.rm(themePath(id), { force: true })
+      unwrap(await options.files.remove(themePath(id)))
     },
   }
 }
 
-async function readThemeFile(path: string): Promise<Theme | undefined> {
-  const value = await readJsonFile(path)
+async function readThemeFile(
+  files: S.Database["files"],
+  path: string,
+): Promise<Theme | undefined> {
+  const value = unwrap(await files.readJsonFile(path))
   if (value === undefined) return undefined
 
   const theme = parseTheme(value)

@@ -1,7 +1,5 @@
 export * from "./defaultPaths.ts"
-export * from "./jsonFile.ts"
 export * from "./makeNodeDatabase.ts"
-export * from "./sessionLock.ts"
 export * from "../models/readMockModel.ts"
 export * from "../prompts/readPromptBatch.ts"
 export * from "../repls/TtyRepl.ts"

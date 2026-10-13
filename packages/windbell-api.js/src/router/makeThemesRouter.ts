@@ -1,15 +1,20 @@
+import type * as S from "@windbell/semiosis.js"
 import { Hono } from "hono"
 import { makeThemeController } from "../controllers/ThemeController.ts"
 import { makeThemeStore } from "../theme/ThemeStore.ts"
 import { readJsonBody, readRecord, readString } from "./readJson.ts"
 
 export type ThemesRouterOptions = {
+  files: S.Database["files"]
   root: string
 }
 
 export function makeThemesRouter(options: ThemesRouterOptions): Hono {
   const app = new Hono()
-  const store = makeThemeStore({ root: options.root })
+  const store = makeThemeStore({
+    files: options.files,
+    root: options.root,
+  })
 
   const themes = makeThemeController({ store })
 

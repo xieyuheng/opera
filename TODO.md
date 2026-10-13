@@ -1,10 +1,3 @@
-# model 接口的边界
-
-model 不应该把 http 相关的错误 throw 出来，
-让 turn 相关的函数处理，
-应该在 provider 阶段就处理好所有的错误类型，
-把错误归一化，作为 event 发出来。
-
 # usage
 
 目前我们的 agent interpret 只是返回一个 stream，

@@ -3,7 +3,7 @@ import type { Database } from "../database/index.ts"
 import { formatSign } from "../format/index.ts"
 import type { Model } from "../model/index.ts"
 import type { Workspace } from "../workspace/Workspace.ts"
-import { withSessionLock } from "../node/sessionLock.ts"
+import { withSessionLock } from "../session/sessionLock.ts"
 import {
   loadSession,
   makeAgentFromSession,

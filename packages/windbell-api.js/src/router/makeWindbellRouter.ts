@@ -57,6 +57,7 @@ export function makeWindbellRouter(options: WindbellRouterOptions): Hono {
   app.route(
     "/api/themes",
     makeThemesRouter({
+      files: options.database.files,
       root: Path.join(options.database.root, "themes"),
     }),
   )
