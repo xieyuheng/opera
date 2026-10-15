@@ -226,7 +226,6 @@ useHead(() => ({
               @cancel="cancel"
             />
           </div>
-
         </div>
       </div>
     </section>
