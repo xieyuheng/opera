@@ -7,7 +7,8 @@ import { makeDividerState } from "../../components/divider/DividerState.ts"
 import ResizeDivider from "../../components/divider/ResizeDivider.vue"
 import Composer from "../../components/composer/Composer.vue"
 import SessionSignList from "./SessionSignList.vue"
-import SessionToolbar from "./SessionToolbar.vue"
+import SessionToolbarLeft from "./SessionToolbarLeft.vue"
+import SessionToolbarRight from "./SessionToolbarRight.vue"
 import Ranger from "../../components/ranger/Ranger.vue"
 import { sessionMessages } from "./Session.i18n.ts"
 import {
@@ -193,12 +194,15 @@ useHead(() => ({
           class="pointer-events-none absolute inset-x-0 z-50"
           :style="{ top: 'calc(env(safe-area-inset-top, 0px) + 0.5rem)' }"
         >
-          <SessionToolbar
-            :state="state"
-            :ranger-open="rangerOpen"
-            @back="goBack"
-            @toggle-ranger="rangerOpen = !rangerOpen"
-          />
+          <div class="flex items-start justify-between gap-4 px-2">
+            <SessionToolbarLeft :state="state" @back="goBack" />
+
+            <SessionToolbarRight
+              class="shrink-0"
+              :ranger-open="rangerOpen"
+              @toggle-ranger="rangerOpen = !rangerOpen"
+            />
+          </div>
         </div>
 
         <SessionSignList

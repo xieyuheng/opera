@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { DeepSeekProviderModelEntry } from "@windbell/semiosis.js/core"
+import type { DeepSeekModelEntry } from "@windbell/semiosis.js/core"
 import Card from "../../components/card/Card.vue"
 import ModelCardToolbar from "./ModelCardToolbar.vue"
 import { useI18n } from "vue-i18n"
 import { providerMessages } from "./Provider.i18n.ts"
 
 defineProps<{
-  entry: DeepSeekProviderModelEntry
+  entry: DeepSeekModelEntry
   busy: boolean
 }>()
 

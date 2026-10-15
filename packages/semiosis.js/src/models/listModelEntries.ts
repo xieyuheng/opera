@@ -3,20 +3,20 @@ import { readProviderConfig } from "../provider/index.ts"
 import * as DeepSeek from "../providers/deepseek/index.ts"
 import * as OpenRouter from "../providers/openrouter/index.ts"
 import type {
-  DeepSeekProviderModelEntry,
-  OpenRouterProviderModelEntry,
-  ProviderModelEntry,
-} from "./ProviderModelEntry.ts"
+  DeepSeekModelEntry,
+  OpenRouterModelEntry,
+  ModelEntry,
+} from "./ModelEntry.ts"
 
-export type ListProviderModelEntriesOptions = {
+export type ListModelEntriesOptions = {
   all?: boolean
 }
 
-export async function listProviderModelEntries(
+export async function listModelEntries(
   database: Database,
   providerName: string,
-  options: ListProviderModelEntriesOptions = {},
-): Promise<Array<ProviderModelEntry>> {
+  options: ListModelEntriesOptions = {},
+): Promise<Array<ModelEntry>> {
   switch (providerName) {
     case "deepseek": {
       return await listDeepSeekEntries(database, options)
@@ -34,12 +34,12 @@ export async function listProviderModelEntries(
 
 async function listDeepSeekEntries(
   database: Database,
-  options: ListProviderModelEntriesOptions,
-): Promise<Array<DeepSeekProviderModelEntry>> {
+  options: ListModelEntriesOptions,
+): Promise<Array<DeepSeekModelEntry>> {
   const providerConfig = await readProviderConfig(database, "deepseek")
   const configs = await DeepSeek.readModelConfigs(database)
 
-  const entries: Array<DeepSeekProviderModelEntry> = Object.keys(configs).map(
+  const entries: Array<DeepSeekModelEntry> = Object.keys(configs).map(
     (name) => {
       const config = DeepSeek.parseModelConfig(name, configs[name])
 
@@ -69,12 +69,12 @@ async function listDeepSeekEntries(
 
 async function listOpenRouterEntries(
   database: Database,
-  options: ListProviderModelEntriesOptions,
-): Promise<Array<OpenRouterProviderModelEntry>> {
+  options: ListModelEntriesOptions,
+): Promise<Array<OpenRouterModelEntry>> {
   const providerConfig = await readProviderConfig(database, "openrouter")
   const configs = await OpenRouter.readModelConfigs(database)
 
-  const entries: Array<OpenRouterProviderModelEntry> = Object.keys(configs).map(
+  const entries: Array<OpenRouterModelEntry> = Object.keys(configs).map(
     (name) => {
       const config = OpenRouter.parseModelConfig(name, configs[name])
 

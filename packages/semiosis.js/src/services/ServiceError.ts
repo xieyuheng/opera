@@ -10,6 +10,8 @@ export type ServiceErrorType =
   | "provider-config-invalid"
   | "theme-not-found"
   | "provider-not-found"
+  | "model-not-found"
+  | "api-key-not-configured"
   | "dustbin-workspace-not-found"
   | "dustbin-session-not-found"
   | "model-error"

@@ -29,6 +29,11 @@ export const ListProviderModelsInputSchema = z.object({
   all: z.boolean(),
 })
 
+export const GetProviderModelInputSchema = z.object({
+  providerName: z.string(),
+  modelName: z.string().min(1),
+})
+
 export const PinProviderModelInputSchema = z.object({
   providerName: z.string(),
   modelName: z.string(),
@@ -73,6 +78,10 @@ export function makeProviderController(options: ProviderControllerOptions) {
 
     listModels: makeAction(ListProviderModelsInputSchema, (input) =>
       options.providers.listModels(input),
+    ),
+
+    getModel: makeAction(GetProviderModelInputSchema, (input) =>
+      options.providers.getModel(input),
     ),
 
     pinModel: makeAction(PinProviderModelInputSchema, (input) =>

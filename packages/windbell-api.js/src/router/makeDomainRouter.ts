@@ -232,6 +232,13 @@ export function makeDomainRouter(options: DomainRouterOptions): Hono {
     }),
   )
 
+  app.get("/providers/:providerName/model", (c) =>
+    providers.getModel({
+      providerName: c.req.param("providerName"),
+      modelName: c.req.query("modelName") ?? "",
+    }),
+  )
+
   app.post("/providers/:providerName/models/pin", async (c) => {
     const body = readRecord(await readJsonBody(c))
     return providers.pinModel({

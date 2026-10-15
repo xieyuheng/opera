@@ -7,13 +7,13 @@ import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
-import { listProviderModelEntries } from "./listProviderModelEntries.ts"
+import { listModelEntries } from "./listModelEntries.ts"
 import { pinModel } from "./pinModel.ts"
 import { unpinModel } from "./unpinModel.ts"
 
-test("listProviderModelEntries sorts pinned models before unpinned models", async () => {
+test("listModelEntries sorts pinned models before unpinned models", async () => {
   const root = await fs.mkdtemp(
-    Path.join(Os.tmpdir(), "windbell-list-provider-model-entries-"),
+    Path.join(Os.tmpdir(), "windbell-list-model-entries-"),
   )
 
   try {
@@ -56,7 +56,7 @@ test("listProviderModelEntries sorts pinned models before unpinned models", asyn
 })
 
 async function summary(database: ReturnType<typeof makeDatabase>) {
-  const entries = await listProviderModelEntries(database, "deepseek")
+  const entries = await listModelEntries(database, "deepseek")
 
   return entries.map((entry) => ({
     providerName: entry.providerName,

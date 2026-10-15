@@ -52,5 +52,5 @@ export type ProviderData = {
   apiKeyConfigured: boolean
   isDefaultProvider: boolean
   warning?: string
-  models: Array<S.ProviderModelEntry>
+  models: Array<S.ModelEntry>
 }

@@ -14,7 +14,7 @@ export type ProviderState = {
   apiKeyConfigured: boolean
   isDefaultProvider: boolean
   busyModelNames: Record<string, boolean>
-  models: Array<S.ProviderModelEntry>
+  models: Array<S.ModelEntry>
 }
 
 export function makeProviderState(providerName: string): ProviderState {

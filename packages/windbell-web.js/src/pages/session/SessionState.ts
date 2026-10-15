@@ -1,4 +1,5 @@
 import { windbell } from "../../app/windbell"
+import { modelEntryContextWindow } from "@windbell/semiosis.js/core"
 import type * as S from "@windbell/semiosis.js/core"
 import { reactive } from "vue"
 
@@ -32,6 +33,8 @@ export type SessionState = {
   context: Array<S.Sign>
   activeTurn: SessionActiveTurn | undefined
   modelRef: S.ModelRef | undefined
+  contextWindow: number | undefined
+  latestUsage: S.ModelUsage | undefined
   hasLoaded: boolean
   isLoading: boolean
   isPending: boolean
@@ -62,6 +65,8 @@ export function makeSessionState(sessionId: S.SessionId): SessionState {
     context: [],
     activeTurn: undefined,
     modelRef: undefined,
+    contextWindow: undefined,
+    latestUsage: undefined,
     hasLoaded: false,
     isLoading: true,
     isPending: false,
@@ -138,6 +143,34 @@ async function readSessionModelRef(): Promise<S.ModelRef> {
   }
 }
 
+async function resolveSessionModel(state: SessionState): Promise<S.ModelRef> {
+  const modelRef = await readSessionModelRef()
+
+  if (
+    state.modelRef?.providerName === modelRef.providerName &&
+    state.modelRef.name === modelRef.name &&
+    state.contextWindow !== undefined
+  ) {
+    return modelRef
+  }
+
+  const entry = await windbell.providers.getModel({
+    providerName: modelRef.providerName,
+    modelName: modelRef.name,
+  })
+  const contextWindow = modelEntryContextWindow(entry)
+
+  if (contextWindow === undefined) {
+    throw new Error(
+      `model context window unavailable: ${modelRef.providerName}/${modelRef.name}`,
+    )
+  }
+
+  state.modelRef = modelRef
+  state.contextWindow = contextWindow
+  return modelRef
+}
+
 export function cancelSessionInterpretation(state: SessionState): void {
   interpretationControllers.get(state.sessionId)?.abort()
 }
@@ -179,6 +212,8 @@ export async function loadSessionState(
     state.activeTurn = undefined
     state.workspaceRoot = data.workspace.root
     state.hasLoaded = true
+
+    await resolveSessionModel(state)
   } catch (error) {
     if (requestId !== state.requestId) return
 
@@ -216,6 +251,7 @@ async function runInterpretAttempt(options: {
       }
 
       if (event.type === "usage") {
+        state.latestUsage = event.usage
         continue
       }
 
@@ -307,8 +343,7 @@ export async function interpretSession(
   }
 
   try {
-    const modelRef = await readSessionModelRef()
-    state.modelRef = modelRef
+    const modelRef = await resolveSessionModel(state)
 
     const input: S.UserSign = {
       kind: "UserSign",

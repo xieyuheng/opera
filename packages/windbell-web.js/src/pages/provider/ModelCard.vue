@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { ProviderModelEntry } from "@windbell/semiosis.js/core"
+import type { ModelEntry } from "@windbell/semiosis.js/core"
 import DeepSeekModelCard from "./DeepSeekModelCard.vue"
 import OpenRouterModelCard from "./OpenRouterModelCard.vue"
 
 defineProps<{
-  entry: ProviderModelEntry
+  entry: ModelEntry
   busy: boolean
 }>()
 

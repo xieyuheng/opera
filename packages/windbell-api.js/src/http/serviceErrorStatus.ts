@@ -29,6 +29,7 @@ export function serviceErrorStatus(error: S.ServiceError): number {
     case "not-a-file":
     case "is-a-directory":
     case "api-key-empty":
+    case "api-key-not-configured":
     case "provider-name-mismatch":
       return 400
     case "no-space":

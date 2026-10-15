@@ -105,7 +105,11 @@ export type ProvidersClient = {
   listModels(options: {
     providerName: string
     all?: boolean
-  }): Promise<Array<S.ProviderModelEntry>>
+  }): Promise<Array<S.ModelEntry>>
+  getModel(options: {
+    providerName: string
+    modelName: string
+  }): Promise<S.ModelEntry>
   pinModel(options: { providerName: string; modelName: string }): Promise<void>
   unpinModel(options: {
     providerName: string
@@ -384,7 +388,18 @@ export function makeWindbellClient(
         if (options.all === true) query.set("all", "true")
         return query
       },
-      output: JsonDataSchema<Array<S.ProviderModelEntry>>(),
+      output: JsonDataSchema<Array<S.ModelEntry>>(),
+    }),
+    getModel: makeJsonEndpoint(config, {
+      method: "GET",
+      path: (options) =>
+        `/providers/${encodeURIComponent(options.providerName)}/model`,
+      query: (options) => {
+        const query = new URLSearchParams()
+        query.set("modelName", options.modelName)
+        return query
+      },
+      output: JsonDataSchema<S.ModelEntry>(),
     }),
     pinModel: makeJsonEndpoint(config, {
       method: "POST",
