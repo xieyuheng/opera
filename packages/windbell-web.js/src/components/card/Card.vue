@@ -1,15 +1,21 @@
 <script setup lang="ts">
-import type { Component } from "vue"
+import { computed, type Component } from "vue"
 
 const props = withDefaults(
   defineProps<{
     as?: string | Component
     color?: string
+    overflow?: "clip" | "visible"
   }>(),
   {
     as: "div",
     color: "var(--color-line)",
+    overflow: "clip",
   },
+)
+
+const bodyOverflowClass = computed(() =>
+  props.overflow === "visible" ? "overflow-visible" : "overflow-clip",
 )
 </script>
 
@@ -30,8 +36,11 @@ const props = withDefaults(
     </div>
 
     <div
-      class="border-2 overflow-hidden border-[var(--card-color)]"
-      :class="$slots.tag ? 'rounded-b-lg rounded-tr-lg' : 'rounded-lg'"
+      class="border-2 border-[var(--card-color)]"
+      :class="[
+        $slots.tag ? 'rounded-b-lg rounded-tr-lg' : 'rounded-lg',
+        bodyOverflowClass,
+      ]"
     >
       <slot />
 
