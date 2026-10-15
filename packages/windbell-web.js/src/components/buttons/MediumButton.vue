@@ -24,23 +24,14 @@ const baseClass =
 
 const variantClasses = computed(() => {
   if (props.variant === "ghost") {
-    return [
-      "border-transparent",
-      "bg-transparent text-ink hover:bg-line"
-    ]
+    return ["border-transparent", "bg-transparent text-ink hover:bg-line"]
   }
 
   if (props.variant === "accent") {
-    return [
-      "border-transparent text-ink",
-      "bg-sign-user hover:bg-sign-user/80",
-    ]
+    return ["border-transparent text-ink", "bg-sign-user hover:bg-sign-user/80"]
   }
 
-  return [
-    "border-line backdrop-blur",
-    "bg-paper/10 hover:bg-line"
-  ]
+  return ["border-line backdrop-blur", "bg-paper/10 hover:bg-line"]
 })
 
 const classes = computed(() => [
