@@ -16,7 +16,7 @@ const props = withDefaults(
 )
 
 const baseClass =
-  "inline-flex items-center gap-1 rounded-md border-3 border-line px-2 py-1 text-sm text-ink transition-colors hover:bg-line"
+  "inline-flex items-center gap-1 rounded-md border border-line px-2 py-1 text-sm text-ink transition-colors hover:bg-line"
 const classes = computed(() => [
   baseClass,
   props.to !== undefined && props.disabled === true

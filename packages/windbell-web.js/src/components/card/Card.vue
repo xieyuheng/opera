@@ -21,7 +21,7 @@ const props = withDefaults(
   >
     <div v-if="$slots.tag" class="flex">
       <div
-        class="flex py-0.5 border-3 border-[var(--card-color)] rounded-t-lg bg-[var(--card-color)] px-3"
+        class="flex py-0.5 border-2 border-[var(--card-color)] rounded-t-lg bg-[var(--card-color)] px-3"
       >
         <slot name="tag" />
       </div>
@@ -30,7 +30,7 @@ const props = withDefaults(
     </div>
 
     <div
-      class="border-3 border-[var(--card-color)]"
+      class="border-2 border-[var(--card-color)]"
       :class="$slots.tag ? 'rounded-b-lg rounded-tr-lg' : 'rounded-lg'"
     >
       <slot />

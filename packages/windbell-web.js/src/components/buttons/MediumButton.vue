@@ -20,7 +20,7 @@ const props = withDefaults(
 )
 
 const baseClass =
-  "pointer-events-auto inline-flex items-center gap-2 rounded-md border-3 px-2 py-1 transition duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40"
+  "pointer-events-auto inline-flex items-center gap-2 rounded-md border-2 px-2 py-1 transition duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40"
 
 const variantClasses = computed(() => {
   if (props.variant === "ghost") {
@@ -31,7 +31,7 @@ const variantClasses = computed(() => {
     return ["border-transparent text-ink", "bg-sign-user hover:bg-sign-user/80"]
   }
 
-  return ["border-line backdrop-blur", "bg-paper/10 hover:bg-line"]
+  return ["border-line backdrop-blur", "hover:bg-line"]
 })
 
 const classes = computed(() => [
