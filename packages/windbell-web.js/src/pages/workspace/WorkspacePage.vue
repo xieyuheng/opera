@@ -10,6 +10,7 @@ import MediumButton from "../../components/buttons/MediumButton.vue"
 import Composer from "../../components/composer/Composer.vue"
 import { sendSessionMessage } from "../session/SessionInbox.ts"
 import SessionCard from "./SessionCard.vue"
+import WorkspaceWelcomeCard from "./WorkspaceWelcomeCard.vue"
 import { workspaceMessages } from "./Workspace.i18n.ts"
 import {
   getWorkspaceState,
@@ -225,8 +226,6 @@ useHead(() => ({
       </li>
     </ol>
 
-    <div v-else class="flex flex-1 items-center justify-center text-ink">
-      {{ t("empty") }}
-    </div>
+    <WorkspaceWelcomeCard v-else />
   </PageLayout>
 </template>

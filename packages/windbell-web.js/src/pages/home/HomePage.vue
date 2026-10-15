@@ -5,7 +5,7 @@ import PageLayout from "../../components/layout/PageLayout.vue"
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
 import MediumButton from "../../components/buttons/MediumButton.vue"
-import WelcomeCard from "./WelcomeCard.vue"
+import HomeWelcomeCard from "./HomeWelcomeCard.vue"
 import WorkspaceCard from "./WorkspaceCard.vue"
 import WorkspaceCreateDialog from "./WorkspaceCreateDialog.vue"
 import { homeMessages } from "./Home.i18n.ts"
@@ -152,7 +152,7 @@ useHead(() => ({
       </li>
     </ul>
 
-    <WelcomeCard v-else @create="openCreateDialog" />
+    <HomeWelcomeCard v-else @create="openCreateDialog" />
 
     <WorkspaceCreateDialog
       v-if="createDialogOpen"

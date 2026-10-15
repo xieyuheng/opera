@@ -4,7 +4,10 @@ export const workspaceMessages = {
     description: "当前工作区下的对话列表。",
     sessions: "对话列表",
     newSession: "新建对话",
-    empty: "还没有对话。",
+    welcomeTitle: "欢迎",
+    welcomeMessage:
+      "这个工作区还没有对话。\n\n在上方输入框写下第一条消息，点击「开始对话」按钮，就可以开始与「风铃」智能体协作。\n\n如果还没有配置模型，请先配置提供商 API Key。",
+    configureProvider: "配置提供商",
     untitled: "未命名",
     loading: "加载中...",
     sessionDustbin: "对话回收站",
@@ -22,7 +25,10 @@ export const workspaceMessages = {
     description: "Sessions in the current workspace.",
     sessions: "Sessions",
     newSession: "New session",
-    empty: "No sessions yet.",
+    welcomeTitle: "Welcome",
+    welcomeMessage:
+      'This workspace has no sessions yet.\n\nWrite your first message in the composer above and click "Start session" to start collaborating with Windbell.\n\nIf no model is configured yet, configure a provider API key first.',
+    configureProvider: "Configure Provider",
     untitled: "Untitled",
     loading: "Loading...",
     sessionDustbin: "Session Dustbin",

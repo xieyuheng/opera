@@ -1,10 +1,5 @@
 # windbell-web.js
 
-对于未配置供应商 API 的用户。
-应该显示什么，来引导新用户？
-
-工作区页面没有对话时。
-
 利用调色板设计 theme
 
 修复 markdown code block 所使用的背景颜色
