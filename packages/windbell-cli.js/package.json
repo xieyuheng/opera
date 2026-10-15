@@ -12,7 +12,7 @@
     "trailingComma": "all"
   },
   "dependencies": {
-    "@hono/node-server": "2.1.4",
+    "@hono/node-server": "2.1.5",
     "@windbell/cli.js": "workspace:*",
     "@windbell/fs.js": "workspace:*",
     "@windbell/semiosis.js": "workspace:*",

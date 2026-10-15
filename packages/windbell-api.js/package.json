@@ -12,7 +12,7 @@
     "trailingComma": "all"
   },
   "dependencies": {
-    "@hono/node-server": "2.1.4",
+    "@hono/node-server": "2.1.5",
     "@windbell/fs-api.js": "workspace:*",
     "@windbell/fs.js": "workspace:*",
     "@windbell/http.js": "workspace:*",
@@ -20,7 +20,7 @@
     "@windbell/sh.js": "workspace:*",
     "@windbell/std.js": "workspace:*",
     "hono": "4.13.13",
-    "zod": "^4.6.5"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

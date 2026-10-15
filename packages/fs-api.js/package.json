@@ -4,7 +4,9 @@
   "private": true,
   "license": "GPL-3.0-or-later",
   "type": "module",
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "prettier": {
     "semi": false,
     "trailingComma": "all"
@@ -15,12 +17,12 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@hono/node-server": "2.1.4",
+    "@hono/node-server": "2.1.5",
     "@windbell/fs.js": "workspace:*",
     "@windbell/http.js": "workspace:*",
     "@windbell/std.js": "workspace:*",
     "hono": "4.13.13",
-    "zod": "^4.6.5"
+    "zod": "^4.6.7"
   },
   "exports": {
     "./client": "./src/client/index.ts",
