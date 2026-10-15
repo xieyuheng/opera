@@ -21,6 +21,8 @@ export type AgentInterpretEvent =
   | { type: "input-persisted" }
   | { type: "error"; error: ModelError }
   | { type: "usage"; usage: ModelUsage }
+  | { type: "step-start" }
+  | { type: "step-end" }
 
 type CollectModelOutputResult = { kind: "completed" } | { kind: "error" }
 
@@ -80,6 +82,8 @@ async function* collectModelOutput(
   output: Array<Sign>,
   options: AgentInterpretOptions,
 ): AsyncGenerator<AgentInterpretEvent, CollectModelOutputResult> {
+  yield { type: "step-start" }
+
   for await (const event of agent.model.interpret(context, {
     signal: options.signal,
   })) {
@@ -101,6 +105,7 @@ async function* collectModelOutput(
     output.push(event.sign)
   }
 
+  yield { type: "step-end" }
   return { kind: "completed" }
 }
 

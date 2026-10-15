@@ -6,7 +6,7 @@ import type { SessionStore } from "../database/index.ts"
 import type { Model, ModelError } from "../model/index.ts"
 import { AssistantSign, UserSign } from "../sign/index.ts"
 import { makeToolRouter } from "../tool/index.ts"
-import type { Turn } from "./Turn.ts"
+import type { Turn, TurnStep } from "./Turn.ts"
 import { isRetryableModelError, turnRun } from "./turnRun.ts"
 
 function makeTurn(inputPersisted: boolean): Turn {
@@ -34,6 +34,38 @@ function makeErrorModel(error: ModelError): Model {
   }
 }
 
+function makeSessionStore(): {
+  sessions: SessionStore
+  storedTurns: Array<Turn>
+  storedSteps: Map<number, TurnStep>
+} {
+  const storedTurns: Array<Turn> = []
+  const storedSteps = new Map<number, TurnStep>()
+  let nextSequence = 1
+
+  const sessions = {
+    async sliceContextBySequence() {
+      return ok([])
+    },
+    async nextSignSequence() {
+      return ok(0)
+    },
+    async putTurn(turn: Turn) {
+      storedTurns.push(turn)
+      return ok(undefined)
+    },
+    async nextStepSequence() {
+      return ok(nextSequence++)
+    },
+    async putStep(step: TurnStep) {
+      storedSteps.set(step.sequenceNumber, { ...step })
+      return ok(undefined)
+    },
+  } as unknown as SessionStore
+
+  return { sessions, storedTurns, storedSteps }
+}
+
 test("isRetryableModelError classifies normalized errors", () => {
   assert.equal(
     isRetryableModelError({ type: "http", message: "", status: 429 }),
@@ -52,32 +84,19 @@ test("isRetryableModelError classifies normalized errors", () => {
 })
 
 test("turnRun turns a first model error into a failed turn event", async () => {
-  const storedTurns: Array<Turn> = []
-  const sessions = {
-    async sliceContextBySequence() {
-      return ok([])
-    },
-    async nextSignSequence() {
-      return ok(0)
-    },
-    async putTurn(turn: Turn) {
-      storedTurns.push(turn)
-      return ok(undefined)
-    },
-  } as unknown as SessionStore
+  const { sessions, storedTurns, storedSteps } = makeSessionStore()
   const agent = makeAgent({
     model: makeErrorModel({ type: "network", message: "fetch failed" }),
     toolRouter: makeToolRouter(),
     getContext: async () => [],
     appendContext: async () => {},
   })
-  const turn = makeTurn(false)
   const events = []
 
   for await (const event of turnRun({
     sessions,
     agent,
-    turn,
+    turn: makeTurn(false),
     input: [UserSign("hello")],
   })) {
     events.push(event)
@@ -93,22 +112,15 @@ test("turnRun turns a first model error into a failed turn event", async () => {
   ])
   assert.equal(storedTurns.at(-1)?.status, "failed")
   assert.deepEqual(storedTurns.at(-1)?.error, { message: "fetch failed" })
+
+  const step = storedSteps.get(1)
+  assert.equal(step?.status, "failed")
+  assert.equal(step?.usage, undefined)
+  assert.deepEqual(step?.error, { message: "fetch failed" })
 })
 
 test("turnRun forwards and persists usage", async () => {
-  const storedTurns: Array<Turn> = []
-  const sessions = {
-    async sliceContextBySequence() {
-      return ok([])
-    },
-    async nextSignSequence() {
-      return ok(0)
-    },
-    async putTurn(turn: Turn) {
-      storedTurns.push(turn)
-      return ok(undefined)
-    },
-  } as unknown as SessionStore
+  const { sessions, storedSteps } = makeSessionStore()
   const raw = { prompt_tokens: 10, completion_tokens: 2, total_tokens: 12 }
   const usage = {
     input: 10,
@@ -149,29 +161,15 @@ test("turnRun forwards and persists usage", async () => {
     { type: "sign", sign: UserSign("hello") },
     { type: "sign", sign: AssistantSign("answer") },
   ])
-  assert.deepEqual(storedTurns.at(-1)?.usage, {
-    input: 10,
-    output: 2,
-    cacheRead: 4,
-    cacheMiss: 6,
-    cacheWrite: 0,
-    total: 12,
-    raw: [raw],
-  })
+
+  const step = storedSteps.get(1)
+  assert.equal(step?.status, "completed")
+  assert.deepEqual(step?.usage, usage)
+  assert.equal(step?.completedAt !== undefined, true)
 })
 
 test("turnRun preserves inputPersisted for a later model error", async () => {
-  const sessions = {
-    async sliceContextBySequence() {
-      return ok([])
-    },
-    async nextSignSequence() {
-      return ok(0)
-    },
-    async putTurn() {
-      return ok(undefined)
-    },
-  } as unknown as SessionStore
+  const { sessions, storedSteps } = makeSessionStore()
   const agent = makeAgent({
     model: makeErrorModel({
       type: "http",
@@ -201,4 +199,5 @@ test("turnRun preserves inputPersisted for a later model error", async () => {
       inputPersisted: true,
     },
   ])
+  assert.equal(storedSteps.get(1)?.status, "failed")
 })

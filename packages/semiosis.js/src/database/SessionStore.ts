@@ -1,7 +1,7 @@
 import type { Path } from "@windbell/std.js/path"
 import { err, isError, ok, type Result } from "@windbell/std.js/result"
 import type { Session, SessionId, SessionIndex } from "../session/Session.ts"
-import type { Turn, TurnId } from "../turn/index.ts"
+import type { Turn, TurnId, TurnStep } from "../turn/index.ts"
 import type { Sign } from "../sign/index.ts"
 import type { WorkspaceId } from "../workspace/Workspace.ts"
 import { makeDatabaseError, type DatabaseError } from "./DatabaseError.ts"
@@ -50,6 +50,15 @@ export type SessionStore = {
   ): Promise<Result<Turn | undefined, DatabaseError>>
   putTurn(turn: Turn): Promise<Result<void, DatabaseError>>
   listTurns(sessionId: SessionId): Promise<Result<Array<Turn>, DatabaseError>>
+  putStep(step: TurnStep): Promise<Result<void, DatabaseError>>
+  listSteps(
+    sessionId: SessionId,
+    turnId: TurnId,
+  ): Promise<Result<Array<TurnStep>, DatabaseError>>
+  nextStepSequence(
+    sessionId: SessionId,
+    turnId: TurnId,
+  ): Promise<Result<number, DatabaseError>>
   updateTitle(
     id: SessionId,
     title: string,
@@ -78,8 +87,35 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
     return paths.join(sessionDir(id), "index.json")
   }
 
-  const turnPath = (sessionId: SessionId, turnId: TurnId): string => {
-    return paths.join(turnsDir(sessionId), `${turnId}.json`)
+  const turnDir = (sessionId: SessionId, turnId: TurnId): string => {
+    return paths.join(turnsDir(sessionId), turnId)
+  }
+
+  const turnJsonPath = (sessionId: SessionId, turnId: TurnId): string => {
+    return paths.join(turnDir(sessionId, turnId), "turn.json")
+  }
+
+  const stepsDir = (sessionId: SessionId, turnId: TurnId): string => {
+    return paths.join(turnDir(sessionId, turnId), "steps")
+  }
+
+  const stepFileName = (sequenceNumber: number): string => {
+    return `${String(sequenceNumber).padStart(8, "0")}.json`
+  }
+
+  const stepPath = (
+    sessionId: SessionId,
+    turnId: TurnId,
+    sequenceNumber: number,
+  ): string => {
+    return paths.join(stepsDir(sessionId, turnId), stepFileName(sequenceNumber))
+  }
+
+  const parseStepSequenceNumber = (fileName: string): number | undefined => {
+    const match = /^(\d+)\.json$/.exec(fileName)
+    if (match === null) return undefined
+
+    return Number(match[1])
   }
 
   const readIndex = async (
@@ -325,7 +361,7 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
       if (isError(turnIdResult)) return turnIdResult
 
       const valueResult = await options.files.readJsonFile(
-        turnPath(sessionId, turnId),
+        turnJsonPath(sessionId, turnId),
       )
       if (isError(valueResult)) return valueResult
       if (valueResult.value === undefined) return ok(undefined)
@@ -341,7 +377,7 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
       if (isError(turnIdResult)) return turnIdResult
 
       return await options.files.writeJsonFile(
-        turnPath(turn.sessionId, turn.id),
+        turnJsonPath(turn.sessionId, turn.id),
         turn,
       )
     },
@@ -350,16 +386,19 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
       const sessionIdResult = validateId(sessionId)
       if (isError(sessionIdResult)) return sessionIdResult
 
-      const fileNamesResult = await options.files.listFiles(turnsDir(sessionId))
-      if (isError(fileNamesResult)) return fileNamesResult
+      const directoryNamesResult = await options.files.listDirectories(
+        turnsDir(sessionId),
+      )
+      if (isError(directoryNamesResult)) return directoryNamesResult
 
       const turns: Array<Turn> = []
 
-      for (const fileName of fileNamesResult.value) {
-        if (!fileName.endsWith(".json")) continue
+      for (const directoryName of directoryNamesResult.value) {
+        const turnIdResult = validateId(directoryName)
+        if (isError(turnIdResult)) continue
 
         const valueResult = await options.files.readJsonFile(
-          paths.join(turnsDir(sessionId), fileName),
+          turnJsonPath(sessionId, directoryName),
         )
         if (isError(valueResult)) return valueResult
         if (valueResult.value === undefined) continue
@@ -369,6 +408,64 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
 
       turns.sort((a, b) => a.createdAt - b.createdAt)
       return ok(turns)
+    },
+
+    async putStep(step) {
+      const sessionIdResult = validateId(step.sessionId)
+      if (isError(sessionIdResult)) return sessionIdResult
+
+      const turnIdResult = validateId(step.turnId)
+      if (isError(turnIdResult)) return turnIdResult
+
+      return await options.files.writeJsonFile(
+        stepPath(step.sessionId, step.turnId, step.sequenceNumber),
+        step,
+      )
+    },
+
+    async listSteps(sessionId, turnId) {
+      const sessionIdResult = validateId(sessionId)
+      if (isError(sessionIdResult)) return sessionIdResult
+
+      const turnIdResult = validateId(turnId)
+      if (isError(turnIdResult)) return turnIdResult
+
+      const fileNamesResult = await options.files.listFiles(
+        stepsDir(sessionId, turnId),
+      )
+      if (isError(fileNamesResult)) return fileNamesResult
+
+      const steps: Array<TurnStep> = []
+
+      for (const fileName of fileNamesResult.value) {
+        const sequenceNumber = parseStepSequenceNumber(fileName)
+        if (sequenceNumber === undefined) continue
+
+        const valueResult = await options.files.readJsonFile(
+          stepPath(sessionId, turnId, sequenceNumber),
+        )
+        if (isError(valueResult)) return valueResult
+        if (valueResult.value === undefined) continue
+
+        steps.push(valueResult.value as TurnStep)
+      }
+
+      steps.sort((a, b) => a.sequenceNumber - b.sequenceNumber)
+      return ok(steps)
+    },
+
+    async nextStepSequence(sessionId, turnId) {
+      const stepsResult = await store.listSteps(sessionId, turnId)
+      if (isError(stepsResult)) return stepsResult
+
+      let sequenceNumber = 0
+      for (const step of stepsResult.value) {
+        if (step.sequenceNumber > sequenceNumber) {
+          sequenceNumber = step.sequenceNumber
+        }
+      }
+
+      return ok(sequenceNumber + 1)
     },
 
     async updateTitle(id, title) {

@@ -72,6 +72,39 @@ test("SessionStore stores turns and slices context by sequence", async () => {
       turns.map((turn) => turn.id),
       ["turn-1"],
     )
+
+    unwrap(
+      await database.sessions.putStep({
+        sessionId: session.id,
+        turnId: "turn-1",
+        sequenceNumber: 1,
+        status: "completed",
+        usage: {
+          input: 10,
+          output: 2,
+          cacheRead: 4,
+          cacheMiss: 6,
+          cacheWrite: 0,
+          total: 12,
+          raw: {},
+        },
+        createdAt: now,
+        updatedAt: now,
+        completedAt: now,
+      }),
+    )
+
+    const steps = unwrap(
+      await database.sessions.listSteps(session.id, "turn-1"),
+    )
+    assert.equal(steps.length, 1)
+    assert.equal(steps[0]?.sequenceNumber, 1)
+    assert.equal(steps[0]?.usage?.input, 10)
+
+    const nextStepSequence = unwrap(
+      await database.sessions.nextStepSequence(session.id, "turn-1"),
+    )
+    assert.equal(nextStepSequence, 2)
   } finally {
     await fs.rm(root, { recursive: true, force: true })
   }

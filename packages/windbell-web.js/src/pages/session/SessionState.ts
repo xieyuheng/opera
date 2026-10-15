@@ -173,10 +173,13 @@ async function resolveSessionModel(state: SessionState): Promise<S.ModelRef> {
   return modelRef
 }
 
-async function refreshTotalUsage(state: SessionState): Promise<void> {
-  state.totalUsage = await windbell.sessions.getTotalUsage({
+async function refreshUsage(state: SessionState): Promise<void> {
+  const usage = await windbell.sessions.getUsage({
     sessionId: state.sessionId,
   })
+
+  state.totalUsage = usage.totalUsage
+  state.latestUsage = usage.latestUsage
 }
 
 export function cancelSessionInterpretation(state: SessionState): void {
@@ -222,7 +225,7 @@ export async function loadSessionState(
     state.hasLoaded = true
 
     await resolveSessionModel(state)
-    await refreshTotalUsage(state)
+    await refreshUsage(state)
   } catch (error) {
     if (requestId !== state.requestId) return
 
@@ -367,7 +370,7 @@ export async function interpretSession(
       input,
       signal,
     })
-    await refreshTotalUsage(state)
+    await refreshUsage(state)
     return success
   } catch (error) {
     if (signal?.aborted) return false

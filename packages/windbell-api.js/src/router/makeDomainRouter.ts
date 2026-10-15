@@ -96,8 +96,8 @@ export function makeDomainRouter(options: DomainRouterOptions): Hono {
     sessions.get({ sessionId: c.req.param("sessionId") }),
   )
 
-  app.get("/sessions/:sessionId/total-usage", (c) =>
-    sessions.getTotalUsage({ sessionId: c.req.param("sessionId") }),
+  app.get("/sessions/:sessionId/usage", (c) =>
+    sessions.getUsage({ sessionId: c.req.param("sessionId") }),
   )
 
   app.put("/sessions/:sessionId", async (c) => {

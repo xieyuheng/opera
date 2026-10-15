@@ -3,10 +3,10 @@ import { test } from "node:test"
 import { makeBash } from "@windbell/sh.js/bash"
 import { ok, unwrap } from "@windbell/std.js/result"
 import type { Database } from "../database/index.ts"
-import type { Turn } from "../turn/index.ts"
+import type { Turn, TurnStep } from "../turn/index.ts"
 import { makeSessionService } from "./SessionService.ts"
 
-test("SessionService.getTotalUsage sums turn usage", async () => {
+test("SessionService.getUsage sums step usage and returns latest usage", async () => {
   const first = {
     input: 1_000,
     output: 100,
@@ -14,7 +14,7 @@ test("SessionService.getTotalUsage sums turn usage", async () => {
     cacheMiss: 600,
     cacheWrite: 0,
     total: 1_100,
-    raw: [],
+    raw: {},
   }
   const second = {
     input: 2_000,
@@ -23,13 +23,36 @@ test("SessionService.getTotalUsage sums turn usage", async () => {
     cacheMiss: 400,
     cacheWrite: 100,
     total: 2_200,
-    raw: [],
+    raw: {},
   }
   const turns = [
-    { usage: first },
-    { usage: second },
-    {},
+    { id: "turn-1", sessionId: "session-1" },
+    { id: "turn-2", sessionId: "session-1" },
   ] as unknown as Array<Turn>
+  const stepsByTurn: Record<string, Array<TurnStep>> = {
+    "turn-1": [
+      {
+        sessionId: "session-1",
+        turnId: "turn-1",
+        sequenceNumber: 1,
+        status: "completed",
+        usage: first,
+        createdAt: 0,
+        updatedAt: 0,
+      },
+    ],
+    "turn-2": [
+      {
+        sessionId: "session-1",
+        turnId: "turn-2",
+        sequenceNumber: 1,
+        status: "completed",
+        usage: second,
+        createdAt: 0,
+        updatedAt: 0,
+      },
+    ],
+  }
   const database = {
     sessions: {
       async get() {
@@ -38,6 +61,9 @@ test("SessionService.getTotalUsage sums turn usage", async () => {
       async listTurns() {
         return ok(turns)
       },
+      async listSteps(_sessionId: string, turnId: string) {
+        return ok(stepsByTurn[turnId] ?? [])
+      },
     },
   } as unknown as Database
   const sessions = makeSessionService({
@@ -45,13 +71,13 @@ test("SessionService.getTotalUsage sums turn usage", async () => {
     sh: makeBash(),
   })
 
-  const total = unwrap(
-    await sessions.getTotalUsage({
+  const usage = unwrap(
+    await sessions.getUsage({
       sessionId: "session-1" as never,
     }),
   )
 
-  assert.deepEqual(total, {
+  assert.deepEqual(usage.totalUsage, {
     input: 3_000,
     output: 300,
     cacheRead: 1_900,
@@ -59,4 +85,5 @@ test("SessionService.getTotalUsage sums turn usage", async () => {
     cacheWrite: 100,
     total: 3_300,
   })
+  assert.deepEqual(usage.latestUsage, second)
 })

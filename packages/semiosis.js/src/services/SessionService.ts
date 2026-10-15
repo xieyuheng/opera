@@ -2,7 +2,7 @@ import type { LockService } from "@windbell/lock.js/lock"
 import type { Shell } from "@windbell/sh.js/sh"
 import { err, isError, ok, unwrap, type Result } from "@windbell/std.js/result"
 import type { Database } from "../database/Database.ts"
-import type { ModelTotalUsage } from "../model/index.ts"
+import type { ModelTotalUsage, ModelUsage } from "../model/index.ts"
 import { makeModel } from "../models/makeModel.ts"
 import { PersonaSign, type Sign } from "../sign/index.ts"
 import { generateTitle } from "../session/generateTitle.ts"
@@ -11,6 +11,7 @@ import type { Session, SessionId, SessionIndex } from "../session/Session.ts"
 import { makeShellToolRouter } from "../tools/makeShellToolRouter.ts"
 import { resolveTurn } from "../turn/resolveTurn.ts"
 import { turnReplay } from "../turn/turnReplay.ts"
+import type { SessionUsage } from "../turn/Turn.ts"
 import { turnRun } from "../turn/turnRun.ts"
 import type { TurnEvent } from "../turn/TurnEvent.ts"
 import type { Workspace, WorkspaceId } from "../workspace/Workspace.ts"
@@ -29,9 +30,9 @@ export type SessionService = {
     title: string
   }): Promise<Result<Session, ServiceError>>
   get(id: SessionId): Promise<Result<Session | undefined, ServiceError>>
-  getTotalUsage(options: {
+  getUsage(options: {
     sessionId: SessionId
-  }): Promise<Result<ModelTotalUsage, ServiceError>>
+  }): Promise<Result<SessionUsage, ServiceError>>
   put(session: Session): Promise<Result<void, ServiceError>>
   generateTitle(options: {
     sessionId: SessionId
@@ -188,7 +189,7 @@ export function makeSessionService(
       return ok(result.value)
     },
 
-    async getTotalUsage(usageOptions) {
+    async getUsage(usageOptions) {
       const sessionResult = await database.sessions.get(usageOptions.sessionId)
       if (isError(sessionResult)) {
         return err(makeServiceErrorFromDatabaseError(sessionResult.error))
@@ -210,20 +211,32 @@ export function makeSessionService(
         return err(makeServiceErrorFromDatabaseError(turnsResult.error))
       }
 
-      const total = makeEmptyModelTotalUsage()
+      const totalUsage = makeEmptyModelTotalUsage()
+      let latestUsage: ModelUsage | undefined
 
       for (const turn of turnsResult.value) {
-        if (turn.usage === undefined) continue
+        const stepsResult = await database.sessions.listSteps(
+          turn.sessionId,
+          turn.id,
+        )
+        if (isError(stepsResult)) {
+          return err(makeServiceErrorFromDatabaseError(stepsResult.error))
+        }
 
-        total.input += turn.usage.input
-        total.output += turn.usage.output
-        total.cacheRead += turn.usage.cacheRead
-        total.cacheMiss += turn.usage.cacheMiss
-        total.cacheWrite += turn.usage.cacheWrite
-        total.total += turn.usage.total
+        for (const step of stepsResult.value) {
+          if (step.usage === undefined) continue
+
+          totalUsage.input += step.usage.input
+          totalUsage.output += step.usage.output
+          totalUsage.cacheRead += step.usage.cacheRead
+          totalUsage.cacheMiss += step.usage.cacheMiss
+          totalUsage.cacheWrite += step.usage.cacheWrite
+          totalUsage.total += step.usage.total
+          latestUsage = step.usage
+        }
       }
 
-      return ok(total)
+      return ok({ totalUsage, latestUsage })
     },
 
     async put(session) {

@@ -1,15 +1,21 @@
 import { agentContinue, agentInterpret } from "../agent/agentInterpret.ts"
 import type { Agent } from "../agent/Agent.ts"
 import type { SessionStore } from "../database/SessionStore.ts"
-import type { ModelError } from "../model/index.ts"
+import type { ModelError, ModelUsage } from "../model/index.ts"
 import type { Sign } from "../sign/index.ts"
-import { addTurnUsage, type Turn } from "./Turn.ts"
+import type { Turn, TurnStep, TurnStepStatus } from "./Turn.ts"
 import type { TurnEvent } from "./TurnEvent.ts"
 import { turnReplay } from "./turnReplay.ts"
 import { unwrap } from "@windbell/std.js/result"
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
+}
+
+function isAbortError(error: unknown): boolean {
+  if (error === null || typeof error !== "object") return false
+
+  return (error as { name?: unknown }).name === "AbortError"
 }
 
 export type TurnRunOptions = {
@@ -25,6 +31,57 @@ export async function* turnRun(
 ): AsyncGenerator<TurnEvent> {
   const { sessions, agent, input, signal } = options
   const turn: Turn = { ...options.turn }
+  let currentStep: TurnStep | undefined
+
+  async function startStep(): Promise<void> {
+    const sequenceNumber = unwrap(
+      await sessions.nextStepSequence(turn.sessionId, turn.id),
+    )
+    const now = Date.now()
+
+    currentStep = {
+      sessionId: turn.sessionId,
+      turnId: turn.id,
+      sequenceNumber,
+      status: "pending",
+      createdAt: now,
+      updatedAt: now,
+    }
+
+    unwrap(await sessions.putStep(currentStep))
+  }
+
+  async function updateStepUsage(usage: ModelUsage): Promise<void> {
+    if (currentStep === undefined) return
+
+    currentStep.usage = usage
+    currentStep.updatedAt = Date.now()
+    unwrap(await sessions.putStep(currentStep))
+  }
+
+  async function completeStep(): Promise<void> {
+    if (currentStep === undefined) return
+
+    const now = Date.now()
+    currentStep.status = "completed"
+    currentStep.updatedAt = now
+    currentStep.completedAt = now
+    unwrap(await sessions.putStep(currentStep))
+    currentStep = undefined
+  }
+
+  async function failStep(
+    error: unknown,
+    status: Extract<TurnStepStatus, "failed" | "aborted">,
+  ): Promise<void> {
+    if (currentStep === undefined) return
+
+    currentStep.status = status
+    currentStep.updatedAt = Date.now()
+    currentStep.error = { message: errorMessage(error) }
+    unwrap(await sessions.putStep(currentStep))
+    currentStep = undefined
+  }
 
   try {
     for await (const sign of turnReplay({ sessions, turn })) {
@@ -37,6 +94,10 @@ export async function* turnRun(
 
     for await (const event of interpreter) {
       if (event.type === "error") {
+        await failStep(
+          event.error.message,
+          event.error.type === "aborted" ? "aborted" : "failed",
+        )
         await markFailedTurn(sessions, turn, event.error.message)
 
         yield {
@@ -48,8 +109,18 @@ export async function* turnRun(
         return
       }
 
+      if (event.type === "step-start") {
+        await startStep()
+        continue
+      }
+
+      if (event.type === "step-end") {
+        await completeStep()
+        continue
+      }
+
       if (event.type === "usage") {
-        turn.usage = addTurnUsage(turn.usage, event.usage)
+        await updateStepUsage(event.usage)
         yield { type: "usage", usage: event.usage }
         continue
       }
@@ -78,6 +149,7 @@ export async function* turnRun(
 
     await markCompletedTurn(sessions, turn)
   } catch (error) {
+    await failStep(error, isAbortError(error) ? "aborted" : "failed")
     await markFailedTurn(sessions, turn, error)
 
     yield {

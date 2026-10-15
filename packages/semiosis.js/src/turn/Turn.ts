@@ -1,4 +1,8 @@
-import type { ModelRef, ModelTotalUsage, ModelUsage } from "../model/index.ts"
+import type {
+  ModelRef,
+  ModelTotalUsage,
+  ModelUsage,
+} from "../model/index.ts"
 import type { Sign } from "../sign/index.ts"
 import type { SessionId } from "../session/Session.ts"
 
@@ -6,8 +10,27 @@ export type TurnId = string
 
 export type TurnStatus = "pending" | "completed" | "failed"
 
-export type TurnUsage = ModelTotalUsage & {
-  raw: Array<unknown>
+export type TurnStepStatus = "pending" | "completed" | "failed" | "aborted"
+
+export type TurnStep = {
+  sessionId: SessionId
+  turnId: TurnId
+  sequenceNumber: number
+
+  status: TurnStepStatus
+
+  usage?: ModelUsage
+
+  createdAt: number
+  updatedAt: number
+  completedAt?: number
+
+  error?: { message: string }
+}
+
+export type SessionUsage = {
+  totalUsage: ModelTotalUsage
+  latestUsage?: ModelUsage
 }
 
 export type Turn = {
@@ -24,26 +47,10 @@ export type Turn = {
   endSequence: number
 
   error?: { message: string }
-  usage?: TurnUsage
 
   createdAt: number
   updatedAt: number
   completedAt?: number
-}
-
-export function addTurnUsage(
-  current: TurnUsage | undefined,
-  usage: ModelUsage,
-): TurnUsage {
-  return {
-    input: (current?.input ?? 0) + usage.input,
-    output: (current?.output ?? 0) + usage.output,
-    cacheRead: (current?.cacheRead ?? 0) + usage.cacheRead,
-    cacheMiss: (current?.cacheMiss ?? 0) + usage.cacheMiss,
-    cacheWrite: (current?.cacheWrite ?? 0) + usage.cacheWrite,
-    total: (current?.total ?? 0) + usage.total,
-    raw: [...(current?.raw ?? []), usage.raw],
-  }
 }
 
 export async function makeInputHash(input: Array<Sign>): Promise<string> {
