@@ -9,5 +9,5 @@ defineProps<{
 </script>
 
 <template>
-  <code class="rounded px-1.5 py-0.5 bg-ink/15 font-mono">{{ node.value }}</code>
+  <code class="rounded border border-ink/30 px-1.5 bg-ink/15 font-mono">{{ node.value }}</code>
 </template>
