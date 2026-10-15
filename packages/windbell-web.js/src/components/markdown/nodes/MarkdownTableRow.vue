@@ -10,7 +10,7 @@ defineProps<{
 </script>
 
 <template>
-  <tr class="border-b border-line">
+  <tr class="border-b border-ink">
     <MarkdownNode
       v-for="(child, index) in node.children"
       :key="index"

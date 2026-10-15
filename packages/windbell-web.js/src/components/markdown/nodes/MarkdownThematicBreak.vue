@@ -9,5 +9,5 @@ defineProps<{
 </script>
 
 <template>
-  <hr class="my-6 border-line" />
+  <hr class="my-6 border-ink" />
 </template>
