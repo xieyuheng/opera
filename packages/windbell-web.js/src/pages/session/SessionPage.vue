@@ -188,9 +188,7 @@ useHead(() => ({
       class="relative flex min-h-0 min-w-0 shrink-0 flex-col overflow-hidden"
       :style="{ width: sessionPaneWidth }"
     >
-      <div
-        class="relative mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col overflow-hidden"
-      >
+      <div class="relative flex min-h-0 w-full flex-1 flex-col overflow-hidden">
         <div
           class="pointer-events-none absolute inset-x-0 z-50"
           :style="{ top: 'calc(env(safe-area-inset-top, 0px) + 0.5rem)' }"
@@ -214,18 +212,20 @@ useHead(() => ({
         <div
           class="pointer-events-none absolute inset-x-0 bottom-[env(safe-area-inset-bottom,0px)] z-10 px-2 py-4"
         >
-          <Composer
-            v-model="input"
-            autofocus
-            :submitting="state.interpreting"
-            cancelable
-            :placeholder="t('inputPlaceholder')"
-            :submit-label="t('send')"
-            :submitting-label="t('sending')"
-            :collapse-on-submit="true"
-            @submit="send"
-            @cancel="cancel"
-          />
+          <div class="mx-auto w-full max-w-4xl">
+            <Composer
+              v-model="input"
+              autofocus
+              :submitting="state.interpreting"
+              cancelable
+              :placeholder="t('inputPlaceholder')"
+              :submit-label="t('send')"
+              :submitting-label="t('sending')"
+              :collapse-on-submit="true"
+              @submit="send"
+              @cancel="cancel"
+            />
+          </div>
         </div>
       </div>
     </section>
