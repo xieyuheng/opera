@@ -212,7 +212,7 @@ useHead(() => ({
         <div
           class="pointer-events-none absolute inset-x-0 bottom-[env(safe-area-inset-bottom,0px)] z-10 px-2 py-4"
         >
-          <div class="mx-auto w-full max-w-4xl">
+          <div class="mx-auto w-full max-w-[59rem]">
             <Composer
               v-model="input"
               autofocus
@@ -226,6 +226,7 @@ useHead(() => ({
               @cancel="cancel"
             />
           </div>
+
         </div>
       </div>
     </section>

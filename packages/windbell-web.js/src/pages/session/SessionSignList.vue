@@ -108,7 +108,7 @@ defineExpose({ scrollToBottom })
 <template>
   <div
     ref="scroller"
-    class="thin-scrollbar min-h-0 flex-1 overflow-y-auto px-4 pt-16 pb-18"
+    class="session-sign-list-scroller thin-scrollbar min-h-0 flex-1 overflow-y-auto px-4 pt-16 pb-18"
   >
     <div class="mx-auto flex w-full max-w-4xl flex-col gap-4">
       <h1 class="text-xl text-ink">
@@ -147,3 +147,9 @@ defineExpose({ scrollToBottom })
     <div ref="bottomAnchor" class="h-px w-full" />
   </div>
 </template>
+
+<style scoped>
+.session-sign-list-scroller {
+  scrollbar-gutter: stable both-edges;
+}
+</style>
