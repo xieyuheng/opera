@@ -1,8 +1,6 @@
 # windbell-web.js
 
-利用调色板设计 theme
-
-修复 markdown code block 所使用的背景颜色
+[windbell-web.js] 利用调色板设计 theme
 
 # 文学式编程
 
