@@ -333,7 +333,7 @@ function handleToggle(): void {
     <form
       v-if="!showExpanded"
       ref="compactForm"
-      class="pointer-events-auto flex w-full shrink-0 items-center gap-px rounded-lg border border-line/60 backdrop-blur-md transition-[border-color,box-shadow] duration-[160ms] ease-out hover:border-ink/30 focus-within:border-sign-user/60 focus-within:ring-[3px] focus-within:ring-sign-user/25"
+      class="pointer-events-auto flex w-full shrink-0 items-center gap-px rounded-lg border border-line backdrop-blur-md transition-[border-color,box-shadow] duration-[160ms] ease-out hover:border-sign-user focus-within:border-sign-user focus-within:ring focus-within:ring-sign-user"
       @submit.prevent="submit"
     >
       <textarea
@@ -395,7 +395,7 @@ function handleToggle(): void {
     <form
       v-else
       ref="expandedForm"
-      class="pointer-events-auto flex w-full shrink-0 flex-col gap-2 overflow-hidden rounded-lg border border-line/60 p-2 backdrop-blur-md transition-[border-color,box-shadow] duration-[160ms] ease-out hover:border-ink/30 focus-within:border-sign-user/60 focus-within:ring-[3px] focus-within:ring-sign-user/25"
+      class="pointer-events-auto flex w-full shrink-0 flex-col gap-2 overflow-hidden rounded-lg border-2 border-line p-2 backdrop-blur-md transition-[border-color,box-shadow] duration-[160ms] ease-out hover:border-sign-user focus-within:border-sign-user focus-within:ring focus-within:ring-sign-user"
       @submit.prevent="submit"
     >
       <textarea
