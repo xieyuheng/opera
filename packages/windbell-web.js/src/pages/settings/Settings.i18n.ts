@@ -19,12 +19,12 @@ export const settingsMessages = {
     storageSession: "Session 页面",
     storageOther: "其他",
     clearSessionData: "清除 Session 数据",
-    clearAllWindbellData: "清除所有 Windbell 数据",
+    clearAllWindbellData: "清除所有风铃智能体数据",
     confirmClearSession: "确定清除当前浏览器中的 Session 数据吗？",
     confirmClearAllWindbell:
-      "确定清除当前浏览器中的所有 Windbell 数据吗？此操作不可撤销。",
+      "确定清除当前浏览器中的所有风铃智能体数据吗？此操作不可撤销。",
     showRawStorage: "查看原始数据",
-    storageEmpty: "当前浏览器中没有 Windbell 数据。",
+    storageEmpty: "当前浏览器中没有风铃智能体数据。",
   },
   "en-US": {
     title: "Settings",

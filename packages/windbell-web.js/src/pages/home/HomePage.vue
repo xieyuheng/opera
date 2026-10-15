@@ -5,6 +5,7 @@ import PageLayout from "../../components/layout/PageLayout.vue"
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
 import MediumButton from "../../components/buttons/MediumButton.vue"
+import WelcomeCard from "./WelcomeCard.vue"
 import WorkspaceCard from "./WorkspaceCard.vue"
 import WorkspaceCreateDialog from "./WorkspaceCreateDialog.vue"
 import { homeMessages } from "./Home.i18n.ts"
@@ -135,7 +136,7 @@ useHead(() => ({
     </p>
 
     <ul
-      v-else
+      v-else-if="state.workspaces.length > 0"
       class="flex flex-col gap-4"
       :class="{ 'opacity-60': state.isPending }"
       :aria-busy="state.isPending"
@@ -150,6 +151,8 @@ useHead(() => ({
         />
       </li>
     </ul>
+
+    <WelcomeCard v-else @create="openCreateDialog" />
 
     <WorkspaceCreateDialog
       v-if="createDialogOpen"

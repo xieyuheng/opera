@@ -9,6 +9,10 @@ export const homeMessages = {
     createWorkspace: "创建工作区",
     createWorkspaceHint: "上下左右键选择，回车创建。",
     newWorkspace: "新建工作区",
+    configureProvider: "提供商与模型",
+    welcomeTitle: "欢迎",
+    welcomeMessage:
+      "工作区对应一个本地目录，是你和「风铃」智能体协作的起点。\n\n一、新建一个工作区，选择一个本地目录\n二、在「提供商与模型」中配置 API Key\n三、新建对话，开始与「风铃」智能体协作",
     noSelection: "请选择一个项目。",
     emptyDirectory: "目录为空。",
     cancel: "取消",
@@ -37,6 +41,10 @@ export const homeMessages = {
     createWorkspace: "Create workspace",
     createWorkspaceHint: "Use arrow keys to select, Enter to create.",
     newWorkspace: "New Workspace",
+    configureProvider: "Providers & Models",
+    welcomeTitle: "Welcome",
+    welcomeMessage:
+      "A workspace maps to a local directory and is the starting point for working with the agent.\n\n1. Create a workspace and choose a local directory\n2. Configure an API key under Providers & Models\n3. Create a session and start collaborating with Windbell",
     noSelection: "Select an entry.",
     emptyDirectory: "The directory is empty.",
     cancel: "Cancel",
