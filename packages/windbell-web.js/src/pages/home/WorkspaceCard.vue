@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Pencil, Trash2 } from "@lucide/vue"
 import type * as S from "@windbell/semiosis.js/core"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
@@ -92,12 +91,10 @@ function requestTrash(): void {
 
       <div class="flex items-center gap-2">
         <SmallButton type="button" @click="requestEditTitle">
-          <Pencil :size="16" :stroke-width="1.5" aria-hidden="true" />
           <span>{{ t("editTitle") }}</span>
         </SmallButton>
 
         <SmallButton type="button" @click="requestTrash">
-          <Trash2 :size="16" :stroke-width="1.5" aria-hidden="true" />
           <span>{{ t("trash") }}</span>
         </SmallButton>
       </div>

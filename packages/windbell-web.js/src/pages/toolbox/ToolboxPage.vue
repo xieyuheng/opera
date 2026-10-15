@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { FileText } from "@lucide/vue"
 import { useHead } from "@unhead/vue"
-import type { Component } from "vue"
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
 import { useRouter } from "vue-router"
@@ -17,7 +15,6 @@ import { toolboxMessages } from "./Toolbox.i18n.ts"
 type ToolItem = {
   id: string
   labelKey: string
-  icon: Component
   action: () => void
 }
 
@@ -69,7 +66,6 @@ const toolCategories: Array<ToolCategory> = [
       {
         id: "markdown-preview",
         labelKey: "markdownPreview",
-        icon: FileText,
         action: openMarkdownFilePicker,
       },
     ],
@@ -127,12 +123,6 @@ useHead(() => ({
           type="button"
           @click="tool.action"
         >
-          <component
-            :is="tool.icon"
-            :size="16"
-            :stroke-width="1.5"
-            aria-hidden="true"
-          />
           <span>{{ t(tool.labelKey) }}</span>
         </MediumButton>
       </div>

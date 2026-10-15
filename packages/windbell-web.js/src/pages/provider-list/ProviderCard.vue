@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Check, KeyRound, Trash2 } from "@lucide/vue"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 import { RouterLink } from "vue-router"
@@ -81,7 +80,6 @@ function requestDeleteApiKey(): void {
           :disabled="provider.isDefaultProvider"
           @click="requestSetDefault"
         >
-          <Check :size="16" :stroke-width="1.5" aria-hidden="true" />
           <span>
             {{
               provider.isDefaultProvider
@@ -93,18 +91,15 @@ function requestDeleteApiKey(): void {
 
         <template v-if="provider.apiKeyConfigured">
           <SmallButton type="button" @click="requestPutApiKey">
-            <KeyRound :size="16" :stroke-width="1.5" aria-hidden="true" />
             <span>{{ t("updateApiKey") }}</span>
           </SmallButton>
 
           <SmallButton type="button" @click="requestDeleteApiKey">
-            <Trash2 :size="16" :stroke-width="1.5" aria-hidden="true" />
             <span>{{ t("deleteApiKey") }}</span>
           </SmallButton>
         </template>
 
         <SmallButton v-else type="button" @click="requestPutApiKey">
-          <KeyRound :size="16" :stroke-width="1.5" aria-hidden="true" />
           <span>{{ t("configureApiKey") }}</span>
         </SmallButton>
       </div>

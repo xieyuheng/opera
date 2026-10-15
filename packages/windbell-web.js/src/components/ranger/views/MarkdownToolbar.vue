@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { Code, Eye } from "@lucide/vue"
 import { useI18n } from "vue-i18n"
-import RoundButton from "../../buttons/RoundButton.vue"
+import MediumButton from "../../buttons/MediumButton.vue"
 import { rangerMessages } from "../Ranger.i18n.ts"
 import type { MarkdownViewMode } from "./MarkdownViewMode.ts"
 
@@ -21,23 +20,16 @@ const { t } = useI18n({
 
 <template>
   <div class="pointer-events-none flex items-center">
-    <RoundButton
+    <MediumButton
       type="button"
       :active="props.mode === 'source'"
       :aria-pressed="props.mode === 'source'"
       :title="props.mode === 'render' ? t('showSource') : t('showRender')"
       @click="emit('toggle')"
     >
-      <Code
-        v-if="props.mode === 'render'"
-        :size="18"
-        :stroke-width="1.5"
-        aria-hidden="true"
-      />
-      <Eye v-else :size="18" :stroke-width="1.5" aria-hidden="true" />
-      <span class="sr-only">
+      <span>
         {{ props.mode === "render" ? t("showSource") : t("showRender") }}
       </span>
-    </RoundButton>
+    </MediumButton>
   </div>
 </template>

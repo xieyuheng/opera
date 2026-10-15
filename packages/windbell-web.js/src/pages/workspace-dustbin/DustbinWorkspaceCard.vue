@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ArchiveRestore, Trash2 } from "@lucide/vue"
 import type * as S from "@windbell/semiosis.js/core"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
@@ -75,12 +74,10 @@ function requestRemove(): void {
           :title="t('restoreHint')"
           @click="emit('restore')"
         >
-          <ArchiveRestore :size="16" :stroke-width="1.5" aria-hidden="true" />
           <span>{{ t("restore") }}</span>
         </SmallButton>
 
         <SmallButton type="button" :disabled="busy" @click="requestRemove">
-          <Trash2 :size="16" :stroke-width="1.5" aria-hidden="true" />
           <span>{{ t("remove") }}</span>
         </SmallButton>
       </div>

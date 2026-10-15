@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Pencil, Trash2 } from "@lucide/vue"
 import type * as S from "@windbell/semiosis.js/core"
 import { useHead } from "@unhead/vue"
 import PageLayout from "../../components/layout/PageLayout.vue"
@@ -148,7 +147,6 @@ useHead(() => ({
           type="button"
           @click="requestEditWorkspaceTitle"
         >
-          <Pencil :size="16" :stroke-width="1.5" aria-hidden="true" />
           <span>{{ t("editTitle") }}</span>
         </MediumButton>
 
@@ -157,7 +155,6 @@ useHead(() => ({
           type="button"
           @click="requestTrashWorkspace"
         >
-          <Trash2 :size="16" :stroke-width="1.5" aria-hidden="true" />
           <span>{{ t("trashWorkspace") }}</span>
         </MediumButton>
       </div>
@@ -175,7 +172,6 @@ useHead(() => ({
           params: { workspaceId },
         }"
       >
-        <Trash2 :size="16" :stroke-width="1.5" aria-hidden="true" />
         <span>{{ t("sessionDustbin") }}</span>
       </MediumButton>
     </div>

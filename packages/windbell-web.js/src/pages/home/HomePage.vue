@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Plus, Settings, Trash2, Wrench } from "@lucide/vue"
 import type * as S from "@windbell/semiosis.js/core"
 import { useHead } from "@unhead/vue"
 import PageLayout from "../../components/layout/PageLayout.vue"
@@ -92,12 +91,10 @@ useHead(() => ({
 
       <div class="flex flex-wrap items-center gap-2">
         <MediumButton :to="{ name: 'settings' }">
-          <Settings :size="16" :stroke-width="1.5" aria-hidden="true" />
           <span>{{ t("app.settings") }}</span>
         </MediumButton>
 
         <MediumButton :to="{ name: 'toolbox' }">
-          <Wrench :size="16" :stroke-width="1.5" aria-hidden="true" />
           <span>{{ t("toolbox") }}</span>
         </MediumButton>
       </div>
@@ -110,12 +107,10 @@ useHead(() => ({
 
       <div class="flex flex-wrap items-center gap-2">
         <MediumButton type="button" @click="openCreateDialog">
-          <Plus :size="16" :stroke-width="1.5" aria-hidden="true" />
           <span>{{ t("newWorkspace") }}</span>
         </MediumButton>
 
         <MediumButton :to="{ name: 'workspace-dustbin' }">
-          <Trash2 :size="16" :stroke-width="1.5" aria-hidden="true" />
           <span>{{ t("workspaceDustbin") }}</span>
         </MediumButton>
       </div>

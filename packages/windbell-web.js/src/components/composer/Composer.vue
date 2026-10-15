@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { ArrowUp, Maximize2, Minimize2, Square } from "@lucide/vue"
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
-import RoundButton from "../buttons/RoundButton.vue"
+import MediumButton from "../buttons/MediumButton.vue"
 import { composerMessages } from "./Composer.i18n.ts"
 import {
   captureCompactMetrics,
@@ -348,17 +347,17 @@ function handleToggle(): void {
         @keydown="handleCompactKeydown"
       />
 
-      <RoundButton
+      <MediumButton
         variant="ghost"
         type="button"
         :aria-label="t('expandInput')"
         :title="t('expandInput')"
         @click="handleToggle"
       >
-        <Maximize2 :size="16" :stroke-width="1.5" aria-hidden="true" />
-      </RoundButton>
+        <span>{{ t("expandInput") }}</span>
+      </MediumButton>
 
-      <RoundButton
+      <MediumButton
         variant="accent"
         :type="showCancelButton ? 'button' : 'submit'"
         :disabled="
@@ -381,15 +380,16 @@ function handleToggle(): void {
         "
         @click="showCancelButton ? cancel() : undefined"
       >
-        <Square
-          v-if="props.submitting"
-          :size="12"
-          class="fill-current"
-          aria-hidden="true"
-        />
-
-        <ArrowUp v-else :size="18" :stroke-width="1.5" aria-hidden="true" />
-      </RoundButton>
+        <span>
+          {{
+            showCancelButton
+              ? t("cancel")
+              : props.submitting
+                ? props.submittingLabel
+                : props.submitLabel
+          }}
+        </span>
+      </MediumButton>
     </form>
 
     <form
@@ -412,7 +412,7 @@ function handleToggle(): void {
       />
 
       <div class="flex shrink-0 items-center justify-end gap-2">
-        <RoundButton
+        <MediumButton
           v-if="props.collapsible"
           variant="ghost"
           type="button"
@@ -421,10 +421,10 @@ function handleToggle(): void {
           :title="t('collapseInput')"
           @click="handleToggle"
         >
-          <Minimize2 :size="16" :stroke-width="1.5" aria-hidden="true" />
-        </RoundButton>
+          <span>{{ t("collapseInput") }}</span>
+        </MediumButton>
 
-        <RoundButton
+        <MediumButton
           variant="accent"
           :type="showCancelButton ? 'button' : 'submit'"
           :disabled="
@@ -449,15 +449,16 @@ function handleToggle(): void {
           "
           @click="showCancelButton ? cancel() : undefined"
         >
-          <Square
-            v-if="props.submitting"
-            :size="12"
-            class="fill-current"
-            aria-hidden="true"
-          />
-
-          <ArrowUp v-else :size="18" :stroke-width="1.5" aria-hidden="true" />
-        </RoundButton>
+          <span>
+            {{
+              showCancelButton
+                ? t("cancel")
+                : props.submitting
+                  ? props.submittingLabel
+                  : props.submitLabel
+            }}
+          </span>
+        </MediumButton>
       </div>
     </form>
   </div>

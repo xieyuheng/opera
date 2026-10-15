@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ArrowLeft, FolderTree } from "@lucide/vue"
 import { useI18n } from "vue-i18n"
-import RoundButton from "../../components/buttons/RoundButton.vue"
+import MediumButton from "../../components/buttons/MediumButton.vue"
 import { sessionMessages } from "./Session.i18n.ts"
 import type { SessionState } from "./SessionState.ts"
 
@@ -23,12 +22,11 @@ const { t } = useI18n({
 
 <template>
   <div class="pointer-events-none flex items-center justify-between px-2">
-    <RoundButton type="button" @click="emit('back')">
-      <ArrowLeft :size="18" :stroke-width="1.5" aria-hidden="true" />
-      <span class="sr-only">{{ t("app.back") }}</span>
-    </RoundButton>
+    <MediumButton type="button" @click="emit('back')">
+      <span>{{ t("app.back") }}</span>
+    </MediumButton>
 
-    <RoundButton
+    <MediumButton
       type="button"
       :active="rangerOpen"
       :aria-pressed="rangerOpen"
@@ -36,10 +34,9 @@ const { t } = useI18n({
       :title="rangerOpen ? t('closeRanger') : t('openRanger')"
       @click="emit('toggleRanger')"
     >
-      <FolderTree :size="18" :stroke-width="1.5" aria-hidden="true" />
-      <span class="sr-only">
+      <span>
         {{ rangerOpen ? t("closeRanger") : t("openRanger") }}
       </span>
-    </RoundButton>
+    </MediumButton>
   </div>
 </template>

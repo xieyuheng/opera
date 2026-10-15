@@ -1,3 +1,19 @@
+# windbell-web.js
+
+下面我计划把所有使用 RoundButton.vue 的地方，
+改为  MediumButton。
+
+问题：MediumButton 是否支持毛玻璃半透明背景？
+
+下面我们消除所有带有 icon 的
+
+
+下面我们设计 usage 的 web ui，
+在使用 ai agent 时，关于 usage，
+我主要想看到的是现在使用 token 所占的百分比。
+
+我计划用类似游戏中的血条 UI 来展示这个百分比。
+
 # 文学式编程
 
 给出 agent interpret 和 agent loop 和 markdown 文学式编程

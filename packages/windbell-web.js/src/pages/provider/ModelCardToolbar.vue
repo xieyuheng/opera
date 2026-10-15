@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Check } from "@lucide/vue"
 import { useI18n } from "vue-i18n"
 import SmallButton from "../../components/buttons/SmallButton.vue"
 import ToggleSwitch from "../../components/toggle/ToggleSwitch.vue"
@@ -54,7 +53,6 @@ function requestSetDefault(): void {
       :disabled="props.busy || props.isDefault"
       @click="requestSetDefault"
     >
-      <Check :size="16" :stroke-width="1.5" aria-hidden="true" />
       <span>
         {{ props.isDefault ? t("defaultModel") : t("setAsDefaultModel") }}
       </span>

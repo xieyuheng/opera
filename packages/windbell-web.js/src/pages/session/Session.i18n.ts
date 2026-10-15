@@ -10,8 +10,8 @@ export const sessionMessages = {
     turnError: "错误",
     edit: "编辑",
     dismiss: "关闭",
-    openRanger: "打开文件浏览器",
-    closeRanger: "关闭文件浏览器",
+    openRanger: "浏览文件",
+    closeRanger: "关闭浏览",
   },
   "en-US": {
     description: "An interpretation process made of signs.",
@@ -24,7 +24,7 @@ export const sessionMessages = {
     turnError: "Error",
     edit: "Edit",
     dismiss: "Dismiss",
-    openRanger: "Open file browser",
-    closeRanger: "Close file browser",
+    openRanger: "Browse files",
+    closeRanger: "Close browser",
   },
 }

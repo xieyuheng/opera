@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Plus } from "@lucide/vue"
 import { useHead } from "@unhead/vue"
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
@@ -139,7 +138,6 @@ useHead(() => ({
       </h2>
 
       <MediumButton class="self-start" @click="openNewTheme">
-        <Plus :size="16" :stroke-width="1.5" aria-hidden="true" />
         <span>{{ t("newTheme") }}</span>
       </MediumButton>
     </div>

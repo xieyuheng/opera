@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Check, KeyRound, Trash2 } from "@lucide/vue"
 import { useHead } from "@unhead/vue"
 import { useI18n } from "vue-i18n"
 import { useRoute } from "vue-router"
@@ -117,7 +116,6 @@ useHead(() => ({
             :disabled="state.isDefaultProvider"
             @click="handleSetDefaultProvider"
           >
-            <Check :size="16" :stroke-width="1.5" aria-hidden="true" />
             <span>
               {{
                 state.isDefaultProvider
@@ -129,18 +127,15 @@ useHead(() => ({
 
           <template v-if="state.apiKeyConfigured">
             <MediumButton type="button" @click="handlePutApiKey">
-              <KeyRound :size="16" :stroke-width="1.5" aria-hidden="true" />
               <span>{{ t("updateApiKey") }}</span>
             </MediumButton>
 
             <MediumButton type="button" @click="handleDeleteApiKey">
-              <Trash2 :size="16" :stroke-width="1.5" aria-hidden="true" />
               <span>{{ t("deleteApiKey") }}</span>
             </MediumButton>
           </template>
 
           <MediumButton v-else type="button" @click="handlePutApiKey">
-            <KeyRound :size="16" :stroke-width="1.5" aria-hidden="true" />
             <span>{{ t("configureApiKey") }}</span>
           </MediumButton>
         </template>
