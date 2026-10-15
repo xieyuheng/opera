@@ -12,6 +12,7 @@ export const sessionMessages = {
     dismiss: "关闭",
     openRanger: "浏览文件",
     closeRanger: "关闭浏览",
+    contextUsage: "上下文用量：",
   },
   "en-US": {
     description: "An interpretation process made of signs.",
@@ -26,5 +27,6 @@ export const sessionMessages = {
     dismiss: "Dismiss",
     openRanger: "Browse files",
     closeRanger: "Close browser",
+    contextUsage: "Context usage: ",
   },
 }
