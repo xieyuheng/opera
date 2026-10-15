@@ -1,8 +1,6 @@
 import type { ModelEntry } from "./ModelEntry.ts"
 
-export function modelEntryContextWindow(
-  entry: ModelEntry,
-): number | undefined {
+export function modelEntryContextWindow(entry: ModelEntry): number | undefined {
   switch (entry.providerName) {
     case "deepseek":
       return entry.info?.context_window

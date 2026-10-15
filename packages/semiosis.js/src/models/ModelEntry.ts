@@ -28,5 +28,4 @@ export type OpenRouterModelEntry = ModelEntryOf<
   OpenRouter.ModelInfo
 >
 
-export type ModelEntry =
-  DeepSeekModelEntry | OpenRouterModelEntry
+export type ModelEntry = DeepSeekModelEntry | OpenRouterModelEntry

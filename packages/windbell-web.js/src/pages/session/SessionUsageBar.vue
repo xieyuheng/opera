@@ -7,31 +7,43 @@ const props = defineProps<{
   contextWindow?: number
 }>()
 
-const scale = 1_000_000
+const pointSize = 1_000
+const maxPoints = 1_000
 
 const usedTokens = computed(() => {
   if (props.usage === undefined) return 0
   return props.usage.input + props.usage.output
 })
 
-const remainingTokens = computed(() => {
+const usedPoints = computed(() => Math.floor(usedTokens.value / pointSize))
+
+const totalPoints = computed(() => {
   if (props.contextWindow === undefined) return 0
-  return Math.max(props.contextWindow - usedTokens.value, 0)
+  return Math.floor(props.contextWindow / pointSize)
 })
 
-const fillPercent = computed(
-  () => `${Math.min(remainingTokens.value / scale, 1) * 100}%`,
+const remainingPoints = computed(() =>
+  Math.max(totalPoints.value - usedPoints.value, 0),
 )
+
+const fillPercent = computed(
+  () => `${Math.min(remainingPoints.value / maxPoints, 1) * 100}%`,
+)
+
+const displayText = computed(() => `${usedPoints.value} / ${totalPoints.value}`)
 </script>
 
 <template>
   <div
-    class="relative backdrop-blur-none bg-paper/60 h-6 w-64 overflow-hidden border-3 border-sign-user"
-    :title="`${remainingTokens} / ${props.contextWindow ?? 0}`"
+    class="pointer-events-auto bg-paper/60 relative flex w-64 items-center justify-center overflow-hidden border-3 border-sign-user"
   >
     <div
-      class="h-full bg-sign-user transition-[width] duration-200"
+      class="absolute inset-y-0 left-0 bg-sign-user transition-[width] duration-200"
       :style="{ width: fillPercent }"
     />
+
+    <span class="pointer-events-none relative z-10 font-mono text-ink text-sm">
+      {{ displayText }}
+    </span>
   </div>
 </template>

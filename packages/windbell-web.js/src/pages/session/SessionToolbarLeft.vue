@@ -22,6 +22,7 @@ const { t } = useI18n({
 <template>
   <div class="flex flex-col gap-2">
     <SessionUsageBar
+      v-if="props.state.contextWindow !== undefined"
       :usage="props.state.latestUsage"
       :context-window="props.state.contextWindow"
     />
