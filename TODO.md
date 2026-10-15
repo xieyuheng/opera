@@ -6,6 +6,14 @@
 
 我计划用类似游戏中的血条 UI 来展示这个百分比。
 
+- 「血条」在返回按钮上面（可能需要调整 SessionToolbar 的结构）
+- 「血条」用一定的固定的长度代表 1m 上下文大小。
+
+问题：
+
+- 我们用什么方式从不同 provider 提供的 model 信息中，
+  取出上下文 token 上限？
+
 # 文学式编程
 
 给出 agent interpret 和 agent loop 和 markdown 文学式编程
