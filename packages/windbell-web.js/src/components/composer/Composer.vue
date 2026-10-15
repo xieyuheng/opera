@@ -325,7 +325,7 @@ function handleToggle(): void {
 <template>
   <div
     ref="shellRef"
-    class="composer-shell relative flex w-full flex-col justify-end"
+    class="relative flex w-full flex-col justify-end transition-[height] duration-[160ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
     :class="{ 'overflow-hidden': isAnimating }"
     :style="shellHeight === undefined ? undefined : { height: shellHeight }"
     @transitionend="handleShellTransitionEnd"
@@ -333,7 +333,7 @@ function handleToggle(): void {
     <form
       v-if="!showExpanded"
       ref="compactForm"
-      class="composer-surface pointer-events-auto flex w-full shrink-0 items-center gap-px rounded-lg border border-line/60 backdrop-blur-md transition-colors"
+      class="pointer-events-auto flex w-full shrink-0 items-center gap-px rounded-lg border border-line/60 backdrop-blur-md transition-[border-color,box-shadow] duration-[160ms] ease-out hover:border-ink/30 focus-within:border-sign-user/60 focus-within:ring-[3px] focus-within:ring-sign-user/25"
       @submit.prevent="submit"
     >
       <textarea
@@ -395,7 +395,7 @@ function handleToggle(): void {
     <form
       v-else
       ref="expandedForm"
-      class="composer-surface pointer-events-auto flex w-full shrink-0 flex-col gap-2 overflow-hidden rounded-lg border border-line/60 p-2 backdrop-blur-md transition-colors"
+      class="pointer-events-auto flex w-full shrink-0 flex-col gap-2 overflow-hidden rounded-lg border border-line/60 p-2 backdrop-blur-md transition-[border-color,box-shadow] duration-[160ms] ease-out hover:border-ink/30 focus-within:border-sign-user/60 focus-within:ring-[3px] focus-within:ring-sign-user/25"
       @submit.prevent="submit"
     >
       <textarea
@@ -463,31 +463,3 @@ function handleToggle(): void {
     </form>
   </div>
 </template>
-
-<style scoped>
-.composer-shell {
-  transition: height 160ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.composer-surface {
-  transition:
-    border-color 160ms ease-out,
-    box-shadow 160ms ease-out;
-}
-
-.composer-surface:hover {
-  border-color: color-mix(in oklab, var(--color-ink) 28%, transparent);
-}
-
-.composer-surface:focus-within {
-  border-color: color-mix(in oklab, var(--color-sign-user) 58%, transparent);
-  box-shadow: 0 0 0 3px
-    color-mix(in oklab, var(--color-sign-user) 24%, transparent);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .composer-shell {
-    transition: none;
-  }
-}
-</style>
