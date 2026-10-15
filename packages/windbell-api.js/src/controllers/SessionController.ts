@@ -85,6 +85,10 @@ export function makeSessionController(options: SessionControllerOptions) {
       return await options.sessions.put(input.session)
     }),
 
+    getTotalUsage: makeAction(GetSessionInputSchema, (input) =>
+      options.sessions.getTotalUsage(input),
+    ),
+
     remove: makeAction(RemoveSessionInputSchema, (input) =>
       options.sessions.remove(input.sessionId),
     ),

@@ -24,6 +24,15 @@ export type ModelUsage = {
   raw: unknown
 }
 
+export type ModelTotalUsage = {
+  input: number
+  output: number
+  cacheRead: number
+  cacheMiss: number
+  cacheWrite: number
+  total: number
+}
+
 export type ModelInterpretEvent =
   | { type: "delta"; delta: SignDelta }
   | { type: "sign"; sign: Sign }

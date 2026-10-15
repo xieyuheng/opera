@@ -1,4 +1,4 @@
-import type { ModelRef, ModelUsage } from "../model/index.ts"
+import type { ModelRef, ModelTotalUsage, ModelUsage } from "../model/index.ts"
 import type { Sign } from "../sign/index.ts"
 import type { SessionId } from "../session/Session.ts"
 
@@ -6,7 +6,7 @@ export type TurnId = string
 
 export type TurnStatus = "pending" | "completed" | "failed"
 
-export type TurnUsage = Omit<ModelUsage, "raw"> & {
+export type TurnUsage = ModelTotalUsage & {
   raw: Array<unknown>
 }
 

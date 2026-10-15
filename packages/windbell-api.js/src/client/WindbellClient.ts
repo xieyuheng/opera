@@ -70,6 +70,7 @@ export type SessionsClient = {
     sessionId: S.SessionId
     model: S.ModelRef
   }): Promise<string>
+  getTotalUsage(options: { sessionId: S.SessionId }): Promise<S.ModelTotalUsage>
   interpret(options: {
     sessionId: S.SessionId
     model: S.ModelRef
@@ -260,6 +261,12 @@ export function makeWindbellClient(
 
       return result.title
     },
+    getTotalUsage: makeJsonEndpoint(config, {
+      method: "GET",
+      path: (options) =>
+        `/sessions/${encodeURIComponent(options.sessionId)}/total-usage`,
+      output: JsonDataSchema<S.ModelTotalUsage>(),
+    }),
     async *interpret(options) {
       for await (const event of requestNdjson<S.TurnEvent>({
         baseUrl: config.baseUrl,

@@ -2,6 +2,7 @@ import type { LockService } from "@windbell/lock.js/lock"
 import type { Shell } from "@windbell/sh.js/sh"
 import { err, isError, ok, unwrap, type Result } from "@windbell/std.js/result"
 import type { Database } from "../database/Database.ts"
+import type { ModelTotalUsage } from "../model/index.ts"
 import { makeModel } from "../models/makeModel.ts"
 import { PersonaSign, type Sign } from "../sign/index.ts"
 import { generateTitle } from "../session/generateTitle.ts"
@@ -28,6 +29,9 @@ export type SessionService = {
     title: string
   }): Promise<Result<Session, ServiceError>>
   get(id: SessionId): Promise<Result<Session | undefined, ServiceError>>
+  getTotalUsage(options: {
+    sessionId: SessionId
+  }): Promise<Result<ModelTotalUsage, ServiceError>>
   put(session: Session): Promise<Result<void, ServiceError>>
   generateTitle(options: {
     sessionId: SessionId
@@ -184,6 +188,42 @@ export function makeSessionService(
       return ok(result.value)
     },
 
+    async getTotalUsage(usageOptions) {
+      const sessionResult = await database.sessions.get(usageOptions.sessionId)
+      if (isError(sessionResult)) {
+        return err(makeServiceErrorFromDatabaseError(sessionResult.error))
+      }
+      if (sessionResult.value === undefined) {
+        return err(
+          makeServiceError({
+            type: "session-not-found",
+            message: "session not found",
+            info: { sessionId: usageOptions.sessionId },
+          }),
+        )
+      }
+
+      const turnsResult = await database.sessions.listTurns(usageOptions.sessionId)
+      if (isError(turnsResult)) {
+        return err(makeServiceErrorFromDatabaseError(turnsResult.error))
+      }
+
+      const total = makeEmptyModelTotalUsage()
+
+      for (const turn of turnsResult.value) {
+        if (turn.usage === undefined) continue
+
+        total.input += turn.usage.input
+        total.output += turn.usage.output
+        total.cacheRead += turn.usage.cacheRead
+        total.cacheMiss += turn.usage.cacheMiss
+        total.cacheWrite += turn.usage.cacheWrite
+        total.total += turn.usage.total
+      }
+
+      return ok(total)
+    },
+
     async put(session) {
       const result = await database.sessions.put(session)
       if (isError(result)) {
@@ -290,6 +330,17 @@ export function makeSessionService(
     },
 
     interpret: (interpretOptions) => interpretWithLock(interpretOptions),
+  }
+}
+
+function makeEmptyModelTotalUsage(): ModelTotalUsage {
+  return {
+    input: 0,
+    output: 0,
+    cacheRead: 0,
+    cacheMiss: 0,
+    cacheWrite: 0,
+    total: 0,
   }
 }
 

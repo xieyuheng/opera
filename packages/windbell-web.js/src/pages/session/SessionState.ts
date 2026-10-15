@@ -35,6 +35,7 @@ export type SessionState = {
   modelRef: S.ModelRef | undefined
   contextWindow: number | undefined
   latestUsage: S.ModelUsage | undefined
+  totalUsage: S.ModelTotalUsage | undefined
   hasLoaded: boolean
   isLoading: boolean
   isPending: boolean
@@ -67,6 +68,7 @@ export function makeSessionState(sessionId: S.SessionId): SessionState {
     modelRef: undefined,
     contextWindow: undefined,
     latestUsage: undefined,
+    totalUsage: undefined,
     hasLoaded: false,
     isLoading: true,
     isPending: false,
@@ -171,6 +173,12 @@ async function resolveSessionModel(state: SessionState): Promise<S.ModelRef> {
   return modelRef
 }
 
+async function refreshTotalUsage(state: SessionState): Promise<void> {
+  state.totalUsage = await windbell.sessions.getTotalUsage({
+    sessionId: state.sessionId,
+  })
+}
+
 export function cancelSessionInterpretation(state: SessionState): void {
   interpretationControllers.get(state.sessionId)?.abort()
 }
@@ -214,6 +222,7 @@ export async function loadSessionState(
     state.hasLoaded = true
 
     await resolveSessionModel(state)
+    await refreshTotalUsage(state)
   } catch (error) {
     if (requestId !== state.requestId) return
 
@@ -351,13 +360,15 @@ export async function interpretSession(
     }
     const activeTurn = beginActiveTurn(state, content, options.turnId)
 
-    return await runActiveTurnWithRetries({
+    const success = await runActiveTurnWithRetries({
       state,
       activeTurn,
       modelRef,
       input,
       signal,
     })
+    await refreshTotalUsage(state)
+    return success
   } catch (error) {
     if (signal?.aborted) return false
 
