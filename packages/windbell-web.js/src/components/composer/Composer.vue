@@ -333,7 +333,7 @@ function handleToggle(): void {
     <form
       v-if="!showExpanded"
       ref="compactForm"
-      class="composer-surface pointer-events-auto flex w-full shrink-0 items-center gap-px rounded-lg border border-line/60 bg-paper/60 backdrop-blur transition-colors"
+      class="composer-surface pointer-events-auto flex w-full shrink-0 items-center gap-px rounded-lg border border-line/60 backdrop-blur-md transition-colors"
       @submit.prevent="submit"
     >
       <textarea
@@ -395,7 +395,7 @@ function handleToggle(): void {
     <form
       v-else
       ref="expandedForm"
-      class="composer-surface pointer-events-auto flex w-full shrink-0 flex-col gap-2 overflow-hidden rounded-lg border border-line/60 bg-paper/60 p-2 backdrop-blur transition-colors"
+      class="composer-surface pointer-events-auto flex w-full shrink-0 flex-col gap-2 overflow-hidden rounded-lg border border-line/60 p-2 backdrop-blur-md transition-colors"
       @submit.prevent="submit"
     >
       <textarea
