@@ -26,7 +26,7 @@ const fillPercent = computed(
 
 <template>
   <div
-    class="relative h-6 w-64 overflow-hidden border-3 border-sign-user"
+    class="relative backdrop-blur-none bg-paper/60 h-6 w-64 overflow-hidden border-3 border-sign-user"
     :title="`${remainingTokens} / ${props.contextWindow ?? 0}`"
   >
     <div

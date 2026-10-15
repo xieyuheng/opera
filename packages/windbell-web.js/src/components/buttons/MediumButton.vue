@@ -31,7 +31,7 @@ const variantClasses = computed(() => {
     return ["border-transparent text-ink", "bg-sign-user hover:bg-sign-user/80"]
   }
 
-  return ["border-line backdrop-blur", "hover:bg-line"]
+  return ["border-line backdrop-blur-xs", "hover:bg-line"]
 })
 
 const classes = computed(() => [
