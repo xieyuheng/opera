@@ -30,7 +30,9 @@ const fillPercent = computed(
   () => `${Math.min(remainingPoints.value / maxPoints, 1) * 100}%`,
 )
 
-const displayText = computed(() => `${usedPoints.value} / ${totalPoints.value}`)
+const displayText = computed(
+  () => `${remainingPoints.value} / ${totalPoints.value}`,
+)
 </script>
 
 <template>
