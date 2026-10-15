@@ -22,7 +22,6 @@ const { t } = useI18n({
   <div class="pointer-events-none flex items-center">
     <MediumButton
       type="button"
-      :active="props.mode === 'source'"
       :aria-pressed="props.mode === 'source'"
       :title="props.mode === 'render' ? t('showSource') : t('showRender')"
       @click="emit('toggle')"

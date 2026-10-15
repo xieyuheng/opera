@@ -28,7 +28,6 @@ const { t } = useI18n({
 
     <MediumButton
       type="button"
-      :active="rangerOpen"
       :aria-pressed="rangerOpen"
       :disabled="props.state.workspaceId === ''"
       :title="rangerOpen ? t('closeRanger') : t('openRanger')"

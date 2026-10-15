@@ -11,12 +11,10 @@ const props = withDefaults(
     to?: RouteLocationRaw
     type?: "button" | "submit" | "reset"
     disabled?: boolean
-    active?: boolean
     variant?: MediumButtonVariant
   }>(),
   {
     type: "button",
-    active: false,
     variant: "default",
   },
 )
@@ -28,26 +26,20 @@ const variantClasses = computed(() => {
   if (props.variant === "ghost") {
     return [
       "border-transparent",
-      props.active
-        ? "bg-sign-user/30 text-ink"
-        : "bg-transparent text-ink/70 hover:bg-line/50 hover:text-ink",
+      "bg-transparent text-ink hover:bg-line/80"
     ]
   }
 
   if (props.variant === "accent") {
     return [
       "border-transparent text-ink",
-      props.active
-        ? "bg-sign-user/70"
-        : "bg-sign-user/60 hover:bg-sign-user/70",
+      "bg-sign-user hover:bg-line/80",
     ]
   }
 
   return [
-    "border-line/60 text-ink backdrop-blur",
-    props.active
-      ? "bg-sign-user/30 hover:border-ink/25"
-      : "bg-paper/30 hover:border-ink/25 hover:bg-paper/50",
+    "border-line/80 backdrop-blur",
+    "bg-paper/10 hover:bg-sign-user"
   ]
 })
 
