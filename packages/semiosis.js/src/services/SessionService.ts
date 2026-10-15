@@ -203,7 +203,9 @@ export function makeSessionService(
         )
       }
 
-      const turnsResult = await database.sessions.listTurns(usageOptions.sessionId)
+      const turnsResult = await database.sessions.listTurns(
+        usageOptions.sessionId,
+      )
       if (isError(turnsResult)) {
         return err(makeServiceErrorFromDatabaseError(turnsResult.error))
       }

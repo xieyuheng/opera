@@ -3,6 +3,7 @@ import { computed, reactive, ref } from "vue"
 import { useI18n } from "vue-i18n"
 import type * as S from "@windbell/semiosis.js/core"
 import MediumButton from "../../components/buttons/MediumButton.vue"
+import Card from "../../components/card/Card.vue"
 import { sessionMessages } from "./Session.i18n.ts"
 
 const props = defineProps<{
@@ -102,7 +103,7 @@ function handleToggle(event: Event): void {
     :id="popoverId"
     ref="popover"
     popover="auto"
-    class="pointer-events-auto m-0 w-64 rounded-md border border-line p-2 bg-transparent text-sm backdrop-blur-md"
+    class="bg-transparent w-64"
     :style="{
       position: 'fixed',
       inset: 'auto',
@@ -111,53 +112,57 @@ function handleToggle(event: Event): void {
     }"
     @toggle="handleToggle"
   >
-    <p class="mb-1">
-      {{ t("usageDetailsTitle") }}
-    </p>
+    <Card>
+      <template #tag>
+        <span>{{ t("usageDetailsTitle") }}</span>
+      </template>
 
-    <dl class="flex flex-col gap-1">
-      <div class="flex justify-between gap-3">
-        <dt>{{ t("totalTokens") }}</dt>
-        <dd>
-          {{ formatTokens(totalTokens) }}
-        </dd>
-      </div>
+      <div class="p-2 backdrop-blur-md text-sm">
+        <dl class="flex flex-col gap-1">
+          <div class="flex justify-between gap-3">
+            <dt>{{ t("totalTokens") }}</dt>
+            <dd>
+              {{ formatTokens(totalTokens) }}
+            </dd>
+          </div>
 
-      <div class="flex justify-between gap-3">
-        <dt>{{ t("uncachedInput") }}</dt>
-        <dd>
-          {{ formatTokens(props.totalUsage.cacheMiss) }}
-        </dd>
-      </div>
+          <div class="flex justify-between gap-3">
+            <dt>{{ t("uncachedInput") }}</dt>
+            <dd>
+              {{ formatTokens(props.totalUsage.cacheMiss) }}
+            </dd>
+          </div>
 
-      <div class="flex justify-between gap-3">
-        <dt>{{ t("cachedInput") }}</dt>
-        <dd>
-          {{ formatTokens(props.totalUsage.cacheRead) }}
-        </dd>
-      </div>
+          <div class="flex justify-between gap-3">
+            <dt>{{ t("cachedInput") }}</dt>
+            <dd>
+              {{ formatTokens(props.totalUsage.cacheRead) }}
+            </dd>
+          </div>
 
-      <div
-        v-if="props.totalUsage.cacheWrite > 0"
-        class="flex justify-between gap-3"
-      >
-        <dt>{{ t("cacheWrite") }}</dt>
-        <dd>
-          {{ formatTokens(props.totalUsage.cacheWrite) }}
-        </dd>
-      </div>
+          <div
+            v-if="props.totalUsage.cacheWrite > 0"
+            class="flex justify-between gap-3"
+          >
+            <dt>{{ t("cacheWrite") }}</dt>
+            <dd>
+              {{ formatTokens(props.totalUsage.cacheWrite) }}
+            </dd>
+          </div>
 
-      <div class="flex justify-between gap-3">
-        <dt>{{ t("outputTokens") }}</dt>
-        <dd>
-          {{ formatTokens(props.totalUsage.output) }}
-        </dd>
-      </div>
+          <div class="flex justify-between gap-3">
+            <dt>{{ t("outputTokens") }}</dt>
+            <dd>
+              {{ formatTokens(props.totalUsage.output) }}
+            </dd>
+          </div>
 
-      <div class="flex justify-between gap-3">
-        <dt>{{ t("cacheHitRate") }}</dt>
-        <dd>{{ formatPercent(cacheHitRate) }}</dd>
+          <div class="flex justify-between gap-3">
+            <dt>{{ t("cacheHitRate") }}</dt>
+            <dd>{{ formatPercent(cacheHitRate) }}</dd>
+          </div>
+        </dl>
       </div>
-    </dl>
+    </Card>
   </div>
 </template>

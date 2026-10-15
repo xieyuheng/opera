@@ -30,7 +30,7 @@ const props = withDefaults(
     </div>
 
     <div
-      class="border-2 border-[var(--card-color)]"
+      class="border-2 overflow-hidden border-[var(--card-color)]"
       :class="$slots.tag ? 'rounded-b-lg rounded-tr-lg' : 'rounded-lg'"
     >
       <slot />
