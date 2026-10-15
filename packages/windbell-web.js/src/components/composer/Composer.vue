@@ -333,13 +333,13 @@ function handleToggle(): void {
     <form
       v-if="!showExpanded"
       ref="compactForm"
-      class="composer-surface pointer-events-auto flex w-full shrink-0 items-center gap-2 rounded-full border border-line/60 bg-paper/60 backdrop-blur transition-colors"
+      class="composer-surface pointer-events-auto flex w-full shrink-0 items-center gap-px rounded-lg border border-line/60 bg-paper/60 backdrop-blur transition-colors"
       @submit.prevent="submit"
     >
       <textarea
         ref="compactTextarea"
         v-model="input"
-        class="h-10 min-w-0 flex-1 resize-none overflow-hidden bg-transparent px-3 py-2 text-ink outline-none placeholder:text-ink/60 disabled:opacity-50"
+        class="h-10 min-w-0 flex-1 resize-none overflow-hidden bg-transparent p-2 text-ink outline-none placeholder:text-ink/60 disabled:opacity-50"
         :disabled="props.disabled"
         :placeholder="props.placeholder"
         rows="1"
@@ -395,13 +395,13 @@ function handleToggle(): void {
     <form
       v-else
       ref="expandedForm"
-      class="composer-surface pointer-events-auto flex w-full shrink-0 flex-col gap-2 overflow-hidden rounded-3xl border border-line/60 bg-paper/60 p-2 backdrop-blur transition-colors"
+      class="composer-surface pointer-events-auto flex w-full shrink-0 flex-col gap-2 overflow-hidden rounded-lg border border-line/60 bg-paper/60 p-2 backdrop-blur transition-colors"
       @submit.prevent="submit"
     >
       <textarea
         ref="expandedTextarea"
         v-model="input"
-        class="thin-scrollbar w-full resize-none overflow-y-auto bg-transparent px-2 py-2 text-ink outline-none placeholder:text-ink/60 disabled:opacity-50"
+        class="thin-scrollbar w-full resize-none overflow-y-auto bg-transparent text-ink outline-none placeholder:text-ink/60 disabled:opacity-50"
         :disabled="props.disabled"
         :placeholder="props.placeholder"
         :rows="props.minRows"

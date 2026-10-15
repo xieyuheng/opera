@@ -1,12 +1,12 @@
 export const composerMessages = {
   "zh-CN": {
-    expandInput: "展开输入",
-    collapseInput: "收起输入",
+    expandInput: "展开",
+    collapseInput: "收起",
     cancel: "取消",
   },
   "en-US": {
-    expandInput: "Expand input",
-    collapseInput: "Collapse input",
+    expandInput: "Expand",
+    collapseInput: "Collapse",
     cancel: "Cancel",
   },
 }
