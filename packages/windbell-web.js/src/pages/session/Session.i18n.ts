@@ -10,8 +10,8 @@ export const sessionMessages = {
     turnError: "错误",
     edit: "编辑",
     dismiss: "关闭",
-    openRanger: "浏览文件",
-    closeRanger: "关闭浏览",
+    openRanger: "巡察",
+    closeRanger: "巡闭",
     contextUsage: "上下文用量：",
   },
   "en-US": {
@@ -25,8 +25,8 @@ export const sessionMessages = {
     turnError: "Error",
     edit: "Edit",
     dismiss: "Dismiss",
-    openRanger: "Browse files",
-    closeRanger: "Close browser",
+    openRanger: "Ranger",
+    closeRanger: "Return",
     contextUsage: "Context usage: ",
   },
 }
