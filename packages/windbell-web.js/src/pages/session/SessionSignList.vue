@@ -2,11 +2,13 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
 import SignCard from "../../components/sign/SignCard.vue"
-import SessionMinimap from "./SessionMinimap.vue"
 import TurnErrorCard from "./TurnErrorCard.vue"
 import { sessionMessages } from "./Session.i18n.ts"
 import type { SessionState } from "./SessionState.ts"
-import type { SessionMinimapBlock } from "./sessionMinimap.ts"
+import type {
+  SessionMinimapBlock,
+  SessionSignListMetrics,
+} from "./sessionMinimap.ts"
 
 const props = withDefaults(
   defineProps<{
@@ -22,6 +24,7 @@ const emit = defineEmits<{
   retry: []
   edit: []
   dismiss: []
+  metrics: [metrics: SessionSignListMetrics]
 }>()
 
 const { t } = useI18n({
@@ -66,6 +69,15 @@ const signs = computed(() => {
   return [...props.state.context, ...activeSigns]
 })
 
+function emitMetrics(): void {
+  emit("metrics", {
+    blocks: minimapBlocks.value,
+    scrollTop: scrollTop.value,
+    clientHeight: clientHeight.value,
+    scrollHeight: scrollHeight.value,
+  })
+}
+
 function updateScrollMetrics(): void {
   const element = scroller.value
   if (element === null) return
@@ -101,6 +113,7 @@ function measureMinimapBlocks(): void {
 
   minimapBlocks.value = blocks
   updateScrollMetrics()
+  emitMetrics()
 }
 
 function scheduleMinimapMeasure(): void {
@@ -124,6 +137,7 @@ function updateStickToBottom(): void {
 function handleScroll(): void {
   updateStickToBottom()
   updateScrollMetrics()
+  emitMetrics()
 }
 
 async function scrollToBottom(): Promise<void> {
@@ -139,14 +153,16 @@ async function scrollToBottom(): Promise<void> {
   stickToBottom.value = true
   element.scrollTop = element.scrollHeight
   updateScrollMetrics()
+  emitMetrics()
 }
 
-function handleMinimapSeek(value: number): void {
+function scrollTo(value: number): void {
   const element = scroller.value
   if (element === null) return
 
   element.scrollTop = value
   updateScrollMetrics()
+  emitMetrics()
 }
 
 function scheduleAutoScroll(): void {
@@ -157,11 +173,13 @@ function scheduleAutoScroll(): void {
 
 onMounted(() => {
   updateScrollMetrics()
+  emitMetrics()
   void nextTick(scheduleMinimapMeasure)
 
   if (scroller.value !== null) {
     scrollerResizeObserver = new ResizeObserver(() => {
       updateScrollMetrics()
+      emitMetrics()
       scheduleMinimapMeasure()
     })
     scrollerResizeObserver.observe(scroller.value)
@@ -170,6 +188,7 @@ onMounted(() => {
   if (content.value !== null) {
     contentResizeObserver = new ResizeObserver(() => {
       updateScrollMetrics()
+      emitMetrics()
       scheduleMinimapMeasure()
     })
     contentResizeObserver.observe(content.value)
@@ -208,6 +227,7 @@ watch(
   () => props.bottomPadding,
   () => {
     updateScrollMetrics()
+    emitMetrics()
     scheduleMinimapMeasure()
 
     const element = scroller.value
@@ -217,68 +237,49 @@ watch(
   },
 )
 
-defineExpose({ scrollToBottom })
+defineExpose({ scrollTo, scrollToBottom })
 </script>
 
 <template>
-  <div class="relative min-h-0 flex-1 overflow-hidden">
-    <div
-      ref="scroller"
-      class="session-sign-list-scroller thin-scrollbar h-full w-full overflow-y-auto px-4 pt-16"
-      :style="{ paddingBottom: `${props.bottomPadding}px` }"
-      @scroll.passive="handleScroll"
-    >
-      <div ref="content" class="mx-auto flex w-full max-w-4xl flex-col gap-4">
-        <h1 class="text-xl text-ink">
-          {{ title }}
-        </h1>
+  <div
+    ref="scroller"
+    class="min-h-0 flex-1 overflow-y-auto scrollbar-none px-4 pt-16 [&::-webkit-scrollbar]:hidden"
+    :style="{ paddingBottom: `${props.bottomPadding}px` }"
+    @scroll.passive="handleScroll"
+  >
+    <div ref="content" class="mx-auto flex w-full max-w-4xl flex-col gap-4">
+      <h1 class="text-xl text-ink">
+        {{ title }}
+      </h1>
 
-        <p v-if="props.state.isLoading" class="text-ink">
-          {{ t("loading") }}
-        </p>
+      <p v-if="props.state.isLoading" class="text-ink">
+        {{ t("loading") }}
+      </p>
 
-        <ol
-          v-else
-          class="flex flex-col gap-4"
-          :class="{ 'opacity-60': props.state.isPending }"
-          :aria-busy="props.state.isPending"
-        >
-          <SignCard
-            v-for="(sign, index) in signs"
-            :key="index"
-            :data-sign-index="index"
-            :sign="sign"
-            :workspace-root="props.state.workspaceRoot"
-          />
-        </ol>
-
-        <TurnErrorCard
-          v-if="!props.state.isLoading && props.state.error !== undefined"
-          :message="props.state.error"
-          :retryable="props.state.errorRetryable"
-          :input-persisted="props.state.errorInputPersisted"
-          @retry="emit('retry')"
-          @edit="emit('edit')"
-          @dismiss="emit('dismiss')"
+      <ol
+        v-else
+        class="flex flex-col gap-4"
+        :class="{ 'opacity-60': props.state.isPending }"
+        :aria-busy="props.state.isPending"
+      >
+        <SignCard
+          v-for="(sign, index) in signs"
+          :key="index"
+          :data-sign-index="index"
+          :sign="sign"
+          :workspace-root="props.state.workspaceRoot"
         />
-      </div>
-    </div>
+      </ol>
 
-    <SessionMinimap
-      v-if="signs.length > 0"
-      class="absolute inset-y-1 right-2.5 z-10"
-      :blocks="minimapBlocks"
-      :scroll-top="scrollTop"
-      :client-height="clientHeight"
-      :scroll-height="scrollHeight"
-      :ratio="20"
-      @seek="handleMinimapSeek"
-    />
+      <TurnErrorCard
+        v-if="!props.state.isLoading && props.state.error !== undefined"
+        :message="props.state.error"
+        :retryable="props.state.errorRetryable"
+        :input-persisted="props.state.errorInputPersisted"
+        @retry="emit('retry')"
+        @edit="emit('edit')"
+        @dismiss="emit('dismiss')"
+      />
+    </div>
   </div>
 </template>
-
-<style scoped>
-.session-sign-list-scroller {
-  scrollbar-gutter: stable both-edges;
-}
-</style>

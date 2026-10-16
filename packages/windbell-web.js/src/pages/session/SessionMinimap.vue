@@ -176,7 +176,7 @@ onBeforeUnmount(() => {
 <template>
   <div
     ref="track"
-    class="w-5 cursor-pointer touch-none select-none overflow-hidden"
+    class="relative h-full w-5 shrink-0 cursor-pointer touch-none select-none overflow-hidden"
     @pointerdown="handlePointerDown"
     @pointermove="handlePointerMove"
     @pointerup="handlePointerUp"

@@ -6,6 +6,8 @@ import { useRoute, useRouter } from "vue-router"
 import { makeDividerState } from "../../components/divider/DividerState.ts"
 import ResizeDivider from "../../components/divider/ResizeDivider.vue"
 import Composer from "../../components/composer/Composer.vue"
+import SessionMinimap from "./SessionMinimap.vue"
+import SessionScrollbar from "./SessionScrollbar.vue"
 import SessionSignList from "./SessionSignList.vue"
 import SessionToolbarLeft from "./SessionToolbarLeft.vue"
 import SessionToolbarRight from "./SessionToolbarRight.vue"
@@ -21,6 +23,7 @@ import {
   retrySessionInterpretation,
 } from "./SessionState.ts"
 import { receiveSessionMessages, type SessionMessage } from "./SessionInbox.ts"
+import type { SessionSignListMetrics } from "./sessionMinimap.ts"
 
 function sessionRangerOpenStorageKey(sessionId: string): string {
   return `windbell.session.${sessionId}.rangerOpen`
@@ -58,6 +61,12 @@ const sessionId = computed(() => String(route.params.sessionId ?? ""))
 const input = ref("")
 const composerOverlay = ref<HTMLElement | null>(null)
 const composerHeight = ref(72)
+const minimapMetrics = ref<SessionSignListMetrics>({
+  blocks: [],
+  scrollTop: 0,
+  clientHeight: 0,
+  scrollHeight: 0,
+})
 
 let composerResizeObserver: ResizeObserver | undefined
 
@@ -93,6 +102,10 @@ const rangerPaneVisible = computed(
 const sessionPaneWidth = computed(() =>
   rangerPaneVisible.value ? `${sessionDivider.value.ratio * 100}%` : "100%",
 )
+
+function seekSession(scrollTop: number): void {
+  signList.value?.scrollTo(scrollTop)
+}
 
 function goBack(): void {
   if (state.workspaceId === "") {
@@ -209,10 +222,12 @@ useHead(() => ({
 <template>
   <main class="flex h-screen w-full overflow-hidden">
     <section
-      class="relative flex min-h-0 min-w-0 shrink-0 flex-col overflow-hidden"
+      class="relative flex min-h-0 min-w-0 shrink-0 flex-row overflow-hidden"
       :style="{ width: sessionPaneWidth }"
     >
-      <div class="relative flex min-h-0 w-full flex-1 flex-col overflow-hidden">
+      <div
+        class="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
+      >
         <div
           class="pointer-events-none absolute inset-x-0 z-50"
           :style="{ top: 'calc(env(safe-area-inset-top, 0px) + 0.5rem)' }"
@@ -232,6 +247,7 @@ useHead(() => ({
           ref="signList"
           :state="state"
           :bottom-padding="composerHeight"
+          @metrics="minimapMetrics = $event"
           @retry="retry"
           @edit="edit"
           @dismiss="dismiss"
@@ -257,6 +273,24 @@ useHead(() => ({
             />
           </div>
         </div>
+      </div>
+
+      <div class="relative flex h-full shrink-0 overflow-hidden">
+        <SessionMinimap
+          :blocks="minimapMetrics.blocks"
+          :scroll-top="minimapMetrics.scrollTop"
+          :client-height="minimapMetrics.clientHeight"
+          :scroll-height="minimapMetrics.scrollHeight"
+          :ratio="20"
+          @seek="seekSession"
+        />
+
+        <SessionScrollbar
+          :scroll-top="minimapMetrics.scrollTop"
+          :client-height="minimapMetrics.clientHeight"
+          :scroll-height="minimapMetrics.scrollHeight"
+          @seek="seekSession"
+        />
       </div>
     </section>
 

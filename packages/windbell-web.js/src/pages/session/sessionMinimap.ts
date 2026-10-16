@@ -6,3 +6,10 @@ export type SessionMinimapBlock = {
   top: number
   height: number
 }
+
+export type SessionSignListMetrics = {
+  blocks: SessionMinimapBlock[]
+  scrollTop: number
+  clientHeight: number
+  scrollHeight: number
+}
