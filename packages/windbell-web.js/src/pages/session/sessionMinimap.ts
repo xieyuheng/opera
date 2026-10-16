@@ -5,6 +5,7 @@ export type SessionMinimapBlock = {
   kind: S.Sign["kind"]
   top: number
   height: number
+  turnIndex?: number
 }
 
 export type SessionSignListMetrics = {

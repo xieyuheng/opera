@@ -84,6 +84,17 @@ const minimapScrollTop = computed(() => {
   )
 })
 
+const turnMarkers = computed(() =>
+  props.blocks.flatMap((block) => {
+    if (block.turnIndex === undefined) return []
+
+    const top = block.top * minimapScale.value - minimapScrollTop.value
+    if (top < 0 || top > trackHeight.value) return []
+
+    return [{ turnIndex: block.turnIndex, top }]
+  }),
+)
+
 function blockStyle(block: SessionMinimapBlock): Record<string, string> {
   const scale = minimapScale.value
   return {
@@ -176,33 +187,52 @@ onBeforeUnmount(() => {
 <template>
   <div
     ref="track"
-    class="relative h-full w-5 shrink-0 cursor-pointer touch-none select-none overflow-hidden"
+    class="relative h-full w-5 shrink-0 cursor-pointer touch-none select-none overflow-visible"
     @pointerdown="handlePointerDown"
     @pointermove="handlePointerMove"
     @pointerup="handlePointerUp"
     @pointercancel="handlePointerUp"
   >
-    <div
-      class="pointer-events-none absolute inset-x-0 top-0"
-      :style="{
-        height: `${minimapContentHeight}px`,
-        transform: `translateY(${-minimapScrollTop}px)`,
-      }"
-    >
+    <div class="pointer-events-none absolute inset-0 overflow-hidden">
       <div
-        v-for="block in props.blocks"
-        :key="block.index"
-        class="absolute inset-x-0"
-        :style="blockStyle(block)"
+        class="pointer-events-none absolute inset-x-0 top-0"
+        :style="{
+          height: `${minimapContentHeight}px`,
+          transform: `translateY(${-minimapScrollTop}px)`,
+        }"
+      >
+        <div
+          v-for="block in props.blocks"
+          :key="block.index"
+          class="absolute inset-x-0"
+          :style="blockStyle(block)"
+        />
+      </div>
+
+      <div
+        class="pointer-events-none absolute inset-x-0 border border-ink bg-ink/50"
+        :style="{
+          top: `${slider.top}px`,
+          height: `${slider.height}px`,
+        }"
       />
     </div>
 
-    <div
-      class="pointer-events-none absolute inset-x-0 border border-ink bg-ink/30"
-      :style="{
-        top: `${slider.top}px`,
-        height: `${slider.height}px`,
-      }"
-    />
+    <div class="pointer-events-none absolute inset-0">
+      <div
+        v-for="marker in turnMarkers"
+        :key="marker.turnIndex"
+        class="absolute left-0"
+        :data-turn-index="marker.turnIndex"
+        :style="{ top: `${marker.top}px` }"
+      >
+        <div class="absolute right-0 h-[1.5px] w-[10px] bg-ink" />
+        <div
+          class="absolute right-[10px] top-0.5 whitespace-nowrap font-mono text-sm leading-none w-full text-ink px-px"
+        >
+          {{ marker.turnIndex }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>

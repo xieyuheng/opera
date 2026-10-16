@@ -96,11 +96,16 @@ function measureMinimapBlocks(): void {
   const signElements =
     contentElement.querySelectorAll<HTMLElement>("[data-sign-index]")
   const blocks: SessionMinimapBlock[] = []
+  let turnIndex = 0
 
   for (const signElement of signElements) {
     const index = Number(signElement.dataset.signIndex)
     const sign = signs.value[index]
     if (sign === undefined) continue
+
+    if (sign.kind === "UserSign") {
+      turnIndex += 1
+    }
 
     const rect = signElement.getBoundingClientRect()
     blocks.push({
@@ -108,6 +113,7 @@ function measureMinimapBlocks(): void {
       kind: sign.kind,
       top: rect.top - scrollerRect.top + scrollerElement.scrollTop,
       height: rect.height,
+      turnIndex: sign.kind === "UserSign" ? turnIndex : undefined,
     })
   }
 

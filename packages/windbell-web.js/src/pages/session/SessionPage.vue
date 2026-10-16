@@ -275,7 +275,7 @@ useHead(() => ({
         </div>
       </div>
 
-      <div class="relative flex h-full shrink-0 overflow-hidden">
+      <div class="relative flex h-full shrink-0 overflow-visible">
         <SessionMinimap
           :blocks="minimapMetrics.blocks"
           :scroll-top="minimapMetrics.scrollTop"
