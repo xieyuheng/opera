@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue"
-import { computed, onMounted, ref, watch } from "vue"
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
 import { useRoute, useRouter } from "vue-router"
 import { makeDividerState } from "../../components/divider/DividerState.ts"
@@ -56,6 +56,10 @@ const route = useRoute()
 const router = useRouter()
 const sessionId = computed(() => String(route.params.sessionId ?? ""))
 const input = ref("")
+const composerOverlay = ref<HTMLElement | null>(null)
+const composerHeight = ref(72)
+
+let composerResizeObserver: ResizeObserver | undefined
 
 const { t } = useI18n({
   messages: sessionMessages,
@@ -164,8 +168,27 @@ async function loadSession(value: string): Promise<void> {
   await signList.value?.scrollToBottom()
 }
 
+function observeComposerHeight(): void {
+  const element = composerOverlay.value
+  if (element === null) return
+
+  composerHeight.value = element.offsetHeight
+
+  if (typeof ResizeObserver === "undefined") return
+
+  composerResizeObserver = new ResizeObserver(() => {
+    composerHeight.value = element.offsetHeight
+  })
+  composerResizeObserver.observe(element)
+}
+
 onMounted(async () => {
+  observeComposerHeight()
   await loadSession(sessionId.value)
+})
+
+onBeforeUnmount(() => {
+  composerResizeObserver?.disconnect()
 })
 
 watch(rangerOpen, (value) => {
@@ -208,18 +231,21 @@ useHead(() => ({
         <SessionSignList
           ref="signList"
           :state="state"
+          :bottom-padding="composerHeight"
           @retry="retry"
           @edit="edit"
           @dismiss="dismiss"
         />
 
         <div
+          ref="composerOverlay"
           class="pointer-events-none absolute inset-x-0 bottom-[env(safe-area-inset-bottom,0px)] z-10 px-2 py-4"
         >
           <div class="mx-auto w-full max-w-[59rem]">
             <Composer
               v-model="input"
               autofocus
+              resizable
               :submitting="state.interpreting"
               cancelable
               :placeholder="t('inputPlaceholder')"

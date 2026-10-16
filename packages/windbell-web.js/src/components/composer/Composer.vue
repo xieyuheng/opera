@@ -16,6 +16,7 @@ import {
 type AnimationMode = "expanding" | "collapsing"
 
 const ANIMATION_DURATION = 160
+const VIEWPORT_RESIZE_MARGIN = 96
 
 const props = withDefaults(
   defineProps<{
@@ -30,6 +31,7 @@ const props = withDefaults(
     submittingLabel?: string
     autofocus?: boolean
     collapseOnSubmit?: boolean
+    resizable?: boolean
     minRows?: number
     maxHeight?: string
   }>(),
@@ -44,6 +46,7 @@ const props = withDefaults(
     submittingLabel: "Sending...",
     autofocus: false,
     collapseOnSubmit: true,
+    resizable: false,
     minRows: 5,
     maxHeight: "calc(100dvh - 6rem)",
   },
@@ -78,9 +81,15 @@ const shellHeight = ref<string | undefined>(undefined)
 const isAnimating = ref(false)
 const animationMode = ref<AnimationMode | null>(null)
 const pendingSelection = ref<TextSelection | null>(null)
+const manualHeight = ref<number | null>(null)
 
 let compactMetrics: CompactMetrics | null = null
 let finishTimer: number | undefined
+let resizeStartY = 0
+let resizeStartHeight = 0
+let resizeMinHeight = 0
+let resizeMaxHeight = 0
+let isResizing = false
 
 const showExpanded = computed(() => !props.collapsible || expanded.value)
 const showCancelButton = computed(() => props.submitting && props.cancelable)
@@ -91,6 +100,11 @@ const canCollapse = computed(() => {
   return !compactOverflow.value
 })
 const minHeight = computed(() => `calc(${props.minRows} * 1.5rem + 1rem)`)
+const expandedFormStyle = computed(() =>
+  manualHeight.value === null
+    ? undefined
+    : { height: `${manualHeight.value}px` },
+)
 
 function forceReflow(): void {
   void shellRef.value?.offsetHeight
@@ -127,7 +141,7 @@ function updateCompactOverflow(): void {
 async function resizeExpandedTextarea(): Promise<void> {
   await nextTick()
 
-  if (!showExpanded.value) return
+  if (!showExpanded.value || manualHeight.value !== null) return
   resizeTextarea(expandedTextarea.value)
 }
 
@@ -146,6 +160,7 @@ async function finishAnimation(): Promise<void> {
   if (animationMode.value === "expanding") {
     isAnimating.value = false
     animationMode.value = null
+    manualHeight.value = null
     shellHeight.value = undefined
     writeSelection(expandedTextarea.value, selection)
     await resizeExpandedTextarea()
@@ -158,6 +173,7 @@ async function finishAnimation(): Promise<void> {
 
     isAnimating.value = false
     animationMode.value = null
+    manualHeight.value = null
     shellHeight.value = undefined
     captureCompactHeight()
 
@@ -169,6 +185,7 @@ async function finishAnimation(): Promise<void> {
 async function expand(options: { overflow?: boolean } = {}): Promise<void> {
   if (!props.collapsible || showExpanded.value || isAnimating.value) return
 
+  manualHeight.value = null
   pendingSelection.value = readSelection(
     compactTextarea.value,
     input.value.length,
@@ -275,6 +292,8 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  finishResize()
+
   if (finishTimer !== undefined) {
     window.clearTimeout(finishTimer)
   }
@@ -283,6 +302,78 @@ onBeforeUnmount(() => {
 function handleShellTransitionEnd(event: TransitionEvent): void {
   if (event.target !== shellRef.value || event.propertyName !== "height") return
   void finishAnimation()
+}
+
+function clampHeight(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value))
+}
+
+function getResizeBounds(
+  form: HTMLElement,
+  textarea: HTMLTextAreaElement,
+): { min: number; max: number } {
+  const style = getComputedStyle(textarea)
+  const minTextareaHeight = Number.parseFloat(style.minHeight)
+  const maxTextareaHeight = Number.parseFloat(style.maxHeight)
+  const chromeHeight = Math.max(0, form.offsetHeight - textarea.offsetHeight)
+  const min =
+    (Number.isFinite(minTextareaHeight) ? minTextareaHeight : 0) + chromeHeight
+  const maxByTextarea =
+    (Number.isFinite(maxTextareaHeight)
+      ? maxTextareaHeight
+      : Number.POSITIVE_INFINITY) + chromeHeight
+  const maxByViewport = Math.max(0, window.innerHeight - VIEWPORT_RESIZE_MARGIN)
+
+  return {
+    min,
+    max: Math.max(min, Math.min(maxByTextarea, maxByViewport)),
+  }
+}
+
+function finishResize(): void {
+  if (!isResizing) return
+
+  isResizing = false
+  window.removeEventListener("pointermove", handleResizeMove)
+  window.removeEventListener("pointerup", finishResize)
+  window.removeEventListener("pointercancel", finishResize)
+}
+
+function handleResizeMove(event: PointerEvent): void {
+  if (!isResizing) return
+
+  const delta = resizeStartY - event.clientY
+  if (manualHeight.value === null) {
+    if (Math.abs(delta) < 3) return
+
+    manualHeight.value = resizeStartHeight
+    if (expandedTextarea.value !== null) {
+      expandedTextarea.value.style.height = ""
+    }
+  }
+
+  event.preventDefault()
+  const nextHeight = resizeStartHeight + delta
+  manualHeight.value = clampHeight(nextHeight, resizeMinHeight, resizeMaxHeight)
+}
+
+function startResize(event: PointerEvent): void {
+  if (!props.resizable || !showExpanded.value || isAnimating.value) return
+
+  const form = expandedForm.value
+  const textarea = expandedTextarea.value
+  if (form === null || textarea === null) return
+
+  const bounds = getResizeBounds(form, textarea)
+  resizeStartY = event.clientY
+  resizeStartHeight = form.offsetHeight
+  resizeMinHeight = Math.min(bounds.min, resizeStartHeight)
+  resizeMaxHeight = Math.max(bounds.max, resizeStartHeight)
+  isResizing = true
+
+  window.addEventListener("pointermove", handleResizeMove)
+  window.addEventListener("pointerup", finishResize)
+  window.addEventListener("pointercancel", finishResize)
 }
 
 function cancel(): void {
@@ -395,13 +486,29 @@ function handleToggle(): void {
     <form
       v-else
       ref="expandedForm"
-      class="pointer-events-auto flex w-full shrink-0 flex-col gap-2 overflow-hidden rounded-lg border-2 border-line p-2 backdrop-blur-md transition-[border-color,box-shadow] duration-[160ms] ease-out hover:border-sign-user focus-within:border-sign-user focus-within:ring focus-within:ring-sign-user"
+      class="pointer-events-auto relative flex w-full shrink-0 flex-col gap-2 rounded-lg border-2 border-line p-2 backdrop-blur-md transition-[border-color,box-shadow] duration-[160ms] ease-out hover:border-sign-user focus-within:border-sign-user focus-within:ring focus-within:ring-sign-user"
+      :style="expandedFormStyle"
       @submit.prevent="submit"
     >
+      <div
+        v-if="props.resizable"
+        class="group absolute inset-x-0 -top-2 z-10 flex h-4 cursor-ns-resize touch-none select-none items-center justify-center"
+        role="separator"
+        aria-orientation="horizontal"
+        :aria-label="t('resizeInput')"
+        :title="t('resizeInput')"
+        @pointerdown.prevent="startResize"
+      >
+        <span
+          class="h-0.5 w-10 rounded-full bg-line transition-colors group-hover:bg-ink/40"
+        />
+      </div>
+
       <textarea
         ref="expandedTextarea"
         v-model="input"
         class="thin-scrollbar w-full resize-none overflow-y-auto bg-transparent text-ink outline-none placeholder:text-ink/60 disabled:opacity-50"
+        :class="{ 'min-h-0 flex-1': manualHeight !== null }"
         :disabled="props.disabled"
         :placeholder="props.placeholder"
         :rows="props.minRows"

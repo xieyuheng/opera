@@ -1,14 +1,20 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"
+import { computed, nextTick, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
 import SignCard from "../../components/sign/SignCard.vue"
 import TurnErrorCard from "./TurnErrorCard.vue"
 import { sessionMessages } from "./Session.i18n.ts"
 import type { SessionState } from "./SessionState.ts"
 
-const props = defineProps<{
-  state: SessionState
-}>()
+const props = withDefaults(
+  defineProps<{
+    state: SessionState
+    bottomPadding?: number
+  }>(),
+  {
+    bottomPadding: 72,
+  },
+)
 
 const emit = defineEmits<{
   retry: []
@@ -21,9 +27,10 @@ const { t } = useI18n({
   useScope: "local",
 })
 
+const BOTTOM_THRESHOLD = 32
+
 const scroller = ref<HTMLElement | null>(null)
-const bottomAnchor = ref<HTMLElement | null>(null)
-const bottomAnchorVisible = ref(true)
+const stickToBottom = ref(true)
 const title = computed(() =>
   props.state.hasLoaded ? props.state.title || t("notFound") : "",
 )
@@ -47,7 +54,14 @@ const signs = computed(() => {
   return [...props.state.context, ...activeSigns]
 })
 
-let bottomObserver: IntersectionObserver | undefined
+function updateStickToBottom(): void {
+  const element = scroller.value
+  if (element === null) return
+
+  stickToBottom.value =
+    element.scrollHeight - element.scrollTop - element.clientHeight <=
+    BOTTOM_THRESHOLD
+}
 
 async function scrollToBottom(): Promise<void> {
   await nextTick()
@@ -59,30 +73,15 @@ async function scrollToBottom(): Promise<void> {
   const element = scroller.value
   if (element === null) return
 
+  stickToBottom.value = true
   element.scrollTop = element.scrollHeight
 }
 
 function scheduleAutoScroll(): void {
-  if (!bottomAnchorVisible.value) return
+  if (!stickToBottom.value) return
 
   void scrollToBottom()
 }
-
-onMounted(() => {
-  if (bottomAnchor.value !== null) {
-    bottomObserver = new IntersectionObserver((entries) => {
-      const entry = entries[0]
-      if (entry !== undefined) {
-        bottomAnchorVisible.value = entry.isIntersecting
-      }
-    })
-    bottomObserver.observe(bottomAnchor.value)
-  }
-})
-
-onBeforeUnmount(() => {
-  bottomObserver?.disconnect()
-})
 
 watch(
   [
@@ -102,13 +101,25 @@ watch(
   },
 )
 
+watch(
+  () => props.bottomPadding,
+  () => {
+    const element = scroller.value
+    if (element === null || element.scrollHeight <= element.clientHeight) return
+
+    scheduleAutoScroll()
+  },
+)
+
 defineExpose({ scrollToBottom })
 </script>
 
 <template>
   <div
     ref="scroller"
-    class="session-sign-list-scroller thin-scrollbar min-h-0 flex-1 overflow-y-auto px-4 pt-16 pb-18"
+    class="session-sign-list-scroller thin-scrollbar min-h-0 flex-1 overflow-y-auto px-4 pt-16"
+    :style="{ paddingBottom: `${props.bottomPadding}px` }"
+    @scroll.passive="updateStickToBottom"
   >
     <div class="mx-auto flex w-full max-w-4xl flex-col gap-4">
       <h1 class="text-xl text-ink">
@@ -143,8 +154,6 @@ defineExpose({ scrollToBottom })
         @dismiss="emit('dismiss')"
       />
     </div>
-
-    <div ref="bottomAnchor" class="h-px w-full" />
   </div>
 </template>
 
