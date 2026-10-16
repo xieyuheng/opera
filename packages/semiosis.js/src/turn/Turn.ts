@@ -1,8 +1,4 @@
-import type {
-  ModelRef,
-  ModelTotalUsage,
-  ModelUsage,
-} from "../model/index.ts"
+import type { ModelRef, ModelTotalUsage, ModelUsage } from "../model/index.ts"
 import type { Sign } from "../sign/index.ts"
 import type { SessionId } from "../session/Session.ts"
 
