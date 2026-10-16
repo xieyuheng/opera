@@ -12,11 +12,9 @@ const props = withDefaults(
   defineProps<{
     state: SessionState
     bottomPadding?: number
-    minimapRatio?: number
   }>(),
   {
     bottomPadding: 72,
-    minimapRatio: 10,
   },
 )
 
@@ -273,7 +271,7 @@ defineExpose({ scrollToBottom })
       :scroll-top="scrollTop"
       :client-height="clientHeight"
       :scroll-height="scrollHeight"
-      :ratio="props.minimapRatio"
+      :ratio="20"
       @seek="handleMinimapSeek"
     />
   </div>

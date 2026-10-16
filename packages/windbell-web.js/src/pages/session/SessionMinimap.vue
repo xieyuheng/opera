@@ -3,18 +3,13 @@ import { computed, onBeforeUnmount, onMounted, ref } from "vue"
 import { resolveSignViewColor } from "../../components/sign/views/registry.ts"
 import type { SessionMinimapBlock } from "./sessionMinimap.ts"
 
-const props = withDefaults(
-  defineProps<{
-    blocks: SessionMinimapBlock[]
-    scrollTop: number
-    clientHeight: number
-    scrollHeight: number
-    ratio?: number
-  }>(),
-  {
-    ratio: 10,
-  },
-)
+const props = defineProps<{
+  blocks: SessionMinimapBlock[]
+  scrollTop: number
+  clientHeight: number
+  scrollHeight: number
+  ratio: number
+}>()
 
 const emit = defineEmits<{
   seek: [scrollTop: number]
