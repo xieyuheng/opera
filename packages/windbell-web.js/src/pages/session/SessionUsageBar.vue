@@ -64,7 +64,7 @@ const contextUsageTitle = computed(() => {
 
 <template>
   <div
-    class="pointer-events-auto bg-paper/60 relative flex w-64 items-center justify-center overflow-hidden border-3 border-sign-user"
+    class="pointer-events-auto bg-paper/60 relative flex w-60 items-center justify-center overflow-hidden border-3 border-sign-user"
     :title="contextUsageTitle"
   >
     <div

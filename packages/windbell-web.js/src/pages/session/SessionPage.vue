@@ -226,13 +226,13 @@ useHead(() => ({
       :style="{ width: sessionPaneWidth }"
     >
       <div
-        class="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
+        class="relative flex mr-1 min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
       >
         <div
           class="pointer-events-none absolute inset-x-0 z-50"
           :style="{ top: 'calc(env(safe-area-inset-top, 0px) + 0.5rem)' }"
         >
-          <div class="flex items-start justify-between gap-4 px-2">
+          <div class="flex items-start justify-between gap-2 px-2">
             <SessionToolbarLeft :state="state" @back="goBack" />
 
             <SessionToolbarRight
