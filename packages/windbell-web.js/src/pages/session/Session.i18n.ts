@@ -18,6 +18,8 @@ export const sessionMessages = {
     outputTokens: "输出",
     cacheHitRate: "缓存命中率",
     usageSummaryTitle: "累积词元用量：{tokens}，缓存命中率：{rate}",
+    contextUsageTitle:
+      "上下文用量：{usage} K，剩余：{remaining} K，上限：{limit} K",
     openRanger: "巡察",
     closeRanger: "巡闭",
   },
@@ -40,6 +42,8 @@ export const sessionMessages = {
     outputTokens: "Output",
     cacheHitRate: "Cache hit rate",
     usageSummaryTitle: "Total token usage: {tokens}, cache hit rate: {rate}",
+    contextUsageTitle:
+      "Context usage: {usage} K, Remaining: {remaining} K, Limit: {limit} K",
     openRanger: "Ranger",
     closeRanger: "Return",
   },
