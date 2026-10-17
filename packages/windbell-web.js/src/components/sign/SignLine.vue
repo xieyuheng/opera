@@ -26,7 +26,7 @@ const view = computed(() => resolveSignView(props.sign))
   <div class="flex min-w-0 items-center gap-2">
     <button
       type="button"
-      class="shrink-0 cursor-pointer rounded px-1 py-px text-ink"
+      class="shrink-0 cursor-pointer rounded px-1.5 py-px text-ink"
       :style="{ backgroundColor: view.color }"
       @click.stop="emit('tag-click')"
     >

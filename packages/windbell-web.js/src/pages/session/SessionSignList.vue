@@ -313,13 +313,14 @@ defineExpose({ scrollTo, scrollToBottom, scrollToTurn })
 
       <div
         v-else
-        class="flex flex-col gap-4"
+        class="flex flex-col"
         :class="{ 'opacity-60': props.state.isPending }"
         :aria-busy="props.state.isPending"
       >
         <template v-for="(sign, index) in signs" :key="index">
           <SignCard
             v-if="isSignExpanded(sign, index)"
+            class="py-1.5"
             :data-sign-index="index"
             :sign="sign"
             :workspace-root="props.state.workspaceRoot"
@@ -328,6 +329,7 @@ defineExpose({ scrollTo, scrollToBottom, scrollToTurn })
 
           <SignLine
             v-else
+            class="py-0.5"
             :data-sign-index="index"
             :sign="sign"
             @tag-click="toggleSign(index, sign)"
