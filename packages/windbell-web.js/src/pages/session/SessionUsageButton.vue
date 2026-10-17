@@ -18,6 +18,7 @@ const { t } = useI18n({
 const popoverId = `session-usage-${Math.random().toString(36).slice(2)}`
 const anchor = ref<HTMLElement | null>(null)
 const popover = ref<HTMLElement | null>(null)
+const positioned = ref(false)
 const position = reactive({
   left: "0px",
   top: "0px",
@@ -81,9 +82,21 @@ function positionPopover(): void {
 
 function handleToggle(event: Event): void {
   const state = (event as Event & { newState?: string }).newState
-  if (state !== "open") return
 
-  requestAnimationFrame(() => positionPopover())
+  if (state !== "open") {
+    positioned.value = false
+    return
+  }
+
+  positioned.value = false
+
+  requestAnimationFrame(() => {
+    positionPopover()
+
+    requestAnimationFrame(() => {
+      positioned.value = true
+    })
+  })
 }
 </script>
 
@@ -109,6 +122,7 @@ function handleToggle(event: Event): void {
       inset: 'auto',
       left: position.left,
       top: position.top,
+      visibility: positioned ? 'visible' : 'hidden',
     }"
     @toggle="handleToggle"
   >
