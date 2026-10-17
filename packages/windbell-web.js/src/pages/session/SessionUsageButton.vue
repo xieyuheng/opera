@@ -103,7 +103,7 @@ function handleToggle(event: Event): void {
     :id="popoverId"
     ref="popover"
     popover="auto"
-    class="bg-transparent w-64"
+    class="pointer-events-auto bg-transparent w-64"
     :style="{
       position: 'fixed',
       inset: 'auto',

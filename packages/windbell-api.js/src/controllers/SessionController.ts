@@ -25,6 +25,11 @@ export const GetSessionInputSchema = z.object({
   sessionId: z.string(),
 })
 
+export const ListSessionTurnsInputSchema = z.object({
+  sessionId: z.string(),
+  details: z.boolean().default(false),
+})
+
 export const PutSessionInputSchema = z.object({
   sessionId: z.string(),
   session: z.custom<S.Session>(),
@@ -87,6 +92,10 @@ export function makeSessionController(options: SessionControllerOptions) {
 
     getUsage: makeAction(GetSessionInputSchema, (input) =>
       options.sessions.getUsage(input),
+    ),
+
+    listTurns: makeAction(ListSessionTurnsInputSchema, (input) =>
+      options.sessions.listTurns(input),
     ),
 
     remove: makeAction(RemoveSessionInputSchema, (input) =>

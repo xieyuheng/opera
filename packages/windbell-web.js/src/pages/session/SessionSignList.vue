@@ -171,6 +171,15 @@ function scrollTo(value: number): void {
   emitMetrics()
 }
 
+function scrollToTurn(turnIndex: number): void {
+  const block = minimapBlocks.value.find(
+    (block) => block.turnIndex === turnIndex,
+  )
+  if (block === undefined) return
+
+  scrollTo(block.top)
+}
+
 function scheduleAutoScroll(): void {
   if (!stickToBottom.value) return
 
@@ -243,7 +252,7 @@ watch(
   },
 )
 
-defineExpose({ scrollTo, scrollToBottom })
+defineExpose({ scrollTo, scrollToBottom, scrollToTurn })
 </script>
 
 <template>

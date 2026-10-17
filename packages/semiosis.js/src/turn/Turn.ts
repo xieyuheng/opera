@@ -49,6 +49,10 @@ export type Turn = {
   completedAt?: number
 }
 
+export type TurnDetails = Turn & {
+  steps: Array<TurnStep>
+}
+
 export async function makeInputHash(input: Array<Sign>): Promise<string> {
   const data = new TextEncoder().encode(JSON.stringify(input))
   const digest = await globalThis.crypto.subtle.digest("SHA-256", data)

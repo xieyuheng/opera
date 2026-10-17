@@ -100,6 +100,13 @@ export function makeDomainRouter(options: DomainRouterOptions): Hono {
     sessions.getUsage({ sessionId: c.req.param("sessionId") }),
   )
 
+  app.get("/sessions/:sessionId/turns", (c) =>
+    sessions.listTurns({
+      sessionId: c.req.param("sessionId"),
+      details: c.req.query("details") !== undefined,
+    }),
+  )
+
   app.put("/sessions/:sessionId", async (c) => {
     const session = (await readJsonBody(c)) as S.Session
     return sessions.put({

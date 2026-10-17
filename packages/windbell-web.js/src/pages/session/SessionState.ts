@@ -36,6 +36,7 @@ export type SessionState = {
   contextWindow: number | undefined
   latestUsage: S.ModelUsage | undefined
   totalUsage: S.ModelTotalUsage | undefined
+  turnDetails: Array<S.TurnDetails>
   hasLoaded: boolean
   isLoading: boolean
   isPending: boolean
@@ -69,6 +70,7 @@ export function makeSessionState(sessionId: S.SessionId): SessionState {
     contextWindow: undefined,
     latestUsage: undefined,
     totalUsage: undefined,
+    turnDetails: [],
     hasLoaded: false,
     isLoading: true,
     isPending: false,
@@ -182,6 +184,13 @@ async function refreshUsage(state: SessionState): Promise<void> {
   state.latestUsage = usage.latestUsage
 }
 
+async function refreshTurnDetails(state: SessionState): Promise<void> {
+  state.turnDetails = await windbell.sessions.listTurns({
+    sessionId: state.sessionId,
+    details: true,
+  })
+}
+
 export function cancelSessionInterpretation(state: SessionState): void {
   interpretationControllers.get(state.sessionId)?.abort()
 }
@@ -226,6 +235,7 @@ export async function loadSessionState(
 
     await resolveSessionModel(state)
     await refreshUsage(state)
+    await refreshTurnDetails(state)
   } catch (error) {
     if (requestId !== state.requestId) return
 
@@ -371,6 +381,7 @@ export async function interpretSession(
       signal,
     })
     await refreshUsage(state)
+    await refreshTurnDetails(state)
     return success
   } catch (error) {
     if (signal?.aborted) return false

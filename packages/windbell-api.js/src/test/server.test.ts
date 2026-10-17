@@ -207,6 +207,44 @@ test("windbell router", async (t) => {
       domainSessions.some((item) => item.id === session.id),
       true,
     )
+
+    const turn: S.Turn = {
+      id: "turn-test",
+      sessionId: session.id,
+      status: "completed",
+      model: { providerName: "test", name: "test" },
+      inputHash: "input-hash",
+      inputPersisted: true,
+      startSequence: 0,
+      endSequence: 1,
+      createdAt: 1,
+      updatedAt: 2,
+      completedAt: 3,
+    }
+    unwrap(await database.sessions.putTurn(turn))
+
+    const step: S.TurnStep = {
+      sessionId: session.id,
+      turnId: turn.id,
+      sequenceNumber: 1,
+      status: "completed",
+      createdAt: 1,
+      updatedAt: 2,
+      completedAt: 3,
+    }
+    unwrap(await database.sessions.putStep(step))
+
+    const turnsResponse = await app.request(`/api/sessions/${session.id}/turns`)
+    assert.equal(turnsResponse.status, 200)
+    assert.deepEqual(await turnsResponse.json(), [turn])
+
+    const turnDetailsResponse = await app.request(
+      `/api/sessions/${session.id}/turns?details`,
+    )
+    assert.equal(turnDetailsResponse.status, 200)
+    assert.deepEqual(await turnDetailsResponse.json(), [
+      { ...turn, steps: [step] },
+    ])
   }
 
   {

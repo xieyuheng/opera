@@ -107,6 +107,10 @@ function seekSession(scrollTop: number): void {
   signList.value?.scrollTo(scrollTop)
 }
 
+function selectTurn(turnIndex: number): void {
+  signList.value?.scrollToTurn(turnIndex)
+}
+
 function goBack(): void {
   if (state.workspaceId === "") {
     void router.push({ name: "home" })
@@ -233,7 +237,11 @@ useHead(() => ({
           :style="{ top: 'calc(env(safe-area-inset-top, 0px) + 0.5rem)' }"
         >
           <div class="flex items-start justify-between gap-2 px-2">
-            <SessionToolbarLeft :state="state" @back="goBack" />
+            <SessionToolbarLeft
+              :state="state"
+              @back="goBack"
+              @select-turn="selectTurn"
+            />
 
             <SessionToolbarRight
               class="shrink-0"

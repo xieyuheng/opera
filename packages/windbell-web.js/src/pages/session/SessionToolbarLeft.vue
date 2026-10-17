@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 import MediumButton from "../../components/buttons/MediumButton.vue"
+import SessionTurnButton from "./SessionTurnButton.vue"
 import SessionUsageBar from "./SessionUsageBar.vue"
 import SessionUsageButton from "./SessionUsageButton.vue"
 import { sessionMessages } from "./Session.i18n.ts"
@@ -12,11 +14,32 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   back: []
+  selectTurn: [turnIndex: number]
 }>()
 
 const { t } = useI18n({
   messages: sessionMessages,
   useScope: "local",
+})
+
+const userSummaries = computed(() => {
+  const summaries: Array<string> = []
+
+  for (const sign of props.state.context) {
+    if (sign.kind === "UserSign") {
+      summaries.push(sign.content)
+    }
+  }
+
+  const activeTurn = props.state.activeTurn
+  if (
+    activeTurn !== undefined &&
+    summaries.length < props.state.turnDetails.length
+  ) {
+    summaries.push(activeTurn.input)
+  }
+
+  return summaries
 })
 </script>
 
@@ -29,14 +52,23 @@ const { t } = useI18n({
     />
 
     <div class="flex items-center gap-2">
-      <MediumButton type="button" @click="emit('back')">
-        <span>{{ t("app.back") }}</span>
-      </MediumButton>
-
       <SessionUsageButton
         v-if="props.state.totalUsage !== undefined"
         :total-usage="props.state.totalUsage"
       />
+
+      <SessionTurnButton
+        v-if="props.state.hasLoaded"
+        :turns="props.state.turnDetails"
+        :user-summaries="userSummaries"
+        @select-turn="emit('selectTurn', $event)"
+      />
+    </div>
+
+    <div class="flex items-center gap-2">
+      <MediumButton type="button" @click="emit('back')">
+        <span>{{ t("app.back") }}</span>
+      </MediumButton>
     </div>
   </div>
 </template>

@@ -71,6 +71,14 @@ export type SessionsClient = {
     model: S.ModelRef
   }): Promise<string>
   getUsage(options: { sessionId: S.SessionId }): Promise<S.SessionUsage>
+  listTurns(options: {
+    sessionId: S.SessionId
+    details?: false
+  }): Promise<Array<S.Turn>>
+  listTurns(options: {
+    sessionId: S.SessionId
+    details: true
+  }): Promise<Array<S.TurnDetails>>
   interpret(options: {
     sessionId: S.SessionId
     model: S.ModelRef
@@ -267,6 +275,19 @@ export function makeWindbellClient(
         `/sessions/${encodeURIComponent(options.sessionId)}/usage`,
       output: JsonDataSchema<S.SessionUsage>(),
     }),
+    listTurns: makeJsonEndpoint(config, {
+      method: "GET",
+      path: (options) =>
+        `/sessions/${encodeURIComponent(options.sessionId)}/turns`,
+      query: (options) => {
+        const query = new URLSearchParams()
+        if (options.details === true) {
+          query.set("details", "true")
+        }
+        return query
+      },
+      output: JsonDataSchema<Array<S.Turn | S.TurnDetails>>(),
+    }) as SessionsClient["listTurns"],
     async *interpret(options) {
       for await (const event of requestNdjson<S.TurnEvent>({
         baseUrl: config.baseUrl,

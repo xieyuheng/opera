@@ -11,7 +11,7 @@ import type { Session, SessionId, SessionIndex } from "../session/Session.ts"
 import { makeShellToolRouter } from "../tools/makeShellToolRouter.ts"
 import { resolveTurn } from "../turn/resolveTurn.ts"
 import { turnReplay } from "../turn/turnReplay.ts"
-import type { SessionUsage } from "../turn/Turn.ts"
+import type { SessionUsage, Turn, TurnDetails } from "../turn/Turn.ts"
 import { turnRun } from "../turn/turnRun.ts"
 import type { TurnEvent } from "../turn/TurnEvent.ts"
 import type { Workspace, WorkspaceId } from "../workspace/Workspace.ts"
@@ -33,6 +33,10 @@ export type SessionService = {
   getUsage(options: {
     sessionId: SessionId
   }): Promise<Result<SessionUsage, ServiceError>>
+  listTurns(options: {
+    sessionId: SessionId
+    details?: boolean
+  }): Promise<Result<Array<Turn> | Array<TurnDetails>, ServiceError>>
   put(session: Session): Promise<Result<void, ServiceError>>
   generateTitle(options: {
     sessionId: SessionId
@@ -172,6 +176,31 @@ export function makeSessionService(
     })
   }
 
+  async function readSessionTurns(
+    sessionId: SessionId,
+  ): Promise<Result<Array<Turn>, ServiceError>> {
+    const sessionResult = await database.sessions.get(sessionId)
+    if (isError(sessionResult)) {
+      return err(makeServiceErrorFromDatabaseError(sessionResult.error))
+    }
+    if (sessionResult.value === undefined) {
+      return err(
+        makeServiceError({
+          type: "session-not-found",
+          message: "session not found",
+          info: { sessionId },
+        }),
+      )
+    }
+
+    const turnsResult = await database.sessions.listTurns(sessionId)
+    if (isError(turnsResult)) {
+      return err(makeServiceErrorFromDatabaseError(turnsResult.error))
+    }
+
+    return ok(turnsResult.value)
+  }
+
   return {
     async list(listOptions) {
       const result = await database.sessions.list(listOptions)
@@ -237,6 +266,28 @@ export function makeSessionService(
       }
 
       return ok({ totalUsage, latestUsage })
+    },
+
+    async listTurns(turnOptions) {
+      const turnsResult = await readSessionTurns(turnOptions.sessionId)
+      if (isError(turnsResult)) return turnsResult
+      if (!turnOptions.details) return turnsResult
+
+      const turns: Array<TurnDetails> = []
+
+      for (const turn of turnsResult.value) {
+        const stepsResult = await database.sessions.listSteps(
+          turn.sessionId,
+          turn.id,
+        )
+        if (isError(stepsResult)) {
+          return err(makeServiceErrorFromDatabaseError(stepsResult.error))
+        }
+
+        turns.push({ ...turn, steps: stepsResult.value })
+      }
+
+      return ok(turns)
     },
 
     async put(session) {
