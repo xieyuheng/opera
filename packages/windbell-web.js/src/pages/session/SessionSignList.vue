@@ -298,7 +298,7 @@ defineExpose({ scrollTo, scrollToBottom, scrollToTurn })
 <template>
   <div
     ref="scroller"
-    class="min-h-0 flex-1 overflow-y-auto scrollbar-none px-4 pt-16 [&::-webkit-scrollbar]:hidden"
+    class="min-h-0 flex-1 overflow-y-auto scrollbar-none px-4 pt-36 [&::-webkit-scrollbar]:hidden"
     :style="{ paddingBottom: `${props.bottomPadding}px` }"
     @scroll.passive="handleScroll"
   >
