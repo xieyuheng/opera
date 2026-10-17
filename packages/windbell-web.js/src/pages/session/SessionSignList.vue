@@ -43,6 +43,7 @@ const scroller = ref<HTMLElement | null>(null)
 const content = ref<HTMLElement | null>(null)
 const stickToBottom = ref(true)
 const minimapBlocks = ref<SessionMinimapBlock[]>([])
+const signOverrides = ref(new Map<number, "expanded" | "collapsed">())
 const scrollTop = ref(0)
 const clientHeight = ref(0)
 const scrollHeight = ref(0)
@@ -74,14 +75,29 @@ const signs = computed(() => {
   return [...props.state.context, ...activeSigns]
 })
 
-function isSignCollapsed(sign: S.Sign): boolean {
-  if (props.signDisplayMode === "overview") return true
+function defaultSignExpanded(sign: S.Sign): boolean {
+  if (props.signDisplayMode === "overview") return false
 
   if (props.signDisplayMode === "digest") {
-    return sign.kind !== "UserSign" && sign.kind !== "AssistantSign"
+    return sign.kind === "UserSign" || sign.kind === "AssistantSign"
   }
 
-  return false
+  return true
+}
+
+function isSignExpanded(sign: S.Sign, index: number): boolean {
+  const override = signOverrides.value.get(index)
+  if (override === "expanded") return true
+  if (override === "collapsed") return false
+
+  return defaultSignExpanded(sign)
+}
+
+function toggleSign(index: number, sign: S.Sign): void {
+  const next = new Map(signOverrides.value)
+  next.set(index, isSignExpanded(sign, index) ? "collapsed" : "expanded")
+  signOverrides.value = next
+  scheduleMinimapMeasure()
 }
 
 function emitMetrics(): void {
@@ -256,6 +272,7 @@ watch(
 watch(
   () => props.signDisplayMode,
   () => {
+    signOverrides.value.clear()
     updateScrollMetrics()
     scheduleMinimapMeasure()
   },
@@ -302,13 +319,19 @@ defineExpose({ scrollTo, scrollToBottom, scrollToTurn })
       >
         <template v-for="(sign, index) in signs" :key="index">
           <SignCard
-            v-if="!isSignCollapsed(sign)"
+            v-if="isSignExpanded(sign, index)"
             :data-sign-index="index"
             :sign="sign"
             :workspace-root="props.state.workspaceRoot"
+            @tag-click="toggleSign(index, sign)"
           />
 
-          <SignLine v-else :data-sign-index="index" :sign="sign" />
+          <SignLine
+            v-else
+            :data-sign-index="index"
+            :sign="sign"
+            @tag-click="toggleSign(index, sign)"
+          />
         </template>
       </div>
 

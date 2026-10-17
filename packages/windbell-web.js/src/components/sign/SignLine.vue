@@ -10,6 +10,10 @@ const props = defineProps<{
   sign: S.Sign
 }>()
 
+const emit = defineEmits<{
+  "tag-click": []
+}>()
+
 const { t } = useI18n({
   messages: signMessages,
   useScope: "local",
@@ -20,12 +24,14 @@ const view = computed(() => resolveSignView(props.sign))
 
 <template>
   <div class="flex min-w-0 items-center gap-2">
-    <span
-      class="shrink-0 rounded px-1 py-px text-ink"
+    <button
+      type="button"
+      class="shrink-0 cursor-pointer rounded px-1 py-px text-ink"
       :style="{ backgroundColor: view.color }"
+      @click.stop="emit('tag-click')"
     >
       {{ t(view.labelKey) }}
-    </span>
+    </button>
 
     <span class="truncate">
       {{ signBody(sign) }}

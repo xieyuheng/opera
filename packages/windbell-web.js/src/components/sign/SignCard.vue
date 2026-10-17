@@ -13,6 +13,10 @@ const props = defineProps<{
   workspaceRoot?: string
 }>()
 
+const emit = defineEmits<{
+  "tag-click": []
+}>()
+
 const { t } = useI18n({
   messages: signMessages,
   useScope: "local",
@@ -29,9 +33,13 @@ const state = computed(() =>
 <template>
   <Card :color="view.color">
     <template #tag>
-      <p class="tracking-wide">
+      <button
+        type="button"
+        class="cursor-pointer tracking-wide"
+        @click.stop="emit('tag-click')"
+      >
         {{ t(view.labelKey) }}
-      </p>
+      </button>
     </template>
 
     <div class="px-3 py-2">
