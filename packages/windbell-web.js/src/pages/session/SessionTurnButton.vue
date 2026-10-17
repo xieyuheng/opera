@@ -147,11 +147,7 @@ function handleToggle(event: Event): void {
         </p>
 
         <div v-else class="flex max-h-96 flex-col overflow-y-auto">
-          <div
-            v-for="(turn, index) in props.turns"
-            :key="turn.id"
-            class="border-b border-line last:border-b-0"
-          >
+          <div v-for="(turn, index) in props.turns" :key="turn.id">
             <div class="flex items-center gap-2 py-1">
               <button
                 type="button"
@@ -159,7 +155,7 @@ function handleToggle(event: Event): void {
                 @click="selectTurn(index)"
               >
                 <span class="shrink-0"> {{ index + 1 }}. </span>
-                <span class="truncate">
+                <span class="truncate hover:underline">
                   {{ props.userSummaries[index] ?? "" }}
                 </span>
               </button>
