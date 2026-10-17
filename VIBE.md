@@ -1,3 +1,8 @@
+- 保持历史 token 一直有效，这个没问题。这样旧 token 还能用，不用每次都从带有 token 的 url 打开，很麻烦。
+  如果后台管理有需要，可以手动清除 token，或者 token 文件内部，用 json 字段保存创建时间。
+  这样之后可以设计到期机制。
+- 
+
 # windbell-web.js
 
 [windbell-web.js] 利用调色板设计 theme
