@@ -101,7 +101,7 @@ function handleToggle(event: Event): void {
   <span ref="anchor" class="inline-flex">
     <MediumButton
       type="button"
-      :title="t('turnDirectory')"
+      :title="t('turnList')"
       :popovertarget="popoverId"
       popovertargetaction="toggle"
     >
@@ -124,14 +124,10 @@ function handleToggle(event: Event): void {
   >
     <Card>
       <template #tag>
-        <span>{{ t("turnDirectory") }}</span>
+        <span>{{ t("turnList") }}</span>
       </template>
 
-      <div class="p-2 backdrop-blur-md text-sm">
-        <p class="mb-2">
-          {{ summaryText }}
-        </p>
-
+      <div class="px-3 py-2 backdrop-blur-md">
         <p v-if="props.turns.length === 0" class="text-ink">
           {{ t("turnEmpty") }}
         </p>
@@ -148,9 +144,7 @@ function handleToggle(event: Event): void {
                 class="flex min-w-0 flex-1 items-baseline gap-2 text-left"
                 @click="selectTurn(index)"
               >
-                <span class="shrink-0">
-                  {{ t("turnNumber", { index: index + 1 }) }}
-                </span>
+                <span class="shrink-0"> {{ index + 1 }}. </span>
                 <span class="truncate">
                   {{ props.userSummaries[index] ?? "" }}
                 </span>
@@ -158,7 +152,7 @@ function handleToggle(event: Event): void {
 
               <button
                 type="button"
-                class="shrink-0 px-1"
+                class="shrink-0"
                 :title="t('stepCount', { count: turn.steps.length })"
                 @click="toggleSteps(index)"
               >
@@ -166,22 +160,22 @@ function handleToggle(event: Event): void {
               </button>
             </div>
 
-            <div v-if="expanded.has(index)" class="flex flex-col gap-1 pb-2">
+            <div v-if="expanded.has(index)" class="pb-2">
               <div
                 v-for="step in turn.steps"
                 :key="step.sequenceNumber"
-                class="flex items-center justify-between gap-2 border-t border-line px-1 py-0.5 text-xs"
+                class="pl-[1rem] text-sm flex justify-between"
               >
-                <span>
-                  {{ t("stepLabel", { index: step.sequenceNumber }) }}
+                # {{ step.sequenceNumber }}
+                <span v-if="step.status !== 'completed'" class="ml-1">
+                  {{ step.status }}
                 </span>
-                <span>{{ step.status }}</span>
-                <span v-if="step.usage">
-                  {{ formatTokens(step.usage.total) }}
+                <span v-if="step.usage" class="ml-1">
+                  {{ formatTokens(step.usage.total) }} {{ t("tokensUnit") }}
                 </span>
                 <span
                   v-if="step.error"
-                  class="truncate text-sign-error"
+                  class="ml-1 text-sign-error"
                   :title="step.error.message"
                 >
                   {{ step.error.message }}

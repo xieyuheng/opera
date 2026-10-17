@@ -117,7 +117,7 @@ function handleToggle(event: Event): void {
         <span>{{ t("usageDetailsTitle") }}</span>
       </template>
 
-      <div class="p-2 backdrop-blur-md text-sm">
+      <div class="px-3 py-2 backdrop-blur-md">
         <dl class="flex flex-col gap-1">
           <div class="flex justify-between gap-3">
             <dt>{{ t("totalTokens") }}</dt>
