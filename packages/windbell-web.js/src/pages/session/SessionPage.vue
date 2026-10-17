@@ -24,6 +24,11 @@ import {
 } from "./SessionState.ts"
 import { receiveSessionMessages, type SessionMessage } from "./SessionInbox.ts"
 import type { SessionSignListMetrics } from "./sessionMinimap.ts"
+import {
+  isSignDisplayMode,
+  nextSignDisplayMode,
+  type SignDisplayMode,
+} from "./sessionSignDisplayMode.ts"
 
 function sessionRangerOpenStorageKey(sessionId: string): string {
   return `windbell.session.${sessionId}.rangerOpen`
@@ -35,6 +40,10 @@ function sessionWidthRatioStorageKey(sessionId: string): string {
 
 function sessionRangerLocationStorageKey(sessionId: string): string {
   return `windbell.session.${sessionId}.rangerLocation`
+}
+
+function sessionSignDisplayModeStorageKey(sessionId: string): string {
+  return `windbell.session.${sessionId}.signDisplayMode`
 }
 
 function readStoredRangerOpen(sessionId: string): boolean {
@@ -50,6 +59,30 @@ function readStoredRangerOpen(sessionId: string): boolean {
 function writeStoredRangerOpen(sessionId: string, value: boolean): void {
   try {
     localStorage.setItem(sessionRangerOpenStorageKey(sessionId), String(value))
+  } catch {
+    // ignore storage errors
+  }
+}
+
+function readStoredSignDisplayMode(sessionId: string): SignDisplayMode {
+  try {
+    const value = localStorage.getItem(
+      sessionSignDisplayModeStorageKey(sessionId),
+    )
+    if (isSignDisplayMode(value)) return value
+  } catch {
+    // ignore storage errors
+  }
+
+  return "expand"
+}
+
+function writeStoredSignDisplayMode(
+  sessionId: string,
+  value: SignDisplayMode,
+): void {
+  try {
+    localStorage.setItem(sessionSignDisplayModeStorageKey(sessionId), value)
   } catch {
     // ignore storage errors
   }
@@ -83,6 +116,12 @@ const sessionDividerOptions = {
 
 const state = getSessionState(sessionId.value)
 const rangerOpen = ref(readStoredRangerOpen(sessionId.value))
+const signDisplayMode = ref<SignDisplayMode>(
+  readStoredSignDisplayMode(sessionId.value),
+)
+const nextDisplayMode = computed(() =>
+  nextSignDisplayMode(signDisplayMode.value),
+)
 const sessionDivider = ref(
   makeDividerState({
     ...sessionDividerOptions,
@@ -109,6 +148,10 @@ function seekSession(scrollTop: number): void {
 
 function selectTurn(turnIndex: number): void {
   signList.value?.scrollToTurn(turnIndex)
+}
+
+function cycleSignDisplayMode(): void {
+  signDisplayMode.value = nextSignDisplayMode(signDisplayMode.value)
 }
 
 function goBack(): void {
@@ -212,6 +255,10 @@ watch(rangerOpen, (value) => {
   writeStoredRangerOpen(sessionId.value, value)
 })
 
+watch(signDisplayMode, (value) => {
+  writeStoredSignDisplayMode(sessionId.value, value)
+})
+
 useHead(() => ({
   title: title.value,
   meta: [
@@ -246,7 +293,9 @@ useHead(() => ({
             <SessionToolbarRight
               class="shrink-0"
               :ranger-open="rangerOpen"
+              :next-sign-display-mode="nextDisplayMode"
               @toggle-ranger="rangerOpen = !rangerOpen"
+              @cycle-sign-display-mode="cycleSignDisplayMode"
             />
           </div>
         </div>
@@ -255,6 +304,7 @@ useHead(() => ({
           ref="signList"
           :state="state"
           :bottom-padding="composerHeight"
+          :sign-display-mode="signDisplayMode"
           @metrics="minimapMetrics = $event"
           @retry="retry"
           @edit="edit"

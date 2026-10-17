@@ -27,7 +27,7 @@ const state = computed(() =>
 </script>
 
 <template>
-  <Card as="li" :color="view.color">
+  <Card :color="view.color">
     <template #tag>
       <p class="tracking-wide">
         {{ t(view.labelKey) }}

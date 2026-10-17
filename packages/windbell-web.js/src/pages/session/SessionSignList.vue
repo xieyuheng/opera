@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type * as S from "@windbell/semiosis.js/core"
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
 import SignCard from "../../components/sign/SignCard.vue"
+import SignLine from "../../components/sign/SignLine.vue"
 import TurnErrorCard from "./TurnErrorCard.vue"
 import { sessionMessages } from "./Session.i18n.ts"
 import type { SessionState } from "./SessionState.ts"
@@ -9,14 +11,17 @@ import type {
   SessionMinimapBlock,
   SessionSignListMetrics,
 } from "./sessionMinimap.ts"
+import type { SignDisplayMode } from "./sessionSignDisplayMode.ts"
 
 const props = withDefaults(
   defineProps<{
     state: SessionState
     bottomPadding?: number
+    signDisplayMode?: SignDisplayMode
   }>(),
   {
     bottomPadding: 72,
+    signDisplayMode: "expand",
   },
 )
 
@@ -68,6 +73,16 @@ const signs = computed(() => {
 
   return [...props.state.context, ...activeSigns]
 })
+
+function isSignCollapsed(sign: S.Sign): boolean {
+  if (props.signDisplayMode === "overview") return true
+
+  if (props.signDisplayMode === "digest") {
+    return sign.kind !== "UserSign" && sign.kind !== "AssistantSign"
+  }
+
+  return false
+}
 
 function emitMetrics(): void {
   emit("metrics", {
@@ -239,6 +254,14 @@ watch(
 )
 
 watch(
+  () => props.signDisplayMode,
+  () => {
+    updateScrollMetrics()
+    scheduleMinimapMeasure()
+  },
+)
+
+watch(
   () => props.bottomPadding,
   () => {
     updateScrollMetrics()
@@ -271,20 +294,23 @@ defineExpose({ scrollTo, scrollToBottom, scrollToTurn })
         {{ t("loading") }}
       </p>
 
-      <ol
+      <div
         v-else
         class="flex flex-col gap-4"
         :class="{ 'opacity-60': props.state.isPending }"
         :aria-busy="props.state.isPending"
       >
-        <SignCard
-          v-for="(sign, index) in signs"
-          :key="index"
-          :data-sign-index="index"
-          :sign="sign"
-          :workspace-root="props.state.workspaceRoot"
-        />
-      </ol>
+        <template v-for="(sign, index) in signs" :key="index">
+          <SignCard
+            v-if="!isSignCollapsed(sign)"
+            :data-sign-index="index"
+            :sign="sign"
+            :workspace-root="props.state.workspaceRoot"
+          />
+
+          <SignLine v-else :data-sign-index="index" :sign="sign" />
+        </template>
+      </div>
 
       <TurnErrorCard
         v-if="!props.state.isLoading && props.state.error !== undefined"
