@@ -364,6 +364,7 @@ test("agentInterpret stops when model emits an error event", async () => {
   }
 
   assert.deepEqual(events, [
+    { type: "sign", sign: UserSign("hello") },
     { type: "step-start" },
     {
       type: "error",
@@ -423,9 +424,9 @@ test("agentInterpret forwards usage events without persisting them", async () =>
 
   assert.deepEqual(
     events.map((event) => event.type),
-    ["step-start", "usage", "step-end", "input-persisted", "sign", "sign"],
+    ["sign", "step-start", "usage", "sign", "step-end", "input-persisted"],
   )
-  assert.deepEqual(events[1], { type: "usage", usage })
+  assert.deepEqual(events[2], { type: "usage", usage })
   assert.deepEqual(
     context.map((sign) => sign.kind),
     ["UserSign", "AssistantSign"],
@@ -459,13 +460,13 @@ test("agentInterpret forwards delta model events without persisting them", async
   assert.deepEqual(
     events.map((event) => event.type),
     [
+      "sign",
       "step-start",
       "delta",
       "delta",
+      "sign",
       "step-end",
       "input-persisted",
-      "sign",
-      "sign",
     ],
   )
   assert.deepEqual(

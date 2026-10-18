@@ -36,15 +36,17 @@ export async function* agentInterpret(
   const context = [...(await agent.getContext()), ...input]
   const output: Array<Sign> = []
 
+  // Emit input signs before model output signs so streamed turn events stay
+  // in turn order. Input is still persisted only after the model succeeds.
+  for (const sign of input) {
+    yield { type: "sign", sign }
+  }
+
   const result = yield* collectModelOutput(agent, context, output, options)
   if (result.kind === "error") return
 
   await agent.appendContext(input)
   yield { type: "input-persisted" }
-
-  for (const sign of input) {
-    yield { type: "sign", sign }
-  }
 
   yield* agentLoop(agent, output, options)
 }
@@ -103,6 +105,7 @@ async function* collectModelOutput(
     }
 
     output.push(event.sign)
+    yield { type: "sign", sign: event.sign }
   }
 
   yield { type: "step-end" }
@@ -134,7 +137,6 @@ async function* agentLoop(
 
     output.forEach(assertModelOutputSign)
     await agent.appendContext(output)
-    yield* output.map((sign): AgentInterpretEvent => ({ type: "sign", sign }))
 
     const toolCallSigns = output.filter(isToolCallSign)
     if (toolCallSigns.length === 0) return

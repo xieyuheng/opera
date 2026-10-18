@@ -103,6 +103,7 @@ test("turnRun turns a first model error into a failed turn event", async () => {
   }
 
   assert.deepEqual(events, [
+    { type: "sign", sign: UserSign("hello") },
     {
       type: "error",
       message: "fetch failed",
@@ -157,8 +158,8 @@ test("turnRun forwards and persists usage", async () => {
   }
 
   assert.deepEqual(events, [
-    { type: "usage", usage },
     { type: "sign", sign: UserSign("hello") },
+    { type: "usage", usage },
     { type: "sign", sign: AssistantSign("answer") },
   ])
 

@@ -46,8 +46,21 @@ export async function* interpret(
 
   let reasoning = ""
   let content = ""
+  let activeKind: "ReasoningSign" | "AssistantSign" | undefined
   let usage: ModelUsage | undefined
   const toolCalls = new Map<number, ToolCallSign>()
+
+  function* finishActiveKind(): Generator<ModelInterpretEvent> {
+    if (activeKind === "ReasoningSign" && reasoning !== "") {
+      yield { type: "sign", sign: ReasoningSign(reasoning) }
+    }
+
+    if (activeKind === "AssistantSign" && content !== "") {
+      yield { type: "sign", sign: AssistantSign(content) }
+    }
+
+    activeKind = undefined
+  }
 
   for await (const chunk of client.chat.completions.createStream(request, {
     signal: options.signal,
@@ -62,6 +75,11 @@ export async function* interpret(
       typeof delta.reasoning_content === "string" &&
       delta.reasoning_content !== ""
     ) {
+      if (activeKind !== "ReasoningSign") {
+        yield* finishActiveKind()
+        activeKind = "ReasoningSign"
+      }
+
       reasoning += delta.reasoning_content
       yield {
         type: "delta",
@@ -73,6 +91,11 @@ export async function* interpret(
     }
 
     if (typeof delta.content === "string" && delta.content !== "") {
+      if (activeKind !== "AssistantSign") {
+        yield* finishActiveKind()
+        activeKind = "AssistantSign"
+      }
+
       content += delta.content
       yield {
         type: "delta",
@@ -81,6 +104,10 @@ export async function* interpret(
           content: delta.content,
         },
       }
+    }
+
+    if (delta.tool_calls !== undefined && delta.tool_calls.length > 0) {
+      yield* finishActiveKind()
     }
 
     for (const toolCallDelta of delta.tool_calls ?? []) {
@@ -109,16 +136,10 @@ export async function* interpret(
     }
   }
 
+  yield* finishActiveKind()
+
   if (usage !== undefined) {
     yield { type: "usage", usage }
-  }
-
-  if (reasoning !== "") {
-    yield { type: "sign", sign: ReasoningSign(reasoning) }
-  }
-
-  if (content !== "") {
-    yield { type: "sign", sign: AssistantSign(content) }
   }
 
   for (const [index, toolCall] of [...toolCalls.entries()].sort(

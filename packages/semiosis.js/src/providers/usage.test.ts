@@ -106,3 +106,110 @@ test("openrouter interpret emits normalized usage", async () => {
     },
   ])
 })
+
+test("deepseek interpret finalizes reasoning before assistant deltas", async () => {
+  const client = {
+    chat: {
+      completions: {
+        async *createStream() {
+          yield { choices: [{ delta: { reasoning_content: "think" } }] }
+          yield { choices: [{ delta: { content: "answer" } }] }
+        },
+      },
+    },
+  } as unknown as DeepSeekClient
+  const config: DeepSeekModelConfig = {
+    name: "deepseek-chat",
+    pinned: false,
+    thinking: "enabled",
+    reasoningEffort: "high",
+  }
+  const events = []
+
+  for await (const event of deepseekInterpret(client, config, [
+    UserSign("hello"),
+  ])) {
+    events.push(event)
+  }
+
+  assert.deepEqual(events, [
+    {
+      type: "delta",
+      delta: { signKind: "ReasoningSign", content: "think" },
+    },
+    {
+      type: "sign",
+      sign: { kind: "ReasoningSign", content: "think" },
+    },
+    {
+      type: "delta",
+      delta: { signKind: "AssistantSign", content: "answer" },
+    },
+    {
+      type: "sign",
+      sign: { kind: "AssistantSign", content: "answer" },
+    },
+  ])
+})
+
+test("openrouter interpret finalizes reasoning before assistant deltas", async () => {
+  const detail = { type: "reasoning.text", text: "detail" }
+  const client = {
+    chat: {
+      completions: {
+        async *createStream() {
+          yield {
+            choices: [
+              {
+                delta: {
+                  reasoning: "think",
+                  reasoning_details: [detail],
+                },
+              },
+            ],
+          }
+          yield { choices: [{ delta: { content: "answer" } }] }
+        },
+      },
+    },
+  } as unknown as OpenRouterClient
+  const config: OpenRouterModelConfig = {
+    name: "openrouter/test",
+    pinned: false,
+  }
+  const events = []
+
+  for await (const event of openrouterInterpret(client, config, [
+    UserSign("hello"),
+  ])) {
+    events.push(event)
+  }
+
+  assert.deepEqual(events, [
+    {
+      type: "delta",
+      delta: { signKind: "ReasoningSign", content: "think" },
+    },
+    {
+      type: "sign",
+      sign: { kind: "ReasoningSign", content: "think" },
+    },
+    {
+      type: "sign",
+      sign: {
+        kind: "ProviderDataSign",
+        provider: "openrouter",
+        field: "reasoning_details",
+        data: [detail],
+      },
+    },
+    {
+      type: "delta",
+      delta: { signKind: "AssistantSign", content: "answer" },
+    },
+    {
+      type: "sign",
+      sign: { kind: "AssistantSign", content: "answer" },
+    },
+  ])
+})
