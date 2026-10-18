@@ -11,6 +11,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
+  back: []
   toggleRanger: []
   cycleSignDisplayMode: []
 }>()
@@ -33,7 +34,21 @@ const nextSignDisplayLabel = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
+  <div class="flex flex-row gap-2">
+    <div class="flex items-center">
+      <MediumButton type="button" @click="emit('back')">
+        <span>{{ t("app.back") }}</span>
+      </MediumButton>
+    </div>
+
+    <MediumButton
+      type="button"
+      :title="nextSignDisplayLabel"
+      @click="emit('cycleSignDisplayMode')"
+    >
+      <span>{{ nextSignDisplayLabel }}</span>
+    </MediumButton>
+
     <MediumButton
       type="button"
       :active="props.rangerOpen"
@@ -44,14 +59,6 @@ const nextSignDisplayLabel = computed(() => {
       <span>
         {{ props.rangerOpen ? t("closeRanger") : t("openRanger") }}
       </span>
-    </MediumButton>
-
-    <MediumButton
-      type="button"
-      :title="nextSignDisplayLabel"
-      @click="emit('cycleSignDisplayMode')"
-    >
-      <span>{{ nextSignDisplayLabel }}</span>
     </MediumButton>
   </div>
 </template>

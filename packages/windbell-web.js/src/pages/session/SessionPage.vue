@@ -286,7 +286,6 @@ useHead(() => ({
           <div class="flex items-start justify-between gap-2 px-2">
             <SessionToolbarLeft
               :state="state"
-              @back="goBack"
               @select-turn="selectTurn"
             />
 
@@ -294,6 +293,7 @@ useHead(() => ({
               class="shrink-0"
               :ranger-open="rangerOpen"
               :next-sign-display-mode="nextDisplayMode"
+              @back="goBack"
               @toggle-ranger="rangerOpen = !rangerOpen"
               @cycle-sign-display-mode="cycleSignDisplayMode"
             />

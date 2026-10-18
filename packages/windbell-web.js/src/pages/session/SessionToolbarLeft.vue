@@ -13,7 +13,6 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  back: []
   selectTurn: [turnIndex: number]
 }>()
 
@@ -63,12 +62,6 @@ const userSummaries = computed(() => {
         :user-summaries="userSummaries"
         @select-turn="emit('selectTurn', $event)"
       />
-    </div>
-
-    <div class="flex items-center gap-2">
-      <MediumButton type="button" @click="emit('back')">
-        <span>{{ t("app.back") }}</span>
-      </MediumButton>
     </div>
   </div>
 </template>
