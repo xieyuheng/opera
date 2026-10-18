@@ -1,5 +1,6 @@
 import { windbell } from "../../app/windbell"
 import { reactive } from "vue"
+import { cancelPendingStateLoad } from "../../utils/state/loadableState.ts"
 
 export type ProviderModelLine = {
   name: string
@@ -84,6 +85,7 @@ export async function selectDefaultProvider(
     defaultProvider: providerName,
   })
 
+  cancelPendingStateLoad(state)
   for (const provider of state.providers) {
     provider.isDefaultProvider = provider.name === providerName
   }
@@ -96,6 +98,7 @@ export async function putProviderApiKey(
 ): Promise<void> {
   await windbell.providers.putApiKey({ providerName, key })
 
+  cancelPendingStateLoad(state)
   const provider = state.providers.find((item) => item.name === providerName)
   if (provider !== undefined) {
     provider.apiKeyConfigured = true
@@ -108,6 +111,7 @@ export async function deleteProviderApiKey(
 ): Promise<void> {
   await windbell.providers.deleteApiKey(providerName)
 
+  cancelPendingStateLoad(state)
   const provider = state.providers.find((item) => item.name === providerName)
   if (provider !== undefined) {
     provider.apiKeyConfigured = false

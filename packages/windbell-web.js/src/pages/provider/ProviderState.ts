@@ -1,6 +1,7 @@
 import { windbell } from "../../app/windbell"
 import type * as S from "@windbell/semiosis.js/core"
 import { reactive } from "vue"
+import { cancelPendingStateLoad } from "../../utils/state/loadableState.ts"
 
 export type ProviderState = {
   providerName: string
@@ -98,6 +99,7 @@ export async function pinProviderModel(
       modelName,
     })
     await refreshProviderModels(state)
+    cancelPendingStateLoad(state)
   } finally {
     delete state.busyModelNames[modelName]
   }
@@ -117,6 +119,7 @@ export async function unpinProviderModel(
       modelName,
     })
     await refreshProviderModels(state)
+    cancelPendingStateLoad(state)
   } finally {
     delete state.busyModelNames[modelName]
   }
@@ -136,6 +139,7 @@ export async function setDefaultProviderModel(
       modelName,
     })
 
+    cancelPendingStateLoad(state)
     for (const entry of state.models) {
       entry.isDefault = entry.name === modelName
     }
@@ -174,6 +178,7 @@ export async function selectDefaultProvider(
     defaultProvider: state.providerName,
   })
 
+  cancelPendingStateLoad(state)
   state.isDefaultProvider = true
 }
 
@@ -186,6 +191,7 @@ export async function putProviderApiKey(
     key,
   })
 
+  cancelPendingStateLoad(state)
   state.apiKeyConfigured = true
 }
 
@@ -193,5 +199,6 @@ export async function deleteProviderApiKey(
   state: ProviderState,
 ): Promise<void> {
   await windbell.providers.deleteApiKey(state.providerName)
+  cancelPendingStateLoad(state)
   state.apiKeyConfigured = false
 }

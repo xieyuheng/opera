@@ -1,6 +1,7 @@
 import { windbell } from "../../app/windbell"
 import type * as S from "@windbell/semiosis.js/core"
 import { reactive } from "vue"
+import { cancelPendingStateLoad } from "../../utils/state/loadableState.ts"
 
 export type HomeState = {
   workspaces: Array<S.Workspace>
@@ -90,6 +91,7 @@ export async function ensureWorkspace(
   },
 ): Promise<S.Workspace> {
   const workspace = await windbell.workspaces.ensure(options)
+  cancelPendingStateLoad(state)
   const index = state.workspaces.findIndex((item) => item.id === workspace.id)
 
   if (index === -1) {
@@ -109,6 +111,7 @@ export async function trashWorkspace(
   workspaceId: S.WorkspaceId,
 ): Promise<void> {
   await windbell.dustbin.workspaces.trash(workspaceId)
+  cancelPendingStateLoad(state)
   state.workspaces = state.workspaces.filter(
     (workspace) => workspace.id !== workspaceId,
   )
@@ -134,6 +137,7 @@ export async function updateWorkspaceTitle(
   }
 
   await windbell.workspaces.put(workspace)
+  cancelPendingStateLoad(state)
   state.workspaces[index] = workspace
   sortWorkspacesByUpdatedAt(state.workspaces)
 }

@@ -1,6 +1,7 @@
 import { windbell } from "../../app/windbell"
 import type * as S from "@windbell/semiosis.js/core"
 import { reactive } from "vue"
+import { cancelPendingStateLoad } from "../../utils/state/loadableState.ts"
 
 export type WorkspaceState = {
   workspaceId: S.WorkspaceId
@@ -88,6 +89,7 @@ export async function makeSession(
     title,
   })
 
+  cancelPendingStateLoad(state)
   state.sessions.push(session)
   sortSessionsByUpdatedAt(state.sessions)
   return session
@@ -98,6 +100,7 @@ export async function trashSession(
   sessionId: S.SessionId,
 ): Promise<void> {
   await windbell.dustbin.sessions.trash(sessionId)
+  cancelPendingStateLoad(state)
   state.sessions = state.sessions.filter((session) => session.id !== sessionId)
 }
 
@@ -118,6 +121,7 @@ export async function updateSessionTitle(
   }
 
   await windbell.sessions.put(session)
+  cancelPendingStateLoad(state)
   state.sessions[index] = session
   sortSessionsByUpdatedAt(state.sessions)
 }
@@ -136,11 +140,13 @@ export async function updateWorkspaceTitle(
   }
 
   await windbell.workspaces.put(workspace)
+  cancelPendingStateLoad(state)
   state.workspace = workspace
 }
 
 export async function trashWorkspace(state: WorkspaceState): Promise<void> {
   await windbell.dustbin.workspaces.trash(state.workspaceId)
+  cancelPendingStateLoad(state)
   state.workspace = undefined
   state.sessions = []
 }

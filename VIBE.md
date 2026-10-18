@@ -1,18 +1,5 @@
 # windbell-web.js
 
-现在在 workspace page，
-对 session card 做「修改标题」或「移入对话回收站」
-等操作时。
-
-操作之后，workspace page 页面不会刷新，状态。
-
-调查一下这个问题。
-
-另外，看一下 home page 的 workspace card 是否也有这个问题。
-以及别的用到 list 中 card 操作的地方是否有这个问题。
-
-# windbell-web.js
-
 [windbell-web.js] 利用调色板设计 theme
 
 # 文学式编程

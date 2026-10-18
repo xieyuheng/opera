@@ -1,6 +1,7 @@
 import { windbell } from "../../app/windbell"
 import type * as S from "@windbell/semiosis.js/core"
 import { reactive } from "vue"
+import { cancelPendingStateLoad } from "../../utils/state/loadableState.ts"
 
 export type WorkspaceDustbinState = {
   workspaces: Array<S.DustbinWorkspace>
@@ -82,6 +83,7 @@ export async function restoreWorkspace(
   workspaceId: S.WorkspaceId,
 ): Promise<void> {
   await windbell.dustbin.workspaces.restore(workspaceId)
+  cancelPendingStateLoad(state)
   state.workspaces = state.workspaces.filter(
     (workspace) => workspace.id !== workspaceId,
   )
@@ -93,6 +95,7 @@ export async function removeWorkspace(
   workspaceId: S.WorkspaceId,
 ): Promise<void> {
   await windbell.dustbin.workspaces.remove(workspaceId)
+  cancelPendingStateLoad(state)
   state.workspaces = state.workspaces.filter(
     (workspace) => workspace.id !== workspaceId,
   )

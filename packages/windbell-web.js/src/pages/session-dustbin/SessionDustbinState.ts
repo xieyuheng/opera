@@ -1,6 +1,7 @@
 import { windbell } from "../../app/windbell"
 import type * as S from "@windbell/semiosis.js/core"
 import { reactive } from "vue"
+import { cancelPendingStateLoad } from "../../utils/state/loadableState.ts"
 
 export type SessionDustbinListItem = S.DustbinSessionIndex & {
   context: Array<S.Sign>
@@ -84,6 +85,7 @@ export async function restoreSession(
   sessionId: S.SessionId,
 ): Promise<void> {
   await windbell.dustbin.sessions.restore(sessionId)
+  cancelPendingStateLoad(state)
   state.sessions = state.sessions.filter((session) => session.id !== sessionId)
 }
 
@@ -92,5 +94,6 @@ export async function removeSession(
   sessionId: S.SessionId,
 ): Promise<void> {
   await windbell.dustbin.sessions.remove(sessionId)
+  cancelPendingStateLoad(state)
   state.sessions = state.sessions.filter((session) => session.id !== sessionId)
 }
