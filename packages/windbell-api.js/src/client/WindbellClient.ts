@@ -18,7 +18,10 @@ import type {
   WorkspaceDustbinData,
 } from "../api/types.ts"
 import type { WindbellHealth } from "../services/Health.ts"
+import type { Theme, ThemeInput } from "../theme/Theme.ts"
 import { JsonDataSchema, VoidSchema } from "./schemas.ts"
+
+export type { Theme, ThemeInput } from "../theme/Theme.ts"
 
 export type WindbellClientConfig = {
   baseUrl: string
@@ -36,6 +39,7 @@ export type WindbellClient = {
   }
   providers: ProvidersClient
   settings: SettingsClient
+  themes: ThemesClient
 }
 
 export type PagesClient = {
@@ -139,6 +143,14 @@ export type ProvidersClient = {
 export type SettingsClient = {
   get(): Promise<S.Settings>
   put(settings: S.Settings): Promise<void>
+}
+
+export type ThemesClient = {
+  list(): Promise<Array<Theme>>
+  get(themeId: string): Promise<Theme | undefined>
+  create(input: ThemeInput): Promise<Theme>
+  put(options: { themeId: string; theme: ThemeInput }): Promise<Theme>
+  remove(themeId: string): Promise<void>
 }
 
 export function makeWindbellClient(
@@ -483,6 +495,39 @@ export function makeWindbellClient(
     }),
   }
 
+  const themes: ThemesClient = {
+    list: makeJsonEndpoint(config, {
+      method: "GET",
+      path: "/themes",
+      output: JsonDataSchema<Array<Theme>>(),
+    }),
+    get: withNotFoundAsUndefined(
+      makeJsonEndpoint(config, {
+        method: "GET",
+        path: (themeId: string) => `/themes/${encodeURIComponent(themeId)}`,
+        output: JsonDataSchema<Theme>(),
+      }),
+    ),
+    create: makeJsonEndpoint(config, {
+      method: "POST",
+      path: "/themes",
+      body: (input: ThemeInput) => input,
+      output: JsonDataSchema<Theme>(),
+    }),
+    put: makeJsonEndpoint(config, {
+      method: "PUT",
+      path: (options: { themeId: string; theme: ThemeInput }) =>
+        `/themes/${encodeURIComponent(options.themeId)}`,
+      body: (options) => options.theme,
+      output: JsonDataSchema<Theme>(),
+    }),
+    remove: makeJsonEndpoint(config, {
+      method: "DELETE",
+      path: (themeId: string) => `/themes/${encodeURIComponent(themeId)}`,
+      output: VoidSchema,
+    }),
+  }
+
   return {
     health: () => healthEndpoint(),
     pages,
@@ -491,5 +536,6 @@ export function makeWindbellClient(
     dustbin,
     providers,
     settings,
+    themes,
   }
 }

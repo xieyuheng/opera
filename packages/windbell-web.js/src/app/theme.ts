@@ -1,4 +1,3 @@
-import { authHeaders } from "./auth.ts"
 import { windbell } from "./windbell"
 import { computed, reactive, watch } from "vue"
 import { useColorMode, type ColorMode } from "./color-mode.ts"
@@ -21,7 +20,7 @@ export const themeColorTokens = [
 ] as const
 
 export type ThemeColorName = (typeof themeColorTokens)[number]
-export type ThemeModeColors = Record<ThemeColorName, string>
+export type ThemeModeColors = Record<string, string>
 
 export type Theme = {
   id: string
@@ -271,7 +270,7 @@ async function refreshThemeFromDatabase(): Promise<void> {
   try {
     const [settings, customThemes] = await Promise.all([
       windbell.settings.get(),
-      listCustomThemes(),
+      windbell.themes.list(),
     ])
 
     state.customThemes = customThemes
@@ -316,12 +315,12 @@ export async function activateTheme(themeId: string): Promise<void> {
 }
 
 export async function refreshCustomThemes(): Promise<void> {
-  state.customThemes = await listCustomThemes()
+  state.customThemes = await windbell.themes.list()
 }
 
 export async function createCustomTheme(input: ThemeInput): Promise<Theme> {
   assertThemeInput(input)
-  const theme = await createTheme(input)
+  const theme = await windbell.themes.create(input)
   state.customThemes = [...state.customThemes, theme]
   return theme
 }
@@ -332,7 +331,13 @@ export async function updateCustomTheme(theme: Theme): Promise<Theme> {
   }
 
   assertThemeInput({ name: theme.name, colors: theme.colors })
-  const updated = await putTheme(theme)
+  const updated = await windbell.themes.put({
+    themeId: theme.id,
+    theme: {
+      name: theme.name,
+      colors: theme.colors,
+    },
+  })
   const index = state.customThemes.findIndex((item) => item.id === theme.id)
 
   if (index === -1) {
@@ -353,7 +358,7 @@ export async function deleteCustomTheme(themeId: string): Promise<void> {
     throw new Error("built-in theme cannot be deleted")
   }
 
-  await removeTheme(themeId)
+  await windbell.themes.remove(themeId)
   state.customThemes = state.customThemes.filter(
     (theme) => theme.id !== themeId,
   )
@@ -388,76 +393,6 @@ function assertThemeColors(colors: ThemeModeColors, mode: string): void {
       throw new Error(`invalid theme color: ${mode}.${token} = ${value}`)
     }
   }
-}
-
-type ThemesApiInput = {
-  name: string
-  colors: Theme["colors"]
-}
-
-async function listCustomThemes(): Promise<Array<Theme>> {
-  return requestJson<Array<Theme>>("/api/themes")
-}
-
-async function createTheme(input: ThemesApiInput): Promise<Theme> {
-  return requestJson<Theme>("/api/themes", {
-    method: "POST",
-    body: JSON.stringify(input),
-  })
-}
-
-async function putTheme(theme: Theme): Promise<Theme> {
-  return requestJson<Theme>(`/api/themes/${encodeURIComponent(theme.id)}`, {
-    method: "PUT",
-    body: JSON.stringify({
-      name: theme.name,
-      colors: theme.colors,
-    } satisfies ThemesApiInput),
-  })
-}
-
-async function removeTheme(themeId: string): Promise<void> {
-  await requestJson<void>(`/api/themes/${encodeURIComponent(themeId)}`, {
-    method: "DELETE",
-  })
-}
-
-async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
-  const headers = new Headers(init?.headers)
-  headers.set("Content-Type", "application/json")
-  authHeaders().forEach((value, key) => headers.set(key, value))
-
-  const response = await fetch(path, {
-    ...init,
-    headers,
-  })
-
-  const text = await response.text()
-
-  if (!response.ok) {
-    throw new Error(readErrorMessage(response.status, text))
-  }
-
-  if (text.trim() === "") {
-    return undefined as T
-  }
-
-  return JSON.parse(text) as T
-}
-
-function readErrorMessage(status: number, text: string): string {
-  try {
-    const value = JSON.parse(text) as {
-      error?: { message?: unknown }
-    }
-    if (typeof value.error?.message === "string") {
-      return value.error.message
-    }
-  } catch {
-    // ignore JSON parse errors
-  }
-
-  return text.trim() === "" ? `HTTP ${status}` : text
 }
 
 export function useTheme() {
