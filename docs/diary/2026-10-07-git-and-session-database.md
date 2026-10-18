@@ -14,5 +14,5 @@ date: 2026-10-07
 - 在 web app 上的对话与操作，都是对数据库的修改。
   如果某段修改是不想要的，可以直接用 git reset 来 undo。
 
-未来可以考虑设计 git-api.js（类似 fs-api.js），
+未来可以考虑设计 git-api.ts（类似 fs-api.ts），
 来惯例本地部署的 git。

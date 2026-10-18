@@ -5,5 +5,5 @@ $ErrorActionPreference = 'Stop'
 
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 
-node --stack-size=65536 "$root/packages/semiosis.js/src/main.ts" @args
+node --stack-size=65536 "$root/packages/semiosis.ts/src/main.ts" @args
 exit $LASTEXITCODE

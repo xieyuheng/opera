@@ -1,0 +1,31 @@
+{
+  "name": "@windbell/windbell-cli.ts",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "files": [
+    "src"
+  ],
+  "prettier": {
+    "semi": false,
+    "trailingComma": "all"
+  },
+  "dependencies": {
+    "@hono/node-server": "2.1.5",
+    "@windbell/cli.ts": "workspace:*",
+    "@windbell/fs.ts": "workspace:*",
+    "@windbell/semiosis.ts": "workspace:*",
+    "@windbell/std.ts": "workspace:*",
+    "@windbell/windbell-api.ts": "workspace:*",
+    "vite": "8.3.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "prettier": "^3.9.10",
+    "typescript": "^7.0.2"
+  },
+  "bin": {
+    "windbell": "src/main.ts"
+  }
+}

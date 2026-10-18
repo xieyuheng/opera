@@ -1,5 +1,6 @@
 packages:
-  - "packages/*.js"
+  - "packages/*.ts"
+  - "packages/*.vue"
 
 allowBuilds:
   esbuild: true

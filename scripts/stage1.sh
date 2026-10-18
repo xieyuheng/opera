@@ -6,45 +6,45 @@ set -e
 
 # ts format
 
-./scripts/run-in.sh std.js format.sh
-./scripts/run-in.sh http.js format.sh
-./scripts/run-in.sh cli.js format.sh
-./scripts/run-in.sh semiosis.js format.sh
-./scripts/run-in.sh fs.js format.sh
-./scripts/run-in.sh fs-api.js format.sh
-./scripts/run-in.sh sh.js format.sh
-./scripts/run-in.sh lock.js format.sh
-./scripts/run-in.sh windbell-cli.js format.sh
-./scripts/run-in.sh windbell-api.js format.sh
-./scripts/run-in.sh windbell-web.js format.sh
+./scripts/run-in.sh std.ts format.sh
+./scripts/run-in.sh http.ts format.sh
+./scripts/run-in.sh cli.ts format.sh
+./scripts/run-in.sh semiosis.ts format.sh
+./scripts/run-in.sh fs.ts format.sh
+./scripts/run-in.sh fs-api.ts format.sh
+./scripts/run-in.sh sh.ts format.sh
+./scripts/run-in.sh lock.ts format.sh
+./scripts/run-in.sh windbell-cli.ts format.sh
+./scripts/run-in.sh windbell-api.ts format.sh
+./scripts/run-in.sh windbell-web.vue format.sh
 
 # ts check
 
-./scripts/run-in.sh std.js check.sh
-./scripts/run-in.sh http.js check.sh
-./scripts/run-in.sh cli.js check.sh
-./scripts/run-in.sh semiosis.js check.sh
-./scripts/run-in.sh fs.js check.sh
-./scripts/run-in.sh fs-api.js check.sh
-./scripts/run-in.sh sh.js check.sh
-./scripts/run-in.sh lock.js check.sh
-./scripts/run-in.sh windbell-cli.js check.sh
-./scripts/run-in.sh windbell-api.js check.sh
-./scripts/run-in.sh windbell-web.js check.sh
+./scripts/run-in.sh std.ts check.sh
+./scripts/run-in.sh http.ts check.sh
+./scripts/run-in.sh cli.ts check.sh
+./scripts/run-in.sh semiosis.ts check.sh
+./scripts/run-in.sh fs.ts check.sh
+./scripts/run-in.sh fs-api.ts check.sh
+./scripts/run-in.sh sh.ts check.sh
+./scripts/run-in.sh lock.ts check.sh
+./scripts/run-in.sh windbell-cli.ts check.sh
+./scripts/run-in.sh windbell-api.ts check.sh
+./scripts/run-in.sh windbell-web.vue check.sh
 
 # ts test
 
-./scripts/run-in.sh std.js clean.sh test.sh
-./scripts/run-in.sh fs.js test.sh
-./scripts/run-in.sh fs-api.js test.sh
-./scripts/run-in.sh sh.js test.sh
-./scripts/run-in.sh lock.js test.sh
-./scripts/run-in.sh http.js test.sh
-./scripts/run-in.sh cli.js clean.sh test.sh
-./scripts/run-in.sh semiosis.js clean.sh test.sh
-./scripts/run-in.sh windbell-cli.js clean.sh test.sh
-./scripts/run-in.sh windbell-api.js clean.sh test.sh
+./scripts/run-in.sh std.ts clean.sh test.sh
+./scripts/run-in.sh fs.ts test.sh
+./scripts/run-in.sh fs-api.ts test.sh
+./scripts/run-in.sh sh.ts test.sh
+./scripts/run-in.sh lock.ts test.sh
+./scripts/run-in.sh http.ts test.sh
+./scripts/run-in.sh cli.ts clean.sh test.sh
+./scripts/run-in.sh semiosis.ts clean.sh test.sh
+./scripts/run-in.sh windbell-cli.ts clean.sh test.sh
+./scripts/run-in.sh windbell-api.ts clean.sh test.sh
 
 # frontend build
 
-./scripts/run-in.sh windbell-web.js clean.sh build.sh
+./scripts/run-in.sh windbell-web.vue clean.sh build.sh

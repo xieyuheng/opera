@@ -1,12 +1,12 @@
-# windbell-web.js
+# windbell-web.vue
 
-[windbell-web.js] 利用调色板设计 theme
+[windbell-web.vue] 利用调色板设计 theme
 
 # 文学式编程
 
 给出 agent interpret 和 agent loop 和 markdown 文学式编程
 
-# windbell-web.js
+# windbell-web.vue
 
 模仿 telegram 给对话设页面以及其他页面置纹样背景。
 

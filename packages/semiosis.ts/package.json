@@ -1,0 +1,37 @@
+{
+  "name": "@windbell/semiosis.ts",
+  "version": "0.1.0",
+  "private": true,
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "main": "./src/exports/default.ts",
+  "files": [
+    "src"
+  ],
+  "prettier": {
+    "semi": false,
+    "trailingComma": "all"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "prettier": "^3.9.10",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@windbell/cli.ts": "workspace:*",
+    "@windbell/fs.ts": "workspace:*",
+    "@windbell/http.ts": "workspace:*",
+    "@windbell/lock.ts": "workspace:*",
+    "@windbell/sh.ts": "workspace:*",
+    "@windbell/std.ts": "workspace:*",
+    "ajv": "^8.20.0",
+    "zod": "^4.6.7"
+  },
+  "bin": {
+    "semiosis.ts": "src/main.ts"
+  },
+  "exports": {
+    ".": "./src/exports/default.ts",
+    "./core": "./src/exports/core.ts"
+  }
+}

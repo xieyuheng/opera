@@ -2,4 +2,4 @@
 
 set -euo pipefail
 root="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
-exec node --stack-size=65536 "$root/packages/semiosis.js/src/main.ts" "$@"
+exec node --stack-size=65536 "$root/packages/semiosis.ts/src/main.ts" "$@"

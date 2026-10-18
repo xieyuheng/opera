@@ -375,7 +375,7 @@ function Invoke-RunIn {
 
 function Build-Web {
   Write-Log 'building windbell-web'
-  Invoke-RunIn 'windbell-web.js' @('clean', 'build')
+  Invoke-RunIn 'windbell-web.vue' @('clean', 'build')
 }
 
 function Invoke-BuildProject {
@@ -456,7 +456,7 @@ function Write-Shims {
     'set "PATH=%NODE_HOME%;%PATH%"'
     'set "NODE_COMPILE_CACHE=%WINDBELL_HOME%\tmp\node"'
     'if "%WINDBELL_DATABASE%"=="" set "WINDBELL_DATABASE=%WINDBELL_HOME%\database"'
-    '"%NODE_HOME%\node.exe" --stack-size=65536 "%WINDBELL_HOME%\src\windbell\packages\semiosis.js\src\main.ts" %*'
+    '"%NODE_HOME%\node.exe" --stack-size=65536 "%WINDBELL_HOME%\src\windbell\packages\semiosis.ts\src\main.ts" %*'
     'exit /b %ERRORLEVEL%'
   )
 
@@ -464,7 +464,7 @@ function Write-Shims {
     'set "PATH=%NODE_HOME%;%PATH%"'
     'set "NODE_COMPILE_CACHE=%WINDBELL_HOME%\tmp\node"'
     'if "%WINDBELL_DATABASE%"=="" set "WINDBELL_DATABASE=%WINDBELL_HOME%\database"'
-    '"%NODE_HOME%\node.exe" "%WINDBELL_HOME%\src\windbell\packages\windbell-cli.js\src\main.ts" %*'
+    '"%NODE_HOME%\node.exe" "%WINDBELL_HOME%\src\windbell\packages\windbell-cli.ts\src\main.ts" %*'
     'exit /b %ERRORLEVEL%'
   )
 

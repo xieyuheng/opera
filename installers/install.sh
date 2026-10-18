@@ -375,7 +375,7 @@ build_web() {
     PATH="$NODE_HOME/bin:$PATH" \
     XDG_CACHE_HOME="$TMP_DIR" \
     npm_config_cache="$TMP_DIR/npm" \
-    sh ./scripts/run-in.sh windbell-web.js clean.sh build.sh
+    sh ./scripts/run-in.sh windbell-web.vue clean.sh build.sh
   )
 }
 
@@ -460,7 +460,7 @@ WINDBELL_BIN_DIR="$_windbell_bin_dir"
 export PATH="$NODE_HOME/bin:$PATH"
 export NODE_COMPILE_CACHE="$WINDBELL_HOME/tmp/node"
 export WINDBELL_DATABASE="${WINDBELL_DATABASE:-$WINDBELL_HOME/database}"
-exec "$NODE_HOME/bin/node" --stack-size=65536 "$WINDBELL_HOME/src/windbell/packages/semiosis.js/src/main.ts" "$@"
+exec "$NODE_HOME/bin/node" --stack-size=65536 "$WINDBELL_HOME/src/windbell/packages/semiosis.ts/src/main.ts" "$@"
 SH
 
   cat > "$BIN_DIR/windbell" <<'SH'
@@ -475,7 +475,7 @@ WINDBELL_BIN_DIR="$_windbell_bin_dir"
 export PATH="$NODE_HOME/bin:$PATH"
 export NODE_COMPILE_CACHE="$WINDBELL_HOME/tmp/node"
 export WINDBELL_DATABASE="${WINDBELL_DATABASE:-$WINDBELL_HOME/database}"
-exec "$NODE_HOME/bin/node" "$WINDBELL_HOME/src/windbell/packages/windbell-cli.js/src/main.ts" "$@"
+exec "$NODE_HOME/bin/node" "$WINDBELL_HOME/src/windbell/packages/windbell-cli.ts/src/main.ts" "$@"
 SH
 
   chmod +x "$BIN_DIR/semiosis" "$BIN_DIR/windbell"

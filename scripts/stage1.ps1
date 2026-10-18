@@ -10,45 +10,45 @@ Set-Location (Join-Path $PSScriptRoot '..')
 
 # ts format
 
-./scripts/run-in.ps1 std.js format
-./scripts/run-in.ps1 http.js format
-./scripts/run-in.ps1 cli.js format
-./scripts/run-in.ps1 semiosis.js format
-./scripts/run-in.ps1 fs.js format
-./scripts/run-in.ps1 fs-api.js format
-./scripts/run-in.ps1 sh.js format
-./scripts/run-in.ps1 lock.js format
-./scripts/run-in.ps1 windbell-cli.js format
-./scripts/run-in.ps1 windbell-api.js format
-./scripts/run-in.ps1 windbell-web.js format
+./scripts/run-in.ps1 std.ts format
+./scripts/run-in.ps1 http.ts format
+./scripts/run-in.ps1 cli.ts format
+./scripts/run-in.ps1 semiosis.ts format
+./scripts/run-in.ps1 fs.ts format
+./scripts/run-in.ps1 fs-api.ts format
+./scripts/run-in.ps1 sh.ts format
+./scripts/run-in.ps1 lock.ts format
+./scripts/run-in.ps1 windbell-cli.ts format
+./scripts/run-in.ps1 windbell-api.ts format
+./scripts/run-in.ps1 windbell-web.vue format
 
 # ts check
 
-./scripts/run-in.ps1 std.js check
-./scripts/run-in.ps1 http.js check
-./scripts/run-in.ps1 cli.js check
-./scripts/run-in.ps1 semiosis.js check
-./scripts/run-in.ps1 fs.js check
-./scripts/run-in.ps1 fs-api.js check
-./scripts/run-in.ps1 sh.js check
-./scripts/run-in.ps1 lock.js check
-./scripts/run-in.ps1 windbell-cli.js check
-./scripts/run-in.ps1 windbell-api.js check
-./scripts/run-in.ps1 windbell-web.js check
+./scripts/run-in.ps1 std.ts check
+./scripts/run-in.ps1 http.ts check
+./scripts/run-in.ps1 cli.ts check
+./scripts/run-in.ps1 semiosis.ts check
+./scripts/run-in.ps1 fs.ts check
+./scripts/run-in.ps1 fs-api.ts check
+./scripts/run-in.ps1 sh.ts check
+./scripts/run-in.ps1 lock.ts check
+./scripts/run-in.ps1 windbell-cli.ts check
+./scripts/run-in.ps1 windbell-api.ts check
+./scripts/run-in.ps1 windbell-web.vue check
 
 # ts test
 
-./scripts/run-in.ps1 std.js clean test
-./scripts/run-in.ps1 fs.js test
-./scripts/run-in.ps1 fs-api.js test
-./scripts/run-in.ps1 sh.js test
-./scripts/run-in.ps1 lock.js test
-./scripts/run-in.ps1 http.js test
-./scripts/run-in.ps1 cli.js clean test
-./scripts/run-in.ps1 semiosis.js clean test
-./scripts/run-in.ps1 windbell-cli.js clean test
-./scripts/run-in.ps1 windbell-api.js clean test
+./scripts/run-in.ps1 std.ts clean test
+./scripts/run-in.ps1 fs.ts test
+./scripts/run-in.ps1 fs-api.ts test
+./scripts/run-in.ps1 sh.ts test
+./scripts/run-in.ps1 lock.ts test
+./scripts/run-in.ps1 http.ts test
+./scripts/run-in.ps1 cli.ts clean test
+./scripts/run-in.ps1 semiosis.ts clean test
+./scripts/run-in.ps1 windbell-cli.ts clean test
+./scripts/run-in.ps1 windbell-api.ts clean test
 
 # frontend build
 
-./scripts/run-in.ps1 windbell-web.js clean build
+./scripts/run-in.ps1 windbell-web.vue clean build

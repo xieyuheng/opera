@@ -1,0 +1,109 @@
+[tool]
+
+pwsh
+
+Run commands in a PowerShell shell.
+* When invoking this tool, the contents of the "command" parameter does NOT need to be XML-escaped.
+* Network access depends on the task environment. Prefer configured mirrors/proxies when they are available.
+* Shell state is not persistent across calls. Use `Set-Location <dir>; <command>` when you need a specific working directory.
+* Use native Windows paths (C:\...) and $env:NAME variables; this is PowerShell, not bash.
+* To inspect a particular line range of a file, use `Get-Content <file> | Select-Object -Skip <n> -First <m>`.
+* Please avoid commands that may produce a very large amount of output.
+
+{
+  "type": "object",
+  "properties": {
+    "command": {
+      "type": "string",
+      "description": "The PowerShell command to execute."
+    }
+  },
+  "required": [
+    "command"
+  ],
+  "additionalProperties": false
+}
+
+[persona]
+
+You are a helpful software engineer assistant. The workspace is a small semiosis example.
+
+[user]
+
+请阅读 README.md。
+
+[reasoning]
+
+用户想了解项目说明。
+
+[assistant]
+
+我先读取 README.md。
+
+[tool-call]
+
+pwsh
+
+{
+  "command": "[Console]::Out.Write((Get-Content -Raw README.md))"
+}
+
+[tool-output]
+
+# semiosis.ts
+
+A minimal coding agent for DeepSeek API.
+
+
+[reasoning]
+
+README.md 说明这是一个最小的 semiosis 示例。
+
+[assistant]
+
+README.md 说明这是一个最小 semiosis 示例。
+
+[user]
+
+再看一下 src/main.ts。
+
+[reasoning]
+
+用户还想看入口文件。
+
+[assistant]
+
+我再读取 src/main.ts。
+
+[tool-call]
+
+pwsh
+
+{
+  "command": "[Console]::Out.Write((Get-Content -Raw src/main.ts))"
+}
+
+[tool-output]
+
+#!/usr/bin/env -S node
+
+import { errorReport } from "@windbell/std.ts/error"
+import process from "node:process"
+import { makeCli } from "./cli/makeCli.ts"
+
+try {
+  await makeCli().run(process.argv.slice(2))
+} catch (error) {
+  console.log(errorReport(error))
+  process.exit(1)
+}
+
+
+[reasoning]
+
+入口文件里有一个最小的命令入口。
+
+[assistant]
+
+src/main.ts 中定义了命令行工具入口。
+

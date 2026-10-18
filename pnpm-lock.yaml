@@ -9,11 +9,11 @@ overrides:
 
 importers:
 
-  packages/cli.js:
+  packages/cli.ts:
     dependencies:
-      '@windbell/std.js':
+      '@windbell/std.ts':
         specifier: workspace:*
-        version: link:../std.js
+        version: link:../std.ts
     devDependencies:
       '@types/node':
         specifier: ^26.6.5
@@ -25,20 +25,20 @@ importers:
         specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
         version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
 
-  packages/fs-api.js:
+  packages/fs-api.ts:
     dependencies:
       '@hono/node-server':
         specifier: 2.1.5
         version: 2.1.5(hono@4.13.13)
-      '@windbell/fs.js':
+      '@windbell/fs.ts':
         specifier: workspace:*
-        version: link:../fs.js
-      '@windbell/http.js':
+        version: link:../fs.ts
+      '@windbell/http.ts':
         specifier: workspace:*
-        version: link:../http.js
-      '@windbell/std.js':
+        version: link:../http.ts
+      '@windbell/std.ts':
         specifier: workspace:*
-        version: link:../std.js
+        version: link:../std.ts
       hono:
         specifier: 4.13.13
         version: 4.13.13
@@ -56,11 +56,11 @@ importers:
         specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
         version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
 
-  packages/fs.js:
+  packages/fs.ts:
     dependencies:
-      '@windbell/std.js':
+      '@windbell/std.ts':
         specifier: workspace:*
-        version: link:../std.js
+        version: link:../std.ts
     devDependencies:
       '@types/node':
         specifier: ^26.6.5
@@ -72,7 +72,7 @@ importers:
         specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
         version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
 
-  packages/http.js:
+  packages/http.ts:
     dependencies:
       zod:
         specifier: ^4.6.7
@@ -88,14 +88,14 @@ importers:
         specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
         version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
 
-  packages/lock.js:
+  packages/lock.ts:
     dependencies:
-      '@windbell/fs.js':
+      '@windbell/fs.ts':
         specifier: workspace:*
-        version: link:../fs.js
-      '@windbell/std.js':
+        version: link:../fs.ts
+      '@windbell/std.ts':
         specifier: workspace:*
-        version: link:../std.js
+        version: link:../std.ts
     devDependencies:
       '@types/node':
         specifier: ^26.6.5
@@ -107,26 +107,26 @@ importers:
         specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
         version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
 
-  packages/semiosis.js:
+  packages/semiosis.ts:
     dependencies:
-      '@windbell/cli.js':
+      '@windbell/cli.ts':
         specifier: workspace:*
-        version: link:../cli.js
-      '@windbell/fs.js':
+        version: link:../cli.ts
+      '@windbell/fs.ts':
         specifier: workspace:*
-        version: link:../fs.js
-      '@windbell/http.js':
+        version: link:../fs.ts
+      '@windbell/http.ts':
         specifier: workspace:*
-        version: link:../http.js
-      '@windbell/lock.js':
+        version: link:../http.ts
+      '@windbell/lock.ts':
         specifier: workspace:*
-        version: link:../lock.js
-      '@windbell/sh.js':
+        version: link:../lock.ts
+      '@windbell/sh.ts':
         specifier: workspace:*
-        version: link:../sh.js
-      '@windbell/std.js':
+        version: link:../sh.ts
+      '@windbell/std.ts':
         specifier: workspace:*
-        version: link:../std.js
+        version: link:../std.ts
       ajv:
         specifier: ^8.20.0
         version: 8.20.0
@@ -144,11 +144,11 @@ importers:
         specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
         version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
 
-  packages/sh.js:
+  packages/sh.ts:
     dependencies:
-      '@windbell/std.js':
+      '@windbell/std.ts':
         specifier: workspace:*
-        version: link:../std.js
+        version: link:../std.ts
     devDependencies:
       '@types/node':
         specifier: ^26.6.5
@@ -160,7 +160,7 @@ importers:
         specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
         version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
 
-  packages/std.js:
+  packages/std.ts:
     devDependencies:
       '@types/node':
         specifier: ^26.6.5
@@ -172,29 +172,29 @@ importers:
         specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
         version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
 
-  packages/windbell-api.js:
+  packages/windbell-api.ts:
     dependencies:
       '@hono/node-server':
         specifier: 2.1.5
         version: 2.1.5(hono@4.13.13)
-      '@windbell/fs-api.js':
+      '@windbell/fs-api.ts':
         specifier: workspace:*
-        version: link:../fs-api.js
-      '@windbell/fs.js':
+        version: link:../fs-api.ts
+      '@windbell/fs.ts':
         specifier: workspace:*
-        version: link:../fs.js
-      '@windbell/http.js':
+        version: link:../fs.ts
+      '@windbell/http.ts':
         specifier: workspace:*
-        version: link:../http.js
-      '@windbell/semiosis.js':
+        version: link:../http.ts
+      '@windbell/semiosis.ts':
         specifier: workspace:*
-        version: link:../semiosis.js
-      '@windbell/sh.js':
+        version: link:../semiosis.ts
+      '@windbell/sh.ts':
         specifier: workspace:*
-        version: link:../sh.js
-      '@windbell/std.js':
+        version: link:../sh.ts
+      '@windbell/std.ts':
         specifier: workspace:*
-        version: link:../std.js
+        version: link:../std.ts
       hono:
         specifier: 4.13.13
         version: 4.13.13
@@ -212,26 +212,26 @@ importers:
         specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
         version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
 
-  packages/windbell-cli.js:
+  packages/windbell-cli.ts:
     dependencies:
       '@hono/node-server':
         specifier: 2.1.5
         version: 2.1.5(hono@4.13.13)
-      '@windbell/cli.js':
+      '@windbell/cli.ts':
         specifier: workspace:*
-        version: link:../cli.js
-      '@windbell/fs.js':
+        version: link:../cli.ts
+      '@windbell/fs.ts':
         specifier: workspace:*
-        version: link:../fs.js
-      '@windbell/semiosis.js':
+        version: link:../fs.ts
+      '@windbell/semiosis.ts':
         specifier: workspace:*
-        version: link:../semiosis.js
-      '@windbell/std.js':
+        version: link:../semiosis.ts
+      '@windbell/std.ts':
         specifier: workspace:*
-        version: link:../std.js
-      '@windbell/windbell-api.js':
+        version: link:../std.ts
+      '@windbell/windbell-api.ts':
         specifier: workspace:*
-        version: link:../windbell-api.js
+        version: link:../windbell-api.ts
       vite:
         specifier: 8.3.4
         version: 8.3.4(@types/node@26.6.5)(jiti@2.7.0)(yaml@2.9.1)
@@ -246,7 +246,7 @@ importers:
         specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
         version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
 
-  packages/windbell-web.js:
+  packages/windbell-web.vue:
     dependencies:
       '@lucide/vue':
         specifier: 1.58.0
@@ -254,24 +254,24 @@ importers:
       '@unhead/vue':
         specifier: 3.4.3
         version: 3.4.3(@oxc-project/types@0.154.0)(lightningcss@1.33.0)(rolldown@1.2.14)(vite@8.3.4(@types/node@26.6.5)(jiti@2.7.0)(yaml@2.9.1))(vue@3.5.44(typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2))
-      '@windbell/fs-api.js':
+      '@windbell/fs-api.ts':
         specifier: workspace:*
-        version: link:../fs-api.js
-      '@windbell/fs.js':
+        version: link:../fs-api.ts
+      '@windbell/fs.ts':
         specifier: workspace:*
-        version: link:../fs.js
-      '@windbell/semiosis.js':
+        version: link:../fs.ts
+      '@windbell/semiosis.ts':
         specifier: workspace:*
-        version: link:../semiosis.js
-      '@windbell/sh.js':
+        version: link:../semiosis.ts
+      '@windbell/sh.ts':
         specifier: workspace:*
-        version: link:../sh.js
-      '@windbell/std.js':
+        version: link:../sh.ts
+      '@windbell/std.ts':
         specifier: workspace:*
-        version: link:../std.js
-      '@windbell/windbell-api.js':
+        version: link:../std.ts
+      '@windbell/windbell-api.ts':
         specifier: workspace:*
-        version: link:../windbell-api.js
+        version: link:../windbell-api.ts
       ajv:
         specifier: 8.20.0
         version: 8.20.0

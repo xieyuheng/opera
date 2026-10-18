@@ -1,0 +1,38 @@
+{
+  "name": "@windbell/windbell-api.ts",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "files": [
+    "src"
+  ],
+  "prettier": {
+    "semi": false,
+    "trailingComma": "all"
+  },
+  "dependencies": {
+    "@hono/node-server": "2.1.5",
+    "@windbell/fs-api.ts": "workspace:*",
+    "@windbell/fs.ts": "workspace:*",
+    "@windbell/http.ts": "workspace:*",
+    "@windbell/semiosis.ts": "workspace:*",
+    "@windbell/sh.ts": "workspace:*",
+    "@windbell/std.ts": "workspace:*",
+    "hono": "4.13.13",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "prettier": "^3.9.10",
+    "typescript": "^7.0.2"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client/index.ts",
+    "./router": "./src/router/index.ts",
+    "./server": "./src/server/index.ts",
+    "./service": "./src/services/index.ts",
+    "./auth": "./src/auth/index.ts"
+  }
+}

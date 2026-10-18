@@ -2,4 +2,4 @@
 
 set -euo pipefail
 root="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
-exec node "$root/packages/windbell-cli.js/src/main.ts" "$@"
+exec node "$root/packages/windbell-cli.ts/src/main.ts" "$@"
