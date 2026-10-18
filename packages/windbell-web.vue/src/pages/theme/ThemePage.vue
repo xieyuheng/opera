@@ -286,12 +286,12 @@ useHead(() => ({
 
     <p
       v-if="error"
-      class="rounded border border-sign-error/60 px-3 py-2 text-sm text-sign-error"
+      class="rounded border border-sign-error/60 px-3 py-2 text-sign-error"
     >
       {{ error }}
     </p>
 
-    <p v-if="!ready" class="text-sm text-ink">
+    <p v-if="!ready">
       {{ t("loading") }}
     </p>
 
@@ -339,14 +339,14 @@ useHead(() => ({
             :key="group.labelKey"
             class="flex flex-col gap-3"
           >
-            <h3 class="text-sm font-bold text-ink">
+            <h3 class="font-semibold text-ink">
               {{ t(group.labelKey) }}
             </h3>
 
             <div class="grid gap-4 md:grid-cols-2">
               <Card v-for="token in group.tokens" :key="token">
                 <template #tag>
-                  <span class="font-mono text-xs text-ink">
+                  <span class="font-mono font-semibold">
                     --color-{{ token }}
                   </span>
                 </template>
