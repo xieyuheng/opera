@@ -1,3 +1,8 @@
+# windbell-docs.vue
+
+设置 windbell-docs.vue 项目，
+或 windbell-docs.vitepress 项目？
+
 # windbell-web.vue
 
 [windbell-web.vue] 利用调色板设计 theme
