@@ -1,11 +1,5 @@
 # windbell-web.vue
 
-[windbell-web.vue] 页面标题，以及页面章节标题，使用粗体
-
-- font-medium 或 font-semibold
-
-# windbell-web.vue
-
 [windbell-web.vue] 利用调色板设计 theme
 
 # 文学式编程
