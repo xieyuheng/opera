@@ -52,7 +52,3 @@ Set-Location (Join-Path $PSScriptRoot '..')
 # frontend build
 
 ./scripts/run-in.ps1 windbell-web.vue clean build
-
-# docs build
-
-./scripts/run-in.ps1 windbell-docs.vitepress build

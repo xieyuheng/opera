@@ -10,6 +10,14 @@ The source lives in the repository `docs/` directory:
 
 ## Commands
 
+From the repository root:
+
+```sh
+./scripts/build-docs.sh
+```
+
+From this package:
+
 ```sh
 ./scripts/dev.sh
 ./scripts/build.sh
