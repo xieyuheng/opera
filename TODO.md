@@ -1,7 +1,8 @@
-# windbell-docs.vue
+# windbell-web.vue
 
-设置 windbell-docs.vue 项目，
-或 windbell-docs.vitepress 项目？
+[windbell-web.vue] 页面标题，以及页面章节标题，使用粗体
+
+- font-medium 或 font-semibold
 
 # windbell-web.vue
 

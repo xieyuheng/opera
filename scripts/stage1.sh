@@ -48,3 +48,7 @@ set -e
 # frontend build
 
 ./scripts/run-in.sh windbell-web.vue clean.sh build.sh
+
+# docs build
+
+./scripts/run-in.sh windbell-docs.vitepress build.sh

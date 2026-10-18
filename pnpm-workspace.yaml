@@ -1,6 +1,7 @@
 packages:
   - "packages/*.ts"
   - "packages/*.vue"
+  - "packages/*.vitepress"
 
 allowBuilds:
   esbuild: true
