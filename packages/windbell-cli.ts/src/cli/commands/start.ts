@@ -13,7 +13,7 @@ import process from "node:process"
 import { fileURLToPath } from "node:url"
 
 const defaultHostname = "localhost"
-const defaultPort = 4090
+const defaultPort = 3090
 const defaultCorsOrigin: string | undefined = undefined
 
 export function makeStartHandler() {

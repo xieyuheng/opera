@@ -20,7 +20,7 @@ export function resolveDevOptions(
     readOptionalString(options, "--host") ?? process.env.HOST ?? "localhost"
 
   const apiPort = parsePositiveInt(
-    readOptionalString(options, "--api-port") ?? process.env.API_PORT ?? "4090",
+    readOptionalString(options, "--api-port") ?? process.env.API_PORT ?? "3090",
   )
 
   const webPort = parsePositiveInt(
