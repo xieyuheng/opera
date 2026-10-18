@@ -1,19 +1,13 @@
-<script setup lang="ts">
-import type { Yaml } from "mdast"
-import { computed } from "vue"
+import { h } from "vue"
 import * as YAML from "yaml"
-import type { MarkdownState } from "../markdownState.ts"
+import type { Yaml } from "mdast"
+import type { MarkdownNodeRenderer } from "../types.ts"
 
 interface FrontmatterData {
   title: string | undefined
   authors: string[]
   date: string | undefined
 }
-
-const props = defineProps<{
-  node: Yaml
-  state: MarkdownState
-}>()
 
 function readString(value: unknown): string | undefined {
   if (typeof value === "string") return value
@@ -57,11 +51,11 @@ function readYear(value: unknown): string | undefined {
   return undefined
 }
 
-const frontmatter = computed<FrontmatterData | undefined>(() => {
+function readFrontmatter(node: Yaml): FrontmatterData | undefined {
   let value: unknown
 
   try {
-    value = YAML.parse(props.node.value)
+    value = YAML.parse(node.value)
   } catch {
     return undefined
   }
@@ -80,23 +74,26 @@ const frontmatter = computed<FrontmatterData | undefined>(() => {
   }
 
   return { title, authors, date }
-})
-</script>
+}
 
-<template>
-  <header v-if="frontmatter !== undefined" class="flex flex-col gap-1">
-    <div v-if="frontmatter.title" class="text-2xl font-semibold text-ink">
-      {{ frontmatter.title }}
-    </div>
+export const renderYaml: MarkdownNodeRenderer<Yaml> = (ctx, node) => {
+  const frontmatter = readFrontmatter(node)
 
-    <div v-if="frontmatter.authors.length > 0">
-      {{ frontmatter.authors.join(", ") }}
-    </div>
+  if (frontmatter === undefined) {
+    return h("pre", { class: "whitespace-pre-wrap font-mono" }, node.value)
+  }
 
-    <div v-if="frontmatter.date">
-      {{ frontmatter.date }}
-    </div>
-  </header>
-
-  <pre v-else class="whitespace-pre-wrap font-mono">{{ node.value }}</pre>
-</template>
+  return h("header", { class: "flex flex-col gap-1" }, [
+    frontmatter.title === undefined
+      ? null
+      : h(
+          "div",
+          { class: "text-2xl font-semibold text-ink" },
+          frontmatter.title,
+        ),
+    frontmatter.authors.length === 0
+      ? null
+      : h("div", null, frontmatter.authors.join(", ")),
+    frontmatter.date === undefined ? null : h("div", null, frontmatter.date),
+  ])
+}

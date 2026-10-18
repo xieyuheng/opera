@@ -1,20 +1,32 @@
-<script setup lang="ts">
-import type { Root } from "mdast"
-import { computed } from "vue"
-import MarkdownNode from "./MarkdownNode.vue"
+<script lang="ts">
+import { computed, defineComponent, h } from "vue"
 import { createMarkdownState } from "./markdownState.ts"
 import { parseMarkdown } from "./parseMarkdown.ts"
+import { createMarkdownRenderContext } from "./render/dispatch.ts"
 
-const props = defineProps<{
-  text: string
-}>()
+export default defineComponent({
+  name: "Markdown",
 
-const root = computed(() => parseMarkdown(props.text))
-const state = computed(() => createMarkdownState(root.value))
+  props: {
+    text: {
+      type: String,
+      required: true,
+    },
+  },
+
+  setup(props) {
+    const root = computed(() => parseMarkdown(props.text))
+    const ctx = computed(() =>
+      createMarkdownRenderContext(createMarkdownState(root.value)),
+    )
+
+    return () => {
+      return h(
+        "div",
+        { class: "text-ink" },
+        ctx.value.renderChildren(root.value.children),
+      )
+    }
+  },
+})
 </script>
-
-<template>
-  <div class="text-ink">
-    <MarkdownNode :node="root" :state="state" />
-  </div>
-</template>
