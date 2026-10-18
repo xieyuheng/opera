@@ -389,9 +389,9 @@ build_project() {
 }
 
 write_shims() {
-  mkdir -p "$BIN_DIR"
+  mkdir -p "$BIN_DIR" "$LIBEXEC_DIR"
 
-  cat > "$BIN_DIR/windbell-init.sh" <<'SH'
+  cat > "$LIBEXEC_DIR/windbell-init.sh" <<'SH'
 # windbell runtime init (POSIX sh)
 #
 # Sourced by windbell's bin shims. It resolves WINDBELL_HOME,
@@ -448,79 +448,37 @@ export PNPM_VERSION
 export PNPM_HOME
 SH
 
-  cat > "$BIN_DIR/node" <<'SH'
-#!/bin/sh
-set -eu
-_windbell_bin_dir="$(CDPATH= cd "$(dirname "$0")" && pwd)"
-if [ ! -f "$_windbell_bin_dir/windbell-init.sh" ]; then
-  _windbell_bin_dir="$HOME/.windbell/bin"
-fi
-WINDBELL_BIN_DIR="$_windbell_bin_dir"
-. "$WINDBELL_BIN_DIR/windbell-init.sh"
-exec "$NODE_HOME/bin/node" "$@"
-SH
-
-  cat > "$BIN_DIR/npm" <<'SH'
-#!/bin/sh
-set -eu
-_windbell_bin_dir="$(CDPATH= cd "$(dirname "$0")" && pwd)"
-if [ ! -f "$_windbell_bin_dir/windbell-init.sh" ]; then
-  _windbell_bin_dir="$HOME/.windbell/bin"
-fi
-WINDBELL_BIN_DIR="$_windbell_bin_dir"
-. "$WINDBELL_BIN_DIR/windbell-init.sh"
-export PATH="$NODE_HOME/bin:$PATH"
-export npm_config_cache="$WINDBELL_HOME/tmp/npm"
-export npm_config_prefix="$WINDBELL_HOME/lib/npm/global"
-exec "$NODE_HOME/bin/npm" "$@"
-SH
-
-  cat > "$BIN_DIR/pnpm" <<'SH'
-#!/bin/sh
-set -eu
-_windbell_bin_dir="$(CDPATH= cd "$(dirname "$0")" && pwd)"
-if [ ! -f "$_windbell_bin_dir/windbell-init.sh" ]; then
-  _windbell_bin_dir="$HOME/.windbell/bin"
-fi
-WINDBELL_BIN_DIR="$_windbell_bin_dir"
-. "$WINDBELL_BIN_DIR/windbell-init.sh"
-export PATH="$NODE_HOME/bin:$PATH"
-export npm_config_cache="$WINDBELL_HOME/tmp/npm"
-export npm_config_store_dir="$WINDBELL_HOME/lib/pnpm/store"
-exec "$PNPM_HOME/node_modules/.bin/pnpm" "$@"
-SH
-
   cat > "$BIN_DIR/semiosis" <<'SH'
 #!/bin/sh
 set -eu
 _windbell_bin_dir="$(CDPATH= cd "$(dirname "$0")" && pwd)"
-if [ ! -f "$_windbell_bin_dir/windbell-init.sh" ]; then
+if [ ! -f "$_windbell_bin_dir/../libexec/windbell-init.sh" ]; then
   _windbell_bin_dir="$HOME/.windbell/bin"
 fi
 WINDBELL_BIN_DIR="$_windbell_bin_dir"
-. "$WINDBELL_BIN_DIR/windbell-init.sh"
+. "$WINDBELL_BIN_DIR/../libexec/windbell-init.sh"
 export PATH="$NODE_HOME/bin:$PATH"
 export NODE_COMPILE_CACHE="$WINDBELL_HOME/tmp/node"
 export WINDBELL_DATABASE="${WINDBELL_DATABASE:-$WINDBELL_HOME/database}"
-exec node --stack-size=65536 "$WINDBELL_HOME/src/windbell/packages/semiosis.js/src/main.ts" "$@"
+exec "$NODE_HOME/bin/node" --stack-size=65536 "$WINDBELL_HOME/src/windbell/packages/semiosis.js/src/main.ts" "$@"
 SH
 
   cat > "$BIN_DIR/windbell" <<'SH'
 #!/bin/sh
 set -eu
 _windbell_bin_dir="$(CDPATH= cd "$(dirname "$0")" && pwd)"
-if [ ! -f "$_windbell_bin_dir/windbell-init.sh" ]; then
+if [ ! -f "$_windbell_bin_dir/../libexec/windbell-init.sh" ]; then
   _windbell_bin_dir="$HOME/.windbell/bin"
 fi
 WINDBELL_BIN_DIR="$_windbell_bin_dir"
-. "$WINDBELL_BIN_DIR/windbell-init.sh"
+. "$WINDBELL_BIN_DIR/../libexec/windbell-init.sh"
 export PATH="$NODE_HOME/bin:$PATH"
 export NODE_COMPILE_CACHE="$WINDBELL_HOME/tmp/node"
 export WINDBELL_DATABASE="${WINDBELL_DATABASE:-$WINDBELL_HOME/database}"
-exec node "$WINDBELL_HOME/src/windbell/packages/windbell-cli.js/src/main.ts" "$@"
+exec "$NODE_HOME/bin/node" "$WINDBELL_HOME/src/windbell/packages/windbell-cli.js/src/main.ts" "$@"
 SH
 
-  chmod +x "$BIN_DIR/windbell-init.sh" "$BIN_DIR/node" "$BIN_DIR/npm" "$BIN_DIR/pnpm" "$BIN_DIR/semiosis" "$BIN_DIR/windbell"
+  chmod +x "$BIN_DIR/semiosis" "$BIN_DIR/windbell"
 }
 
 init_database() {
@@ -544,9 +502,11 @@ final_message() {
   printf '  source:   %s\n' "$SRC_DIR"
   printf '  database: %s\n' "$DB_DIR"
   printf '\n'
-  printf 'Add this to your shell profile if you want the commands in PATH:\n'
+  printf 'Add this to your shell profile if you want windbell commands in PATH:\n'
   printf '\n'
   printf '  export PATH="%s/bin:$PATH"\n' "$WINDBELL_HOME"
+  printf '\n'
+  printf 'This directory contains only windbell commands; Node, npm, and pnpm are not exposed.\n'
   printf '\n'
 }
 
@@ -599,6 +559,7 @@ main() {
 
   SRC_DIR="$WINDBELL_HOME/src/windbell"
   LIB_DIR="$WINDBELL_HOME/lib"
+  LIBEXEC_DIR="$WINDBELL_HOME/libexec"
   BIN_DIR="$WINDBELL_HOME/bin"
   TMP_DIR="$WINDBELL_HOME/tmp"
   DB_DIR="$WINDBELL_HOME/database"
@@ -614,7 +575,7 @@ main() {
     *) WINDBELL_NODE_VERSION="v$WINDBELL_NODE_VERSION" ;;
   esac
 
-  mkdir -p "$LIB_DIR" "$BIN_DIR" "$TMP_DIR/download" "$TMP_DIR/npm" \
+  mkdir -p "$LIB_DIR" "$LIBEXEC_DIR" "$BIN_DIR" "$TMP_DIR/download" "$TMP_DIR/npm" \
     "$TMP_DIR/node" "$TMP_DIR/pnpm" \
     "$LIB_DIR/node" "$LIB_DIR/pnpm" "$LIB_DIR/pnpm/store" "$LIB_DIR/npm" "$LIB_DIR/npm/global"
 

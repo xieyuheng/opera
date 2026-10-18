@@ -390,12 +390,10 @@ function Invoke-BuildProject {
 # shims
 
 function Write-Shims {
-  New-Item -ItemType Directory -Force -Path $script:BinDir | Out-Null
+  New-Item -ItemType Directory -Force -Path $script:BinDir, $script:LibexecDir | Out-Null
 
   $ascii = [Text.Encoding]::ASCII
-  $shims = [ordered]@{}
-
-  $shims['windbell-init.cmd'] = @(
+  $init = @(
     '@echo off'
     'rem windbell runtime init (Windows cmd)'
     'rem'
@@ -432,34 +430,26 @@ function Write-Shims {
     'exit /b 0'
   )
 
+  [IO.File]::WriteAllText(
+    (Join-Path $script:LibexecDir 'windbell-init.cmd'),
+    (($init -join "`r`n") + "`r`n"),
+    $ascii
+  )
+
+  $shims = [ordered]@{}
+
   $preamble = @(
     '@echo off'
     'setlocal'
     'set "WINDBELL_BIN_DIR=%~dp0"'
-    'if not exist "%WINDBELL_BIN_DIR%windbell-init.cmd" set "WINDBELL_BIN_DIR=%USERPROFILE%\.windbell\bin\"'
-    'call "%WINDBELL_BIN_DIR%windbell-init.cmd"'
+    'set "WINDBELL_INIT=%WINDBELL_BIN_DIR%..\libexec\windbell-init.cmd"'
+    'if not exist "%WINDBELL_INIT%" set "WINDBELL_INIT=%USERPROFILE%\.windbell\libexec\windbell-init.cmd"'
+    'if not exist "%WINDBELL_INIT%" ('
+    '  >&2 echo windbell: cannot find windbell-init.cmd'
+    '  exit /b 1'
+    ')'
+    'call "%WINDBELL_INIT%"'
     'if errorlevel 1 exit /b 1'
-  )
-
-  $shims['node.cmd'] = $preamble + @(
-    '"%NODE_HOME%\node.exe" %*'
-    'exit /b %ERRORLEVEL%'
-  )
-
-  $shims['npm.cmd'] = $preamble + @(
-    'set "PATH=%NODE_HOME%;%PATH%"'
-    'set "npm_config_cache=%WINDBELL_HOME%\tmp\npm"'
-    'set "npm_config_prefix=%WINDBELL_HOME%\lib\npm\global"'
-    '"%NODE_HOME%\npm.cmd" %*'
-    'exit /b %ERRORLEVEL%'
-  )
-
-  $shims['pnpm.cmd'] = $preamble + @(
-    'set "PATH=%NODE_HOME%;%PATH%"'
-    'set "npm_config_cache=%WINDBELL_HOME%\tmp\npm"'
-    'set "npm_config_store_dir=%WINDBELL_HOME%\lib\pnpm\store"'
-    '"%PNPM_HOME%\node_modules\.bin\pnpm.cmd" %*'
-    'exit /b %ERRORLEVEL%'
   )
 
   $shims['semiosis.cmd'] = $preamble + @(
@@ -510,9 +500,11 @@ function Write-FinalMessage {
   Write-Host "  database: $script:DbDir"
 
   Write-Host ''
-  Write-Host 'Add this directory to your PATH if you want the commands available:'
+  Write-Host 'Add this directory to your PATH if you want windbell commands available:'
   Write-Host ''
   Write-Host "  $script:BinDir"
+  Write-Host ''
+  Write-Host 'This directory contains only windbell commands; Node, npm, and pnpm are not exposed.'
   Write-Host ''
 }
 
@@ -570,6 +562,7 @@ function Main {
 
   $script:SrcDir = Join-Path $script:WindbellHome 'src\windbell'
   $script:LibDir = Join-Path $script:WindbellHome 'lib'
+  $script:LibexecDir = Join-Path $script:WindbellHome 'libexec'
   $script:BinDir = Join-Path $script:WindbellHome 'bin'
   $script:TmpDir = Join-Path $script:WindbellHome 'tmp'
   $script:DbDir  = Join-Path $script:WindbellHome 'database'
@@ -578,7 +571,7 @@ function Main {
 
   if ($script:NodeVersion -notlike 'v*') { $script:NodeVersion = "v$script:NodeVersion" }
 
-  New-Item -ItemType Directory -Force -Path $script:LibDir, $script:BinDir,
+  New-Item -ItemType Directory -Force -Path $script:LibDir, $script:LibexecDir, $script:BinDir,
     (Join-Path $script:TmpDir 'download'), (Join-Path $script:TmpDir 'npm'),
     (Join-Path $script:TmpDir 'node'), (Join-Path $script:TmpDir 'pnpm'),
     (Join-Path $script:LibDir 'node'), (Join-Path $script:LibDir 'pnpm'),
