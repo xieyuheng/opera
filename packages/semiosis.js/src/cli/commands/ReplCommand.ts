@@ -5,6 +5,7 @@ import { resumeAgentRepl, startAgentRepl } from "../../agent-repl/index.ts"
 import { makeTtyRepl } from "../../repls/index.ts"
 import { readOptionalOption } from "../options.ts"
 import { ensureWorkspace, makeModelFromOptions } from "../shared.ts"
+import { loadSessionWorkspace } from "../../session/index.ts"
 
 export type ReplCommandOptions = {
   database: Database
@@ -17,12 +18,17 @@ export function makeReplHandler(options: ReplCommandOptions) {
       database: options.database,
       cliOptions: context.options,
     })
-    const workspace = await ensureWorkspace({
-      database: options.database,
-      cwd: process.cwd(),
-    })
-
     const sessionId = readOptionalOption(context.options, "--session")
+    const workspace =
+      sessionId === undefined
+        ? await ensureWorkspace({
+            database: options.database,
+            cwd: process.cwd(),
+          })
+        : await loadSessionWorkspace({
+            database: options.database,
+            sessionId,
+          })
 
     printReplHeader({
       name: context.router.name,

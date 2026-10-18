@@ -31,6 +31,27 @@ export async function loadSession(
   return session
 }
 
+export async function loadSessionWorkspace(options: {
+  database: Database
+  sessionId: SessionId
+}): Promise<Workspace> {
+  const session = unwrap(await options.database.sessions.get(options.sessionId))
+
+  if (session === undefined) {
+    throw new Error(`session not found: ${options.sessionId}`)
+  }
+
+  const workspace = unwrap(
+    await options.database.workspaces.get(session.workspaceId),
+  )
+
+  if (workspace === undefined) {
+    throw new Error(`workspace not found: ${session.workspaceId}`)
+  }
+
+  return workspace
+}
+
 export type CreateSessionOptions = {
   database: Database
   workspace: Workspace
