@@ -9,9 +9,11 @@
     "trailingComma": "all"
   },
   "devDependencies": {
-    "@types/node": "26.6.5",
-    "prettier": "3.9.10",
-    "vitepress": "1.6.4",
-    "vue": "3.5.44"
+    "@types/node": "^26.6.5",
+    "gray-matter": "^4.0.3",
+    "prettier": "^3.9.10",
+    "vitepress": "^1.6.4",
+    "vue": "^3.5.44",
+    "wrangler": "^4.151.1"
   }
 }

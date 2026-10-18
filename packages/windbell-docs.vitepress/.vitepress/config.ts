@@ -16,14 +16,11 @@ const vueServerRenderer = require.resolve("vue/server-renderer")
 
 export default defineConfig({
   srcDir: docsDir,
-  outDir: resolve(repoRoot, "build/docs"),
-  cacheDir: resolve(repoRoot, "build/docs-cache"),
-
   cleanUrls: true,
-
   rewrites: {
     "diary/:rest*": "zh/diary/:rest*",
   },
+
   vite: {
     resolve: {
       alias: [
