@@ -1,10 +1,17 @@
 import type { z } from "zod"
 import { HttpRequestError, isHttpStatus } from "./HttpRequestError.ts"
-import { type HttpMethod, makeUrl, requestJson } from "./request.ts"
+import {
+  mergeHeaders,
+  type HttpMethod,
+  makeUrl,
+  requestJson,
+} from "./request.ts"
+
+export type HeaderSource = HeadersInit | (() => HeadersInit)
 
 export type HttpClientConfig = {
   baseUrl: string
-  key?: string
+  headers?: HeaderSource
 }
 
 export type JsonEndpointOptions<Input, Output> = {
@@ -13,7 +20,13 @@ export type JsonEndpointOptions<Input, Output> = {
   query?: (input: Input) => URLSearchParams
   body?: (input: Input) => unknown
   output: z.ZodType<Output>
-  headers?: Headers | ((input: Input) => Headers)
+  headers?: HeadersInit | ((input: Input) => HeadersInit)
+}
+
+export function resolveHeaders(
+  source: HeaderSource | undefined,
+): HeadersInit | undefined {
+  return typeof source === "function" ? source() : source
 }
 
 export type JsonEndpoint<Input, Output> = (input?: Input) => Promise<Output>
@@ -45,7 +58,7 @@ export function makeJsonEndpoint<Input = void, Output = unknown>(
         path,
         query,
         body,
-        headers: endpointHeaders,
+        headers: mergeHeaders(resolveHeaders(config.headers), endpointHeaders),
       })
 
       const result = options.output.safeParse(value)

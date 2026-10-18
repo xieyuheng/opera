@@ -1,3 +1,4 @@
+export * from "./auth/index.ts"
 export * from "./api/types.ts"
 export * from "./client/index.ts"
 export * from "./controllers/index.ts"

@@ -1,12 +1,8 @@
-import { makeHttpFileSystemClient } from "@windbell/fs-api.js/client"
+import { windbellFs as fs } from "../../../app/fs.ts"
 import type { FileSystemEntry } from "@windbell/fs.js/fs"
 import type { Component } from "vue"
 import MarkdownView from "./MarkdownView.vue"
 import TextView from "./TextView.vue"
-
-const fs = makeHttpFileSystemClient({
-  baseUrl: "/api/fs",
-})
 
 const textExtensions = new Set([
   "bash",

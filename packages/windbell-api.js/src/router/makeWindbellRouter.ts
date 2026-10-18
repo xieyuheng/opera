@@ -14,6 +14,8 @@ import { makePwsh } from "@windbell/sh.js/pwsh"
 import { Hono } from "hono"
 import { cors } from "hono/cors"
 import Path from "node:path"
+import { makeAccessTokenStore } from "../auth/AccessToken.ts"
+import { makeBearerAuth } from "../auth/bearerAuth.ts"
 import { makeConfigController } from "../controllers/ConfigController.ts"
 import { makeHealthController } from "../controllers/HealthController.ts"
 import type { WindbellRouterOptions } from "./WindbellRouterOptions.ts"
@@ -45,8 +47,22 @@ export function makeWindbellRouter(options: WindbellRouterOptions): Hono {
   })
 
   if (options.corsOrigin !== undefined) {
-    app.use("*", cors({ origin: options.corsOrigin }))
+    app.use(
+      "*",
+      cors({
+        origin: options.corsOrigin,
+        allowHeaders: ["Content-Type", "Authorization"],
+        allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      }),
+    )
   }
+
+  app.use(
+    "/api/*",
+    makeBearerAuth({
+      store: makeAccessTokenStore({ database: options.database }),
+    }),
+  )
 
   app.get("/api/health", () => health.get({}))
 

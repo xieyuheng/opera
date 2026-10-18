@@ -1,7 +1,10 @@
 import {
   makeJsonEndpoint,
+  mergeHeaders,
   requestNdjson,
+  resolveHeaders,
   withNotFoundAsUndefined,
+  type HeaderSource,
 } from "@windbell/http.js"
 import type * as S from "@windbell/semiosis.js"
 import { z } from "zod"
@@ -19,6 +22,7 @@ import { JsonDataSchema, VoidSchema } from "./schemas.ts"
 
 export type WindbellClientConfig = {
   baseUrl: string
+  headers?: HeaderSource
 }
 
 export type WindbellClient = {
@@ -298,6 +302,7 @@ export function makeWindbellClient(
           turnId: options.turnId,
           input: options.input,
         },
+        headers: mergeHeaders(resolveHeaders(config.headers)),
         signal: options.signal,
       })) {
         yield event

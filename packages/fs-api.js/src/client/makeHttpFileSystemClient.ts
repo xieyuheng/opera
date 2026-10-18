@@ -1,8 +1,11 @@
 import {
   HttpRequestError,
   makeJsonEndpoint,
+  mergeHeaders,
   requestServerSentEvents,
+  resolveHeaders,
   sendRequest,
+  type HeaderSource,
   type ServerSentEvent,
 } from "@windbell/http.js"
 import type { JsonObject } from "@windbell/std.js/json"
@@ -32,6 +35,7 @@ import {
 
 export type HttpFileSystemClientConfig = {
   baseUrl: string
+  headers?: HeaderSource
 }
 
 type PathInput = {
@@ -51,6 +55,10 @@ type RenameInput = {
 export function makeHttpFileSystemClient(
   config: HttpFileSystemClientConfig,
 ): FileSystem {
+  function requestHeaders(...sources: Array<HeadersInit | undefined>): Headers {
+    return mergeHeaders(resolveHeaders(config.headers), ...sources)
+  }
+
   const platformEndpoint = makeJsonEndpoint<
     void,
     Result<FileSystemPlatform, FileSystemError>
@@ -262,7 +270,7 @@ export function makeHttpFileSystemClient(
         baseUrl: config.baseUrl,
         method: "POST",
         path: "/read-bytes",
-        headers: new Headers({
+        headers: requestHeaders({
           "Content-Type": "application/json",
         }),
         body: JSON.stringify({ path }),
@@ -288,6 +296,7 @@ export function makeHttpFileSystemClient(
         method: "POST",
         path: "/write-bytes",
         query: new URLSearchParams({ path }),
+        headers: requestHeaders(),
         body: bytes as BodyInit,
       })
 
@@ -329,6 +338,7 @@ export function makeHttpFileSystemClient(
           method: "POST",
           path: "/watch",
           body: { path },
+          headers: requestHeaders(),
           signal: options.signal,
         })) {
           const watchEvent = parseFileSystemWatchEvent(event, path)

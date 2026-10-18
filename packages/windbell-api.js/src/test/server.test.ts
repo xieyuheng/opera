@@ -7,6 +7,7 @@ import Path from "node:path"
 import process from "node:process"
 import { test } from "node:test"
 import * as S from "@windbell/semiosis.js"
+import { makeAccessTokenStore } from "../auth/AccessToken.ts"
 import { makeWindbellRouter } from "../router/index.ts"
 import { unwrap } from "@windbell/std.js/result"
 
@@ -18,11 +19,22 @@ test("windbell router", async (t) => {
     root,
   })
   const lockRoot = Path.join(root, "locks")
+  const accessTokenStore = makeAccessTokenStore({ database })
+  const accessToken = await accessTokenStore.create()
+  const expiredAccessToken = await accessTokenStore.create({
+    expiredAt: Date.now() - 1,
+  })
   const app = makeWindbellRouter({
     database,
     corsOrigin: undefined,
     lockRoot,
   })
+
+  function request(path: string, init?: RequestInit): Promise<Response> {
+    const headers = new Headers(init?.headers)
+    headers.set("Authorization", `Bearer ${accessToken.value}`)
+    return Promise.resolve(app.request(path, { ...init, headers }))
+  }
 
   t.after(async () => {
     await rm(root, { recursive: true, force: true })
@@ -30,15 +42,56 @@ test("windbell router", async (t) => {
 
   {
     const response = await app.request("/api/health")
+    assert.equal(response.status, 401)
+    assert.equal(
+      response.headers.get("WWW-Authenticate"),
+      'Bearer realm="windbell"',
+    )
+
+    const queryTokenResponse = await app.request(
+      `/api/health?token=${accessToken.value}`,
+    )
+    assert.equal(queryTokenResponse.status, 401)
+
+    const wrongTokenResponse = await app.request("/api/health", {
+      headers: {
+        Authorization: "Bearer wrong-token",
+      },
+    })
+    assert.equal(wrongTokenResponse.status, 401)
+
+    const expiredTokenResponse = await app.request("/api/health", {
+      headers: {
+        Authorization: `Bearer ${expiredAccessToken.value}`,
+      },
+    })
+    assert.equal(expiredTokenResponse.status, 401)
+  }
+
+  {
+    const response = await request("/api/health")
     assert.equal(response.status, 200)
     assert.deepEqual(await response.json(), {
       ok: true,
       service: "windbell-api",
     })
+
+    const stored = await accessTokenStore.get(accessToken.value)
+    assert.ok(stored !== undefined)
+    assert.ok(stored.updatedAt >= accessToken.updatedAt)
+
+    const lateAccessToken = await accessTokenStore.create()
+    const lateResponse = await app.request("/api/health", {
+      headers: {
+        Authorization: `Bearer ${lateAccessToken.value}`,
+      },
+    })
+    assert.equal(lateResponse.status, 200)
+    await accessTokenStore.remove(lateAccessToken.value)
   }
 
   {
-    const response = await app.request("/api/fs/exists", {
+    const response = await request("/api/fs/exists", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -56,7 +109,7 @@ test("windbell router", async (t) => {
   }
 
   {
-    const createResponse = await app.request("/api/themes", {
+    const createResponse = await request("/api/themes", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -82,12 +135,12 @@ test("windbell router", async (t) => {
     assert.equal(created.name, "Test Theme")
     assert.match(created.id, /^theme-/)
 
-    const listResponse = await app.request("/api/themes")
+    const listResponse = await request("/api/themes")
     assert.equal(listResponse.status, 200)
     const themes = (await listResponse.json()) as Array<{ id: string }>
     assert.equal(themes.length, 1)
 
-    const updateResponse = await app.request(`/api/themes/${created.id}`, {
+    const updateResponse = await request(`/api/themes/${created.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -111,18 +164,18 @@ test("windbell router", async (t) => {
       "Updated Theme",
     )
 
-    const deleteResponse = await app.request(`/api/themes/${created.id}`, {
+    const deleteResponse = await request(`/api/themes/${created.id}`, {
       method: "DELETE",
     })
     assert.equal(deleteResponse.status, 204)
 
-    const emptyListResponse = await app.request("/api/themes")
+    const emptyListResponse = await request("/api/themes")
     assert.equal(emptyListResponse.status, 200)
     assert.deepEqual(await emptyListResponse.json(), [])
   }
 
   {
-    const response = await app.request("/api/settings")
+    const response = await request("/api/settings")
     assert.equal(response.status, 200)
     assert.deepEqual(await response.json(), {
       defaultProvider: null,
@@ -144,7 +197,7 @@ test("windbell router", async (t) => {
       }),
     )
 
-    const homeResponse = await app.request("/api/pages/home")
+    const homeResponse = await request("/api/pages/home")
     assert.equal(homeResponse.status, 200)
     const home = (await homeResponse.json()) as {
       workspaces: Array<{ id: string }>
@@ -159,7 +212,7 @@ test("windbell router", async (t) => {
       session.id,
     )
 
-    const workspaceResponse = await app.request(
+    const workspaceResponse = await request(
       `/api/pages/workspaces/${pageWorkspace.id}`,
     )
     assert.equal(workspaceResponse.status, 200)
@@ -170,9 +223,7 @@ test("windbell router", async (t) => {
     assert.equal(workspaceData.workspace.id, pageWorkspace.id)
     assert.equal(workspaceData.sessions[0]?.id, session.id)
 
-    const sessionResponse = await app.request(
-      `/api/pages/sessions/${session.id}`,
-    )
+    const sessionResponse = await request(`/api/pages/sessions/${session.id}`)
     assert.equal(sessionResponse.status, 200)
     const sessionData = (await sessionResponse.json()) as {
       session: { id: string }
@@ -181,7 +232,7 @@ test("windbell router", async (t) => {
     assert.equal(sessionData.session.id, session.id)
     assert.equal(sessionData.workspace.id, pageWorkspace.id)
 
-    const createSessionResponse = await app.request("/api/sessions", {
+    const createSessionResponse = await request("/api/sessions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -198,7 +249,7 @@ test("windbell router", async (t) => {
     }
     assert.equal(createdSession.title, "created-through-domain-api")
 
-    const domainSessionsResponse = await app.request("/api/sessions")
+    const domainSessionsResponse = await request("/api/sessions")
     assert.equal(domainSessionsResponse.status, 200)
     const domainSessions = (await domainSessionsResponse.json()) as Array<{
       id: string
@@ -234,11 +285,11 @@ test("windbell router", async (t) => {
     }
     unwrap(await database.sessions.putStep(step))
 
-    const turnsResponse = await app.request(`/api/sessions/${session.id}/turns`)
+    const turnsResponse = await request(`/api/sessions/${session.id}/turns`)
     assert.equal(turnsResponse.status, 200)
     assert.deepEqual(await turnsResponse.json(), [turn])
 
-    const turnDetailsResponse = await app.request(
+    const turnDetailsResponse = await request(
       `/api/sessions/${session.id}/turns?details`,
     )
     assert.equal(turnDetailsResponse.status, 200)
@@ -248,7 +299,7 @@ test("windbell router", async (t) => {
   }
 
   {
-    const response = await app.request("/api/config")
+    const response = await request("/api/config")
 
     assert.equal(response.status, 200)
     assert.deepEqual(await response.json(), {

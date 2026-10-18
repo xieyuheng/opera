@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { makeHttpFileSystemClient } from "@windbell/fs-api.js/client"
+import { windbellFs as fs } from "../../app/fs.ts"
 import type { FileSystemEntry } from "@windbell/fs.js/fs"
 import { unwrap } from "@windbell/std.js/result"
 import type { Component } from "vue"
@@ -19,10 +19,6 @@ type DisplayedRangerView = {
 const props = defineProps<{
   entry: FileSystemEntry | undefined
 }>()
-
-const fs = makeHttpFileSystemClient({
-  baseUrl: "/api/fs",
-})
 
 const { t } = useI18n({
   messages: rangerMessages,

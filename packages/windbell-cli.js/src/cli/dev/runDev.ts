@@ -1,7 +1,12 @@
 import * as S from "@windbell/semiosis.js"
 import { makeLocalFileSystem } from "@windbell/fs.js/local-fs"
 import { makePath } from "@windbell/std.js/path"
-import { closeServer, startWindbellServer } from "@windbell/windbell-api.js"
+import {
+  closeServer,
+  makeAccessTokenStore,
+  startWindbellServer,
+} from "@windbell/windbell-api.js"
+import { formatLocalDateTime, makeAccessTokenUrl } from "../startLog.ts"
 import Path from "node:path"
 import process from "node:process"
 import { createServer, type ViteDevServer } from "vite"
@@ -14,6 +19,9 @@ export async function runDev(options: DevOptions): Promise<void> {
     path: makePath(process.platform === "win32" ? "win32" : "posix"),
     root: options.databaseRoot,
   })
+
+  const accessTokenStore = makeAccessTokenStore({ database })
+  const accessToken = await accessTokenStore.create()
 
   const { server: apiServer } = await startWindbellServer({
     database,
@@ -42,10 +50,14 @@ export async function runDev(options: DevOptions): Promise<void> {
   })
 
   await viteServer.listen()
-  viteServer.printUrls()
-  console.log(
-    `windbell api listening on http://${options.hostname}:${options.apiPort}`,
-  )
+
+  const url = makeAccessTokenUrl({
+    hostname: options.hostname,
+    port: options.webPort,
+    token: accessToken.value,
+  })
+
+  console.log(`${formatLocalDateTime(new Date())} windbell dev: ${url}`)
 
   installShutdownHandlers({
     apiServer,

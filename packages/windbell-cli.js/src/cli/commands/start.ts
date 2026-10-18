@@ -2,14 +2,18 @@ import type * as Cli from "@windbell/cli.js"
 import { makeLocalFileSystem } from "@windbell/fs.js/local-fs"
 import { makePath } from "@windbell/std.js/path"
 import * as S from "@windbell/semiosis.js"
-import { startWindbellServer } from "@windbell/windbell-api.js"
+import {
+  makeAccessTokenStore,
+  startWindbellServer,
+} from "@windbell/windbell-api.js"
+import { formatLocalDateTime, makeAccessTokenUrl } from "../startLog.ts"
 import { existsSync } from "node:fs"
 import Path from "node:path"
 import process from "node:process"
 import { fileURLToPath } from "node:url"
 
-const defaultHostname = "127.0.0.1"
-const defaultPort = 3000
+const defaultHostname = "localhost"
+const defaultPort = 4090
 const defaultCorsOrigin: string | undefined = undefined
 
 export function makeStartHandler() {
@@ -51,6 +55,9 @@ export function makeStartHandler() {
       root: appPaths.databaseRoot,
     })
 
+    const accessTokenStore = makeAccessTokenStore({ database })
+    const accessToken = await accessTokenStore.create()
+
     const { info } = await startWindbellServer({
       database,
       hostname,
@@ -61,7 +68,13 @@ export function makeStartHandler() {
       webDistRoot,
     })
 
-    console.log(`windbell listening on http://${info.address}:${info.port}`)
+    const url = makeAccessTokenUrl({
+      hostname,
+      port: info.port,
+      token: accessToken.value,
+    })
+
+    console.log(`${formatLocalDateTime(new Date())} windbell start: ${url}`)
   }
 }
 

@@ -1,3 +1,5 @@
+import { ACCESS_TOKEN_STORAGE_KEY } from "../../app/auth.ts"
+
 export type StorageGroup = "app" | "ranger" | "session" | "other"
 
 export type StorageEntry = {
@@ -13,6 +15,7 @@ export function readWindbellStorage(): Array<StorageEntry> {
   for (let index = 0; index < localStorage.length; index += 1) {
     const key = localStorage.key(index)
     if (key === null || !key.startsWith("windbell.")) continue
+    if (key === ACCESS_TOKEN_STORAGE_KEY) continue
 
     const value = localStorage.getItem(key) ?? ""
     entries.push({

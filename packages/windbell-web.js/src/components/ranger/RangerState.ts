@@ -1,4 +1,4 @@
-import { makeHttpFileSystemClient } from "@windbell/fs-api.js/client"
+import { windbellFs as fs } from "../../app/fs.ts"
 import type { FileSystemEntry } from "@windbell/fs.js/fs"
 import { reactive } from "vue"
 import { isSamePath, parentPath } from "./RangerPath.ts"
@@ -23,10 +23,6 @@ export type RangerState = {
   requestId: number
   error: string | undefined
 }
-
-const fs = makeHttpFileSystemClient({
-  baseUrl: "/api/fs",
-})
 
 export function makeRangerState(
   root: string,

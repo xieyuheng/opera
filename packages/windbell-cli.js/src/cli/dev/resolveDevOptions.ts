@@ -17,10 +17,10 @@ export function resolveDevOptions(
   options: Record<string, unknown>,
 ): DevOptions {
   const hostname =
-    readOptionalString(options, "--host") ?? process.env.HOST ?? "127.0.0.1"
+    readOptionalString(options, "--host") ?? process.env.HOST ?? "localhost"
 
   const apiPort = parsePositiveInt(
-    readOptionalString(options, "--api-port") ?? process.env.API_PORT ?? "3000",
+    readOptionalString(options, "--api-port") ?? process.env.API_PORT ?? "4090",
   )
 
   const webPort = parsePositiveInt(

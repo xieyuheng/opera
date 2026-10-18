@@ -62,7 +62,9 @@ test("makeJsonEndpoint builds a JSON request and parses the response", async (t)
   const address = server.address() as AddressInfo
   const config = {
     baseUrl: `http://127.0.0.1:${address.port}`,
-    key: "secret",
+    headers: new Headers({
+      Authorization: "Bearer secret",
+    }),
   }
 
   const endpoint = makeJsonEndpoint<
@@ -80,9 +82,6 @@ test("makeJsonEndpoint builds a JSON request and parses the response", async (t)
       message: input.message,
     }),
     output: outputSchema,
-    headers: new Headers({
-      Authorization: `Bearer ${config.key}`,
-    }),
   })
 
   const output = await endpoint({

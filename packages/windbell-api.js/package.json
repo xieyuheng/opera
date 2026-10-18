@@ -32,6 +32,7 @@
     "./client": "./src/client/index.ts",
     "./router": "./src/router/index.ts",
     "./server": "./src/server/index.ts",
-    "./service": "./src/services/index.ts"
+    "./service": "./src/services/index.ts",
+    "./auth": "./src/auth/index.ts"
   }
 }
