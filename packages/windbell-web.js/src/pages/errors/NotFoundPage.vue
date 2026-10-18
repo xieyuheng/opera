@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue"
+import MediumButton from "../../components/buttons/MediumButton.vue"
 import PageLayout from "../../components/layout/PageLayout.vue"
 import { useI18n } from "vue-i18n"
 import { notFoundPageMessages } from "./NotFoundPage.i18n.ts"
-import BackButton from "../../components/buttons/BackButton.vue"
 
 const { t } = useI18n({
   messages: notFoundPageMessages,
@@ -27,7 +27,9 @@ useHead(() => ({
       <h1 class="text-xl text-ink">404</h1>
 
       <div class="flex flex-wrap items-center gap-2">
-        <BackButton :to="{ name: 'home' }" />
+        <MediumButton :to="{ name: 'home' }">
+          <span>{{ t("app.back") }}</span>
+        </MediumButton>
       </div>
     </header>
   </PageLayout>

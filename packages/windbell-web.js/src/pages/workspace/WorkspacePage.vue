@@ -5,7 +5,6 @@ import PageLayout from "../../components/layout/PageLayout.vue"
 import { computed, ref } from "vue"
 import { useI18n } from "vue-i18n"
 import { useRoute, useRouter } from "vue-router"
-import BackButton from "../../components/buttons/BackButton.vue"
 import MediumButton from "../../components/buttons/MediumButton.vue"
 import Composer from "../../components/composer/Composer.vue"
 import { sendSessionMessage } from "../session/SessionInbox.ts"
@@ -141,7 +140,9 @@ useHead(() => ({
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
-        <BackButton :to="{ name: 'home' }" />
+        <MediumButton :to="{ name: 'home' }">
+          <span>{{ t("app.back") }}</span>
+        </MediumButton>
 
         <MediumButton
           v-if="state.workspace"

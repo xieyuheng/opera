@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue"
 import { useI18n } from "vue-i18n"
-import BackButton from "../../components/buttons/BackButton.vue"
+import MediumButton from "../../components/buttons/MediumButton.vue"
 import PageLayout from "../../components/layout/PageLayout.vue"
 import ProviderCard from "./ProviderCard.vue"
 import { providerListMessages } from "./ProviderList.i18n.ts"
@@ -65,7 +65,9 @@ useHead(() => ({
       </h1>
 
       <div class="flex flex-wrap items-center gap-2">
-        <BackButton :to="{ name: 'settings' }" />
+        <MediumButton :to="{ name: 'settings' }">
+          <span>{{ t("app.back") }}</span>
+        </MediumButton>
       </div>
     </header>
 

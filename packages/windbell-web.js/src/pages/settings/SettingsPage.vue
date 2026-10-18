@@ -5,7 +5,6 @@ import { computed, ref } from "vue"
 import { useI18n } from "vue-i18n"
 import MediumButton from "../../components/buttons/MediumButton.vue"
 import Card from "../../components/card/Card.vue"
-import BackButton from "../../components/buttons/BackButton.vue"
 import { useFont, type Font } from "../../app/font.ts"
 import { setLocale, supportedLocales } from "../../app/i18n.ts"
 import { useColorMode, type ColorModePreference } from "../../app/color-mode.ts"
@@ -108,7 +107,9 @@ useHead(() => ({
       </h1>
 
       <div class="flex flex-wrap items-center gap-2">
-        <BackButton :to="{ name: 'home' }" />
+        <MediumButton :to="{ name: 'home' }">
+          <span>{{ t("app.back") }}</span>
+        </MediumButton>
 
         <MediumButton :to="{ name: 'provider-list' }">
           <span>{{ t("providerList") }}</span>

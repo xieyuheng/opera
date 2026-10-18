@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type * as S from "@windbell/semiosis.js/core"
 import { useHead } from "@unhead/vue"
+import MediumButton from "../../components/buttons/MediumButton.vue"
 import PageLayout from "../../components/layout/PageLayout.vue"
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
-import BackButton from "../../components/buttons/BackButton.vue"
 import DustbinWorkspaceCard from "./DustbinWorkspaceCard.vue"
 import { workspaceDustbinMessages } from "./WorkspaceDustbin.i18n.ts"
 import {
@@ -61,7 +61,9 @@ useHead(() => ({
       </h1>
 
       <div class="flex flex-wrap items-center gap-2">
-        <BackButton :to="{ name: 'home' }" />
+        <MediumButton :to="{ name: 'home' }">
+          <span>{{ t("app.back") }}</span>
+        </MediumButton>
       </div>
     </header>
 

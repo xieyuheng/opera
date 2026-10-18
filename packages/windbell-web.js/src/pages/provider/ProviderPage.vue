@@ -2,7 +2,6 @@
 import { useHead } from "@unhead/vue"
 import { useI18n } from "vue-i18n"
 import { useRoute } from "vue-router"
-import BackButton from "../../components/buttons/BackButton.vue"
 import MediumButton from "../../components/buttons/MediumButton.vue"
 import PageLayout from "../../components/layout/PageLayout.vue"
 import ModelCard from "./ModelCard.vue"
@@ -108,7 +107,9 @@ useHead(() => ({
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
-        <BackButton :to="{ name: 'provider-list' }" />
+        <MediumButton :to="{ name: 'provider-list' }">
+          <span>{{ t("app.back") }}</span>
+        </MediumButton>
 
         <template v-if="state.providerConfig">
           <MediumButton

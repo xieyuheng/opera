@@ -284,10 +284,7 @@ useHead(() => ({
           :style="{ top: 'calc(env(safe-area-inset-top, 0px) + 0.5rem)' }"
         >
           <div class="flex items-start justify-between gap-2 px-2">
-            <SessionToolbarLeft
-              :state="state"
-              @select-turn="selectTurn"
-            />
+            <SessionToolbarLeft :state="state" @select-turn="selectTurn" />
 
             <SessionToolbarRight
               class="shrink-0"

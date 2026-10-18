@@ -1,6 +1,5 @@
 # windbell-web.js
 
-[windbell-web.js] inline BackButton，并删除 BackButton.vue
 [windbell-web.js] 利用调色板设计 theme
 
 # 文学式编程

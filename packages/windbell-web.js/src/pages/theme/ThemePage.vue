@@ -15,7 +15,6 @@ import {
   type ThemeColorName,
 } from "../../app/theme.ts"
 import ColorPicker from "../../components/color-picker/ColorPicker.vue"
-import BackButton from "../../components/buttons/BackButton.vue"
 import MediumButton from "../../components/buttons/MediumButton.vue"
 import SmallButton from "../../components/buttons/SmallButton.vue"
 import Card from "../../components/card/Card.vue"
@@ -248,7 +247,9 @@ useHead(() => ({
       </h1>
 
       <div class="flex flex-wrap items-center gap-2">
-        <BackButton :to="{ name: 'theme-list' }" />
+        <MediumButton :to="{ name: 'theme-list' }">
+          <span>{{ t("app.back") }}</span>
+        </MediumButton>
 
         <MediumButton
           v-if="!isNew && ready"
