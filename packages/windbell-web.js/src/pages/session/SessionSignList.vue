@@ -93,6 +93,10 @@ function isSignExpanded(sign: S.Sign, index: number): boolean {
   return defaultSignExpanded(sign)
 }
 
+function isStreamingSign(sign: S.Sign): boolean {
+  return props.state.activeTurn?.partialSign === sign
+}
+
 function toggleSign(index: number, sign: S.Sign): void {
   const next = new Map(signOverrides.value)
   next.set(index, isSignExpanded(sign, index) ? "collapsed" : "expanded")
@@ -324,6 +328,7 @@ defineExpose({ scrollTo, scrollToBottom, scrollToTurn })
             :data-sign-index="index"
             :sign="sign"
             :workspace-root="props.state.workspaceRoot"
+            :streaming="isStreamingSign(sign)"
             @tag-click="toggleSign(index, sign)"
           />
 

@@ -11,6 +11,7 @@ import { resolveSignView } from "./views/registry.ts"
 const props = defineProps<{
   sign: S.Sign
   workspaceRoot?: string
+  streaming?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -26,6 +27,7 @@ const view = computed(() => resolveSignView(props.sign))
 const state = computed(() =>
   createSignState({
     workspaceRoot: props.workspaceRoot,
+    streaming: props.streaming,
   }),
 )
 </script>

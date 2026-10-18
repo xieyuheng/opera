@@ -10,5 +10,10 @@ defineProps<{
 </script>
 
 <template>
-  <Markdown :text="sign.content" />
+  <pre
+    v-if="state.streaming"
+    class="font-mono whitespace-pre-wrap break-words"
+    >{{ sign.content }}</pre>
+
+  <Markdown v-else :text="sign.content" />
 </template>
