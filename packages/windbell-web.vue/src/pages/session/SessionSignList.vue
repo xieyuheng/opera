@@ -307,7 +307,7 @@ defineExpose({ scrollTo, scrollToBottom, scrollToTurn })
     @scroll.passive="handleScroll"
   >
     <div ref="content" class="mx-auto flex w-full max-w-4xl flex-col gap-4">
-      <h1 class="text-xl text-ink">
+      <h1 class="text-xl text-ink font-semibold">
         {{ title }}
       </h1>
 

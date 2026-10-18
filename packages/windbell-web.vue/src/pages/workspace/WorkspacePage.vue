@@ -126,7 +126,7 @@ useHead(() => ({
   <PageLayout>
     <header class="flex flex-col gap-3">
       <div class="flex min-w-0 flex-col gap-1">
-        <h1 class="text-xl text-ink">
+        <h1 class="text-xl text-ink font-semibold">
           {{ title }}
         </h1>
 
@@ -163,7 +163,7 @@ useHead(() => ({
     </header>
 
     <div class="flex flex-col gap-2">
-      <h2 class="text-base text-ink">
+      <h2 class="text-base text-ink font-semibold">
         {{ t("sessions") }}
       </h2>
 

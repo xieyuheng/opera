@@ -93,7 +93,7 @@ useHead(() => ({
   <PageLayout>
     <header class="flex flex-col gap-3">
       <div class="flex min-w-0 flex-col gap-1">
-        <h1 class="break-all text-xl text-ink">
+        <h1 class="break-all text-xl text-ink font-semibold">
           {{ state.providerConfig?.name ?? providerName }}
         </h1>
 
@@ -172,7 +172,7 @@ useHead(() => ({
       </p>
 
       <section class="flex flex-col gap-4">
-        <h2 class="text-base text-ink">
+        <h2 class="text-base text-ink font-semibold">
           {{ t("models") }}
         </h2>
 

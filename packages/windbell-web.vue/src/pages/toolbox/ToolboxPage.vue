@@ -85,7 +85,7 @@ useHead(() => ({
 <template>
   <PageLayout>
     <header class="flex flex-col gap-3">
-      <h1 class="text-xl text-ink">
+      <h1 class="text-xl text-ink font-semibold">
         {{ t("title") }}
       </h1>
 
@@ -113,7 +113,7 @@ useHead(() => ({
       :key="category.id"
       class="flex flex-col gap-2"
     >
-      <h2 class="text-base text-ink">
+      <h2 class="text-base text-ink font-semibold">
         {{ t(category.labelKey) }}
       </h2>
 

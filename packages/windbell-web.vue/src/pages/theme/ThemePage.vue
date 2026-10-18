@@ -242,7 +242,7 @@ useHead(() => ({
 <template>
   <PageLayout>
     <header class="flex flex-col gap-3">
-      <h1 class="text-xl text-ink">
+      <h1 class="text-xl text-ink font-semibold">
         {{ isNew ? t("newTheme") : t("title") }}
       </h1>
 

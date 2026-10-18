@@ -24,7 +24,7 @@ useHead(() => ({
 <template>
   <PageLayout>
     <header class="flex flex-col gap-3">
-      <h1 class="text-xl text-ink">404</h1>
+      <h1 class="text-xl text-ink font-semibold">404</h1>
 
       <div class="flex flex-wrap items-center gap-2">
         <MediumButton :to="{ name: 'home' }">

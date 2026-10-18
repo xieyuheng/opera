@@ -277,7 +277,7 @@ function parentDirectory(path: string): string {
     >
       <header class="shrink-0 bg-line px-3 py-2">
         <div>
-          <h2 class="text-base">
+          <h2 class="text-base font-semibold">
             {{ t("createWorkspace") }}
           </h2>
           <p class="mt-1 text-xs text-ink">

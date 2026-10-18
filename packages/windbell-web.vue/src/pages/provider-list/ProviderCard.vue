@@ -105,7 +105,7 @@ function requestDeleteApiKey(): void {
       </div>
 
       <section class="flex flex-col gap-2">
-        <h3 class="text-base text-ink">
+        <h3 class="text-base text-ink font-semibold">
           {{ t("models") }}
         </h3>
 
