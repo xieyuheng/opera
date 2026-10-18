@@ -1,3 +1,4 @@
+import { authHeaders } from "./auth.ts"
 import { windbell } from "./windbell"
 import { computed, reactive, watch } from "vue"
 import { useColorMode, type ColorMode } from "./color-mode.ts"
@@ -422,12 +423,13 @@ async function removeTheme(themeId: string): Promise<void> {
 }
 
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
+  const headers = new Headers(init?.headers)
+  headers.set("Content-Type", "application/json")
+  authHeaders().forEach((value, key) => headers.set(key, value))
+
   const response = await fetch(path, {
     ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...init?.headers,
-    },
+    headers,
   })
 
   const text = await response.text()
