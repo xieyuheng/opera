@@ -1,6 +1,6 @@
 import { reactive, watch } from "vue"
 
-export type Font = "unifont" | "source-han-serif" | "system"
+export type Font = "unifont" | "source-han-serif" | "source-han-sans" | "system"
 
 const FONT_STORAGE_KEY = "windbell.font"
 
@@ -8,7 +8,10 @@ let syncingFromStorage = false
 
 function isFont(value: string): value is Font {
   return (
-    value === "unifont" || value === "source-han-serif" || value === "system"
+    value === "unifont" ||
+    value === "source-han-serif" ||
+    value === "source-han-sans" ||
+    value === "system"
   )
 }
 
