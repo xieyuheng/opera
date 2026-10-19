@@ -34,7 +34,7 @@ const source = ref(
     "- [x] Reusable component",
     "- [ ] Publish package",
     "",
-    "```ts",
+    '```ts title="dev/example.ts"',
     'import Markdown from "@windbell/markdown.vue"',
     "",
     "const text = ref('# Hello')",
