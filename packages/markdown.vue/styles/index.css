@@ -17,3 +17,17 @@
 .markdown-list-item > .markdown-paragraph {
   display: inline;
 }
+
+.markdown-code-token {
+  color: var(--markdown-code-light-color, inherit);
+  font-style: var(--markdown-code-light-font-style, inherit);
+  font-weight: var(--markdown-code-light-font-weight, inherit);
+  text-decoration: var(--markdown-code-light-text-decoration, inherit);
+}
+
+.dark .markdown-code-token {
+  color: var(--markdown-code-dark-color, var(--markdown-code-light-color, inherit));
+  font-style: var(--markdown-code-dark-font-style, var(--markdown-code-light-font-style, inherit));
+  font-weight: var(--markdown-code-dark-font-weight, var(--markdown-code-light-font-weight, inherit));
+  text-decoration: var(--markdown-code-dark-text-decoration, var(--markdown-code-light-text-decoration, inherit));
+}
