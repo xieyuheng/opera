@@ -28,8 +28,10 @@ const languageLoaders = {
 } as const
 
 const themeLoaders = {
-  "vitesse-light": () => import("shiki/themes/vitesse-light.mjs"),
-  "vitesse-dark": () => import("shiki/themes/vitesse-dark.mjs"),
+  "github-light-high-contrast": () =>
+    import("shiki/themes/github-light-high-contrast.mjs"),
+  "github-dark-high-contrast": () =>
+    import("shiki/themes/github-dark-high-contrast.mjs"),
 } as const
 
 type MarkdownLanguage = keyof typeof languageLoaders
@@ -78,7 +80,7 @@ const createHighlighter = createdBundledHighlighter({
 
 const highlighterPromise = createHighlighter({
   langs: [],
-  themes: ["vitesse-light", "vitesse-dark"],
+  themes: ["github-light-high-contrast", "github-dark-high-contrast"],
 })
 
 const loadedLanguages = new Map<MarkdownLanguage, Promise<void>>()
@@ -127,8 +129,8 @@ export async function highlightCode(
     const tokens = highlighter.codeToTokensWithThemes(code, {
       lang: language,
       themes: {
-        light: "vitesse-light",
-        dark: "vitesse-dark",
+        light: "github-light-high-contrast",
+        dark: "github-dark-high-contrast",
       },
     })
 
