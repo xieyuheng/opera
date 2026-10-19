@@ -91,6 +91,7 @@ const colorModeOptions: Array<{
 
 const fontOptions: Array<{ value: Font; labelKey: string }> = [
   { value: "unifont", labelKey: "fontUnifont" },
+  { value: "source-han-serif", labelKey: "fontSourceHanSerif" },
   { value: "system", labelKey: "fontSystem" },
 ]
 

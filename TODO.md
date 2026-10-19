@@ -1,7 +1,3 @@
-# windbell-web.vue
-
-[windbell-web.vue] 增加 思源宋体 支持
-
 # windbell-docs.vitepress
 
 改善文档

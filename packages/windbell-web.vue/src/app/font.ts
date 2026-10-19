@@ -1,13 +1,15 @@
 import { reactive, watch } from "vue"
 
-export type Font = "unifont" | "system"
+export type Font = "unifont" | "source-han-serif" | "system"
 
 const FONT_STORAGE_KEY = "windbell.font"
 
 let syncingFromStorage = false
 
 function isFont(value: string): value is Font {
-  return value === "unifont" || value === "system"
+  return (
+    value === "unifont" || value === "source-han-serif" || value === "system"
+  )
 }
 
 function getInitialFont(): Font {
