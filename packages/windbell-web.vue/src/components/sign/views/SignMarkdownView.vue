@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type * as S from "@windbell/semiosis.ts/core"
-import Markdown from "../../markdown/Markdown.vue"
+import Markdown from "@windbell/markdown.vue"
 import type { SignState } from "../signState.ts"
 
 defineProps<{

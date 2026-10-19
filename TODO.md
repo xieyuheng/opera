@@ -1,8 +1,8 @@
-# windbell-docs.vitepress
+[windbell-web.vue] 点击 SignLine 的文字，也能展开 SignCard
 
-改善文档
+取消所有 vite 中的 chunkSizeWarningLimit
 
-# windbell-web.vue
+[windbell-docs.vitepress] 改善文档
 
 [windbell-web.vue] 利用调色板设计 theme
 

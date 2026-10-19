@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue"
 import { useRoute } from "vue-router"
-import Markdown from "../../components/markdown/Markdown.vue"
+import Markdown from "@windbell/markdown.vue"
 import {
   markdownSourceFromQuery,
   markdownSourceQueryKey,

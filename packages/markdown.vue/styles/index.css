@@ -1,0 +1,19 @@
+/* Scan the package source from the host Tailwind build. */
+@source "../src";
+
+.markdown-list-item {
+  padding-left: var(--marker-size, 2ch);
+}
+
+.markdown-list-item > .markdown-list-marker {
+  display: inline;
+  margin-left: calc(var(--marker-size, 2ch) * -1);
+  white-space: pre;
+  font-family: var(--font-mono-family, monospace);
+  color: var(--color-ink, currentColor);
+  user-select: text;
+}
+
+.markdown-list-item > .markdown-paragraph {
+  display: inline;
+}

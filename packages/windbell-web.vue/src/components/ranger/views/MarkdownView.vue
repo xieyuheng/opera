@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue"
-import Markdown from "../../markdown/Markdown.vue"
+import Markdown from "@windbell/markdown.vue"
 import type { RangerFileContent } from "../RangerContent.ts"
 import MarkdownToolbar from "./MarkdownToolbar.vue"
 import {
