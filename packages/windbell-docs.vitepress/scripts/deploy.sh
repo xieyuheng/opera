@@ -3,4 +3,4 @@
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
-npx vitepress build . && npx wrangler deploy
+scripts/build.sh && npx wrangler deploy
