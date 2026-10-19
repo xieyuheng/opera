@@ -1,5 +1,5 @@
 import {
-  createdBundledHighlighter,
+  createBundledHighlighter,
   type ThemedTokenWithVariants,
 } from "shiki/core"
 import { createJavaScriptRegexEngine } from "shiki/engine/javascript"
@@ -72,7 +72,7 @@ const languageAliases: Record<string, MarkdownLanguage> = {
   zsh: "bash",
 }
 
-const createHighlighter = createdBundledHighlighter({
+const createHighlighter = createBundledHighlighter({
   langs: languageLoaders,
   themes: themeLoaders,
   engine: () => createJavaScriptRegexEngine(),
@@ -97,12 +97,15 @@ async function loadLanguage(
   highlighter: Awaited<typeof highlighterPromise>,
   language: MarkdownLanguage,
 ): Promise<void> {
-  let loading = loadedLanguages.get(language)
+  const loaded = loadedLanguages.get(language)
 
-  if (loading === undefined) {
-    loading = highlighter.loadLanguage(language)
-    loadedLanguages.set(language, loading)
+  if (loaded !== undefined) {
+    await loaded
+    return
   }
+
+  const loading = highlighter.loadLanguage(language)
+  loadedLanguages.set(language, loading)
 
   try {
     await loading
