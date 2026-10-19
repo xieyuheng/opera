@@ -1,14 +1,6 @@
-[windbell-web.vue] 点击 SignLine 的文字，也能展开 SignCard
-
-取消所有 vite 中的 chunkSizeWarningLimit
-
 [windbell-docs.vitepress] 改善文档
-
 [windbell-web.vue] 利用调色板设计 theme
-
-# 文学式编程
-
-给出 agent interpret 和 agent loop 和 markdown 文学式编程
+[semantic.ts] 文学式编程 -- 记录 agent interpret 和 agent loop
 
 # windbell-web.vue
 

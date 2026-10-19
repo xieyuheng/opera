@@ -11,6 +11,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
+  "line-click": []
   "tag-click": []
 }>()
 
@@ -33,7 +34,7 @@ const view = computed(() => resolveSignView(props.sign))
       {{ t(view.labelKey) }}
     </button>
 
-    <span class="truncate">
+    <span class="truncate cursor-pointer" @click="emit('line-click')">
       {{ signBody(sign) }}
     </span>
   </div>

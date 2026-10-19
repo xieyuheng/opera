@@ -338,6 +338,7 @@ defineExpose({ scrollTo, scrollToBottom, scrollToTurn })
             :data-sign-index="index"
             :sign="sign"
             @tag-click="toggleSign(index, sign)"
+            @line-click="toggleSign(index, sign)"
           />
         </template>
       </div>
