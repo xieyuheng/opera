@@ -63,7 +63,12 @@ export type FileSystemEntry = {
 }
 
 export type FileType =
-  "text" | "image" | "pdf" | "archive" | "binary" | "unknown"
+  | "text"
+  | "image"
+  | "pdf"
+  | "archive"
+  | "binary"
+  | "unknown"
 
 export type FileSystemWatchEvent =
   | { type: "ready"; path: string }

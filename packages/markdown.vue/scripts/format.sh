@@ -2,4 +2,4 @@
 
 set -e
 
-npx prettier src dev --write
+npx oxfmt src dev --write

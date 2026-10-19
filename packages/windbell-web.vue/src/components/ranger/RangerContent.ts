@@ -15,4 +15,6 @@ export type RangerEmptyContent = {
 }
 
 export type RangerContent =
-  RangerDirectoryContent | RangerFileContent | RangerEmptyContent
+  | RangerDirectoryContent
+  | RangerFileContent
+  | RangerEmptyContent

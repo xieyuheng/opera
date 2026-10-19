@@ -383,7 +383,8 @@ export function makeHttpFileSystemClient(
   }
 
   let platformCache:
-    Promise<Result<FileSystemPlatform, FileSystemError>> | undefined
+    | Promise<Result<FileSystemPlatform, FileSystemError>>
+    | undefined
 
   function platform(): Promise<Result<FileSystemPlatform, FileSystemError>> {
     platformCache ??= callResult("platform", platformEndpoint, undefined, {})

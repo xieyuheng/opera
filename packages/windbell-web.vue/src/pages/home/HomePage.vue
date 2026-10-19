@@ -86,7 +86,7 @@ useHead(() => ({
 <template>
   <PageLayout>
     <header class="flex flex-col gap-3">
-      <h1 class="text-xl text-ink font-semibold">
+      <h1 class="text-xl font-semibold text-ink">
         {{ t("title") }}
       </h1>
 

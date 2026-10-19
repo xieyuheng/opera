@@ -6,7 +6,11 @@ export type ModelInterpretOptions = {
 }
 
 export type ModelErrorType =
-  "aborted" | "network" | "http" | "invalid-response" | "unknown"
+  | "aborted"
+  | "network"
+  | "http"
+  | "invalid-response"
+  | "unknown"
 
 export type ModelError = {
   type: ModelErrorType

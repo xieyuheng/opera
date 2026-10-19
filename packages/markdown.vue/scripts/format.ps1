@@ -6,4 +6,4 @@ $PSNativeCommandUseErrorActionPreference = $true
 
 Set-Location (Join-Path $PSScriptRoot '..')
 
-npx.cmd prettier src dev --write
+npx.cmd oxfmt src dev --write

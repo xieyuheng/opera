@@ -6,13 +6,9 @@
   "type": "module",
   "main": "src/index.ts",
   "files": ["src"],
-  "prettier": {
-    "semi": false,
-    "trailingComma": "all"
-  },
   "devDependencies": {
     "@types/node": "^26.6.5",
-    "prettier": "^3.9.10",
+    "oxfmt": "0.73.0",
     "typescript": "^7.0.2"
   },
   "dependencies": {

@@ -220,7 +220,8 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 type ResultLike =
-  { kind: "OkResult"; value: unknown } | { kind: "ErrorResult"; error: unknown }
+  | { kind: "OkResult"; value: unknown }
+  | { kind: "ErrorResult"; error: unknown }
 
 function statusCodeFromFileSystemError(error: FileSystemError): number {
   switch (error.type) {
