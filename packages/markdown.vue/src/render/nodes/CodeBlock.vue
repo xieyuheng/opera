@@ -58,7 +58,7 @@ onBeforeUnmount(() => {
     class="border-ink/20 bg-ink/10 my-4 overflow-hidden rounded-md border"
   >
     <div
-      class="border-ink/15 bg-ink/5 flex items-center justify-between gap-3 border-b py-px pr-1 pl-3"
+      class="border-ink/15 bg-ink/5 flex items-center justify-between gap-3 border-b py-1 pr-1 pl-3"
     >
       <div class="flex min-w-0 items-baseline gap-2">
         <span
@@ -77,7 +77,7 @@ onBeforeUnmount(() => {
 
       <button
         type="button"
-        class="text-ink/60 hover:text-ink focus-visible:outline-ink/40 inline-flex h-7 shrink-0 items-center gap-0.5 rounded-md px-2 font-mono text-[11px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-1"
+        class="text-ink/60 hover:text-ink focus-visible:outline-ink/40 inline-flex py-0.5 shrink-0 items-center gap-0.5 rounded px-2 font-mono text-[11px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-1"
         :title="copied ? '已复制' : '复制代码'"
         :aria-label="copied ? '已复制' : '复制代码'"
         @click="copyCode"
