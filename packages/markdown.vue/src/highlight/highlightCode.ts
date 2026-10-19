@@ -25,6 +25,11 @@ const languageLoaders = {
   typescript: () => import("shiki/langs/typescript.mjs"),
   vue: () => import("shiki/langs/vue.mjs"),
   yaml: () => import("shiki/langs/yaml.mjs"),
+  // from x-lisp
+  "meta-lisp": () => import("@xieyuheng/x-lisp-shiki.ts/meta-lisp"),
+  "basic-lisp": () => import("@xieyuheng/x-lisp-shiki.ts/basic-lisp"),
+  "xvm-lisp": () => import("@xieyuheng/x-lisp-shiki.ts/xvm-lisp"),
+  "x86-lisp": () => import("@xieyuheng/x-lisp-shiki.ts/x86-lisp"),
 } as const
 
 const themeLoaders = {
@@ -70,6 +75,11 @@ const languageAliases: Record<string, MarkdownLanguage> = {
   yaml: "yaml",
   yml: "yaml",
   zsh: "bash",
+  // from x-lisp
+  "meta-lisp": "meta-lisp",
+  "basic-lisp": "basic-lisp",
+  "xvm-lisp": "xvm-lisp",
+  "x86-lisp": "x86-lisp",
 }
 
 const createHighlighter = createBundledHighlighter({

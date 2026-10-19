@@ -109,6 +109,9 @@ importers:
 
   packages/markdown.vue:
     dependencies:
+      '@xieyuheng/x-lisp-shiki.ts':
+        specifier: workspace:*
+        version: link:../x-lisp-shiki.ts
       mdast-util-from-markdown:
         specifier: 2.1.0
         version: 2.1.0(supports-color@10.2.2)
@@ -388,6 +391,18 @@ importers:
       vue-tsc:
         specifier: ^3.3.13
         version: 3.3.13(typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2)
+
+  packages/x-lisp-shiki.ts:
+    devDependencies:
+      oxfmt:
+        specifier: 0.73.0
+        version: 0.73.0
+      shiki:
+        specifier: 4.5.0
+        version: 4.5.0
+      typescript:
+        specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
+        version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
 
 packages:
 
