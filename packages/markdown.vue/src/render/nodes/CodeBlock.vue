@@ -79,9 +79,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="border-ink/80 my-4 overflow-hidden rounded-md border">
+  <div class="border-ink/30 bg-ink/5 my-4 overflow-hidden rounded-md border">
     <div
-      class="border-ink/60 flex items-center justify-between gap-3 border-b py-1 pr-1 pl-3"
+      class="border-ink/30 bg-ink/5 flex items-center justify-between gap-3 border-b py-1 pr-1 pl-3"
     >
       <div class="flex min-w-0 items-baseline gap-2">
         <span class="text-ink/80 shrink-0 font-mono font-semibold">

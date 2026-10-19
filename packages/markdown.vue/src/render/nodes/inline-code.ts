@@ -10,7 +10,7 @@ export const renderInlineCode: MarkdownNodeRenderer<InlineCode> = (
   return h(
     "code",
     {
-      class: "rounded border border-ink/30 px-1.5 bg-ink/15 font-mono",
+      class: "rounded border border-ink/30 px-1.5 bg-ink/8 font-mono",
     },
     node.value,
   )
