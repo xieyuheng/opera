@@ -77,7 +77,7 @@ onBeforeUnmount(() => {
 
       <button
         type="button"
-        class="text-ink/60 hover:text-ink focus-visible:outline-ink/40 inline-flex h-7 shrink-0 items-center gap-1.5 rounded-md px-2 font-mono text-[11px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-1"
+        class="text-ink/60 hover:text-ink focus-visible:outline-ink/40 inline-flex h-7 shrink-0 items-center gap-0.5 rounded-md px-2 font-mono text-[11px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-1"
         :title="copied ? '已复制' : '复制代码'"
         :aria-label="copied ? '已复制' : '复制代码'"
         @click="copyCode"
