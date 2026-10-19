@@ -1,6 +1,7 @@
 import { makeBash } from "@windbell/sh.ts/bash"
-import { formatShellOutput } from "../formatShellOutput.ts"
+
 import type { ToolHandler } from "../../tool/index.ts"
+import { formatShellOutput } from "../formatShellOutput.ts"
 
 export type BashToolHandlerOptions = {
   cwd: string

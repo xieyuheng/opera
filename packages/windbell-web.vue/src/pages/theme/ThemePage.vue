@@ -3,6 +3,7 @@ import { useHead } from "@unhead/vue"
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from "vue"
 import { useI18n } from "vue-i18n"
 import { useRoute, useRouter } from "vue-router"
+
 import { useColorMode } from "../../app/color-mode.ts"
 import {
   builtInThemes,
@@ -14,10 +15,10 @@ import {
   type Theme,
   type ThemeColorName,
 } from "../../app/theme.ts"
-import ColorPicker from "../../components/color-picker/ColorPicker.vue"
 import MediumButton from "../../components/buttons/MediumButton.vue"
 import SmallButton from "../../components/buttons/SmallButton.vue"
 import Card from "../../components/card/Card.vue"
+import ColorPicker from "../../components/color-picker/ColorPicker.vue"
 import PageLayout from "../../components/layout/PageLayout.vue"
 import { themeMessages } from "./Theme.i18n.ts"
 
@@ -242,7 +243,7 @@ useHead(() => ({
 <template>
   <PageLayout>
     <header class="flex flex-col gap-3">
-      <h1 class="text-xl text-ink font-semibold">
+      <h1 class="text-ink text-xl font-semibold">
         {{ isNew ? t("newTheme") : t("title") }}
       </h1>
 
@@ -286,7 +287,7 @@ useHead(() => ({
 
     <p
       v-if="error"
-      class="rounded border border-sign-error/60 px-3 py-2 text-sign-error"
+      class="border-sign-error/60 text-sign-error rounded border px-3 py-2"
     >
       {{ error }}
     </p>
@@ -304,7 +305,7 @@ useHead(() => ({
         <div class="p-3">
           <input
             v-model="draft.name"
-            class="w-full rounded border border-line bg-paper px-3 py-2 text-ink outline-none focus:border-ink"
+            class="border-line bg-paper text-ink focus:border-ink w-full rounded border px-3 py-2 outline-none"
             type="text"
             @input="refreshPreview"
           />
@@ -339,7 +340,7 @@ useHead(() => ({
             :key="group.labelKey"
             class="flex flex-col gap-3"
           >
-            <h3 class="font-semibold text-ink">
+            <h3 class="text-ink font-semibold">
               {{ t(group.labelKey) }}
             </h3>
 

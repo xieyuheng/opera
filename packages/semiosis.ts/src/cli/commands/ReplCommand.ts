@@ -1,11 +1,13 @@
 import process from "node:process"
+
 import type * as Cli from "@windbell/cli.ts"
-import type { Database } from "../../database/index.ts"
+
 import { resumeAgentRepl, startAgentRepl } from "../../agent-repl/index.ts"
+import type { Database } from "../../database/index.ts"
 import { makeTtyRepl } from "../../repls/index.ts"
+import { loadSessionWorkspace } from "../../session/index.ts"
 import { readOptionalOption } from "../options.ts"
 import { ensureWorkspace, makeModelFromOptions } from "../shared.ts"
-import { loadSessionWorkspace } from "../../session/index.ts"
 
 export type ReplCommandOptions = {
   database: Database

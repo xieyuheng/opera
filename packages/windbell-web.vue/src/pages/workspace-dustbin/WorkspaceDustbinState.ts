@@ -1,6 +1,7 @@
-import { windbell } from "../../app/windbell"
 import type * as S from "@windbell/semiosis.ts/core"
 import { reactive } from "vue"
+
+import { windbell } from "../../app/windbell"
 import { cancelPendingStateLoad } from "../../utils/state/loadableState.ts"
 
 export type WorkspaceDustbinState = {

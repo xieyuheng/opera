@@ -1,5 +1,6 @@
-import { z } from "zod"
 import { ok } from "@windbell/std.ts/result"
+import { z } from "zod"
+
 import { makeAction } from "../http/makeAction.ts"
 
 export type ConfigControllerOptions = {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { FileSystemEntry } from "@windbell/fs.ts/fs"
 import { computed, nextTick, ref, watch } from "vue"
+
 import { isSamePath } from "./RangerPath.ts"
 
 const props = defineProps<{
@@ -47,12 +48,12 @@ function pathName(value: string): string {
 </script>
 
 <template>
-  <aside class="flex h-full min-h-0 flex-col overflow-hidden bg-paper">
+  <aside class="bg-paper flex h-full min-h-0 flex-col overflow-hidden">
     <header class="shrink-0">
       <button
         type="button"
-        class="block w-full truncate px-3 py-2 text-left text-ink transition-colors"
-        :class="canGoParent ? 'cursor-pointer hover:bg-line' : 'cursor-default'"
+        class="text-ink block w-full truncate px-3 py-2 text-left transition-colors"
+        :class="canGoParent ? 'hover:bg-line cursor-pointer' : 'cursor-default'"
         :disabled="!canGoParent"
         @click="emit('goParent')"
       >
@@ -62,7 +63,7 @@ function pathName(value: string): string {
 
     <ol
       ref="list"
-      class="thin-scrollbar min-h-0 flex-1 overflow-y-auto border-t border-line"
+      class="thin-scrollbar border-line min-h-0 flex-1 overflow-y-auto border-t"
     >
       <li
         v-for="(entry, index) in entries"

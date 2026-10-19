@@ -1,4 +1,5 @@
 import { z } from "zod"
+
 import { ModelInfoSchema } from "./ModelInfoSchema.ts"
 
 const LinksSchema = z.object({

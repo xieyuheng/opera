@@ -1,4 +1,5 @@
 import { defineBasicLoader } from "vue-router/experimental"
+
 import { getHomeState, loadHomeState } from "./HomeState.ts"
 
 export const useHomeState = defineBasicLoader(async () => {

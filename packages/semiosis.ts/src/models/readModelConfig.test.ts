@@ -1,12 +1,14 @@
-import process from "node:process"
-import { makePath } from "@windbell/std.ts/path"
-import { makeLocalFileSystem } from "@windbell/fs.ts/local-fs"
-import { makeDatabase } from "../database/index.ts"
 import assert from "node:assert/strict"
 import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
+import process from "node:process"
 import { test } from "node:test"
+
+import { makeLocalFileSystem } from "@windbell/fs.ts/local-fs"
+import { makePath } from "@windbell/std.ts/path"
+
+import { makeDatabase } from "../database/index.ts"
 import { writeApiKey } from "../database/index.ts"
 import * as DeepSeek from "../providers/deepseek/index.ts"
 import * as OpenRouter from "../providers/openrouter/index.ts"

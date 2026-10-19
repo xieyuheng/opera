@@ -1,11 +1,12 @@
 import type { Shell } from "@windbell/sh.ts/sh"
+
 import {
   makeToolRouter,
   type ToolHandler,
   type ToolRouter,
 } from "../tool/index.ts"
-import { formatShellOutput } from "./formatShellOutput.ts"
 import { makeBashToolSign } from "./bash/makeBashToolSign.ts"
+import { formatShellOutput } from "./formatShellOutput.ts"
 import { makePwshToolSign } from "./pwsh/makePwshToolSign.ts"
 
 const defaultDescription = "Run a command in a shell."

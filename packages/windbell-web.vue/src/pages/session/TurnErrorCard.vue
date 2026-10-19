@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n"
+
 import Card from "../../components/card/Card.vue"
 import { sessionMessages } from "./Session.i18n.ts"
 
@@ -28,13 +29,13 @@ const { t } = useI18n({
     </template>
 
     <div class="flex flex-col gap-2 px-3 py-2">
-      <p class="text-sm text-sign-error">{{ message }}</p>
+      <p class="text-sign-error text-sm">{{ message }}</p>
 
       <div class="flex flex-wrap gap-2">
         <button
           v-if="retryable"
           type="button"
-          class="rounded border border-line/60 px-2 py-1 text-sm text-ink hover:bg-ink/5"
+          class="border-line/60 text-ink hover:bg-ink/5 rounded border px-2 py-1 text-sm"
           @click="emit('retry')"
         >
           {{ t("retry") }}
@@ -43,7 +44,7 @@ const { t } = useI18n({
         <button
           v-if="!inputPersisted"
           type="button"
-          class="rounded border border-line/60 px-2 py-1 text-sm text-ink hover:bg-ink/5"
+          class="border-line/60 text-ink hover:bg-ink/5 rounded border px-2 py-1 text-sm"
           @click="emit('edit')"
         >
           {{ t("edit") }}
@@ -51,7 +52,7 @@ const { t } = useI18n({
 
         <button
           type="button"
-          class="rounded border border-line/60 px-2 py-1 text-sm text-ink hover:bg-ink/5"
+          class="border-line/60 text-ink hover:bg-ink/5 rounded border px-2 py-1 text-sm"
           @click="emit('dismiss')"
         >
           {{ t("dismiss") }}

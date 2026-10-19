@@ -1,8 +1,9 @@
 import { errorReport } from "@windbell/std.ts/error"
+import { unwrap } from "@windbell/std.ts/result"
+
 import type { Database } from "../database/index.ts"
 import type { Repl } from "../repl/Repl.ts"
 import type { Session } from "../session/index.ts"
-import { unwrap } from "@windbell/std.ts/result"
 
 export function makeTitleChangeHandler(
   database: Database,

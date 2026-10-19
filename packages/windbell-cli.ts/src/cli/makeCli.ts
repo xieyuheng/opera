@@ -1,6 +1,8 @@
+import { fileURLToPath } from "node:url"
+
 import * as Cli from "@windbell/cli.ts"
 import { getPackageJson } from "@windbell/std.ts/node"
-import { fileURLToPath } from "node:url"
+
 import { makeDevHandler } from "./commands/dev.ts"
 import { makeStartHandler } from "./commands/start.ts"
 

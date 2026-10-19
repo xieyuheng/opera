@@ -1,4 +1,6 @@
+import Path from "node:path"
 import process from "node:process"
+
 import { makeHttpFileSystemRouter } from "@windbell/fs-api.ts/router"
 import {
   makeDustbinSessionService,
@@ -13,15 +15,15 @@ import { makeBash } from "@windbell/sh.ts/bash"
 import { makePwsh } from "@windbell/sh.ts/pwsh"
 import { Hono } from "hono"
 import { cors } from "hono/cors"
-import Path from "node:path"
+
 import { makeAccessTokenStore } from "../auth/AccessToken.ts"
 import { makeBearerAuth } from "../auth/bearerAuth.ts"
 import { makeConfigController } from "../controllers/ConfigController.ts"
 import { makeHealthController } from "../controllers/HealthController.ts"
-import type { WindbellRouterOptions } from "./WindbellRouterOptions.ts"
 import { makeDomainRouter } from "./makeDomainRouter.ts"
 import { makePageRouter } from "./makePageRouter.ts"
 import { makeThemesRouter } from "./makeThemesRouter.ts"
+import type { WindbellRouterOptions } from "./WindbellRouterOptions.ts"
 
 export function makeWindbellRouter(options: WindbellRouterOptions): Hono {
   const app = new Hono()

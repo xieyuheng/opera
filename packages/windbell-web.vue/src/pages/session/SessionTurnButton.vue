@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import type * as S from "@windbell/semiosis.ts/core"
 import { computed, reactive, ref } from "vue"
 import { useI18n } from "vue-i18n"
-import type * as S from "@windbell/semiosis.ts/core"
+
 import MediumButton from "../../components/buttons/MediumButton.vue"
 import Card from "../../components/card/Card.vue"
 import { sessionMessages } from "./Session.i18n.ts"
@@ -126,7 +127,7 @@ function handleToggle(event: Event): void {
     :id="popoverId"
     ref="popover"
     popover="auto"
-    class="pointer-events-auto bg-transparent w-80 max-w-[calc(100vw-2rem)]"
+    class="pointer-events-auto w-80 max-w-[calc(100vw-2rem)] bg-transparent"
     :style="{
       position: 'fixed',
       inset: 'auto',
@@ -174,7 +175,7 @@ function handleToggle(event: Event): void {
               <div
                 v-for="step in turn.steps"
                 :key="step.sequenceNumber"
-                class="pl-[1rem] text-sm flex justify-between"
+                class="flex justify-between pl-[1rem] text-sm"
               >
                 # {{ step.sequenceNumber }}
                 <span v-if="step.status !== 'completed'" class="ml-1">
@@ -185,7 +186,7 @@ function handleToggle(event: Event): void {
                 </span>
                 <span
                   v-if="step.error"
-                  class="ml-1 text-sign-error"
+                  class="text-sign-error ml-1"
                   :title="step.error.message"
                 >
                   {{ step.error.message }}

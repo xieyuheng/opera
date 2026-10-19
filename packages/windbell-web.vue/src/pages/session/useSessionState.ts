@@ -1,4 +1,5 @@
 import { defineBasicLoader } from "vue-router/experimental"
+
 import { getSessionState, loadSessionState } from "./SessionState.ts"
 
 export const useSessionState = defineBasicLoader(async (to) => {

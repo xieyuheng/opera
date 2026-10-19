@@ -3,8 +3,9 @@ import type * as S from "@windbell/semiosis.ts/core"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 import { RouterLink } from "vue-router"
-import Card from "../../components/card/Card.vue"
+
 import SmallButton from "../../components/buttons/SmallButton.vue"
+import Card from "../../components/card/Card.vue"
 import {
   formatDateTime,
   formatRelativeTime,
@@ -113,7 +114,7 @@ function requestTrash(): void {
             <span class="truncate">{{ session.title }}</span>
           </RouterLink>
           <span
-            class="shrink-0 text-xs text-ink/60"
+            class="text-ink/60 shrink-0 text-xs"
             :title="formatDateTime(session.updatedAt)"
           >
             {{ formatSessionRelativeTime(session.updatedAt) }}
@@ -121,7 +122,7 @@ function requestTrash(): void {
         </li>
       </ul>
 
-      <p v-else class="text-sm text-ink/70">
+      <p v-else class="text-ink/70 text-sm">
         {{ t("noSessions") }}
       </p>
     </div>

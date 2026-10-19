@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue"
+
 import {
   cssColorToOklch,
   formatOklch,
@@ -61,17 +62,17 @@ function updateFromHex(value: string): void {
     <div class="flex flex-row gap-2">
       <input
         :value="previewHex"
-        class="h-25 w-25 shrink-0 cursor-pointer rounded border border-line bg-transparent"
+        class="border-line h-25 w-25 shrink-0 cursor-pointer rounded border bg-transparent"
         type="color"
         @input="updateFromHex(($event.target as HTMLInputElement).value)"
       />
 
-      <div class="flex flex-col w-full gap-2">
-        <label class="flex items-center gap-2 text-xs text-ink">
+      <div class="flex w-full flex-col gap-2">
+        <label class="text-ink flex items-center gap-2 text-xs">
           <span class="w-3">L</span>
           <input
             v-model.number="draft.l"
-            class="min-w-0 flex-1 accent-ink"
+            class="accent-ink min-w-0 flex-1"
             type="range"
             min="0"
             max="1"
@@ -83,11 +84,11 @@ function updateFromHex(value: string): void {
           </span>
         </label>
 
-        <label class="flex items-center gap-2 text-xs text-ink">
+        <label class="text-ink flex items-center gap-2 text-xs">
           <span class="w-3">C</span>
           <input
             v-model.number="draft.c"
-            class="min-w-0 flex-1 accent-ink"
+            class="accent-ink min-w-0 flex-1"
             type="range"
             min="0"
             max="0.4"
@@ -99,11 +100,11 @@ function updateFromHex(value: string): void {
           </span>
         </label>
 
-        <label class="flex items-center gap-2 text-xs text-ink">
+        <label class="text-ink flex items-center gap-2 text-xs">
           <span class="w-3">H</span>
           <input
             v-model.number="draft.h"
-            class="min-w-0 flex-1 accent-ink"
+            class="accent-ink min-w-0 flex-1"
             type="range"
             min="0"
             max="360"
@@ -117,7 +118,7 @@ function updateFromHex(value: string): void {
 
         <input
           :value="oklchText"
-          class="min-w-0 flex-1 rounded border border-line bg-paper px-2 py-1 font-mono text-xs text-ink outline-none focus:border-ink"
+          class="border-line bg-paper text-ink focus:border-ink min-w-0 flex-1 rounded border px-2 py-1 font-mono text-xs outline-none"
           type="text"
           spellcheck="false"
           @change="updateFromText(($event.target as HTMLInputElement).value)"

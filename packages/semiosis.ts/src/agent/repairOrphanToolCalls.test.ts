@@ -1,13 +1,17 @@
-import process from "node:process"
-import { makePath } from "@windbell/std.ts/path"
-import { makeLocalFileSystem } from "@windbell/fs.ts/local-fs"
-import { makeDatabase } from "../database/index.ts"
 import assert from "node:assert/strict"
 import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
+import process from "node:process"
 import { test } from "node:test"
+
+import { makeLocalFileSystem } from "@windbell/fs.ts/local-fs"
+import { makePath } from "@windbell/std.ts/path"
+import { unwrap } from "@windbell/std.ts/result"
+
+import { makeDatabase } from "../database/index.ts"
 import type { Model } from "../model/index.ts"
+import { makeAgentFromSession } from "../session/index.ts"
 import {
   AssistantSign,
   ReasoningSign,
@@ -19,7 +23,6 @@ import {
   type Sign,
 } from "../sign/index.ts"
 import { makeToolRouter, type ToolRouter } from "../tool/index.ts"
-import { makeAgentFromSession } from "../session/index.ts"
 import { makeAgent, type Agent } from "./Agent.ts"
 import {
   agentContinue,
@@ -27,7 +30,6 @@ import {
   type AgentInterpretEvent,
 } from "./agentInterpret.ts"
 import { repairOrphanToolCalls } from "./repairOrphanToolCalls.ts"
-import { unwrap } from "@windbell/std.ts/result"
 
 const emptyObjectSchema = {
   type: "object",

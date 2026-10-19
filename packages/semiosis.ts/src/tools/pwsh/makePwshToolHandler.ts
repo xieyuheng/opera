@@ -1,6 +1,7 @@
 import { makePwsh } from "@windbell/sh.ts/pwsh"
-import { formatShellOutput } from "../formatShellOutput.ts"
+
 import type { ToolHandler } from "../../tool/index.ts"
+import { formatShellOutput } from "../formatShellOutput.ts"
 
 export type PwshToolHandlerOptions = {
   cwd: string

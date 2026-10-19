@@ -1,5 +1,6 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
+
 import { modelEntryContextWindow } from "./contextWindow.ts"
 import type { ModelEntry } from "./ModelEntry.ts"
 

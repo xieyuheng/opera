@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n"
+
 import SmallButton from "../../components/buttons/SmallButton.vue"
 import ToggleSwitch from "../../components/toggle/ToggleSwitch.vue"
 import { providerMessages } from "./Provider.i18n.ts"
@@ -39,7 +40,7 @@ function requestSetDefault(): void {
 </script>
 
 <template>
-  <div class="flex flex-wrap items-center gap-3 min-h-9">
+  <div class="flex min-h-9 flex-wrap items-center gap-3">
     <ToggleSwitch
       :model-value="props.pinned"
       :disabled="props.busy"

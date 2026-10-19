@@ -1,9 +1,10 @@
+import { unwrap } from "@windbell/std.ts/result"
+
 import type { Database } from "../database/index.ts"
-import { readProviderConfig } from "../provider/index.ts"
 import type { Model, ModelRef } from "../model/index.ts"
+import { readProviderConfig } from "../provider/index.ts"
 import * as DeepSeek from "../providers/deepseek/index.ts"
 import * as OpenRouter from "../providers/openrouter/index.ts"
-import { unwrap } from "@windbell/std.ts/result"
 
 export type MakeModelOptions = {
   database: Database

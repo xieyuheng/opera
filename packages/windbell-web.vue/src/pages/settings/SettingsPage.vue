@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue"
-import PageLayout from "../../components/layout/PageLayout.vue"
 import { computed, ref } from "vue"
 import { useI18n } from "vue-i18n"
-import MediumButton from "../../components/buttons/MediumButton.vue"
-import Card from "../../components/card/Card.vue"
+
+import { useColorMode, type ColorModePreference } from "../../app/color-mode.ts"
 import { useFont, type Font } from "../../app/font.ts"
 import { setLocale, supportedLocales } from "../../app/i18n.ts"
-import { useColorMode, type ColorModePreference } from "../../app/color-mode.ts"
+import MediumButton from "../../components/buttons/MediumButton.vue"
+import Card from "../../components/card/Card.vue"
+import PageLayout from "../../components/layout/PageLayout.vue"
 import { settingsMessages } from "./Settings.i18n.ts"
 import {
   clearStorageKeys,
@@ -104,7 +105,7 @@ useHead(() => ({
 <template>
   <PageLayout>
     <header class="flex flex-col gap-3">
-      <h1 class="text-xl text-ink font-semibold">
+      <h1 class="text-ink text-xl font-semibold">
         {{ t("title") }}
       </h1>
 
@@ -135,7 +136,7 @@ useHead(() => ({
           <label
             v-for="item in supportedLocales"
             :key="item.value"
-            class="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-ink transition-colors hover:bg-line"
+            class="text-ink hover:bg-line flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 transition-colors"
           >
             <input
               class="accent-ink"
@@ -161,7 +162,7 @@ useHead(() => ({
           <label
             v-for="item in colorModeOptions"
             :key="item.value"
-            class="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-ink transition-colors hover:bg-line"
+            class="text-ink hover:bg-line flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 transition-colors"
           >
             <input
               class="accent-ink"
@@ -187,7 +188,7 @@ useHead(() => ({
           <label
             v-for="item in fontOptions"
             :key="item.value"
-            class="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-ink transition-colors hover:bg-line"
+            class="text-ink hover:bg-line flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 transition-colors"
           >
             <input
               class="accent-ink"
@@ -210,16 +211,16 @@ useHead(() => ({
         </template>
 
         <div class="flex flex-col gap-3 p-2">
-          <p class="px-2 text-sm text-ink">
+          <p class="text-ink px-2 text-sm">
             {{ t("browserDataDescription") }}
           </p>
 
-          <p v-if="storageEntries.length === 0" class="px-2 py-1.5 text-ink">
+          <p v-if="storageEntries.length === 0" class="text-ink px-2 py-1.5">
             {{ t("storageEmpty") }}
           </p>
 
           <template v-else>
-            <p class="px-2 text-sm text-ink">
+            <p class="text-ink px-2 text-sm">
               {{
                 t("storageSummary", {
                   count: storageEntries.length,
@@ -243,23 +244,23 @@ useHead(() => ({
 
             <details class="px-2">
               <summary
-                class="cursor-pointer text-sm text-ink transition-colors hover:text-ink"
+                class="text-ink hover:text-ink cursor-pointer text-sm transition-colors"
               >
                 {{ t("showRawStorage") }}
               </summary>
 
               <ul
-                class="mt-2 flex max-h-64 flex-col gap-2 overflow-auto rounded border border-line/60 p-2"
+                class="border-line/60 mt-2 flex max-h-64 flex-col gap-2 overflow-auto rounded border p-2"
               >
                 <li
                   v-for="entry in storageEntries"
                   :key="entry.key"
                   class="flex flex-col gap-1"
                 >
-                  <code class="break-all font-mono text-xs text-ink">
+                  <code class="text-ink font-mono text-xs break-all">
                     {{ entry.key }}
                   </code>
-                  <code class="break-all font-mono text-xs text-ink">
+                  <code class="text-ink font-mono text-xs break-all">
                     {{ entry.value }}
                   </code>
                 </li>

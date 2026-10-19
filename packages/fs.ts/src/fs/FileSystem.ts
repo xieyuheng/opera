@@ -1,4 +1,5 @@
 import type { Result } from "@windbell/std.ts/result"
+
 import type { FileSystemError } from "./FileSystemError.ts"
 
 export type PathStyle = "posix" | "win32"

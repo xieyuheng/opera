@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { DeepSeekModelEntry } from "@windbell/semiosis.ts/core"
+import { useI18n } from "vue-i18n"
+
 import Card from "../../components/card/Card.vue"
 import ModelCardToolbar from "./ModelCardToolbar.vue"
-import { useI18n } from "vue-i18n"
 import { providerMessages } from "./Provider.i18n.ts"
 
 defineProps<{
@@ -25,7 +26,7 @@ const { t } = useI18n({
 <template>
   <Card as="article">
     <template #tag>
-      <h2 class="break-all font-mono text-sm text-ink">
+      <h2 class="text-ink font-mono text-sm break-all">
         {{ entry.name }}
       </h2>
     </template>
@@ -44,24 +45,24 @@ const { t } = useI18n({
         <dl class="flex flex-col gap-1">
           <div class="flex flex-wrap">
             <dt class="text-ink">{{ t("ownedBy") }}{{ t("colon") }}</dt>
-            <dd class="font-mono text-ink">{{ entry.info.owned_by }}</dd>
+            <dd class="text-ink font-mono">{{ entry.info.owned_by }}</dd>
           </div>
 
           <div class="flex flex-wrap">
             <dt class="text-ink">{{ t("contextWindow") }}{{ t("colon") }}</dt>
-            <dd class="font-mono text-ink">{{ entry.info.context_window }}</dd>
+            <dd class="text-ink font-mono">{{ entry.info.context_window }}</dd>
           </div>
 
           <div class="flex flex-wrap">
             <dt class="text-ink">{{ t("maxOutputTokens") }}{{ t("colon") }}</dt>
-            <dd class="font-mono text-ink">
+            <dd class="text-ink font-mono">
               {{ entry.info.max_output_tokens }}
             </dd>
           </div>
 
           <div class="flex flex-wrap">
             <dt class="text-ink">{{ t("inputModalities") }}{{ t("colon") }}</dt>
-            <dd class="font-mono text-ink">
+            <dd class="text-ink font-mono">
               {{ entry.info.input_modalities.join(", ") }}
             </dd>
           </div>
@@ -70,7 +71,7 @@ const { t } = useI18n({
             <dt class="text-ink">
               {{ t("outputModalities") }}{{ t("colon") }}
             </dt>
-            <dd class="font-mono text-ink">
+            <dd class="text-ink font-mono">
               {{ entry.info.output_modalities.join(", ") }}
             </dd>
           </div>
@@ -83,12 +84,12 @@ const { t } = useI18n({
         <dl class="flex flex-col gap-1">
           <div class="flex flex-wrap">
             <dt class="text-ink">{{ t("thinking") }}{{ t("colon") }}</dt>
-            <dd class="font-mono text-ink">{{ entry.config.thinking }}</dd>
+            <dd class="text-ink font-mono">{{ entry.config.thinking }}</dd>
           </div>
 
           <div class="flex flex-wrap">
             <dt class="text-ink">{{ t("reasoningEffort") }}{{ t("colon") }}</dt>
-            <dd class="font-mono text-ink">
+            <dd class="text-ink font-mono">
               {{ entry.config.reasoningEffort }}
             </dd>
           </div>

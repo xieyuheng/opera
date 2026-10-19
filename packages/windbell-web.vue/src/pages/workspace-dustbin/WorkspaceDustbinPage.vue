@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import type * as S from "@windbell/semiosis.ts/core"
 import { useHead } from "@unhead/vue"
-import MediumButton from "../../components/buttons/MediumButton.vue"
-import PageLayout from "../../components/layout/PageLayout.vue"
+import type * as S from "@windbell/semiosis.ts/core"
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
+
+import MediumButton from "../../components/buttons/MediumButton.vue"
+import PageLayout from "../../components/layout/PageLayout.vue"
 import DustbinWorkspaceCard from "./DustbinWorkspaceCard.vue"
 import { workspaceDustbinMessages } from "./WorkspaceDustbin.i18n.ts"
 import {
@@ -56,7 +57,7 @@ useHead(() => ({
 <template>
   <PageLayout>
     <header class="flex flex-col gap-3">
-      <h1 class="text-xl text-ink font-semibold">
+      <h1 class="text-ink text-xl font-semibold">
         {{ t("title") }}
       </h1>
 
@@ -67,7 +68,7 @@ useHead(() => ({
       </div>
     </header>
 
-    <h2 class="text-base text-ink font-semibold">
+    <h2 class="text-ink text-base font-semibold">
       {{ t("deletedWorkspaces") }}
     </h2>
 
@@ -107,7 +108,7 @@ useHead(() => ({
       </li>
     </ol>
 
-    <div v-else class="flex flex-1 items-center justify-center text-ink">
+    <div v-else class="text-ink flex flex-1 items-center justify-center">
       {{ t("empty") }}
     </div>
   </PageLayout>

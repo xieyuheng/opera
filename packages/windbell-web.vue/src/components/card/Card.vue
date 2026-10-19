@@ -27,7 +27,7 @@ const bodyOverflowClass = computed(() =>
   >
     <div v-if="$slots.tag" class="flex">
       <div
-        class="flex py-0.5 border-2 border-[var(--card-color)] rounded-t-lg bg-[var(--card-color)] px-3"
+        class="flex rounded-t-lg border-2 border-[var(--card-color)] bg-[var(--card-color)] px-3 py-0.5"
       >
         <slot name="tag" />
       </div>
@@ -38,7 +38,7 @@ const bodyOverflowClass = computed(() =>
     <div
       class="border-2 border-[var(--card-color)]"
       :class="[
-        $slots.tag ? 'rounded-b-lg rounded-tr-lg' : 'rounded-lg',
+        $slots.tag ? 'rounded-tr-lg rounded-b-lg' : 'rounded-lg',
         bodyOverflowClass,
       ]"
     >

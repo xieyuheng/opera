@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
+
 import MediumButton from "../../components/buttons/MediumButton.vue"
 import { sessionMessages } from "./Session.i18n.ts"
 import type { SignDisplayMode } from "./sessionSignDisplayMode.ts"

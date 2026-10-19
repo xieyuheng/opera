@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ModelEntry } from "@windbell/semiosis.ts/core"
+
 import DeepSeekModelCard from "./DeepSeekModelCard.vue"
 import OpenRouterModelCard from "./OpenRouterModelCard.vue"
 

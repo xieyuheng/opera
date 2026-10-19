@@ -1,5 +1,6 @@
-import * as Readline from "node:readline"
 import process from "node:process"
+import * as Readline from "node:readline"
+
 import type {
   Repl,
   ReplCommand,

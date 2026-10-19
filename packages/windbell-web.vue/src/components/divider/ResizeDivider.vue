@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref } from "vue"
+
 import {
   commitDividerRatio,
   setDividerRatio,

@@ -1,4 +1,5 @@
 import type { JsonObject } from "@windbell/std.ts/json"
+
 import type { ShellError } from "../sh/index.ts"
 
 const errorTypeByCode: Record<string, string> = {

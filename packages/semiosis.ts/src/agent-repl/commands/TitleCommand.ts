@@ -1,7 +1,7 @@
 import type { Agent } from "../../agent/index.ts"
 import { formatWithBackground } from "../../format/index.ts"
-import { generateTitle } from "../../session/index.ts"
 import type { Repl, ReplCommand } from "../../repl/Repl.ts"
+import { generateTitle } from "../../session/index.ts"
 import { printAgentReplError } from "../shared.ts"
 
 export async function generateAndPrintTitle(

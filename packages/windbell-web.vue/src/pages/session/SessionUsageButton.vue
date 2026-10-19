@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import type * as S from "@windbell/semiosis.ts/core"
 import { computed, reactive, ref } from "vue"
 import { useI18n } from "vue-i18n"
-import type * as S from "@windbell/semiosis.ts/core"
+
 import MediumButton from "../../components/buttons/MediumButton.vue"
 import Card from "../../components/card/Card.vue"
 import { sessionMessages } from "./Session.i18n.ts"
@@ -116,7 +117,7 @@ function handleToggle(event: Event): void {
     :id="popoverId"
     ref="popover"
     popover="auto"
-    class="pointer-events-auto bg-transparent w-64"
+    class="pointer-events-auto w-64 bg-transparent"
     :style="{
       position: 'fixed',
       inset: 'auto',

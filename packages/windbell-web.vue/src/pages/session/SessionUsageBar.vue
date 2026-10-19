@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import type * as S from "@windbell/semiosis.ts/core"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
-import type * as S from "@windbell/semiosis.ts/core"
+
 import { sessionMessages } from "./Session.i18n.ts"
 
 const props = defineProps<{
@@ -64,15 +65,15 @@ const contextUsageTitle = computed(() => {
 
 <template>
   <div
-    class="pointer-events-auto bg-paper/60 relative flex w-60 items-center justify-center overflow-hidden border-3 border-sign-user"
+    class="bg-paper/60 border-sign-user pointer-events-auto relative flex w-60 items-center justify-center overflow-hidden border-3"
     :title="contextUsageTitle"
   >
     <div
-      class="absolute inset-y-0 left-0 bg-sign-user transition-[width] duration-200"
+      class="bg-sign-user absolute inset-y-0 left-0 transition-[width] duration-200"
       :style="{ width: fillPercent }"
     />
 
-    <span class="pointer-events-none relative z-10 font-mono text-ink text-sm">
+    <span class="text-ink pointer-events-none relative z-10 font-mono text-sm">
       {{ displayText }}
     </span>
   </div>

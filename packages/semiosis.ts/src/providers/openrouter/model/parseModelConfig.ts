@@ -1,4 +1,5 @@
 import { z } from "zod"
+
 import type { ModelConfig } from "./ModelConfig.ts"
 
 const defaultModelConfig: Pick<ModelConfig, "pinned"> = {

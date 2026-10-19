@@ -2,20 +2,20 @@ import { repairOrphanToolCalls } from "../agent/index.ts"
 import type { Database } from "../database/index.ts"
 import { formatSign } from "../format/index.ts"
 import type { Model } from "../model/index.ts"
-import type { Workspace } from "../workspace/Workspace.ts"
-import { withSessionLock } from "../session/sessionLock.ts"
+import type { Repl } from "../repl/Repl.ts"
 import {
   loadSession,
   makeAgentFromSession,
   type SessionId,
 } from "../session/index.ts"
+import { withSessionLock } from "../session/sessionLock.ts"
 import { makeDefaultToolRouter } from "../tools/makeDefaultToolRouter.ts"
+import type { Workspace } from "../workspace/Workspace.ts"
+import { makeAgentReplInputHandler } from "./AgentReplInputHandler.ts"
 import { makeExitCommand } from "./commands/ExitCommand.ts"
 import { makeHelpCommand } from "./commands/HelpCommand.ts"
 import { makeInfoCommand } from "./commands/InfoCommand.ts"
 import { makeTitleCommand } from "./commands/TitleCommand.ts"
-import { makeAgentReplInputHandler } from "./AgentReplInputHandler.ts"
-import type { Repl } from "../repl/Repl.ts"
 import { makeTitleChangeHandler } from "./shared.ts"
 
 export type ResumeAgentReplOptions = {

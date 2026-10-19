@@ -1,5 +1,6 @@
 import type { FileSystemError } from "@windbell/fs.ts/fs"
 import type { JsonObject } from "@windbell/std.ts/json"
+
 import type { LockError } from "../lock/index.ts"
 
 export function toLockError(

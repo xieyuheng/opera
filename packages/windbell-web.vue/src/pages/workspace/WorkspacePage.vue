@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import type * as S from "@windbell/semiosis.ts/core"
 import { useHead } from "@unhead/vue"
-import PageLayout from "../../components/layout/PageLayout.vue"
+import type * as S from "@windbell/semiosis.ts/core"
 import { computed, ref } from "vue"
 import { useI18n } from "vue-i18n"
 import { useRoute, useRouter } from "vue-router"
+
 import MediumButton from "../../components/buttons/MediumButton.vue"
 import Composer from "../../components/composer/Composer.vue"
+import PageLayout from "../../components/layout/PageLayout.vue"
 import { sendSessionMessage } from "../session/SessionInbox.ts"
 import SessionCard from "./SessionCard.vue"
-import WorkspaceWelcomeCard from "./WorkspaceWelcomeCard.vue"
 import { workspaceMessages } from "./Workspace.i18n.ts"
 import {
   getWorkspaceState,
@@ -19,6 +19,7 @@ import {
   updateSessionTitle,
   updateWorkspaceTitle,
 } from "./WorkspaceState.ts"
+import WorkspaceWelcomeCard from "./WorkspaceWelcomeCard.vue"
 
 const route = useRoute()
 const router = useRouter()
@@ -126,7 +127,7 @@ useHead(() => ({
   <PageLayout>
     <header class="flex flex-col gap-3">
       <div class="flex min-w-0 flex-col gap-1">
-        <h1 class="text-xl text-ink font-semibold">
+        <h1 class="text-ink text-xl font-semibold">
           {{ title }}
         </h1>
 
@@ -163,7 +164,7 @@ useHead(() => ({
     </header>
 
     <div class="flex flex-col gap-2">
-      <h2 class="text-base text-ink font-semibold">
+      <h2 class="text-ink text-base font-semibold">
         {{ t("sessions") }}
       </h2>
 

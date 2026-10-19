@@ -1,5 +1,6 @@
-import { serve, type ServerType } from "@hono/node-server"
 import type { AddressInfo } from "node:net"
+
+import { serve, type ServerType } from "@hono/node-server"
 
 export type ServeAndWaitOptions = Parameters<typeof serve>[0]
 

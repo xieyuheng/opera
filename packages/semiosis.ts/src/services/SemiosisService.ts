@@ -3,6 +3,7 @@ import { makeFileLockService } from "@windbell/lock.ts/file-lock"
 import type { LockService } from "@windbell/lock.ts/lock"
 import type { Shell } from "@windbell/sh.ts/sh"
 import type { Path } from "@windbell/std.ts/path"
+
 import { makeDatabase, type Database } from "../database/Database.ts"
 import {
   makeDustbinSessionService,

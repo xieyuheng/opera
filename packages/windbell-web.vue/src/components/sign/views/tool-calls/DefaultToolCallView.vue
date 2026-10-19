@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type * as S from "@windbell/semiosis.ts/core"
 import { computed } from "vue"
+
 import type { SignState } from "../../signState.ts"
 
 const props = defineProps<{
@@ -14,11 +15,11 @@ const argumentsText = computed(() => JSON.stringify(props.args, null, 2) ?? "")
 
 <template>
   <div class="flex flex-col gap-2">
-    <div class="font-mono text-ink">
+    <div class="text-ink font-mono">
       {{ sign.name }}
     </div>
 
-    <pre class="thin-scrollbar overflow-x-auto whitespace-pre font-mono">{{
+    <pre class="thin-scrollbar overflow-x-auto font-mono whitespace-pre">{{
       argumentsText
     }}</pre>
   </div>

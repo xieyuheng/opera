@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { windbellFs as fs } from "../../app/fs.ts"
 import type { FileSystemEntry } from "@windbell/fs.ts/fs"
 import { unwrap } from "@windbell/std.ts/result"
 import type { Component } from "vue"
 import { ref, shallowRef, watch } from "vue"
 import { useI18n } from "vue-i18n"
-import DirectoryView from "./views/DirectoryView.vue"
-import UnknownView from "./views/UnknownView.vue"
+
+import { windbellFs as fs } from "../../app/fs.ts"
 import { rangerMessages } from "./Ranger.i18n.ts"
-import { resolveFileView } from "./views/registry.ts"
 import type { RangerContent } from "./RangerContent.ts"
+import DirectoryView from "./views/DirectoryView.vue"
+import { resolveFileView } from "./views/registry.ts"
+import UnknownView from "./views/UnknownView.vue"
 
 type DisplayedRangerView = {
   component: Component
@@ -96,9 +97,9 @@ watch(
 
 <template>
   <section
-    class="relative flex h-full min-h-0 flex-col overflow-hidden bg-paper"
+    class="bg-paper relative flex h-full min-h-0 flex-col overflow-hidden"
   >
-    <p v-if="error !== undefined" class="px-4 py-3 text-sign-error">
+    <p v-if="error !== undefined" class="text-sign-error px-4 py-3">
       {{ error }}
     </p>
 
@@ -110,10 +111,10 @@ watch(
 
     <div
       v-else-if="pending"
-      class="pointer-events-none absolute right-3 top-3 z-10 h-4 w-4 animate-spin rounded-full border-2 border-line border-t-ink"
+      class="border-line border-t-ink pointer-events-none absolute top-3 right-3 z-10 h-4 w-4 animate-spin rounded-full border-2"
     />
 
-    <div v-else class="flex flex-1 items-center justify-center px-4 text-ink">
+    <div v-else class="text-ink flex flex-1 items-center justify-center px-4">
       {{ t("empty") }}
     </div>
   </section>

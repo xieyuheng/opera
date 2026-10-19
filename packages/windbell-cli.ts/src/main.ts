@@ -1,7 +1,9 @@
 #!/usr/bin/env -S node
 
-import { errorReport } from "@windbell/std.ts/error"
 import process from "node:process"
+
+import { errorReport } from "@windbell/std.ts/error"
+
 import { makeCli } from "./cli/makeCli.ts"
 
 try {

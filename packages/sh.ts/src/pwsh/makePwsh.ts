@@ -1,9 +1,11 @@
 import process from "node:process"
+
 import { ok } from "@windbell/std.ts/result"
-import type { Shell } from "../sh/index.ts"
-import { resolvePwshPath } from "./resolvePwshPath.ts"
+
 import { runChildProcess } from "../child-process/runChildProcess.ts"
 import { toShellError } from "../child-process/toShellError.ts"
+import type { Shell } from "../sh/index.ts"
+import { resolvePwshPath } from "./resolvePwshPath.ts"
 
 export const defaultPwshTimeoutMs = 300_000
 export const defaultPwshMaxOutputChars = 200_000

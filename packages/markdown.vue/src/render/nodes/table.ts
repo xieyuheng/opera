@@ -1,5 +1,6 @@
-import { h } from "vue"
 import type { Table } from "mdast"
+import { h } from "vue"
+
 import type { MarkdownNodeRenderer } from "../types.ts"
 
 export const renderTable: MarkdownNodeRenderer<Table> = (ctx, node) => {

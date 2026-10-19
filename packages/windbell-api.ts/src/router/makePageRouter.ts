@@ -1,5 +1,6 @@
 import type * as S from "@windbell/semiosis.ts"
 import { Hono } from "hono"
+
 import { makePageController } from "../controllers/PageController.ts"
 import * as PageService from "../services/Page.ts"
 

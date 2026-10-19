@@ -1,6 +1,7 @@
 import { err, isError, ok, type Result } from "@windbell/std.ts/result"
-import { makeDatabaseError, type DatabaseError } from "./DatabaseError.ts"
+
 import type { Database } from "./Database.ts"
+import { makeDatabaseError, type DatabaseError } from "./DatabaseError.ts"
 import { assertId } from "./id.ts"
 
 export function apiKeyPath(database: Database, providerName: string): string {

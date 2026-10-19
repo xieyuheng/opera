@@ -1,5 +1,6 @@
-import { h } from "vue"
 import type { InlineCode } from "mdast"
+import { h } from "vue"
+
 import type { MarkdownNodeRenderer } from "../types.ts"
 
 export const renderInlineCode: MarkdownNodeRenderer<InlineCode> = (

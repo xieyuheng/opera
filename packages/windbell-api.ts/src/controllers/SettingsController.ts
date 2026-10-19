@@ -1,5 +1,6 @@
 import type * as S from "@windbell/semiosis.ts"
 import { z } from "zod"
+
 import { makeAction } from "../http/makeAction.ts"
 
 export type SettingsControllerOptions = {

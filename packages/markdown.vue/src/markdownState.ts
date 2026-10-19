@@ -1,4 +1,5 @@
 import type { Definition, FootnoteDefinition, Root } from "mdast"
+
 import type { MarkdownNode } from "./markdownTypes.ts"
 
 export interface MarkdownState {

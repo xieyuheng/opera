@@ -1,6 +1,8 @@
-import { serveStatic } from "@hono/node-server/serve-static"
 import fs from "node:fs/promises"
 import Path from "node:path"
+
+import { serveStatic } from "@hono/node-server/serve-static"
+
 import { makeWindbellRouter } from "../router/index.ts"
 import { serveAndWait, type ServeResult } from "./serveAndWait.ts"
 import type { WindbellServerOptions } from "./WindbellServerOptions.ts"

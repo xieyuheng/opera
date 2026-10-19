@@ -1,19 +1,20 @@
 import type { LockService } from "@windbell/lock.ts/lock"
 import type { Shell } from "@windbell/sh.ts/sh"
 import { err, isError, ok, unwrap, type Result } from "@windbell/std.ts/result"
+
 import type { Database } from "../database/Database.ts"
 import type { ModelTotalUsage, ModelUsage } from "../model/index.ts"
 import { makeModel } from "../models/makeModel.ts"
-import { PersonaSign, type Sign } from "../sign/index.ts"
 import { generateTitle } from "../session/generateTitle.ts"
 import { makeAgentFromSession } from "../session/makeAgentFromSession.ts"
 import type { Session, SessionId, SessionIndex } from "../session/Session.ts"
+import { PersonaSign, type Sign } from "../sign/index.ts"
 import { makeShellToolRouter } from "../tools/makeShellToolRouter.ts"
 import { resolveTurn } from "../turn/resolveTurn.ts"
-import { turnReplay } from "../turn/turnReplay.ts"
 import type { SessionUsage, Turn, TurnDetails } from "../turn/Turn.ts"
-import { turnRun } from "../turn/turnRun.ts"
 import type { TurnEvent } from "../turn/TurnEvent.ts"
+import { turnReplay } from "../turn/turnReplay.ts"
+import { turnRun } from "../turn/turnRun.ts"
 import type { Workspace, WorkspaceId } from "../workspace/Workspace.ts"
 import {
   makeServiceError,

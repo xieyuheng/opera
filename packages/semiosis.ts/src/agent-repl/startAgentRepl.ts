@@ -1,10 +1,12 @@
 import type { Database } from "../database/index.ts"
 import type { Model } from "../model/index.ts"
-import type { Workspace } from "../workspace/Workspace.ts"
-import { PersonaSign } from "../sign/index.ts"
-import { withSessionLock } from "../session/sessionLock.ts"
+import type { Repl } from "../repl/Repl.ts"
 import { createSession, makeAgentFromSession } from "../session/index.ts"
+import { withSessionLock } from "../session/sessionLock.ts"
+import { PersonaSign } from "../sign/index.ts"
 import { makeDefaultToolRouter } from "../tools/makeDefaultToolRouter.ts"
+import type { Workspace } from "../workspace/Workspace.ts"
+import { makeAgentReplInputHandler } from "./AgentReplInputHandler.ts"
 import { makeExitCommand } from "./commands/ExitCommand.ts"
 import { makeHelpCommand } from "./commands/HelpCommand.ts"
 import { makeInfoCommand } from "./commands/InfoCommand.ts"
@@ -12,8 +14,6 @@ import {
   generateAndPrintTitle,
   makeTitleCommand,
 } from "./commands/TitleCommand.ts"
-import { makeAgentReplInputHandler } from "./AgentReplInputHandler.ts"
-import type { Repl } from "../repl/Repl.ts"
 import { makeTitleChangeHandler } from "./shared.ts"
 
 export type StartAgentReplOptions = {

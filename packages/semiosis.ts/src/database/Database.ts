@@ -1,5 +1,7 @@
 import type { FileSystem } from "@windbell/fs.ts/fs"
 import type { Path } from "@windbell/std.ts/path"
+import { unwrap } from "@windbell/std.ts/result"
+
 import {
   makeDustbinSessionStore,
   type DustbinSessionStore,
@@ -13,7 +15,6 @@ import { makeProviderStore, type ProviderStore } from "./ProviderStore.ts"
 import { makeSessionStore, type SessionStore } from "./SessionStore.ts"
 import { makeSettingsStore, type SettingsStore } from "./SettingsStore.ts"
 import { makeWorkspaceStore, type WorkspaceStore } from "./WorkspaceStore.ts"
-import { unwrap } from "@windbell/std.ts/result"
 
 export type DatabaseOptions = {
   fs: FileSystem

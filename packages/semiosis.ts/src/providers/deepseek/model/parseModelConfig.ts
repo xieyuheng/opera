@@ -1,4 +1,5 @@
 import { z } from "zod"
+
 import type { ModelConfig } from "./ModelConfig.ts"
 
 const defaultModelConfig: Omit<ModelConfig, "name"> = {

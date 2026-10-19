@@ -1,12 +1,12 @@
-import { z } from "zod"
-import type { Json, JsonObject } from "@windbell/std.ts/json"
 import type {
   FileSystemEntry,
   FileSystemError,
   FileSystemErrorType,
   FileType,
 } from "@windbell/fs.ts/fs"
+import type { Json, JsonObject } from "@windbell/std.ts/json"
 import type { Result } from "@windbell/std.ts/result"
+import { z } from "zod"
 
 const JsonValueSchema: z.ZodType<Json> = z.lazy(() =>
   z.union([

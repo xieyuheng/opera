@@ -3,14 +3,16 @@ import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
-import { makeBashToolHandler, makeBashToolSign } from "./bash/index.ts"
+
+import { resolvePwshPath } from "@windbell/sh.ts/pwsh"
+
 import { assertSessionToolPlatform } from "./assertSessionToolPlatform.ts"
+import { makeBashToolHandler, makeBashToolSign } from "./bash/index.ts"
 import {
   platformShellName,
   makeDefaultToolRouter,
 } from "./makeDefaultToolRouter.ts"
 import { makePwshToolSign } from "./pwsh/index.ts"
-import { resolvePwshPath } from "@windbell/sh.ts/pwsh"
 
 test("platformShellName chooses bash on posix and pwsh on win32", () => {
   assert.equal(platformShellName("linux"), "bash")

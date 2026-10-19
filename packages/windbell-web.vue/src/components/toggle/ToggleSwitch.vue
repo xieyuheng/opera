@@ -33,7 +33,7 @@ function handleChange(event: Event): void {
     />
 
     <span
-      class="relative h-5 w-9 shrink-0 rounded-full bg-line transition-colors after:absolute after:left-0.5 after:top-0.5 after:h-4 after:w-4 after:rounded-full after:bg-paper after:transition-transform after:content-[''] peer-checked:bg-ink/80 peer-checked:after:translate-x-4 peer-focus-visible:ring-2 peer-focus-visible:ring-ink"
+      class="bg-line after:bg-paper peer-checked:bg-ink/80 peer-focus-visible:ring-ink relative h-5 w-9 shrink-0 rounded-full transition-colors peer-focus-visible:ring-2 after:absolute after:top-0.5 after:left-0.5 after:h-4 after:w-4 after:rounded-full after:transition-transform after:content-[''] peer-checked:after:translate-x-4"
     />
 
     <span v-if="$slots.default">

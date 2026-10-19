@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue"
+import { useI18n } from "vue-i18n"
+
 import MediumButton from "../../components/buttons/MediumButton.vue"
 import PageLayout from "../../components/layout/PageLayout.vue"
-import { useI18n } from "vue-i18n"
 import { notFoundPageMessages } from "./NotFoundPage.i18n.ts"
 
 const { t } = useI18n({
@@ -24,7 +25,7 @@ useHead(() => ({
 <template>
   <PageLayout>
     <header class="flex flex-col gap-3">
-      <h1 class="text-xl text-ink font-semibold">404</h1>
+      <h1 class="text-ink text-xl font-semibold">404</h1>
 
       <div class="flex flex-wrap items-center gap-2">
         <MediumButton :to="{ name: 'home' }">

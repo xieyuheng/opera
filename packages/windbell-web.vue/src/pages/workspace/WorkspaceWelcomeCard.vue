@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n"
+
 import MediumButton from "../../components/buttons/MediumButton.vue"
 import Card from "../../components/card/Card.vue"
 import { workspaceMessages } from "./Workspace.i18n.ts"
@@ -18,7 +19,7 @@ const { t } = useI18n({
 
     <div class="flex flex-col gap-4 p-3">
       <p
-        class="whitespace-pre-line leading-relaxed"
+        class="leading-relaxed whitespace-pre-line"
         v-text="t('welcomeMessage')"
       />
 

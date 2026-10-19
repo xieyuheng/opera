@@ -3,6 +3,7 @@ import { useHead } from "@unhead/vue"
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
 import { useRouter } from "vue-router"
+
 import MediumButton from "../../components/buttons/MediumButton.vue"
 import PageLayout from "../../components/layout/PageLayout.vue"
 import {
@@ -85,7 +86,7 @@ useHead(() => ({
 <template>
   <PageLayout>
     <header class="flex flex-col gap-3">
-      <h1 class="text-xl text-ink font-semibold">
+      <h1 class="text-ink text-xl font-semibold">
         {{ t("title") }}
       </h1>
 
@@ -113,7 +114,7 @@ useHead(() => ({
       :key="category.id"
       class="flex flex-col gap-2"
     >
-      <h2 class="text-base text-ink font-semibold">
+      <h2 class="text-ink text-base font-semibold">
         {{ t(category.labelKey) }}
       </h2>
 

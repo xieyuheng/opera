@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n"
+
 import MediumButton from "../../buttons/MediumButton.vue"
 import { rangerMessages } from "../Ranger.i18n.ts"
 import type { MarkdownViewMode } from "./MarkdownViewMode.ts"

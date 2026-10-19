@@ -1,4 +1,5 @@
 import type * as Cli from "@windbell/cli.ts"
+
 import type { Database } from "../../database/index.ts"
 import { setDefaultProvider } from "../../settings/setDefaultProvider.ts"
 

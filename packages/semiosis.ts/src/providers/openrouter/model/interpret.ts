@@ -1,10 +1,3 @@
-import {
-  UsageSchema,
-  type ChatCompletionInput,
-  type Client,
-  type Message,
-  type Tool,
-} from "../client/index.ts"
 import type {
   ModelInterpretEvent,
   ModelInterpretOptions,
@@ -26,6 +19,13 @@ import {
   type Sign,
   type ToolSign,
 } from "../../../sign/index.ts"
+import {
+  UsageSchema,
+  type ChatCompletionInput,
+  type Client,
+  type Message,
+  type Tool,
+} from "../client/index.ts"
 import type { ModelConfig } from "./ModelConfig.ts"
 
 export async function* interpret(

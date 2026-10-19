@@ -1,5 +1,6 @@
 import { HttpRequestError } from "@windbell/http.ts"
 import { ZodError } from "zod"
+
 import type { ModelError, ModelInterpretEvent } from "../model/index.ts"
 
 function errorMessage(error: unknown): string {

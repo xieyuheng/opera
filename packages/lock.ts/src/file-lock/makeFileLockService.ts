@@ -1,6 +1,7 @@
 import type { FileSystem } from "@windbell/fs.ts/fs"
 import type { Path } from "@windbell/std.ts/path"
 import { isError, ok, err, type Result } from "@windbell/std.ts/result"
+
 import type {
   Lock,
   LockError,

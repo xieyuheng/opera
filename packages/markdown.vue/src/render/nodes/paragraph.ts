@@ -1,5 +1,6 @@
-import { h } from "vue"
 import type { Paragraph } from "mdast"
+import { h } from "vue"
+
 import type { MarkdownNodeRenderer } from "../types.ts"
 
 export const renderParagraph: MarkdownNodeRenderer<Paragraph> = (ctx, node) => {

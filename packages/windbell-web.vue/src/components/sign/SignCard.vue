@@ -2,6 +2,7 @@
 import type * as S from "@windbell/semiosis.ts/core"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
+
 import Card from "../card/Card.vue"
 import { signMessages } from "./Sign.i18n.ts"
 import { createSignState } from "./signState.ts"

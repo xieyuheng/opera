@@ -148,7 +148,7 @@ onBeforeUnmount(() => {
     @pointercancel="handlePointerUp"
   >
     <div
-      class="pointer-events-none absolute inset-x-0 bg-ink/80"
+      class="bg-ink/80 pointer-events-none absolute inset-x-0"
       :style="{
         top: `${thumb.top}px`,
         height: `${thumb.height}px`,

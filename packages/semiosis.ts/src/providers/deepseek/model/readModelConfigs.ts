@@ -1,5 +1,6 @@
-import type { Database } from "../../../database/index.ts"
 import { unwrap } from "@windbell/std.ts/result"
+
+import type { Database } from "../../../database/index.ts"
 
 export async function readModelConfigs(
   database: Database,

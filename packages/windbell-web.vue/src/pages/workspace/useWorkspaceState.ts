@@ -1,4 +1,5 @@
 import { defineBasicLoader } from "vue-router/experimental"
+
 import { getWorkspaceState, loadWorkspaceState } from "./WorkspaceState.ts"
 
 export const useWorkspaceState = defineBasicLoader(async (to) => {

@@ -1,7 +1,9 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
+
 import { HttpRequestError } from "@windbell/http.ts"
 import { z, ZodError } from "zod"
+
 import type { ModelInterpretEvent } from "../model/index.ts"
 import { AssistantSign } from "../sign/index.ts"
 import { makeModelErrorFromUnknown, withModelErrorEvent } from "./modelError.ts"

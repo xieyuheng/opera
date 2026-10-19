@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n"
+
 import { rangerMessages } from "../Ranger.i18n.ts"
 import type { RangerDirectoryContent } from "../RangerContent.ts"
 
@@ -22,13 +23,13 @@ const { t } = useI18n({
       <li
         v-for="child in content.entries"
         :key="child.path"
-        class="w-full truncate px-4 py-1 text-ink"
+        class="text-ink w-full truncate px-4 py-1"
       >
         {{ child.kind === "Directory" ? `${child.name}/` : child.name }}
       </li>
     </ol>
 
-    <div v-else class="flex flex-1 items-center justify-center px-4 text-ink">
+    <div v-else class="text-ink flex flex-1 items-center justify-center px-4">
       {{ t("empty") }}
     </div>
   </div>

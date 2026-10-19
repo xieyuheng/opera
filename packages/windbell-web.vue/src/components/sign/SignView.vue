@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type * as S from "@windbell/semiosis.ts/core"
 import { computed } from "vue"
+
 import type { SignState } from "./signState.ts"
 import { resolveSignView } from "./views/registry.ts"
 

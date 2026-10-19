@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
+
 import MediumButton from "../buttons/MediumButton.vue"
 import { composerMessages } from "./Composer.i18n.ts"
 import {
@@ -424,13 +425,13 @@ function handleToggle(): void {
     <form
       v-if="!showExpanded"
       ref="compactForm"
-      class="pointer-events-auto flex w-full shrink-0 items-center gap-px rounded-lg border border-line backdrop-blur-md transition-[border-color,box-shadow] duration-[160ms] ease-out hover:border-sign-user focus-within:border-sign-user focus-within:ring focus-within:ring-sign-user"
+      class="border-line hover:border-sign-user focus-within:border-sign-user focus-within:ring-sign-user pointer-events-auto flex w-full shrink-0 items-center gap-px rounded-lg border backdrop-blur-md transition-[border-color,box-shadow] duration-[160ms] ease-out focus-within:ring"
       @submit.prevent="submit"
     >
       <textarea
         ref="compactTextarea"
         v-model="input"
-        class="h-10 min-w-0 flex-1 resize-none overflow-hidden bg-transparent p-2 text-ink outline-none placeholder:text-ink/60 disabled:opacity-50"
+        class="text-ink placeholder:text-ink/60 h-10 min-w-0 flex-1 resize-none overflow-hidden bg-transparent p-2 outline-none disabled:opacity-50"
         :disabled="props.disabled"
         :placeholder="props.placeholder"
         rows="1"
@@ -486,13 +487,13 @@ function handleToggle(): void {
     <form
       v-else
       ref="expandedForm"
-      class="pointer-events-auto relative flex w-full shrink-0 flex-col gap-2 rounded-lg border-2 border-line p-2 backdrop-blur-md transition-[border-color,box-shadow] duration-[160ms] ease-out hover:border-sign-user focus-within:border-sign-user focus-within:ring focus-within:ring-sign-user"
+      class="border-line hover:border-sign-user focus-within:border-sign-user focus-within:ring-sign-user pointer-events-auto relative flex w-full shrink-0 flex-col gap-2 rounded-lg border-2 p-2 backdrop-blur-md transition-[border-color,box-shadow] duration-[160ms] ease-out focus-within:ring"
       :style="expandedFormStyle"
       @submit.prevent="submit"
     >
       <div
         v-if="props.resizable"
-        class="group absolute inset-x-0 -top-2 z-10 flex h-4 cursor-ns-resize touch-none select-none items-center justify-center"
+        class="group absolute inset-x-0 -top-2 z-10 flex h-4 cursor-ns-resize touch-none items-center justify-center select-none"
         role="separator"
         aria-orientation="horizontal"
         :aria-label="t('resizeInput')"
@@ -500,14 +501,14 @@ function handleToggle(): void {
         @pointerdown.prevent="startResize"
       >
         <span
-          class="h-0.5 w-10 rounded-full bg-line transition-colors group-hover:bg-ink/40"
+          class="bg-line group-hover:bg-ink/40 h-0.5 w-10 rounded-full transition-colors"
         />
       </div>
 
       <textarea
         ref="expandedTextarea"
         v-model="input"
-        class="thin-scrollbar w-full resize-none overflow-y-auto bg-transparent text-ink outline-none placeholder:text-ink/60 disabled:opacity-50"
+        class="thin-scrollbar text-ink placeholder:text-ink/60 w-full resize-none overflow-y-auto bg-transparent outline-none disabled:opacity-50"
         :class="{ 'min-h-0 flex-1': manualHeight !== null }"
         :disabled="props.disabled"
         :placeholder="props.placeholder"

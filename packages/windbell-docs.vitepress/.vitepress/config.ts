@@ -1,7 +1,9 @@
 import { createRequire } from "node:module"
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
+
 import { defineConfig } from "vitepress"
+
 import { demoteDiaryHeadings } from "./markdown/demote-diary-headings"
 import { markdownSidebar } from "./sidebar"
 

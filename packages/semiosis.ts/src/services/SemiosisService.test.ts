@@ -3,11 +3,13 @@ import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
+
 import { makeLocalFileSystem } from "@windbell/fs.ts/local-fs"
 import type { LockService } from "@windbell/lock.ts/lock"
 import { makeBash } from "@windbell/sh.ts/bash"
 import { makePath } from "@windbell/std.ts/path"
 import { ok, unwrap } from "@windbell/std.ts/result"
+
 import { makeSemiosisService } from "./SemiosisService.ts"
 
 test("makeSemiosisService manages workspaces and sessions", async (t) => {

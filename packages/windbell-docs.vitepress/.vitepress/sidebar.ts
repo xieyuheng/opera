@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs"
 import { basename, join } from "node:path"
+
 import type { DefaultTheme } from "vitepress"
 
 function stripQuotes(text: string): string {

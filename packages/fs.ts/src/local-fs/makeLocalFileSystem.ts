@@ -1,9 +1,12 @@
-import fs from "node:fs/promises"
-import { watch as watchDirectory, type WatchEventType } from "node:fs"
 import { randomUUID } from "node:crypto"
-import Path from "node:path"
+import { watch as watchDirectory, type WatchEventType } from "node:fs"
+import fs from "node:fs/promises"
 import Os from "node:os"
+import Path from "node:path"
+
 import type { JsonObject } from "@windbell/std.ts/json"
+import { err, isError, ok, type Result } from "@windbell/std.ts/result"
+
 import type {
   FileSystem,
   FileSystemEntry,
@@ -13,7 +16,6 @@ import type {
   FileType,
 } from "../fs/index.ts"
 import type { FileSystemError, FileSystemErrorType } from "../fs/index.ts"
-import { err, isError, ok, type Result } from "@windbell/std.ts/result"
 
 const errorTypeByCode: Record<string, FileSystemErrorType> = {
   ENOENT: "not-found",

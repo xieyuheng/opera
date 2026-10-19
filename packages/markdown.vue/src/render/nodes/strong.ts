@@ -1,5 +1,6 @@
-import { h } from "vue"
 import type { Strong } from "mdast"
+import { h } from "vue"
+
 import type { MarkdownNodeRenderer } from "../types.ts"
 
 export const renderStrong: MarkdownNodeRenderer<Strong> = (ctx, node) => {

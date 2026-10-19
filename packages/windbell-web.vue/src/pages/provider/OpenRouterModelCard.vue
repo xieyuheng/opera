@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { OpenRouterModelEntry } from "@windbell/semiosis.ts/core"
+import { useI18n } from "vue-i18n"
+
 import Card from "../../components/card/Card.vue"
 import ModelCardToolbar from "./ModelCardToolbar.vue"
-import { useI18n } from "vue-i18n"
 import { providerMessages } from "./Provider.i18n.ts"
 
 const props = defineProps<{
@@ -29,7 +30,7 @@ function json(value: unknown): string {
 <template>
   <Card as="article">
     <template #tag>
-      <h2 class="break-all font-mono text-sm text-ink">
+      <h2 class="text-ink font-mono text-sm break-all">
         {{ entry.name }}
       </h2>
     </template>
@@ -48,21 +49,21 @@ function json(value: unknown): string {
         <dl class="flex flex-col gap-1">
           <div class="flex flex-wrap">
             <dt class="text-ink">{{ t("contextLength") }}{{ t("colon") }}</dt>
-            <dd class="font-mono text-ink">
+            <dd class="text-ink font-mono">
               {{ entry.info.context_length }}
             </dd>
           </div>
 
           <div class="flex flex-wrap">
             <dt class="text-ink">{{ t("modality") }}{{ t("colon") }}</dt>
-            <dd class="font-mono text-ink">
+            <dd class="text-ink font-mono">
               {{ entry.info.architecture.modality ?? t("none") }}
             </dd>
           </div>
 
           <div class="flex flex-wrap">
             <dt class="text-ink">{{ t("inputModalities") }}{{ t("colon") }}</dt>
-            <dd class="font-mono text-ink">
+            <dd class="text-ink font-mono">
               {{ entry.info.architecture.input_modalities.join(", ") }}
             </dd>
           </div>
@@ -71,22 +72,22 @@ function json(value: unknown): string {
             <dt class="text-ink">
               {{ t("outputModalities") }}{{ t("colon") }}
             </dt>
-            <dd class="font-mono text-ink">
+            <dd class="text-ink font-mono">
               {{ entry.info.architecture.output_modalities.join(", ") }}
             </dd>
           </div>
 
           <div class="flex">
-            <dt class="shrink-0 text-ink">
+            <dt class="text-ink shrink-0">
               {{ t("supportedParameters") }}{{ t("colon") }}
             </dt>
             <dd
               v-if="entry.info.supported_parameters.length > 0"
-              class="min-w-0 flex-1 break-words font-mono text-ink"
+              class="text-ink min-w-0 flex-1 font-mono break-words"
             >
               {{ entry.info.supported_parameters.join(", ") }}
             </dd>
-            <dd v-else class="font-mono text-ink">{{ t("none") }}</dd>
+            <dd v-else class="text-ink font-mono">{{ t("none") }}</dd>
           </div>
         </dl>
       </section>

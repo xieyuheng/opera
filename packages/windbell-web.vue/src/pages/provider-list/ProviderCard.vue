@@ -2,8 +2,9 @@
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 import { RouterLink } from "vue-router"
-import Card from "../../components/card/Card.vue"
+
 import SmallButton from "../../components/buttons/SmallButton.vue"
+import Card from "../../components/card/Card.vue"
 import ModelLine from "./ModelLine.vue"
 import { providerListMessages } from "./ProviderList.i18n.ts"
 import type { ProviderSummary } from "./ProviderListState.ts"
@@ -105,11 +106,11 @@ function requestDeleteApiKey(): void {
       </div>
 
       <section class="flex flex-col gap-2">
-        <h3 class="text-base text-ink font-semibold">
+        <h3 class="text-ink text-base font-semibold">
           {{ t("models") }}
         </h3>
 
-        <p v-if="pinnedModels.length === 0" class="text-sm text-ink">
+        <p v-if="pinnedModels.length === 0" class="text-ink text-sm">
           {{ t("noModels") }}
         </p>
 
@@ -117,7 +118,7 @@ function requestDeleteApiKey(): void {
           <li
             v-for="model in pinnedModels"
             :key="model.name"
-            class="rounded bg-line px-2 py-1.5"
+            class="bg-line rounded px-2 py-1.5"
           >
             <RouterLink class="block" :to="providerRoute">
               <ModelLine :name="model.name" :is-default="model.isDefault" />

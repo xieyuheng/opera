@@ -3,6 +3,7 @@ import * as S from "@windbell/semiosis.ts/core"
 import { Ajv } from "ajv"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
+
 import { signMessages } from "../../Sign.i18n.ts"
 import type { SignState } from "../../signState.ts"
 
@@ -62,13 +63,13 @@ function copyCommand(): void {
 
 <template>
   <div class="flex flex-col gap-2">
-    <div class="font-mono text-ink">
+    <div class="text-ink font-mono">
       {{ sign.name }}
     </div>
 
     <div class="font-mono break-words">
       <div v-if="state.workspaceRoot">
-        <span class="select-none whitespace-pre" aria-hidden="true">{{
+        <span class="whitespace-pre select-none" aria-hidden="true">{{
           "  "
         }}</span>
         <span class="cursor-pointer" :title="t('copyPath')" @click="copyPath">{{

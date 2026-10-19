@@ -1,6 +1,7 @@
-import { windbell } from "./windbell"
 import { computed, reactive, watch } from "vue"
+
 import { useColorMode, type ColorMode } from "./color-mode.ts"
+import { windbell } from "./windbell"
 
 export const defaultThemeId = "builtin-default"
 

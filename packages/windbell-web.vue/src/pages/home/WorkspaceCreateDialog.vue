@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { windbellFs as fs } from "../../app/fs.ts"
 import type { FileSystemEntry } from "@windbell/fs.ts/fs"
 import { unwrap } from "@windbell/std.ts/result"
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
+
+import { windbellFs as fs } from "../../app/fs.ts"
 import MediumButton from "../../components/buttons/MediumButton.vue"
 import { homeMessages } from "./Home.i18n.ts"
 
@@ -268,19 +269,19 @@ function parentDirectory(path: string): string {
 
 <template>
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-ink/30 p-4"
+    class="bg-ink/30 fixed inset-0 z-50 flex items-center justify-center p-4"
     @click.self="!props.creating && emit('close')"
   >
     <form
-      class="flex max-h-[80vh] w-full max-w-3xl flex-col overflow-hidden rounded-lg border-x-3 border-b-3 border-line bg-paper text-ink"
+      class="border-line bg-paper text-ink flex max-h-[80vh] w-full max-w-3xl flex-col overflow-hidden rounded-lg border-x-3 border-b-3"
       @submit.prevent="submit"
     >
-      <header class="shrink-0 bg-line px-3 py-2">
+      <header class="bg-line shrink-0 px-3 py-2">
         <div>
           <h2 class="text-base font-semibold">
             {{ t("createWorkspace") }}
           </h2>
-          <p class="mt-1 text-xs text-ink">
+          <p class="text-ink mt-1 text-xs">
             {{ t("createWorkspaceHint") }}
           </p>
         </div>
@@ -288,28 +289,28 @@ function parentDirectory(path: string): string {
 
       <div class="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden p-4">
         <div
-          class="grid h-64 shrink-0 grid-cols-2 overflow-hidden rounded border border-line"
+          class="border-line grid h-64 shrink-0 grid-cols-2 overflow-hidden rounded border"
         >
           <div class="thin-scrollbar h-full overflow-y-auto">
-            <p v-if="loading" class="px-3 py-2 text-ink">
+            <p v-if="loading" class="text-ink px-3 py-2">
               {{ t("loading") }}
             </p>
 
             <p
               v-else-if="loadError !== undefined"
-              class="px-3 py-2 text-sign-error"
+              class="text-sign-error px-3 py-2"
             >
               {{ loadError }}
             </p>
 
-            <p v-else-if="entries.length === 0" class="px-3 py-2 text-ink">
+            <p v-else-if="entries.length === 0" class="text-ink px-3 py-2">
               {{ t("emptyDirectory") }}
             </p>
 
             <ul v-else ref="list" class="flex flex-col">
               <li v-for="(entry, index) in entries" :key="entry.path">
                 <button
-                  class="flex w-full items-center gap-2 px-3 py-2 text-left outline-none transition-colors"
+                  class="flex w-full items-center gap-2 px-3 py-2 text-left transition-colors outline-none"
                   :class="
                     index === selectedIndex
                       ? 'bg-ink/15 text-ink'
@@ -326,26 +327,26 @@ function parentDirectory(path: string): string {
           </div>
 
           <div
-            class="thin-scrollbar h-full overflow-y-auto border-l border-line"
+            class="thin-scrollbar border-line h-full overflow-y-auto border-l"
           >
-            <p v-if="selectedEntry === undefined" class="px-3 py-2 text-ink">
+            <p v-if="selectedEntry === undefined" class="text-ink px-3 py-2">
               {{ t("noSelection") }}
             </p>
 
-            <p v-else-if="previewLoading" class="px-3 py-2 text-ink">
+            <p v-else-if="previewLoading" class="text-ink px-3 py-2">
               {{ t("loading") }}
             </p>
 
             <p
               v-else-if="previewError !== undefined"
-              class="px-3 py-2 text-sign-error"
+              class="text-sign-error px-3 py-2"
             >
               {{ previewError }}
             </p>
 
             <p
               v-else-if="previewEntries.length === 0"
-              class="px-3 py-2 text-ink"
+              class="text-ink px-3 py-2"
             >
               {{ t("emptyDirectory") }}
             </p>
@@ -365,7 +366,7 @@ function parentDirectory(path: string): string {
             <span class="text-ink">{{ t("root") }}</span>
             <input
               :value="selectedEntry?.path ?? ''"
-              class="w-full rounded border border-line bg-transparent px-2 py-1.5 font-mono text-ink outline-none"
+              class="border-line text-ink w-full rounded border bg-transparent px-2 py-1.5 font-mono outline-none"
               type="text"
               readonly
             />
@@ -375,14 +376,14 @@ function parentDirectory(path: string): string {
             <span class="text-ink">{{ t("nameEditable") }}</span>
             <input
               v-model="name"
-              class="w-full rounded border border-line bg-transparent px-2 py-1.5 text-ink outline-none placeholder:text-ink disabled:opacity-50"
+              class="border-line text-ink placeholder:text-ink w-full rounded border bg-transparent px-2 py-1.5 outline-none disabled:opacity-50"
               type="text"
               :disabled="selectedEntry === undefined"
             />
           </label>
         </div>
 
-        <p v-if="props.error !== undefined" class="text-sm text-sign-error">
+        <p v-if="props.error !== undefined" class="text-sign-error text-sm">
           {{ props.error }}
         </p>
 

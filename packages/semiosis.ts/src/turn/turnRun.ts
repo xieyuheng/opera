@@ -1,12 +1,13 @@
-import { agentContinue, agentInterpret } from "../agent/agentInterpret.ts"
+import { unwrap } from "@windbell/std.ts/result"
+
 import type { Agent } from "../agent/Agent.ts"
+import { agentContinue, agentInterpret } from "../agent/agentInterpret.ts"
 import type { SessionStore } from "../database/SessionStore.ts"
 import type { ModelError, ModelUsage } from "../model/index.ts"
 import type { Sign } from "../sign/index.ts"
 import type { Turn, TurnStep, TurnStepStatus } from "./Turn.ts"
 import type { TurnEvent } from "./TurnEvent.ts"
 import { turnReplay } from "./turnReplay.ts"
-import { unwrap } from "@windbell/std.ts/result"
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error)

@@ -3,7 +3,9 @@ import { once } from "node:events"
 import { createServer } from "node:http"
 import type { AddressInfo } from "node:net"
 import { test } from "node:test"
+
 import { z } from "zod"
+
 import { makeJsonEndpoint } from "./JsonEndpoint.ts"
 
 const outputSchema = z.object({

@@ -1,17 +1,19 @@
-import * as S from "@windbell/semiosis.ts"
+import Path from "node:path"
+import process from "node:process"
+
+import type { ServerType } from "@hono/node-server"
 import { makeLocalFileSystem } from "@windbell/fs.ts/local-fs"
+import * as S from "@windbell/semiosis.ts"
 import { makePath } from "@windbell/std.ts/path"
 import {
   closeServer,
   makeAccessTokenStore,
   startWindbellServer,
 } from "@windbell/windbell-api.ts"
-import { formatLocalDateTime, makeAccessTokenUrl } from "../startLog.ts"
-import Path from "node:path"
-import process from "node:process"
 import { createServer, type ViteDevServer } from "vite"
+
+import { formatLocalDateTime, makeAccessTokenUrl } from "../startLog.ts"
 import type { DevOptions } from "./resolveDevOptions.ts"
-import type { ServerType } from "@hono/node-server"
 
 export async function runDev(options: DevOptions): Promise<void> {
   const database = S.makeDatabase({

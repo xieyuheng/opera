@@ -1,8 +1,8 @@
 import { agentInterpret, type Agent } from "../agent/index.ts"
 import { formatSign } from "../format/index.ts"
+import type { Repl, ReplInputHandler } from "../repl/Repl.ts"
 import { UserSign } from "../sign/index.ts"
 import { printAgentReplError } from "./shared.ts"
-import type { Repl, ReplInputHandler } from "../repl/Repl.ts"
 
 export function makeAgentReplInputHandler(
   agent: Agent,

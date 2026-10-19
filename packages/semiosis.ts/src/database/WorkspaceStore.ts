@@ -1,5 +1,6 @@
 import type { Path } from "@windbell/std.ts/path"
 import { err, isError, ok, type Result } from "@windbell/std.ts/result"
+
 import type { Workspace, WorkspaceId } from "../workspace/Workspace.ts"
 import { makeDatabaseError, type DatabaseError } from "./DatabaseError.ts"
 import type { FileStore } from "./FileStore.ts"

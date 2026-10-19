@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type * as S from "@windbell/semiosis.ts/core"
+
 import type { SignState } from "../signState.ts"
 
 defineProps<{
@@ -9,7 +10,7 @@ defineProps<{
 </script>
 
 <template>
-  <pre class="thin-scrollbar overflow-x-auto whitespace-pre font-mono">{{
+  <pre class="thin-scrollbar overflow-x-auto font-mono whitespace-pre">{{
     sign.content
   }}</pre>
 </template>

@@ -1,7 +1,8 @@
-import * as S from "@windbell/semiosis.ts"
 import Path from "node:path"
 import process from "node:process"
 import { fileURLToPath } from "node:url"
+
+import * as S from "@windbell/semiosis.ts"
 
 export type DevOptions = {
   hostname: string

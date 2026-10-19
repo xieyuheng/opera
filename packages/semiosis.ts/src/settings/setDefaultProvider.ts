@@ -1,6 +1,7 @@
+import { unwrap } from "@windbell/std.ts/result"
+
 import type { Database } from "../database/index.ts"
 import { providerNames } from "../providers/providerNames.ts"
-import { unwrap } from "@windbell/std.ts/result"
 
 export async function setDefaultProvider(
   database: Database,

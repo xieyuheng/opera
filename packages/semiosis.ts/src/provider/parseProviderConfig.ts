@@ -1,4 +1,5 @@
 import { z } from "zod"
+
 import type { ProviderConfig } from "./ProviderConfig.ts"
 
 const providerConfigSchema = z.object({

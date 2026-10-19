@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type * as S from "@windbell/semiosis.ts/core"
 import Markdown from "@windbell/markdown.vue"
+import type * as S from "@windbell/semiosis.ts/core"
+
 import type { SignState } from "../signState.ts"
 
 defineProps<{
@@ -12,7 +13,7 @@ defineProps<{
 <template>
   <pre
     v-if="state.streaming"
-    class="font-mono whitespace-pre-wrap break-words"
+    class="font-mono break-words whitespace-pre-wrap"
     >{{ sign.content }}</pre>
 
   <Markdown v-else :text="sign.content" />

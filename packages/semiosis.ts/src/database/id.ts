@@ -1,4 +1,5 @@
 import { err, ok, type Result } from "@windbell/std.ts/result"
+
 import { makeDatabaseError, type DatabaseError } from "./DatabaseError.ts"
 
 export function isValidId(id: string): boolean {

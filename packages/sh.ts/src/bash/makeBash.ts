@@ -1,8 +1,10 @@
+import process from "node:process"
+
 import { ok } from "@windbell/std.ts/result"
-import type { Shell } from "../sh/index.ts"
+
 import { runChildProcess } from "../child-process/runChildProcess.ts"
 import { toShellError } from "../child-process/toShellError.ts"
-import process from "node:process"
+import type { Shell } from "../sh/index.ts"
 
 export const defaultBashTimeoutMs = 300_000
 export const defaultMaxOutputChars = 200_000

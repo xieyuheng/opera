@@ -2,6 +2,7 @@
 import { useHead } from "@unhead/vue"
 import { useI18n } from "vue-i18n"
 import { useRoute } from "vue-router"
+
 import MediumButton from "../../components/buttons/MediumButton.vue"
 import PageLayout from "../../components/layout/PageLayout.vue"
 import ModelCard from "./ModelCard.vue"
@@ -93,7 +94,7 @@ useHead(() => ({
   <PageLayout>
     <header class="flex flex-col gap-3">
       <div class="flex min-w-0 flex-col gap-1">
-        <h1 class="break-all text-xl text-ink font-semibold">
+        <h1 class="text-ink text-xl font-semibold break-all">
           {{ state.providerConfig?.name ?? providerName }}
         </h1>
 
@@ -167,16 +168,16 @@ useHead(() => ({
       :class="{ 'opacity-60': state.isPending }"
       :aria-busy="state.isPending"
     >
-      <p v-if="state.warning !== undefined" class="text-sm text-ink">
+      <p v-if="state.warning !== undefined" class="text-ink text-sm">
         {{ t("warning") }}{{ t("colon") }}{{ state.warning }}
       </p>
 
       <section class="flex flex-col gap-4">
-        <h2 class="text-base text-ink font-semibold">
+        <h2 class="text-ink text-base font-semibold">
           {{ t("models") }}
         </h2>
 
-        <p v-if="state.models.length === 0" class="text-sm text-ink">
+        <p v-if="state.models.length === 0" class="text-ink text-sm">
           {{ t("noModels") }}
         </p>
 

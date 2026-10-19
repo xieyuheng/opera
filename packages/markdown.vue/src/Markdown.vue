@@ -1,5 +1,6 @@
 <script lang="ts">
 import { computed, defineComponent, h } from "vue"
+
 import { createMarkdownState } from "./markdownState.ts"
 import { parseMarkdown } from "./parseMarkdown.ts"
 import { createMarkdownRenderContext } from "./render/dispatch.ts"

@@ -1,6 +1,7 @@
-import { windbellFs as fs } from "../../app/fs.ts"
 import type { FileSystemEntry } from "@windbell/fs.ts/fs"
 import { reactive } from "vue"
+
+import { windbellFs as fs } from "../../app/fs.ts"
 import { isSamePath, parentPath } from "./RangerPath.ts"
 import {
   readStoredRangerLocation,

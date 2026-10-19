@@ -1,4 +1,7 @@
 import Path from "node:path"
+
+import { unwrap } from "@windbell/std.ts/result"
+
 import type { Agent } from "../agent/index.ts"
 import type { Database } from "../database/index.ts"
 import type { Model } from "../model/index.ts"
@@ -9,7 +12,6 @@ import { makeAgentFromSession } from "../session/index.ts"
 import type { ToolRouter } from "../tool/index.ts"
 import type { Workspace } from "../workspace/Workspace.ts"
 import { readOptionalOption } from "./options.ts"
-import { unwrap } from "@windbell/std.ts/result"
 
 export async function makeModelFromOptions(options: {
   database: Database

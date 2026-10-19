@@ -1,4 +1,5 @@
 import type { ValidateFunction } from "ajv"
+
 import type { ToolSign } from "../sign/index.ts"
 
 export type ToolHandlerOptions = {

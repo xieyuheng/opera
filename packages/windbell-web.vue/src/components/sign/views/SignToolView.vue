@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import Markdown from "@windbell/markdown.vue"
 import type * as S from "@windbell/semiosis.ts/core"
 import { computed } from "vue"
-import Markdown from "@windbell/markdown.vue"
+
 import type { SignState } from "../signState.ts"
 
 const props = defineProps<{
@@ -16,13 +17,13 @@ const parametersText = computed(() =>
 
 <template>
   <div class="flex flex-col gap-3">
-    <div class="font-mono text-ink">
+    <div class="text-ink font-mono">
       {{ sign.name }}
     </div>
 
     <Markdown :text="sign.description" />
 
-    <pre class="thin-scrollbar overflow-x-auto whitespace-pre font-mono">{{
+    <pre class="thin-scrollbar overflow-x-auto font-mono whitespace-pre">{{
       parametersText
     }}</pre>
   </div>

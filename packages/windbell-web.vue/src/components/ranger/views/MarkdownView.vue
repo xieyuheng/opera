@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue"
 import Markdown from "@windbell/markdown.vue"
+import { computed, ref, watch } from "vue"
+
 import type { RangerFileContent } from "../RangerContent.ts"
 import MarkdownToolbar from "./MarkdownToolbar.vue"
 import {
@@ -28,17 +29,17 @@ watch(mode, (value) => {
 <template>
   <div class="relative flex h-full min-h-0 flex-col overflow-hidden">
     <MarkdownToolbar
-      class="absolute right-3 top-3 z-10"
+      class="absolute top-3 right-3 z-10"
       :mode="mode"
       @toggle="toggleMode"
     />
 
-    <div class="min-h-0 flex-1 overflow-auto px-4 py-3 thin-scrollbar">
+    <div class="thin-scrollbar min-h-0 flex-1 overflow-auto px-4 py-3">
       <Markdown v-if="mode === 'render'" :text="text" />
 
       <pre
         v-else
-        class="m-0 font-mono whitespace-pre-wrap break-words text-ink"
+        class="text-ink m-0 font-mono break-words whitespace-pre-wrap"
         >{{ text }}</pre>
     </div>
   </div>

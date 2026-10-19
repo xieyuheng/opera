@@ -1,5 +1,6 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
+
 import type { Model } from "../model/index.ts"
 import { AssistantSign, type Sign } from "../sign/index.ts"
 import { generateTitle } from "./generateTitle.ts"

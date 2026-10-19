@@ -3,6 +3,7 @@ import { useHead } from "@unhead/vue"
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
 import { useRouter } from "vue-router"
+
 import { useTheme, type Theme } from "../../app/theme.ts"
 import MediumButton from "../../components/buttons/MediumButton.vue"
 import SmallButton from "../../components/buttons/SmallButton.vue"
@@ -90,7 +91,7 @@ useHead(() => ({
 <template>
   <PageLayout>
     <header class="flex flex-col gap-3">
-      <h1 class="text-xl text-ink font-semibold">
+      <h1 class="text-ink text-xl font-semibold">
         {{ t("title") }}
       </h1>
 
@@ -103,13 +104,13 @@ useHead(() => ({
 
     <p
       v-if="error"
-      class="rounded border border-sign-error/60 px-3 py-2 text-sm text-sign-error"
+      class="border-sign-error/60 text-sign-error rounded border px-3 py-2 text-sm"
     >
       {{ error }}
     </p>
 
     <div class="flex flex-col gap-2">
-      <h2 class="text-base text-ink font-semibold">
+      <h2 class="text-ink text-base font-semibold">
         {{ t("builtInThemes") }}
       </h2>
     </div>
@@ -134,7 +135,7 @@ useHead(() => ({
     </ul>
 
     <div class="flex flex-col gap-2">
-      <h2 class="text-base text-ink font-semibold">
+      <h2 class="text-ink text-base font-semibold">
         {{ t("customThemes") }}
       </h2>
 
@@ -143,7 +144,7 @@ useHead(() => ({
       </MediumButton>
     </div>
 
-    <p v-if="state.customThemes.length === 0" class="text-sm text-ink">
+    <p v-if="state.customThemes.length === 0" class="text-ink text-sm">
       {{ t("noCustomThemes") }}
     </p>
 

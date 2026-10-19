@@ -1,9 +1,10 @@
+import { unwrap } from "@windbell/std.ts/result"
+
 import type { Database } from "../database/index.ts"
 import type { Sign } from "../sign/index.ts"
 import { assertSessionToolPlatform } from "../tools/assertSessionToolPlatform.ts"
 import type { Workspace } from "../workspace/Workspace.ts"
 import type { Session, SessionId } from "./Session.ts"
-import { unwrap } from "@windbell/std.ts/result"
 
 export type LoadSessionOptions = {
   database: Database

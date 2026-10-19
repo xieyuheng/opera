@@ -1,7 +1,8 @@
-import type { Database } from "../database/index.ts"
-import type { ProviderConfig } from "./ProviderConfig.ts"
-import { defaultProviderConfigs } from "./defaultProviderConfigs.ts"
 import { unwrap } from "@windbell/std.ts/result"
+
+import type { Database } from "../database/index.ts"
+import { defaultProviderConfigs } from "./defaultProviderConfigs.ts"
+import type { ProviderConfig } from "./ProviderConfig.ts"
 
 export async function readProviderConfig(
   database: Database,

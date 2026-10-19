@@ -1,5 +1,6 @@
-import { h } from "vue"
 import type { LinkReference } from "mdast"
+import { h } from "vue"
+
 import { safeUrl } from "../../markdownUrl.ts"
 import type { MarkdownNodeRenderer } from "../types.ts"
 

@@ -1,5 +1,6 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
+
 import { makeCli } from "../cli/makeCli.ts"
 
 test("windbell cli defines routes", () => {

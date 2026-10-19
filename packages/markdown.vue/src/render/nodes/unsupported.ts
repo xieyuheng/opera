@@ -1,4 +1,5 @@
 import { h } from "vue"
+
 import type { MarkdownNode } from "../../markdownTypes.ts"
 import type { MarkdownNodeRenderer } from "../types.ts"
 

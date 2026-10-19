@@ -1,6 +1,7 @@
-import { windbellFs as fs } from "../../../app/fs.ts"
 import type { FileSystemEntry } from "@windbell/fs.ts/fs"
 import type { Component } from "vue"
+
+import { windbellFs as fs } from "../../../app/fs.ts"
 import MarkdownView from "./MarkdownView.vue"
 import TextView from "./TextView.vue"
 

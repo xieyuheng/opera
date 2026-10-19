@@ -1,9 +1,10 @@
+import { unwrap } from "@windbell/std.ts/result"
+
 import type { Database } from "../../database/index.ts"
 import { formatModelRef, type Model } from "../../model/index.ts"
 import type { Repl, ReplCommand } from "../../repl/Repl.ts"
 import type { SessionId } from "../../session/index.ts"
 import type { Workspace } from "../../workspace/Workspace.ts"
-import { unwrap } from "@windbell/std.ts/result"
 
 export function makeInfoCommand(
   repl: Repl,

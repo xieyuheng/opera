@@ -1,4 +1,5 @@
 import { isVNode, type VNodeChild } from "vue"
+
 import type { MarkdownState } from "../markdownState.ts"
 import type { MarkdownNode } from "../markdownTypes.ts"
 import { renderUnsupported } from "./nodes/unsupported.ts"

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n"
+
 import { themeColorTokens, type Theme } from "../../app/theme.ts"
 import Card from "../../components/card/Card.vue"
 import { themeListMessages } from "./ThemeList.i18n.ts"
@@ -42,7 +43,7 @@ const themeModes = ["light", "dark"] as const
           </span>
 
           <div
-            class="flex min-w-0 flex-1 overflow-hidden rounded border border-line"
+            class="border-line flex min-w-0 flex-1 overflow-hidden rounded border"
           >
             <span
               v-for="token in themeColorTokens"

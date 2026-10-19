@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue"
+
 import { resolveSignViewColor } from "../../components/sign/views/registry.ts"
 import type { SessionMinimapBlock } from "./sessionMinimap.ts"
 
@@ -187,7 +188,7 @@ onBeforeUnmount(() => {
 <template>
   <div
     ref="track"
-    class="relative h-full w-5 shrink-0 cursor-pointer touch-none select-none overflow-visible"
+    class="relative h-full w-5 shrink-0 cursor-pointer touch-none overflow-visible select-none"
     @pointerdown="handlePointerDown"
     @pointermove="handlePointerMove"
     @pointerup="handlePointerUp"
@@ -210,7 +211,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div
-        class="pointer-events-none absolute inset-x-0 border border-ink bg-ink/50"
+        class="border-ink bg-ink/50 pointer-events-none absolute inset-x-0 border"
         :style="{
           top: `${slider.top}px`,
           height: `${slider.height}px`,
@@ -226,9 +227,9 @@ onBeforeUnmount(() => {
         :data-turn-index="marker.turnIndex"
         :style="{ top: `${marker.top}px` }"
       >
-        <div class="absolute right-0 h-[1.5px] w-[10px] bg-ink" />
+        <div class="bg-ink absolute right-0 h-[1.5px] w-[10px]" />
         <div
-          class="absolute right-[10px] top-0.5 whitespace-nowrap font-mono text-sm leading-none w-full text-ink px-px"
+          class="text-ink absolute top-0.5 right-[10px] w-full px-px font-mono text-sm leading-none whitespace-nowrap"
         >
           {{ marker.turnIndex }}
         </div>

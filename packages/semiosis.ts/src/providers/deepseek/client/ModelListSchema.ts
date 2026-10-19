@@ -1,4 +1,5 @@
 import { z } from "zod"
+
 import { ModelInfoSchema } from "./ModelInfoSchema.ts"
 
 export const ModelListSchema = z.object({

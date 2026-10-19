@@ -1,4 +1,5 @@
 import type { MiddlewareHandler } from "hono"
+
 import { isAccessTokenExpired, type AccessTokenStore } from "./AccessToken.ts"
 
 export type BearerAuthOptions = {

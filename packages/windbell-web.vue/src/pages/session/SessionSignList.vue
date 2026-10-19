@@ -2,16 +2,17 @@
 import type * as S from "@windbell/semiosis.ts/core"
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
+
 import SignCard from "../../components/sign/SignCard.vue"
 import SignLine from "../../components/sign/SignLine.vue"
-import TurnErrorCard from "./TurnErrorCard.vue"
 import { sessionMessages } from "./Session.i18n.ts"
-import type { SessionState } from "./SessionState.ts"
 import type {
   SessionMinimapBlock,
   SessionSignListMetrics,
 } from "./sessionMinimap.ts"
 import type { SignDisplayMode } from "./sessionSignDisplayMode.ts"
+import type { SessionState } from "./SessionState.ts"
+import TurnErrorCard from "./TurnErrorCard.vue"
 
 const props = withDefaults(
   defineProps<{
@@ -302,12 +303,12 @@ defineExpose({ scrollTo, scrollToBottom, scrollToTurn })
 <template>
   <div
     ref="scroller"
-    class="min-h-0 flex-1 overflow-y-auto scrollbar-none px-4 pt-36 [&::-webkit-scrollbar]:hidden"
+    class="min-h-0 flex-1 scrollbar-none overflow-y-auto px-4 pt-36 [&::-webkit-scrollbar]:hidden"
     :style="{ paddingBottom: `${props.bottomPadding}px` }"
     @scroll.passive="handleScroll"
   >
     <div ref="content" class="mx-auto flex w-full max-w-4xl flex-col gap-4">
-      <h1 class="text-xl text-ink font-semibold">
+      <h1 class="text-ink text-xl font-semibold">
         {{ title }}
       </h1>
 

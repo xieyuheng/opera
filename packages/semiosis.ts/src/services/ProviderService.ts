@@ -1,8 +1,9 @@
 import { err, isError, ok, type Result } from "@windbell/std.ts/result"
-import type { Database } from "../database/Database.ts"
+
 import { deleteApiKey, hasApiKey, writeApiKey } from "../database/apiKey.ts"
-import type { ModelEntry } from "../models/ModelEntry.ts"
+import type { Database } from "../database/Database.ts"
 import { listModelEntries } from "../models/listModelEntries.ts"
+import type { ModelEntry } from "../models/ModelEntry.ts"
 import { pinModel } from "../models/pinModel.ts"
 import { setDefaultModel } from "../models/setDefaultModel.ts"
 import { unpinModel } from "../models/unpinModel.ts"

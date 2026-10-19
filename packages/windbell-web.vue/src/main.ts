@@ -2,12 +2,14 @@ import { createHead } from "@unhead/vue/client"
 import { createApp } from "vue"
 import { createRouter, createWebHistory } from "vue-router"
 import { DataLoaderPlugin } from "vue-router/experimental"
+
 import App from "./app/App.vue"
 import { clearAccessToken, readAccessToken } from "./app/auth.ts"
 import { i18n } from "./app/i18n.ts"
 import { ensureThemeReady } from "./app/theme.ts"
 import { windbell } from "./app/windbell.ts"
 import { routes } from "./pages/routes.ts"
+
 import "./styles/index.css"
 
 void bootstrap()

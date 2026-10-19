@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
+
 import { makeDividerState } from "../divider/DividerState.ts"
 import ResizeDivider from "../divider/ResizeDivider.vue"
 import { rangerMessages } from "./Ranger.i18n.ts"
 import RangerSidebar from "./RangerSidebar.vue"
-import RangerView from "./RangerView.vue"
 import {
   goParent,
   loadRanger,
@@ -15,6 +15,7 @@ import {
   selectEntry,
   watchRanger,
 } from "./RangerState.ts"
+import RangerView from "./RangerView.vue"
 
 const props = defineProps<{
   root: string
@@ -187,7 +188,7 @@ onBeforeUnmount(() => {
     </section>
 
     <section v-else class="flex min-w-0 flex-1 flex-col">
-      <p v-if="state.error !== undefined" class="px-4 py-3 text-sign-error">
+      <p v-if="state.error !== undefined" class="text-sign-error px-4 py-3">
         {{ state.error }}
       </p>
 

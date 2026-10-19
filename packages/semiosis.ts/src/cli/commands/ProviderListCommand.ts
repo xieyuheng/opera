@@ -1,9 +1,10 @@
 import type * as Cli from "@windbell/cli.ts"
+import { unwrap } from "@windbell/std.ts/result"
+
 import type { Database } from "../../database/index.ts"
 import { hasApiKey } from "../../database/index.ts"
 import { readProviderConfig } from "../../provider/index.ts"
 import { providerNames } from "../../providers/providerNames.ts"
-import { unwrap } from "@windbell/std.ts/result"
 
 export type ProviderListCommandOptions = {
   database: Database

@@ -3,16 +3,22 @@ import { useHead } from "@unhead/vue"
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
 import { useRoute, useRouter } from "vue-router"
+
+import Composer from "../../components/composer/Composer.vue"
 import { makeDividerState } from "../../components/divider/DividerState.ts"
 import ResizeDivider from "../../components/divider/ResizeDivider.vue"
-import Composer from "../../components/composer/Composer.vue"
-import SessionMinimap from "./SessionMinimap.vue"
-import SessionScrollbar from "./SessionScrollbar.vue"
-import SessionSignList from "./SessionSignList.vue"
-import SessionToolbarLeft from "./SessionToolbarLeft.vue"
-import SessionToolbarRight from "./SessionToolbarRight.vue"
 import Ranger from "../../components/ranger/Ranger.vue"
 import { sessionMessages } from "./Session.i18n.ts"
+import { receiveSessionMessages, type SessionMessage } from "./SessionInbox.ts"
+import type { SessionSignListMetrics } from "./sessionMinimap.ts"
+import SessionMinimap from "./SessionMinimap.vue"
+import SessionScrollbar from "./SessionScrollbar.vue"
+import {
+  isSignDisplayMode,
+  nextSignDisplayMode,
+  type SignDisplayMode,
+} from "./sessionSignDisplayMode.ts"
+import SessionSignList from "./SessionSignList.vue"
 import {
   cancelSessionInterpretation,
   dismissSessionError,
@@ -22,13 +28,8 @@ import {
   interpretSession,
   retrySessionInterpretation,
 } from "./SessionState.ts"
-import { receiveSessionMessages, type SessionMessage } from "./SessionInbox.ts"
-import type { SessionSignListMetrics } from "./sessionMinimap.ts"
-import {
-  isSignDisplayMode,
-  nextSignDisplayMode,
-  type SignDisplayMode,
-} from "./sessionSignDisplayMode.ts"
+import SessionToolbarLeft from "./SessionToolbarLeft.vue"
+import SessionToolbarRight from "./SessionToolbarRight.vue"
 
 function sessionRangerOpenStorageKey(sessionId: string): string {
   return `windbell.session.${sessionId}.rangerOpen`
@@ -277,7 +278,7 @@ useHead(() => ({
       :style="{ width: sessionPaneWidth }"
     >
       <div
-        class="relative flex mr-1 min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
+        class="relative mr-1 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
       >
         <div
           class="pointer-events-none absolute inset-x-0 z-50"

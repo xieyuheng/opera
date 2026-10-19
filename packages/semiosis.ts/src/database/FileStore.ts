@@ -1,6 +1,7 @@
 import type { FileSystem, FileSystemError } from "@windbell/fs.ts/fs"
 import type { Path } from "@windbell/std.ts/path"
 import { err, isError, ok, type Result } from "@windbell/std.ts/result"
+
 import {
   makeDatabaseErrorFromFileSystemError,
   type DatabaseError,

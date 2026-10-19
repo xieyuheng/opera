@@ -1,6 +1,7 @@
+import type { Yaml } from "mdast"
 import { h } from "vue"
 import * as YAML from "yaml"
-import type { Yaml } from "mdast"
+
 import type { MarkdownNodeRenderer } from "../types.ts"
 
 interface FrontmatterData {

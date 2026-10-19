@@ -1,4 +1,5 @@
 import type { Result } from "@windbell/std.ts/result"
+
 import type { LockError } from "./LockError.ts"
 
 export type Lock = {

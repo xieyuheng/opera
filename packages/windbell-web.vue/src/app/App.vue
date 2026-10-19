@@ -3,6 +3,7 @@ import { useHead } from "@unhead/vue"
 import { useI18n } from "vue-i18n"
 import { RouterView, useRoute } from "vue-router"
 import { useIsDataLoading } from "vue-router/experimental"
+
 import { useColorMode } from "./color-mode.ts"
 import { useTheme } from "./theme.ts"
 
@@ -27,11 +28,11 @@ useHead(() => ({
 
 <template>
   <div
-    class="flex min-h-screen flex-col bg-paper pb-[env(safe-area-inset-bottom,0px)] text-ink transition-colors"
+    class="bg-paper text-ink flex min-h-screen flex-col pb-[env(safe-area-inset-bottom,0px)] transition-colors"
   >
     <div
       v-if="isDataLoading"
-      class="fixed inset-x-0 top-0 z-[100] h-0.5 animate-pulse bg-ink/30"
+      class="bg-ink/30 fixed inset-x-0 top-0 z-[100] h-0.5 animate-pulse"
     />
 
     <RouterView :key="route.fullPath" />

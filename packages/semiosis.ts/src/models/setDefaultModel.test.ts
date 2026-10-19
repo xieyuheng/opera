@@ -1,13 +1,15 @@
-import process from "node:process"
-import { makePath } from "@windbell/std.ts/path"
-import { makeLocalFileSystem } from "@windbell/fs.ts/local-fs"
-import { makeDatabase } from "../database/index.ts"
 import assert from "node:assert/strict"
 import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
+import process from "node:process"
 import { test } from "node:test"
+
+import { makeLocalFileSystem } from "@windbell/fs.ts/local-fs"
+import { makePath } from "@windbell/std.ts/path"
 import { unwrap } from "@windbell/std.ts/result"
+
+import { makeDatabase } from "../database/index.ts"
 import { pinModel } from "./pinModel.ts"
 import { setDefaultModel } from "./setDefaultModel.ts"
 

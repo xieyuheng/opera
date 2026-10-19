@@ -1,7 +1,8 @@
+import { unwrap } from "@windbell/std.ts/result"
+
 import type { Database } from "../../../database/index.ts"
 import { parseModelConfig } from "./parseModelConfig.ts"
 import { readModelConfigs } from "./readModelConfigs.ts"
-import { unwrap } from "@windbell/std.ts/result"
 
 export async function unpinModel(
   database: Database,

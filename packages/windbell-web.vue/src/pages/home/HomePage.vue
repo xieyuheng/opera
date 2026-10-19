@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import type * as S from "@windbell/semiosis.ts/core"
 import { useHead } from "@unhead/vue"
-import PageLayout from "../../components/layout/PageLayout.vue"
+import type * as S from "@windbell/semiosis.ts/core"
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
+
 import MediumButton from "../../components/buttons/MediumButton.vue"
-import HomeWelcomeCard from "./HomeWelcomeCard.vue"
-import WorkspaceCard from "./WorkspaceCard.vue"
-import WorkspaceCreateDialog from "./WorkspaceCreateDialog.vue"
+import PageLayout from "../../components/layout/PageLayout.vue"
 import { homeMessages } from "./Home.i18n.ts"
 import {
   ensureWorkspace,
@@ -15,6 +13,9 @@ import {
   trashWorkspace,
   updateWorkspaceTitle,
 } from "./HomeState.ts"
+import HomeWelcomeCard from "./HomeWelcomeCard.vue"
+import WorkspaceCard from "./WorkspaceCard.vue"
+import WorkspaceCreateDialog from "./WorkspaceCreateDialog.vue"
 
 const { t } = useI18n({
   messages: homeMessages,
@@ -86,7 +87,7 @@ useHead(() => ({
 <template>
   <PageLayout>
     <header class="flex flex-col gap-3">
-      <h1 class="text-xl font-semibold text-ink">
+      <h1 class="text-ink text-xl font-semibold">
         {{ t("title") }}
       </h1>
 
@@ -102,7 +103,7 @@ useHead(() => ({
     </header>
 
     <div class="flex flex-col gap-2">
-      <h2 class="text-base text-ink font-semibold">
+      <h2 class="text-ink text-base font-semibold">
         {{ t("workspaces") }}
       </h2>
 
