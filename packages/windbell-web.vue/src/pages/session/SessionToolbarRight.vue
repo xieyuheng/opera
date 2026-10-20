@@ -36,7 +36,7 @@ const nextSignDisplayLabel = computed(() => {
 
 <template>
   <div class="flex flex-row gap-2">
-    <div class="flex items-center">
+    <div class="flex hidden items-center sm:block">
       <MediumButton type="button" @click="emit('back')">
         <span>{{ t("app.back") }}</span>
       </MediumButton>
@@ -50,16 +50,18 @@ const nextSignDisplayLabel = computed(() => {
       <span>{{ nextSignDisplayLabel }}</span>
     </MediumButton>
 
-    <MediumButton
-      type="button"
-      :active="props.rangerOpen"
-      :aria-pressed="props.rangerOpen"
-      :title="props.rangerOpen ? t('closeRanger') : t('openRanger')"
-      @click="emit('toggleRanger')"
-    >
-      <span>
-        {{ props.rangerOpen ? t("closeRanger") : t("openRanger") }}
-      </span>
-    </MediumButton>
+    <div class="flex hidden items-center sm:block">
+      <MediumButton
+        type="button"
+        :active="props.rangerOpen"
+        :aria-pressed="props.rangerOpen"
+        :title="props.rangerOpen ? t('closeRanger') : t('openRanger')"
+        @click="emit('toggleRanger')"
+      >
+        <span>
+          {{ props.rangerOpen ? t("closeRanger") : t("openRanger") }}
+        </span>
+      </MediumButton>
+    </div>
   </div>
 </template>

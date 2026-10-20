@@ -4,7 +4,6 @@
 
 - 截图也可用与博物馆的「风铃」页面
 
-[windbell-web.vue] session page -- toolbar 用 wrap 支持移动端
 [windbell-web.vue] session page 页面移动端支持
 
 下面我计划实现 [windbell-web.vue] session page 页面移动端支持，

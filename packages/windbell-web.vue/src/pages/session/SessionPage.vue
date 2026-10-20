@@ -284,7 +284,7 @@ useHead(() => ({
           class="pointer-events-none absolute inset-x-0 z-50"
           :style="{ top: 'calc(env(safe-area-inset-top, 0px) + 0.5rem)' }"
         >
-          <div class="flex items-start justify-between gap-2 px-2">
+          <div class="flex flex-wrap items-start justify-between gap-2 px-2">
             <SessionToolbarLeft :state="state" @select-turn="selectTurn" />
 
             <SessionToolbarRight
@@ -342,6 +342,7 @@ useHead(() => ({
         />
 
         <SessionScrollbar
+          class="hidden sm:block"
           :scroll-top="minimapMetrics.scrollTop"
           :client-height="minimapMetrics.clientHeight"
           :scroll-height="minimapMetrics.scrollHeight"
