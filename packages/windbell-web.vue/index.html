@@ -85,12 +85,13 @@
       }
 
       const font = localStorage.getItem("windbell.font")
-      document.documentElement.dataset.font =
-        font === "system" ||
+      if (
+        font === "unifont" ||
         font === "source-han-serif" ||
         font === "source-han-sans"
-          ? font
-          : "unifont"
+      ) {
+        document.documentElement.dataset.font = font
+      }
     </script>
   </head>
   <body>

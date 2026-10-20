@@ -25,6 +25,8 @@ importers:
         specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
         version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
 
+  packages/common-fonts.css: {}
+
   packages/fs-api.ts:
     dependencies:
       '@hono/node-server':
@@ -333,6 +335,9 @@ importers:
       '@unhead/vue':
         specifier: 3.4.3
         version: 3.4.3(@oxc-project/types@0.154.0)(esbuild@0.28.2)(lightningcss@1.33.0)(rolldown@1.2.14)(rollup@4.64.10)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))(vue@3.5.44(typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2))
+      '@windbell/common-fonts.css':
+        specifier: workspace:*
+        version: link:../common-fonts.css
       '@windbell/fs-api.ts':
         specifier: workspace:*
         version: link:../fs-api.ts

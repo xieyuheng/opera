@@ -17,15 +17,20 @@ function isFont(value: string): value is Font {
 
 function getInitialFont(): Font {
   const stored = localStorage.getItem(FONT_STORAGE_KEY)
-  return stored !== null && isFont(stored) ? stored : "unifont"
+  return stored !== null && isFont(stored) ? stored : "system"
 }
 
 function fontFromStorage(value: string | null): Font | undefined {
-  if (value === null) return "unifont"
+  if (value === null) return "system"
   return isFont(value) ? value : undefined
 }
 
 function applyFont(font: Font): void {
+  if (font === "system") {
+    delete document.documentElement.dataset.font
+    return
+  }
+
   document.documentElement.dataset.font = font
 }
 
@@ -40,7 +45,11 @@ watch(
   () => state.name,
   (name) => {
     if (!syncingFromStorage) {
-      localStorage.setItem(FONT_STORAGE_KEY, name)
+      if (name === "system") {
+        localStorage.removeItem(FONT_STORAGE_KEY)
+      } else {
+        localStorage.setItem(FONT_STORAGE_KEY, name)
+      }
     }
 
     applyFont(name)

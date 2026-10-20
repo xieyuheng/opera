@@ -6,6 +6,7 @@
   "dependencies": {
     "@lucide/vue": "1.59.0",
     "@unhead/vue": "3.4.3",
+    "@windbell/common-fonts.css": "workspace:*",
     "@windbell/fs-api.ts": "workspace:*",
     "@windbell/fs.ts": "workspace:*",
     "@windbell/markdown.vue": "workspace:*",

@@ -9,7 +9,7 @@
   display: inline;
   margin-left: calc(var(--marker-size, 2ch) * -1);
   white-space: pre;
-  font-family: var(--font-mono-family, monospace);
+  font-family: var(--font-code, monospace);
   color: var(--color-ink, currentColor);
   user-select: text;
 }

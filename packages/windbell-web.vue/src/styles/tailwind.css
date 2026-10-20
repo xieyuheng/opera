@@ -1,58 +1,11 @@
 @import "tailwindcss";
 @import "@windbell/markdown.vue/styles/index.css";
-
-@font-face {
-  font-family: "Unifont";
-  src: url("/fonts/unifont-18.0.01.otf") format("opentype");
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Source Han Serif SC";
-  src: url("/fonts/source-han-serif-sc-vf.2.003.ttf.woff2") format("woff2");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 100 900;
-}
-
-@font-face {
-  font-family: "Source Han Sans SC";
-  src: url("/fonts/source-han-sans-sc-vf.2.005r.ttf.woff2") format("woff2");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 100 900;
-}
-
-@font-face {
-  font-family: "Source Code VF";
-  src: url("/fonts/source-code-vf-upright.ttf.woff2") format("woff2");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 100 900;
-  /* 中英等宽 */
-  size-adjust: 83%;
-}
-
-/*
-  中英等宽测试|
-  sdasddassaas|
-  iiiiiiiiiiii|
-  λλλλλλλλλλλλ|
-*/
-
-@font-face {
-  font-family: "Source Code VF";
-  src: url("/fonts/source-code-vf-italic.ttf.woff2") format("woff2");
-  font-display: swap;
-  font-style: italic;
-  font-weight: 100 900;
-  size-adjust: 83%;
-}
+@import "@windbell/common-fonts.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --font-mono: var(--font-mono-family);
+  --font-mono: var(--font-code, monospace);
 }
 
 @theme {
@@ -79,8 +32,6 @@
 
 
 :root {
-  --font-app: "Unifont", sans-serif;
-  --font-mono-family: "Unifont", monospace;
   --scrollbar-thumb: color-mix(
     in oklab,
     var(--color-ink) 35%,
@@ -93,25 +44,13 @@
   );
 }
 
-html[data-font="source-han-serif"] {
-  --font-app: "Source Han Serif SC", serif;
-  --font-mono-family: "Source Code VF", "Source Han Sans SC", monospace;
-}
-
-html[data-font="source-han-sans"] {
-  --font-app: "Source Han Sans SC", sans-serif;
-  --font-mono-family: "Source Code VF", "Source Han Sans SC", monospace;
-}
-
-html[data-font="system"] {
-  --font-app: system-ui, sans-serif;
-  --font-mono-family: monospace;
-}
-
 body {
   background-color: var(--color-paper);
   color: var(--color-ink);
-  font-family: var(--font-app);
+}
+
+html[data-font] body {
+  font-family: var(--font-body);
 }
 
 .dark select,
