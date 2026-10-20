@@ -1,1 +1,95 @@
-@import "./tailwind.css";
+@import "tailwindcss";
+@import "@windbell/markdown.vue/styles/index.css";
+@import "@windbell/common-fonts.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --font-mono: var(--font-code, monospace);
+}
+
+html[data-font] body {
+  font-family: var(--font-body);
+}
+
+@theme {
+  /* Colors are provided at runtime by src/app/theme.ts.
+     The transparent values only let Tailwind generate color utilities. */
+  --color-paper: transparent;
+  --color-ink: transparent;
+  --color-line: transparent;
+
+  --color-sign-persona: transparent;
+  --color-sign-user: transparent;
+  --color-sign-reasoning: transparent;
+  --color-sign-assistant: transparent;
+  --color-sign-provider-data: transparent;
+  --color-sign-tool-call: transparent;
+  --color-sign-tool: transparent;
+  --color-sign-tool-output: transparent;
+  --color-sign-error: transparent;
+}
+
+:root {
+  --scrollbar-thumb: color-mix(
+    in oklab,
+    var(--color-ink) 35%,
+    transparent
+  );
+  --scrollbar-thumb-hover: color-mix(
+    in oklab,
+    var(--color-ink) 55%,
+    transparent
+  );
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.dark select,
+.dark option {
+  background-color: var(--color-line);
+  color: var(--color-ink);
+}
+
+.thin-scrollbar {
+  scrollbar-gutter: stable;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .thin-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+}
+
+@supports selector(::-webkit-scrollbar) {
+  .thin-scrollbar::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .thin-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .thin-scrollbar::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background-clip: padding-box;
+  }
+
+  .thin-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+  }
+
+  .thin-scrollbar::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  .thin-scrollbar::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
