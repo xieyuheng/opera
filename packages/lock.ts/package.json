@@ -5,10 +5,12 @@
   "license": "GPL-3.0-or-later",
   "type": "module",
   "main": "src/index.ts",
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "devDependencies": {
     "@types/node": "^26.6.5",
-    "oxfmt": "0.73.0",
+    "oxfmt": "0.74.0",
     "typescript": "^7.0.2"
   },
   "dependencies": {

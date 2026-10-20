@@ -17,12 +17,12 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@xieyuheng/x-lisp-shiki.ts": "workspace:*",
     "mdast-util-from-markdown": "2.1.0",
     "mdast-util-frontmatter": "2.0.1",
     "mdast-util-gfm": "3.1.0",
     "micromark-extension-frontmatter": "2.0.0",
     "micromark-extension-gfm": "3.0.0",
-    "@xieyuheng/x-lisp-shiki.ts": "workspace:*",
     "shiki": "4.5.0",
     "vue": "3.5.44",
     "yaml": "2.9.1"
@@ -32,7 +32,7 @@
     "@types/mdast": "4.0.4",
     "@types/node": "26.6.5",
     "@vitejs/plugin-vue": "6.0.10",
-    "oxfmt": "0.73.0",
+    "oxfmt": "0.74.0",
     "tailwindcss": "4.3.3",
     "typescript": "7.0.2",
     "vite": "8.3.4",
