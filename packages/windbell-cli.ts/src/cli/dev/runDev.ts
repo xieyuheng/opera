@@ -1,3 +1,4 @@
+import type { AddressInfo } from "node:net"
 import Path from "node:path"
 import process from "node:process"
 
@@ -12,8 +13,14 @@ import {
 } from "@windbell/windbell-api.ts"
 import { createServer, type ViteDevServer } from "vite"
 
-import { formatLocalDateTime, makeAccessTokenUrl } from "../startLog.ts"
+import {
+  formatLocalDateTime,
+  makeAccessTokenUrl,
+  makeServerUrl,
+} from "../startLog.ts"
 import type { DevOptions } from "./resolveDevOptions.ts"
+
+const defaultWebPort = 5173
 
 export async function runDev(options: DevOptions): Promise<void> {
   const database = S.makeDatabase({
@@ -25,46 +32,78 @@ export async function runDev(options: DevOptions): Promise<void> {
   const accessTokenStore = makeAccessTokenStore({ database })
   const accessToken = await accessTokenStore.create()
 
-  const { server: apiServer } = await startWindbellServer({
+  const { server: apiServer, info: apiInfo } = await startWindbellServer({
     database,
     hostname: options.hostname,
-    port: options.apiPort,
+    port: options.apiPort ?? 0,
     corsOrigin: undefined,
     windbellRoot: options.windbellRoot,
     lockRoot: options.lockRoot,
     webDistRoot: undefined,
   })
 
-  const viteServer = await createServer({
-    root: options.webSourceRoot,
-    configFile: Path.join(options.webSourceRoot, "vite.config.ts"),
-    server: {
-      host: options.hostname,
-      port: options.webPort,
-      strictPort: true,
-      proxy: {
-        "/api": {
-          target: `http://${options.hostname}:${options.apiPort}`,
-          changeOrigin: true,
+  let viteServer: ViteDevServer | undefined
+
+  try {
+    viteServer = await createServer({
+      root: options.webSourceRoot,
+      configFile: Path.join(options.webSourceRoot, "vite.config.ts"),
+      server: {
+        host: options.hostname,
+        port: options.webPort ?? defaultWebPort,
+        strictPort: options.webPort !== undefined,
+        proxy: {
+          "/api": {
+            target: `http://${options.hostname}:${apiInfo.port}`,
+            changeOrigin: true,
+          },
         },
       },
-    },
-  })
+    })
 
-  await viteServer.listen()
+    await viteServer.listen()
 
-  const url = makeAccessTokenUrl({
-    hostname: options.hostname,
-    port: options.webPort,
-    token: accessToken.value,
-  })
+    const webPort = readServerPort(viteServer)
+    const timestamp = formatLocalDateTime(new Date())
 
-  console.log(`${formatLocalDateTime(new Date())} windbell dev: ${url}`)
+    const apiUrl = makeServerUrl({
+      hostname: options.hostname,
+      port: apiInfo.port,
+    })
 
-  installShutdownHandlers({
-    apiServer,
-    viteServer,
-  })
+    const webUrl = makeAccessTokenUrl({
+      hostname: options.hostname,
+      port: webPort,
+      token: accessToken.value,
+    })
+
+    console.log(`${timestamp} windbell dev api: ${apiUrl}`)
+    console.log(`${timestamp} windbell dev web: ${webUrl}`)
+
+    installShutdownHandlers({
+      apiServer,
+      viteServer,
+    })
+  } catch (error) {
+    await viteServer?.close()
+    await closeServer(apiServer)
+    throw error
+  }
+}
+
+function readServerPort(server: ViteDevServer): number {
+  const address: AddressInfo | string | null | undefined =
+    server.httpServer?.address()
+
+  if (
+    address === undefined ||
+    address === null ||
+    typeof address === "string"
+  ) {
+    throw new Error("windbell dev: failed to read web server port")
+  }
+
+  return address.port
 }
 
 function installShutdownHandlers(options: {

@@ -6,8 +6,8 @@ import * as S from "@windbell/semiosis.ts"
 
 export type DevOptions = {
   hostname: string
-  apiPort: number
-  webPort: number
+  apiPort: number | undefined
+  webPort: number | undefined
   windbellRoot: string
   databaseRoot: string
   lockRoot: string
@@ -20,12 +20,12 @@ export function resolveDevOptions(
   const hostname =
     readOptionalString(options, "--host") ?? process.env.HOST ?? "localhost"
 
-  const apiPort = parsePositiveInt(
-    readOptionalString(options, "--api-port") ?? process.env.API_PORT ?? "3090",
+  const apiPort = readOptionalPort(
+    readOptionalString(options, "--api-port") ?? process.env.API_PORT,
   )
 
-  const webPort = parsePositiveInt(
-    readOptionalString(options, "--web-port") ?? process.env.WEB_PORT ?? "5173",
+  const webPort = readOptionalPort(
+    readOptionalString(options, "--web-port") ?? process.env.WEB_PORT,
   )
 
   const appPaths = S.resolveAppPaths(
@@ -56,6 +56,11 @@ function readOptionalString(
   }
 
   return value
+}
+
+function readOptionalPort(value: string | undefined): number | undefined {
+  if (value === undefined) return undefined
+  return parsePositiveInt(value)
 }
 
 function parsePositiveInt(value: string): number {

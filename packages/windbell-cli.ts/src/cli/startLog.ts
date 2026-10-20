@@ -1,11 +1,20 @@
+export function makeServerUrl(options: {
+  hostname: string
+  port: number
+}): string {
+  const hostname = displayHostname(options.hostname)
+  const host = hostname.includes(":") ? `[${hostname}]` : hostname
+  return new URL(`http://${host}:${options.port}/`).href
+}
+
 export function makeAccessTokenUrl(options: {
   hostname: string
   port: number
   token: string
 }): string {
-  const hostname = displayHostname(options.hostname)
-  const host = hostname.includes(":") ? `[${hostname}]` : hostname
-  const url = new URL(`http://${host}:${options.port}/`)
+  const url = new URL(
+    makeServerUrl({ hostname: options.hostname, port: options.port }),
+  )
   url.searchParams.set("token", options.token)
   return url.href
 }
