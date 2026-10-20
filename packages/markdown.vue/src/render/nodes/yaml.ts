@@ -81,10 +81,10 @@ export const renderYaml: MarkdownNodeRenderer<Yaml> = (ctx, node) => {
   const frontmatter = readFrontmatter(node)
 
   if (frontmatter === undefined) {
-    return h("pre", { class: "whitespace-pre-wrap font-mono" }, node.value)
+    return h("pre", { class: "whitespace-pre-wrap font-mono mb-8" }, node.value)
   }
 
-  return h("header", { class: "flex flex-col gap-1" }, [
+  return h("header", { class: "flex flex-col gap-1 mb-8" }, [
     frontmatter.title === undefined
       ? null
       : h(
