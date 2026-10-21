@@ -150,7 +150,7 @@ onBeforeUnmount(() => {
 <template>
   <main
     ref="panel"
-    class="flex h-screen w-full overflow-hidden outline-none"
+    class="flex h-dvh w-full overflow-hidden outline-none"
     tabindex="0"
     @pointerdown="focusPanel"
     @keydown="onKeydown"

@@ -272,7 +272,7 @@ useHead(() => ({
 </script>
 
 <template>
-  <main class="flex h-screen w-full overflow-hidden">
+  <main class="flex h-dvh w-full overflow-hidden">
     <section
       class="relative flex min-h-0 min-w-0 shrink-0 flex-row overflow-hidden"
       :style="{ width: sessionPaneWidth }"
@@ -281,9 +281,7 @@ useHead(() => ({
         class="relative mr-1 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
       >
         <div
-          class="pointer-events-none absolute inset-x-0 z-50"
-          :style="{ top: 'calc(env(safe-area-inset-top, 0px) + 0.5rem)' }"
-        >
+          class="pointer-events-none absolute top-2 inset-x-0 z-50">
           <div class="flex flex-wrap items-start justify-between gap-2 px-2">
             <SessionToolbarLeft :state="state" @select-turn="selectTurn" />
 
@@ -311,7 +309,7 @@ useHead(() => ({
 
         <div
           ref="composerOverlay"
-          class="pointer-events-none absolute inset-x-0 bottom-[env(safe-area-inset-bottom,0px)] z-10 px-2 py-4"
+          class="pointer-events-none absolute inset-x-0 bottom-0 z-10 px-2 py-4"
         >
           <div class="mx-auto w-full max-w-[59rem]">
             <Composer
@@ -353,10 +351,7 @@ useHead(() => ({
 
     <ResizeDivider v-if="rangerPaneVisible" :state="sessionDivider" />
 
-    <div
-      v-if="rangerPaneVisible"
-      class="h-screen min-w-0 flex-1 overflow-hidden"
-    >
+    <div v-if="rangerPaneVisible" class="h-dvh min-w-0 flex-1 overflow-hidden">
       <Ranger
         :root="state.workspaceRoot"
         :location-storage-key="locationStorageKey"
