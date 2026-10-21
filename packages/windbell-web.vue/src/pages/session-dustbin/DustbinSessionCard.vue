@@ -33,7 +33,7 @@ function requestRemove(): void {
 <template>
   <Card as="article">
     <template #tag>
-      <h2 class="truncate">
+      <h2 class="truncate" :title="session.title">
         {{ session.title }}
       </h2>
     </template>

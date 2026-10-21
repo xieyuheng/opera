@@ -77,7 +77,7 @@ function requestTrash(): void {
   <Card as="article">
     <template #tag>
       <RouterLink class="block min-w-0" :to="sessionListRoute">
-        <h2 class="truncate">
+        <h2 class="truncate" :title="workspace.name">
           {{ workspace.name }}
         </h2>
       </RouterLink>

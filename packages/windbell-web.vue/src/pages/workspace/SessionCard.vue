@@ -71,7 +71,7 @@ function requestTrash(): void {
   <Card as="article">
     <template #tag>
       <RouterLink class="block min-w-0" :to="sessionRoute">
-        <h2 class="truncate">
+        <h2 class="truncate" :title="session.title">
           {{ session.title }}
         </h2>
       </RouterLink>

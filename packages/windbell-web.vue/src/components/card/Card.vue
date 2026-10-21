@@ -25,14 +25,14 @@ const bodyOverflowClass = computed(() =>
     class="block"
     :style="{ '--card-color': props.color }"
   >
-    <div v-if="$slots.tag" class="flex">
+    <div v-if="$slots.tag" class="flex min-w-0">
       <div
-        class="flex rounded-t-lg border-2 border-[var(--card-color)] bg-[var(--card-color)] px-3 py-0.5"
+        class="flex min-w-0 overflow-hidden rounded-t-lg border-2 border-[var(--card-color)] bg-[var(--card-color)] px-3 py-0.5"
       >
         <slot name="tag" />
       </div>
 
-      <div class="card-tag-corner" aria-hidden="true"></div>
+      <div class="card-tag-corner mr-3" aria-hidden="true"></div>
     </div>
 
     <div

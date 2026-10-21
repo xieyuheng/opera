@@ -24,7 +24,9 @@ const themeModes = ["light", "dark"] as const
 <template>
   <Card as="article" class="cursor-pointer" @click="emit('select')">
     <template #tag>
-      <h2 class="truncate">{{ props.theme.name }}</h2>
+      <h2 class="truncate" :title="props.theme.name">
+        {{ props.theme.name }}
+      </h2>
     </template>
 
     <div class="flex flex-col gap-3 px-3 py-2">

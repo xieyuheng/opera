@@ -58,7 +58,7 @@ function requestRemove(): void {
 <template>
   <Card as="article">
     <template #tag>
-      <h2 class="truncate">
+      <h2 class="truncate" :title="workspace.name">
         {{ workspace.name }}
       </h2>
     </template>

@@ -62,7 +62,7 @@ function requestDeleteApiKey(): void {
   <Card as="article">
     <template #tag>
       <RouterLink class="block min-w-0" :to="providerRoute">
-        <h2 class="truncate">
+        <h2 class="truncate" :title="provider.name">
           {{ provider.name }}
         </h2>
       </RouterLink>
