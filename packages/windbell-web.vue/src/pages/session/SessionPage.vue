@@ -310,7 +310,7 @@ useHead(() => ({
 
         <div
           ref="composerOverlay"
-          class="pointer-events-none absolute inset-x-0 bottom-0 z-10 px-1 py-2 sm:px-2 sm:py-4"
+          class="pointer-events-none absolute inset-x-0 bottom-0 z-10 px-1 pb-4 sm:pt-2 sm:px-2"
         >
           <div class="mx-auto w-full max-w-[59rem]">
             <Composer

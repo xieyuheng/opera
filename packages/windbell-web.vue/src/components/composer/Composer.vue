@@ -431,7 +431,7 @@ function handleToggle(): void {
       <textarea
         ref="compactTextarea"
         v-model="input"
-        class="text-ink placeholder:text-ink/60 h-10 min-w-0 flex-1 resize-none overflow-hidden bg-transparent p-2 outline-none disabled:opacity-50"
+        class="text-ink placeholder:text-ink/60 min-w-0 flex-1 resize-none overflow-hidden bg-transparent px-2 outline-none disabled:opacity-50"
         :disabled="props.disabled"
         :placeholder="props.placeholder"
         rows="1"

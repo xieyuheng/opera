@@ -18,11 +18,10 @@ import TurnErrorCard from "./TurnErrorCard.vue"
 const props = withDefaults(
   defineProps<{
     state: SessionState
-    bottomPadding?: number
+    bottomPadding: number
     signDisplayMode?: SignDisplayMode
   }>(),
   {
-    bottomPadding: 72,
     signDisplayMode: "expand",
   },
 )
@@ -304,7 +303,7 @@ defineExpose({ scrollTo, scrollToBottom, scrollToTurn })
 <template>
   <div
     ref="scroller"
-    class="min-h-0 flex-1 scrollbar-none overflow-y-auto px-1.5 pt-22 sm:px-4 [&::-webkit-scrollbar]:hidden"
+    class="min-h-0 flex-1 scrollbar-none overflow-y-auto px-1.5 pt-24 sm:px-4 [&::-webkit-scrollbar]:hidden"
     :style="{ paddingBottom: `${props.bottomPadding}px` }"
     @scroll.passive="handleScroll"
   >
