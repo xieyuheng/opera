@@ -1,3 +1,12 @@
+[windbell-web.vue] session page 页面移动端支持
+
+- 下面我计划实现 session page 页面移动端支持，
+  主要是 ranger 打开后的布局问题。
+
+  关于这个 ranger 问题，你有什么想法？
+
+- 以及检查现在有什么其他的移动端不适配的问题。
+
 [windbell-docs.vitepress] 改善文档
 [windbell-docs.vitepress] 网站截图作为文档
 
