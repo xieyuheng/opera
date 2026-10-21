@@ -278,11 +278,12 @@ useHead(() => ({
       :style="{ width: sessionPaneWidth }"
     >
       <div
-        class="relative mr-1 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
+        class="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden sm:mr-1"
       >
-        <div
-          class="pointer-events-none absolute top-2 inset-x-0 z-50">
-          <div class="flex flex-wrap items-start justify-between gap-2 px-2">
+        <div class="pointer-events-none absolute inset-x-0 top-1 z-50 sm:top-2">
+          <div
+            class="flex flex-wrap items-start justify-between gap-2 px-1 sm:px-2"
+          >
             <SessionToolbarLeft :state="state" @select-turn="selectTurn" />
 
             <SessionToolbarRight
@@ -309,7 +310,7 @@ useHead(() => ({
 
         <div
           ref="composerOverlay"
-          class="pointer-events-none absolute inset-x-0 bottom-0 z-10 px-2 py-4"
+          class="pointer-events-none absolute inset-x-0 bottom-0 z-10 px-1 py-2 sm:px-2 sm:py-4"
         >
           <div class="mx-auto w-full max-w-[59rem]">
             <Composer

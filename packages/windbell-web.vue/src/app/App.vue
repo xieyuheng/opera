@@ -27,9 +27,7 @@ useHead(() => ({
 </script>
 
 <template>
-  <div
-    class="bg-paper text-ink flex min-h-dvh flex-col transition-colors"
-  >
+  <div class="bg-paper text-ink flex min-h-dvh flex-col transition-colors">
     <div
       v-if="isDataLoading"
       class="bg-ink/30 fixed inset-x-0 top-0 z-[100] h-0.5 animate-pulse"

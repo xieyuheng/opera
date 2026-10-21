@@ -188,7 +188,7 @@ onBeforeUnmount(() => {
 <template>
   <div
     ref="track"
-    class="relative h-full w-3 shrink-0 cursor-pointer touch-none overflow-visible select-none sm:w-5"
+    class="relative h-full w-4 shrink-0 cursor-pointer touch-none overflow-visible select-none sm:w-6"
     @pointerdown="handlePointerDown"
     @pointermove="handlePointerMove"
     @pointerup="handlePointerUp"
@@ -227,9 +227,11 @@ onBeforeUnmount(() => {
         :data-turn-index="marker.turnIndex"
         :style="{ top: `${marker.top}px` }"
       >
-        <div class="bg-ink absolute right-0 h-[1.5px] w-[10px]" />
         <div
-          class="text-ink absolute top-0.5 right-[10px] w-full px-px font-mono text-sm leading-none whitespace-nowrap"
+          class="bg-ink absolute right-0 h-[1px] w-[5px] sm:h-[1.5px] sm:w-[10px]"
+        />
+        <div
+          class="text-ink absolute top-px right-[5px] w-full px-px font-mono text-xs leading-none whitespace-nowrap sm:top-0.5 sm:right-[10px] sm:text-sm"
         >
           {{ marker.turnIndex }}
         </div>
