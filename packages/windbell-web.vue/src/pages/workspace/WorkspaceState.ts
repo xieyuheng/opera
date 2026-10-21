@@ -7,14 +7,19 @@ import { windbell } from "../../app/windbell"
 import { cancelPendingStateLoad } from "../../utils/state/loadableState.ts"
 
 const sessionPreviewLimit = 5
+const workspacePageSize = 10
 
 export type WorkspaceState = {
   workspaceId: S.WorkspaceId
   workspace: S.Workspace | undefined
   sessions: Array<WorkspaceSessionPreview>
+  nextCursor: string | null
   hasLoaded: boolean
   isLoading: boolean
+  isLoadingMore: boolean
   isPending: boolean
+  loadMoreError: string | undefined
+  loadMoreRequestId: number
   requestId: number
   error: string | undefined
 }
@@ -22,9 +27,11 @@ export type WorkspaceState = {
 function sortSessionsByUpdatedAt(
   sessions: Array<WorkspaceSessionPreview>,
 ): void {
-  sessions.sort(
-    (a, b) => b.updatedAt - a.updatedAt || b.createdAt - a.createdAt,
-  )
+  sessions.sort((a, b) => {
+    if (a.updatedAt !== b.updatedAt) return b.updatedAt - a.updatedAt
+    if (a.id === b.id) return 0
+    return a.id < b.id ? 1 : -1
+  })
 }
 
 export function makeWorkspaceState(workspaceId: S.WorkspaceId): WorkspaceState {
@@ -32,9 +39,13 @@ export function makeWorkspaceState(workspaceId: S.WorkspaceId): WorkspaceState {
     workspaceId,
     workspace: undefined,
     sessions: [],
+    nextCursor: null,
     hasLoaded: false,
     isLoading: true,
+    isLoadingMore: false,
     isPending: false,
+    loadMoreError: undefined,
+    loadMoreRequestId: 0,
     requestId: 0,
     error: undefined,
   })
@@ -55,6 +66,9 @@ export function getWorkspaceState(workspaceId: S.WorkspaceId): WorkspaceState {
 
 export async function loadWorkspaceState(state: WorkspaceState): Promise<void> {
   const requestId = ++state.requestId
+  state.loadMoreRequestId += 1
+  state.isLoadingMore = false
+  state.loadMoreError = undefined
 
   if (state.hasLoaded) {
     state.isPending = true
@@ -68,6 +82,7 @@ export async function loadWorkspaceState(state: WorkspaceState): Promise<void> {
     const data = await windbell.pages.loadWorkspaceData({
       workspaceId: state.workspaceId,
       previewLimit: sessionPreviewLimit,
+      limit: workspacePageSize,
     })
 
     if (requestId !== state.requestId) return
@@ -75,6 +90,7 @@ export async function loadWorkspaceState(state: WorkspaceState): Promise<void> {
     sortSessionsByUpdatedAt(data.sessionPreviews)
     state.workspace = data.workspace
     state.sessions = data.sessionPreviews
+    state.nextCursor = data.nextCursor
     state.hasLoaded = true
   } catch (error) {
     if (requestId !== state.requestId) return
@@ -84,6 +100,56 @@ export async function loadWorkspaceState(state: WorkspaceState): Promise<void> {
     if (requestId === state.requestId) {
       state.isLoading = false
       state.isPending = false
+    }
+  }
+}
+
+export async function loadMoreWorkspaceState(
+  state: WorkspaceState,
+): Promise<void> {
+  if (
+    !state.hasLoaded ||
+    state.isLoading ||
+    state.isPending ||
+    state.isLoadingMore ||
+    state.nextCursor === null
+  ) {
+    return
+  }
+
+  const requestId = ++state.loadMoreRequestId
+  state.isLoadingMore = true
+  state.loadMoreError = undefined
+
+  try {
+    const data = await windbell.pages.loadWorkspaceData({
+      workspaceId: state.workspaceId,
+      previewLimit: sessionPreviewLimit,
+      limit: workspacePageSize,
+      cursor: state.nextCursor,
+    })
+
+    if (requestId !== state.loadMoreRequestId) return
+
+    const existingSessionIds = new Set(
+      state.sessions.map((session) => session.id),
+    )
+
+    for (const session of data.sessionPreviews) {
+      if (existingSessionIds.has(session.id)) continue
+      existingSessionIds.add(session.id)
+      state.sessions.push(session)
+    }
+
+    sortSessionsByUpdatedAt(state.sessions)
+    state.nextCursor = data.nextCursor
+  } catch (error) {
+    if (requestId !== state.loadMoreRequestId) return
+
+    state.loadMoreError = error instanceof Error ? error.message : String(error)
+  } finally {
+    if (requestId === state.loadMoreRequestId) {
+      state.isLoadingMore = false
     }
   }
 }

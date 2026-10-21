@@ -44,6 +44,8 @@ export function makePageRouter(options: PageRouterOptions): Hono {
     pages.workspace({
       workspaceId: c.req.param("workspaceId"),
       previewLimit: c.req.query("previewLimit"),
+      limit: c.req.query("limit"),
+      cursor: c.req.query("cursor"),
     }),
   )
 

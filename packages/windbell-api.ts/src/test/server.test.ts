@@ -294,6 +294,56 @@ test("windbell router", async (t) => {
     }
     assert.equal(createdSession.title, "created-through-domain-api")
 
+    const expectedSessionIndexes = unwrap(
+      await database.sessions.list({ workspaceId: pageWorkspace.id }),
+    )
+
+    const defaultPageResponse = await request(
+      `/api/pages/workspaces/${pageWorkspace.id}?previewLimit=1`,
+    )
+    assert.equal(defaultPageResponse.status, 200)
+    const defaultPage = (await defaultPageResponse.json()) as {
+      sessionPreviews: Array<{ id: string }>
+      nextCursor: string | null
+    }
+    assert.equal(defaultPage.sessionPreviews.length, 2)
+    assert.equal(defaultPage.nextCursor, null)
+
+    const firstPageResponse = await request(
+      `/api/pages/workspaces/${pageWorkspace.id}?previewLimit=1&limit=1`,
+    )
+    assert.equal(firstPageResponse.status, 200)
+    const firstPage = (await firstPageResponse.json()) as {
+      sessionPreviews: Array<{ id: string }>
+      nextCursor: string | null
+    }
+    assert.equal(firstPage.sessionPreviews.length, 1)
+    assert.equal(
+      firstPage.sessionPreviews[0]?.id,
+      expectedSessionIndexes[0]?.id,
+    )
+    assert.notEqual(firstPage.nextCursor, null)
+
+    const invalidCursorResponse = await request(
+      `/api/pages/workspaces/${pageWorkspace.id}?previewLimit=1&limit=1&cursor=invalid`,
+    )
+    assert.equal(invalidCursorResponse.status, 400)
+
+    const secondPageResponse = await request(
+      `/api/pages/workspaces/${pageWorkspace.id}?previewLimit=1&limit=1&cursor=${encodeURIComponent(firstPage.nextCursor ?? "")}`,
+    )
+    assert.equal(secondPageResponse.status, 200)
+    const secondPage = (await secondPageResponse.json()) as {
+      sessionPreviews: Array<{ id: string }>
+      nextCursor: string | null
+    }
+    assert.equal(secondPage.sessionPreviews.length, 1)
+    assert.equal(
+      secondPage.sessionPreviews[0]?.id,
+      expectedSessionIndexes[1]?.id,
+    )
+    assert.equal(secondPage.nextCursor, null)
+
     const domainSessionsResponse = await request("/api/sessions")
     assert.equal(domainSessionsResponse.status, 200)
     const domainSessions = (await domainSessionsResponse.json()) as Array<{

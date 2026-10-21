@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+import { decodeWorkspaceSessionCursor } from "../api/cursor.ts"
 import { makeAction } from "../http/makeAction.ts"
 import type {
   LoadHomeData,
@@ -22,10 +23,29 @@ export type PageControllerOptions = {
 }
 
 const PreviewLimitSchema = z.coerce.number().int().nonnegative()
+const PageLimitSchema = z.coerce.number().int().positive().default(10)
+const WorkspaceCursorSchema = z
+  .string()
+  .transform((value, context) => {
+    const cursor = decodeWorkspaceSessionCursor(value)
+
+    if (cursor === undefined) {
+      context.addIssue({
+        code: "custom",
+        message: "invalid workspace cursor",
+      })
+      return z.NEVER
+    }
+
+    return cursor
+  })
+  .optional()
 
 export const LoadWorkspaceDataInputSchema = z.object({
   workspaceId: z.string(),
   previewLimit: PreviewLimitSchema,
+  limit: PageLimitSchema,
+  cursor: WorkspaceCursorSchema,
 })
 
 export const LoadSessionDataInputSchema = z.object({

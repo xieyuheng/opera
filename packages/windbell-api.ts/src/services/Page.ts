@@ -6,6 +6,10 @@ import {
 import type * as S from "@windbell/semiosis.ts"
 import { err, isError, ok, type Result } from "@windbell/std.ts/result"
 
+import {
+  encodeWorkspaceSessionCursor,
+  type WorkspaceSessionCursor,
+} from "../api/cursor.ts"
 import type {
   DustbinSessionPreview,
   HomeData,
@@ -59,6 +63,8 @@ export function LoadWorkspaceData(options: PageDataServiceOptions) {
   return async (input: {
     workspaceId: S.WorkspaceId
     previewLimit: number
+    limit: number
+    cursor?: WorkspaceSessionCursor
   }): Promise<Result<WorkspacePageData, S.ServiceError>> => {
     const workspaceResult = fromDatabase(
       await options.database.workspaces.get(input.workspaceId),
@@ -76,15 +82,17 @@ export function LoadWorkspaceData(options: PageDataServiceOptions) {
       )
     }
 
-    const indexesResult = fromDatabase(
-      await options.database.sessions.list({
+    const pageResult = fromDatabase(
+      await options.database.sessions.listPage({
         workspaceId: input.workspaceId,
+        limit: input.limit,
+        cursor: input.cursor,
       }),
     )
-    if (isError(indexesResult)) return indexesResult
+    if (isError(pageResult)) return pageResult
 
     const previewResults = await Promise.all(
-      indexesResult.value.map(async (index) => {
+      pageResult.value.indexes.map(async (index) => {
         const signsResult = fromDatabase(
           await options.database.sessions.getContextTail(
             index.id,
@@ -107,7 +115,14 @@ export function LoadWorkspaceData(options: PageDataServiceOptions) {
       sessionPreviews.push(previewResult.value)
     }
 
-    return ok({ workspace, sessionPreviews })
+    return ok({
+      workspace,
+      sessionPreviews,
+      nextCursor:
+        pageResult.value.nextCursor === null
+          ? null
+          : encodeWorkspaceSessionCursor(pageResult.value.nextCursor),
+    })
   }
 }
 

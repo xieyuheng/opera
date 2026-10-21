@@ -121,3 +121,92 @@ test("SessionStore stores turns and slices context by sequence", async () => {
     await fs.rm(root, { recursive: true, force: true })
   }
 })
+
+test("SessionStore lists session pages by updatedAt descending", async () => {
+  const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "semiosis-page-"))
+
+  try {
+    const database = makeDatabase({
+      fs: makeLocalFileSystem(),
+      path: makePath(process.platform === "win32" ? "win32" : "posix"),
+      root,
+    })
+    const workspace = unwrap(
+      await database.workspaces.make({
+        name: "page-test",
+        root: Path.join(root, "workspace"),
+      }),
+    )
+
+    const sessionA = unwrap(
+      await database.sessions.make({
+        workspaceId: workspace.id,
+        title: "a",
+      }),
+    )
+    const sessionB = unwrap(
+      await database.sessions.make({
+        workspaceId: workspace.id,
+        title: "b",
+      }),
+    )
+    const sessionC = unwrap(
+      await database.sessions.make({
+        workspaceId: workspace.id,
+        title: "c",
+      }),
+    )
+
+    unwrap(
+      await database.sessions.put({
+        ...sessionA,
+        updatedAt: 100,
+      }),
+    )
+    unwrap(
+      await database.sessions.put({
+        ...sessionB,
+        updatedAt: 200,
+      }),
+    )
+    unwrap(
+      await database.sessions.put({
+        ...sessionC,
+        updatedAt: 200,
+      }),
+    )
+
+    const expectedOrder = [sessionB, sessionC]
+      .sort((a, b) => (a.id === b.id ? 0 : a.id < b.id ? 1 : -1))
+      .map((session) => session.id)
+
+    const firstPage = unwrap(
+      await database.sessions.listPage({
+        workspaceId: workspace.id,
+        limit: 2,
+      }),
+    )
+
+    assert.deepEqual(
+      firstPage.indexes.map((session) => session.id),
+      expectedOrder,
+    )
+    assert.equal(firstPage.nextCursor?.updatedAt, 200)
+
+    const secondPage = unwrap(
+      await database.sessions.listPage({
+        workspaceId: workspace.id,
+        limit: 2,
+        cursor: firstPage.nextCursor ?? undefined,
+      }),
+    )
+
+    assert.deepEqual(
+      secondPage.indexes.map((session) => session.id),
+      [sessionA.id],
+    )
+    assert.equal(secondPage.nextCursor, null)
+  } finally {
+    await fs.rm(root, { recursive: true, force: true })
+  }
+})

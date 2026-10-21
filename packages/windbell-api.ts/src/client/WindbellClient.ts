@@ -48,6 +48,8 @@ export type PagesClient = {
   loadWorkspaceData(options: {
     workspaceId: S.WorkspaceId
     previewLimit: number
+    limit?: number
+    cursor?: string
   }): Promise<WorkspacePageData>
   loadSessionData(options: { sessionId: S.SessionId }): Promise<SessionData>
   loadSessionDustbinData(options: {
@@ -179,6 +181,12 @@ export function makeWindbellClient(
       query: (options) => {
         const query = new URLSearchParams()
         query.set("previewLimit", String(options.previewLimit))
+        if (options.limit !== undefined) {
+          query.set("limit", String(options.limit))
+        }
+        if (options.cursor !== undefined) {
+          query.set("cursor", options.cursor)
+        }
         return query
       },
       output: JsonDataSchema<WorkspacePageData>(),

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue"
 import type { WorkspaceSessionPreview } from "@windbell/windbell-api.ts/client"
-import { computed, ref } from "vue"
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
 import { useRoute, useRouter } from "vue-router"
 
@@ -13,6 +13,7 @@ import SessionCard from "./SessionCard.vue"
 import { workspaceMessages } from "./Workspace.i18n.ts"
 import {
   getWorkspaceState,
+  loadMoreWorkspaceState,
   makeSession,
   trashSession,
   trashWorkspace,
@@ -34,9 +35,41 @@ const state = getWorkspaceState(workspaceId.value)
 const title = computed(() => state.workspace?.name ?? t("title"))
 const creatingSession = ref(false)
 const newSessionInput = ref("")
+const loadMoreSentinel = ref<HTMLElement | null>(null)
 const canCreateSession = computed(
   () => newSessionInput.value.trim() !== "" && !creatingSession.value,
 )
+let loadMoreObserver: IntersectionObserver | undefined
+
+onMounted(() => {
+  loadMoreObserver = new IntersectionObserver(
+    (entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return
+      if (state.loadMoreError !== undefined) return
+      void loadMoreWorkspaceState(state)
+    },
+    { rootMargin: "200px 0px" },
+  )
+
+  if (loadMoreSentinel.value !== null) {
+    loadMoreObserver.observe(loadMoreSentinel.value)
+  }
+})
+
+watch(loadMoreSentinel, (element, previousElement) => {
+  if (loadMoreObserver === undefined) return
+  if (previousElement !== null) loadMoreObserver.unobserve(previousElement)
+  if (element !== null) loadMoreObserver.observe(element)
+})
+
+onBeforeUnmount(() => {
+  loadMoreObserver?.disconnect()
+})
+
+async function retryLoadMore(): Promise<void> {
+  state.loadMoreError = undefined
+  await loadMoreWorkspaceState(state)
+}
 
 async function createSession(): Promise<void> {
   if (!canCreateSession.value) return
@@ -223,7 +256,6 @@ useHead(() => ({
       <li v-for="session in state.sessions" :key="session.id">
         <SessionCard
           :session="session"
-          :previewLimit="5"
           @trash="handleTrashSession(session)"
           @update-title="editSessionTitle(session, $event)"
         />
@@ -231,5 +263,29 @@ useHead(() => ({
     </ol>
 
     <WorkspaceWelcomeCard v-else />
+
+    <div
+      v-if="state.hasLoaded && state.sessions.length > 0"
+      ref="loadMoreSentinel"
+      class="text-ink/60 flex min-h-8 items-center justify-center py-4 text-sm"
+      aria-live="polite"
+    >
+      <p v-if="state.isLoadingMore">
+        {{ t("loadingMore") }}
+      </p>
+
+      <button
+        v-else-if="state.loadMoreError !== undefined"
+        type="button"
+        class="text-sign-error cursor-pointer hover:underline"
+        @click="retryLoadMore"
+      >
+        {{ t("loadMoreFailed") }} · {{ t("retry") }}
+      </button>
+
+      <p v-else-if="state.nextCursor === null">
+        {{ t("noMoreSessions") }}
+      </p>
+    </div>
   </PageLayout>
 </template>

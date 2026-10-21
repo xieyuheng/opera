@@ -14,6 +14,7 @@ export type WorkspaceSessionPreview = S.SessionIndex & {
 export type WorkspacePageData = {
   workspace: S.Workspace
   sessionPreviews: Array<WorkspaceSessionPreview>
+  nextCursor: string | null
 }
 
 export type SessionData = {

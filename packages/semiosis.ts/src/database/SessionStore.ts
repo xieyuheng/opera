@@ -31,12 +31,31 @@ export type ListSessionOptions = {
   workspaceId: WorkspaceId | undefined
 }
 
+export type SessionListCursor = {
+  updatedAt: number
+  id: SessionId
+}
+
+export type ListSessionPageOptions = {
+  workspaceId: WorkspaceId | undefined
+  limit: number
+  cursor?: SessionListCursor
+}
+
+export type SessionPage = {
+  indexes: Array<SessionIndex>
+  nextCursor: SessionListCursor | null
+}
+
 export type SessionStore = {
   make(options: MakeSessionOptions): Promise<Result<Session, DatabaseError>>
   get(id: SessionId): Promise<Result<Session | undefined, DatabaseError>>
   list(
     options: ListSessionOptions,
   ): Promise<Result<Array<SessionIndex>, DatabaseError>>
+  listPage(
+    options: ListSessionPageOptions,
+  ): Promise<Result<SessionPage, DatabaseError>>
   put(session: Session): Promise<Result<void, DatabaseError>>
   appendSign(id: SessionId, sign: Sign): Promise<Result<number, DatabaseError>>
   nextSignSequence(id: SessionId): Promise<Result<number, DatabaseError>>
@@ -69,6 +88,12 @@ export type SessionStore = {
     title: string,
   ): Promise<Result<void, DatabaseError>>
   remove(id: SessionId): Promise<Result<void, DatabaseError>>
+}
+
+function compareSessionIndexesDesc(a: SessionIndex, b: SessionIndex): number {
+  if (a.updatedAt !== b.updatedAt) return b.updatedAt - a.updatedAt
+  if (a.id === b.id) return 0
+  return a.id < b.id ? 1 : -1
 }
 
 export function makeSessionStore(options: SessionStoreOptions): SessionStore {
@@ -291,10 +316,40 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
         indexes.push(index)
       }
 
-      indexes.sort(
-        (a, b) => b.updatedAt - a.updatedAt || b.createdAt - a.createdAt,
-      )
+      indexes.sort(compareSessionIndexesDesc)
       return ok(indexes)
+    },
+
+    async listPage(listOptions) {
+      const indexesResult = await store.list({
+        workspaceId: listOptions.workspaceId,
+      })
+      if (isError(indexesResult)) return indexesResult
+
+      let indexes = indexesResult.value
+
+      if (listOptions.cursor !== undefined) {
+        const cursor = listOptions.cursor
+        indexes = indexes.filter(
+          (index) =>
+            index.updatedAt < cursor.updatedAt ||
+            (index.updatedAt === cursor.updatedAt && index.id < cursor.id),
+        )
+      }
+
+      const pageIndexes = indexes.slice(0, listOptions.limit)
+      const lastIndex = pageIndexes.at(-1)
+
+      return ok({
+        indexes: pageIndexes,
+        nextCursor:
+          indexes.length > listOptions.limit && lastIndex !== undefined
+            ? {
+                updatedAt: lastIndex.updatedAt,
+                id: lastIndex.id,
+              }
+            : null,
+      })
     },
 
     async put(session) {
