@@ -63,7 +63,9 @@ const unsupportedSignView: SignViewConfig = {
   color: "var(--color-sign-error)",
 }
 
-export function resolveSignView(sign: S.Sign): SignViewConfig {
+export function resolveSignView(sign: {
+  kind: S.Sign["kind"]
+}): SignViewConfig {
   return signViews[sign.kind] ?? unsupportedSignView
 }
 

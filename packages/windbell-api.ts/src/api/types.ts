@@ -5,9 +5,15 @@ export type HomeData = {
   sessionsByWorkspaceId: Record<S.WorkspaceId, Array<S.SessionIndex>>
 }
 
-export type WorkspaceData = {
+export type SignPreview = S.SignPreview
+
+export type WorkspaceSessionPreview = S.SessionIndex & {
+  signPreviews: Array<SignPreview>
+}
+
+export type WorkspacePageData = {
   workspace: S.Workspace
-  sessions: Array<S.Session>
+  sessionPreviews: Array<WorkspaceSessionPreview>
 }
 
 export type SessionData = {
@@ -15,12 +21,12 @@ export type SessionData = {
   workspace: S.Workspace
 }
 
-export type DustbinSessionDataItem = S.DustbinSessionIndex & {
-  context: Array<S.Sign>
+export type DustbinSessionPreview = S.DustbinSessionIndex & {
+  signPreviews: Array<SignPreview>
 }
 
-export type SessionDustbinData = {
-  sessions: Array<DustbinSessionDataItem>
+export type SessionDustbinPageData = {
+  sessionPreviews: Array<DustbinSessionPreview>
 }
 
 export type WorkspaceDustbinData = {

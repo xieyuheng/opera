@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type * as S from "@windbell/semiosis.ts/core"
+import type { WorkspaceSessionPreview } from "@windbell/windbell-api.ts/client"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 import { RouterLink } from "vue-router"
@@ -9,15 +9,9 @@ import Card from "../../components/card/Card.vue"
 import SignLine from "../../components/sign/SignLine.vue"
 import { formatDateTime } from "../../utils/datetime/index.ts"
 
-const props = withDefaults(
-  defineProps<{
-    session: S.Session
-    previewLimit?: number
-  }>(),
-  {
-    previewLimit: 3,
-  },
-)
+const props = defineProps<{
+  session: WorkspaceSessionPreview
+}>()
 
 const emit = defineEmits<{
   trash: []
@@ -55,13 +49,6 @@ const sessionRoute = computed(() => ({
     sessionId: props.session.id,
   },
 }))
-
-const previewSigns = computed(() => {
-  const signs = props.session.context
-  const limit = Math.max(0, props.previewLimit)
-
-  return signs.slice(Math.max(0, signs.length - limit))
-})
 
 function requestEditTitle(): void {
   const title = window.prompt(t("editTitlePrompt"), props.session.title)
@@ -102,11 +89,11 @@ function requestTrash(): void {
       </div>
 
       <RouterLink class="block" :to="sessionRoute">
-        <ol v-if="previewSigns.length > 0" class="flex flex-col gap-1">
+        <ol v-if="session.signPreviews.length > 0" class="flex flex-col gap-1">
           <SignLine
-            v-for="(sign, index) in previewSigns"
+            v-for="(signPreview, index) in session.signPreviews"
             :key="index"
-            :sign="sign"
+            :sign-preview="signPreview"
           />
         </ol>
       </RouterLink>

@@ -4,11 +4,10 @@ import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 
 import { signMessages } from "./Sign.i18n.ts"
-import { signBody } from "./signBody.ts"
 import { resolveSignView } from "./views/registry.ts"
 
 const props = defineProps<{
-  sign: S.Sign
+  signPreview: S.SignPreview
 }>()
 
 const emit = defineEmits<{
@@ -21,7 +20,7 @@ const { t } = useI18n({
   useScope: "local",
 })
 
-const view = computed(() => resolveSignView(props.sign))
+const view = computed(() => resolveSignView(props.signPreview))
 </script>
 
 <template>
@@ -35,8 +34,12 @@ const view = computed(() => resolveSignView(props.sign))
       {{ t(view.labelKey) }}
     </button>
 
-    <span class="cursor-pointer truncate" @click="emit('line-click')">
-      {{ signBody(sign) }}
+    <span
+      class="cursor-pointer truncate"
+      :title="signPreview.truncatedContent"
+      @click="emit('line-click')"
+    >
+      {{ signPreview.truncatedContent }}
     </span>
   </div>
 </template>

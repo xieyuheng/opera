@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue"
-import type * as S from "@windbell/semiosis.ts/core"
+import type { DustbinSessionPreview } from "@windbell/windbell-api.ts/client"
 import { computed, ref } from "vue"
 import { useI18n } from "vue-i18n"
 import { useRoute } from "vue-router"
@@ -13,7 +13,6 @@ import {
   getSessionDustbinState,
   removeSession,
   restoreSession,
-  type SessionDustbinListItem,
 } from "./SessionDustbinState.ts"
 
 const route = useRoute()
@@ -27,7 +26,7 @@ const workspaceId = computed(() => String(route.params.workspaceId ?? ""))
 const state = getSessionDustbinState(workspaceId.value)
 const busySessionId = ref<string | undefined>(undefined)
 
-async function restore(session: SessionDustbinListItem): Promise<void> {
+async function restore(session: DustbinSessionPreview): Promise<void> {
   busySessionId.value = session.id
   state.error = undefined
 
@@ -40,7 +39,7 @@ async function restore(session: SessionDustbinListItem): Promise<void> {
   }
 }
 
-async function remove(session: SessionDustbinListItem): Promise<void> {
+async function remove(session: DustbinSessionPreview): Promise<void> {
   busySessionId.value = session.id
   state.error = undefined
 

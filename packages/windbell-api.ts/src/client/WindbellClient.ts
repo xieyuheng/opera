@@ -14,9 +14,9 @@ import type {
   ProviderData,
   ProviderListData,
   SessionData,
-  SessionDustbinData,
-  WorkspaceData,
+  SessionDustbinPageData,
   WorkspaceDustbinData,
+  WorkspacePageData,
 } from "../api/types.ts"
 import type { WindbellHealth } from "../services/Health.ts"
 import type { Theme, ThemeInput } from "../theme/Theme.ts"
@@ -47,11 +47,13 @@ export type PagesClient = {
   loadHomeData(): Promise<HomeData>
   loadWorkspaceData(options: {
     workspaceId: S.WorkspaceId
-  }): Promise<WorkspaceData>
+    previewLimit: number
+  }): Promise<WorkspacePageData>
   loadSessionData(options: { sessionId: S.SessionId }): Promise<SessionData>
   loadSessionDustbinData(options: {
     workspaceId: S.WorkspaceId
-  }): Promise<SessionDustbinData>
+    previewLimit: number
+  }): Promise<SessionDustbinPageData>
   loadWorkspaceDustbinData(): Promise<WorkspaceDustbinData>
   loadProviderListData(): Promise<ProviderListData>
   loadProviderData(options: { providerName: string }): Promise<ProviderData>
@@ -75,6 +77,7 @@ export type SessionsClient = {
   }): Promise<S.Session>
   get(id: S.SessionId): Promise<S.Session | undefined>
   put(session: S.Session): Promise<void>
+  patch(options: { sessionId: S.SessionId; title: string }): Promise<void>
   generateTitle(options: {
     sessionId: S.SessionId
     model: S.ModelRef
@@ -173,7 +176,12 @@ export function makeWindbellClient(
       method: "GET",
       path: (options) =>
         `/pages/workspaces/${encodeURIComponent(options.workspaceId)}`,
-      output: JsonDataSchema<WorkspaceData>(),
+      query: (options) => {
+        const query = new URLSearchParams()
+        query.set("previewLimit", String(options.previewLimit))
+        return query
+      },
+      output: JsonDataSchema<WorkspacePageData>(),
     }),
     loadSessionData: makeJsonEndpoint(config, {
       method: "GET",
@@ -187,9 +195,10 @@ export function makeWindbellClient(
       query: (options) => {
         const query = new URLSearchParams()
         query.set("workspaceId", options.workspaceId)
+        query.set("previewLimit", String(options.previewLimit))
         return query
       },
-      output: JsonDataSchema<SessionDustbinData>(),
+      output: JsonDataSchema<SessionDustbinPageData>(),
     }),
     loadWorkspaceDustbinData: makeJsonEndpoint(config, {
       method: "GET",
@@ -273,6 +282,13 @@ export function makeWindbellClient(
       path: (session: S.Session) =>
         `/sessions/${encodeURIComponent(session.id)}`,
       body: (session) => session,
+      output: VoidSchema,
+    }),
+    patch: makeJsonEndpoint(config, {
+      method: "PATCH",
+      path: (options: { sessionId: S.SessionId; title: string }) =>
+        `/sessions/${encodeURIComponent(options.sessionId)}`,
+      body: (options) => ({ title: options.title }),
       output: VoidSchema,
     }),
     async generateTitle(options) {

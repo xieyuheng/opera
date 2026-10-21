@@ -7,6 +7,7 @@ import type {
   SessionId,
   SessionIndex,
 } from "../session/Session.ts"
+import type { Sign } from "../sign/index.ts"
 import type { WorkspaceId } from "../workspace/Workspace.ts"
 import { makeDatabaseError, type DatabaseError } from "./DatabaseError.ts"
 import type { FileStore } from "./FileStore.ts"
@@ -30,6 +31,10 @@ export type TrashSessionOptions = {
 
 export type DustbinSessionStore = {
   get(sessionId: SessionId): Promise<Result<Session | undefined, DatabaseError>>
+  getContextTail(
+    sessionId: SessionId,
+    limit: number,
+  ): Promise<Result<Array<Sign>, DatabaseError>>
   trash(
     sessionId: SessionId,
     options?: TrashSessionOptions,
@@ -100,6 +105,10 @@ export function makeDustbinSessionStore(
   return {
     async get(sessionId) {
       return await sessionStore.get(sessionId)
+    },
+
+    async getContextTail(sessionId, limit) {
+      return await sessionStore.getContextTail(sessionId, limit)
     },
 
     async trash(sessionId, trashOptions) {

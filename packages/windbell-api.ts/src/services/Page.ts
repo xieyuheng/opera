@@ -1,19 +1,21 @@
 import {
   makeServiceError,
   makeServiceErrorFromDatabaseError,
+  makeSignPreview,
 } from "@windbell/semiosis.ts"
 import type * as S from "@windbell/semiosis.ts"
 import { err, isError, ok, type Result } from "@windbell/std.ts/result"
 
 import type {
-  DustbinSessionDataItem,
+  DustbinSessionPreview,
   HomeData,
   ProviderData,
   ProviderListData,
   SessionData,
-  SessionDustbinData,
-  WorkspaceData,
+  SessionDustbinPageData,
   WorkspaceDustbinData,
+  WorkspacePageData,
+  WorkspaceSessionPreview,
 } from "../api/types.ts"
 
 export type PageDataServiceOptions = {
@@ -56,7 +58,8 @@ export function LoadHomeData(options: PageDataServiceOptions) {
 export function LoadWorkspaceData(options: PageDataServiceOptions) {
   return async (input: {
     workspaceId: S.WorkspaceId
-  }): Promise<Result<WorkspaceData, S.ServiceError>> => {
+    previewLimit: number
+  }): Promise<Result<WorkspacePageData, S.ServiceError>> => {
     const workspaceResult = fromDatabase(
       await options.database.workspaces.get(input.workspaceId),
     )
@@ -80,17 +83,31 @@ export function LoadWorkspaceData(options: PageDataServiceOptions) {
     )
     if (isError(indexesResult)) return indexesResult
 
-    const sessions: Array<S.Session> = []
+    const previewResults = await Promise.all(
+      indexesResult.value.map(async (index) => {
+        const signsResult = fromDatabase(
+          await options.database.sessions.getContextTail(
+            index.id,
+            input.previewLimit,
+          ),
+        )
+        if (isError(signsResult)) return signsResult
 
-    for (const index of indexesResult.value) {
-      const sessionResult = fromDatabase(
-        await options.database.sessions.get(index.id),
-      )
-      if (isError(sessionResult)) return sessionResult
-      if (sessionResult.value !== undefined) sessions.push(sessionResult.value)
+        return ok<WorkspaceSessionPreview>({
+          ...index,
+          signPreviews: signsResult.value.map((sign) => makeSignPreview(sign)),
+        })
+      }),
+    )
+
+    const sessionPreviews: Array<WorkspaceSessionPreview> = []
+
+    for (const previewResult of previewResults) {
+      if (isError(previewResult)) return previewResult
+      sessionPreviews.push(previewResult.value)
     }
 
-    return ok({ workspace, sessions })
+    return ok({ workspace, sessionPreviews })
   }
 }
 
@@ -137,27 +154,40 @@ export function LoadSessionData(options: PageDataServiceOptions) {
 export function LoadSessionDustbinData(options: PageDataServiceOptions) {
   return async (input: {
     workspaceId: S.WorkspaceId | undefined
-  }): Promise<Result<SessionDustbinData, S.ServiceError>> => {
+    previewLimit: number
+  }): Promise<Result<SessionDustbinPageData, S.ServiceError>> => {
     const indexesResult = fromDatabase(
-      await options.database.dustbin.sessions.list(input),
+      await options.database.dustbin.sessions.list({
+        workspaceId: input.workspaceId,
+      }),
     )
     if (isError(indexesResult)) return indexesResult
 
-    const sessions: Array<DustbinSessionDataItem> = []
+    const previewResults = await Promise.all(
+      indexesResult.value.map(async (index) => {
+        const signsResult = fromDatabase(
+          await options.database.dustbin.sessions.getContextTail(
+            index.id,
+            input.previewLimit,
+          ),
+        )
+        if (isError(signsResult)) return signsResult
 
-    for (const index of indexesResult.value) {
-      const sessionResult = fromDatabase(
-        await options.database.dustbin.sessions.get(index.id),
-      )
-      if (isError(sessionResult)) return sessionResult
+        return ok<DustbinSessionPreview>({
+          ...index,
+          signPreviews: signsResult.value.map((sign) => makeSignPreview(sign)),
+        })
+      }),
+    )
 
-      sessions.push({
-        ...index,
-        context: sessionResult.value?.context ?? [],
-      })
+    const sessionPreviews: Array<DustbinSessionPreview> = []
+
+    for (const previewResult of previewResults) {
+      if (isError(previewResult)) return previewResult
+      sessionPreviews.push(previewResult.value)
     }
 
-    return ok({ sessions })
+    return ok({ sessionPreviews })
   }
 }
 

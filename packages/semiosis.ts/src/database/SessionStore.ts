@@ -45,6 +45,10 @@ export type SessionStore = {
     startSequence: number,
     endSequence: number,
   ): Promise<Result<Array<Sign>, DatabaseError>>
+  getContextTail(
+    id: SessionId,
+    limit: number,
+  ): Promise<Result<Array<Sign>, DatabaseError>>
   getTurn(
     sessionId: SessionId,
     turnId: TurnId,
@@ -169,6 +173,44 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
     const entriesResult = await readContextEntries(id)
     if (isError(entriesResult)) return entriesResult
     return ok(entriesResult.value.map((entry) => entry.sign))
+  }
+
+  const readContextTail = async (
+    id: SessionId,
+    limit: number,
+  ): Promise<Result<Array<Sign>, DatabaseError>> => {
+    const idResult = validateId(id)
+    if (isError(idResult)) return idResult
+
+    const fileNamesResult = await options.files.listFiles(contextDir(id))
+    if (isError(fileNamesResult)) return fileNamesResult
+
+    const entries: Array<{ fileName: string; sequence: number }> = []
+
+    for (const fileName of fileNamesResult.value) {
+      const info = parseSignFileName(fileName)
+      if (info === undefined) continue
+
+      entries.push({ fileName, sequence: info.sequence })
+    }
+
+    entries.sort((a, b) => a.sequence - b.sequence)
+
+    if (limit <= 0) return ok([])
+
+    const signs: Array<Sign> = []
+
+    for (const entry of entries.slice(-limit)) {
+      const textResult = await options.files.readTextFile(
+        paths.join(contextDir(id), entry.fileName),
+      )
+      if (isError(textResult)) return textResult
+      if (textResult.value === undefined) continue
+
+      signs.push(parseSign(entry.fileName, textResult.value))
+    }
+
+    return ok(signs)
   }
 
   const nextSignSequenceInternal = async (
@@ -352,6 +394,10 @@ export function makeSessionStore(options: SessionStoreOptions): SessionStore {
           )
           .map((entry) => entry.sign),
       )
+    },
+
+    async getContextTail(id, limit) {
+      return await readContextTail(id, limit)
     },
 
     async getTurn(sessionId, turnId) {

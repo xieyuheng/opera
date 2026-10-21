@@ -1,16 +1,15 @@
 import type * as S from "@windbell/semiosis.ts/core"
+import type { DustbinSessionPreview } from "@windbell/windbell-api.ts/client"
 import { reactive } from "vue"
 
 import { windbell } from "../../app/windbell"
 import { cancelPendingStateLoad } from "../../utils/state/loadableState.ts"
 
-export type SessionDustbinListItem = S.DustbinSessionIndex & {
-  context: Array<S.Sign>
-}
+const sessionPreviewLimit = 5
 
 export type SessionDustbinState = {
   workspaceId: S.WorkspaceId
-  sessions: Array<SessionDustbinListItem>
+  sessions: Array<DustbinSessionPreview>
   hasLoaded: boolean
   isLoading: boolean
   isPending: boolean
@@ -63,11 +62,12 @@ export async function loadSessionDustbin(
   try {
     const data = await windbell.pages.loadSessionDustbinData({
       workspaceId: state.workspaceId,
+      previewLimit: sessionPreviewLimit,
     })
 
     if (requestId !== state.requestId) return
 
-    state.sessions = data.sessions
+    state.sessions = data.sessionPreviews
     state.hasLoaded = true
   } catch (error) {
     if (requestId !== state.requestId) return

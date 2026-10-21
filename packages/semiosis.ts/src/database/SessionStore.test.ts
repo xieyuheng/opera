@@ -39,6 +39,8 @@ test("SessionStore stores turns and slices context by sequence", async () => {
     )
     assert.equal(sequence, 0)
 
+    unwrap(await database.sessions.appendSign(session.id, UserSign("world")))
+
     const signs = unwrap(
       await database.sessions.sliceContextBySequence(session.id, 0, 1),
     )
@@ -46,6 +48,14 @@ test("SessionStore stores turns and slices context by sequence", async () => {
       signs.map((sign) => sign.kind),
       ["UserSign"],
     )
+
+    const tail = unwrap(await database.sessions.getContextTail(session.id, 1))
+    assert.deepEqual(tail, [UserSign("world")])
+
+    const emptyTail = unwrap(
+      await database.sessions.getContextTail(session.id, 0),
+    )
+    assert.deepEqual(emptyTail, [])
 
     const now = Date.now()
     unwrap(

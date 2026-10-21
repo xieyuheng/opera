@@ -36,6 +36,11 @@ export const PutSessionInputSchema = z.object({
   session: z.custom<S.Session>(),
 })
 
+export const PatchSessionInputSchema = z.object({
+  sessionId: z.string(),
+  title: z.string().min(1),
+})
+
 export const RemoveSessionInputSchema = z.object({
   sessionId: z.string(),
 })
@@ -90,6 +95,10 @@ export function makeSessionController(options: SessionControllerOptions) {
 
       return await options.sessions.put(input.session)
     }),
+
+    patch: makeAction(PatchSessionInputSchema, (input) =>
+      options.sessions.patch(input),
+    ),
 
     getUsage: makeAction(GetSessionInputSchema, (input) =>
       options.sessions.getUsage(input),

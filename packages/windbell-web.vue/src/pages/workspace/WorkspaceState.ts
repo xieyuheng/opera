@@ -1,13 +1,17 @@
+import { makeSignPreview } from "@windbell/semiosis.ts/core"
 import type * as S from "@windbell/semiosis.ts/core"
+import type { WorkspaceSessionPreview } from "@windbell/windbell-api.ts/client"
 import { reactive } from "vue"
 
 import { windbell } from "../../app/windbell"
 import { cancelPendingStateLoad } from "../../utils/state/loadableState.ts"
 
+const sessionPreviewLimit = 5
+
 export type WorkspaceState = {
   workspaceId: S.WorkspaceId
   workspace: S.Workspace | undefined
-  sessions: Array<S.Session>
+  sessions: Array<WorkspaceSessionPreview>
   hasLoaded: boolean
   isLoading: boolean
   isPending: boolean
@@ -15,7 +19,9 @@ export type WorkspaceState = {
   error: string | undefined
 }
 
-function sortSessionsByUpdatedAt(sessions: Array<S.Session>): void {
+function sortSessionsByUpdatedAt(
+  sessions: Array<WorkspaceSessionPreview>,
+): void {
   sessions.sort(
     (a, b) => b.updatedAt - a.updatedAt || b.createdAt - a.createdAt,
   )
@@ -61,13 +67,14 @@ export async function loadWorkspaceState(state: WorkspaceState): Promise<void> {
   try {
     const data = await windbell.pages.loadWorkspaceData({
       workspaceId: state.workspaceId,
+      previewLimit: sessionPreviewLimit,
     })
 
     if (requestId !== state.requestId) return
 
-    sortSessionsByUpdatedAt(data.sessions)
+    sortSessionsByUpdatedAt(data.sessionPreviews)
     state.workspace = data.workspace
-    state.sessions = data.sessions
+    state.sessions = data.sessionPreviews
     state.hasLoaded = true
   } catch (error) {
     if (requestId !== state.requestId) return
@@ -91,7 +98,16 @@ export async function makeSession(
   })
 
   cancelPendingStateLoad(state)
-  state.sessions.push(session)
+  state.sessions.push({
+    id: session.id,
+    workspaceId: session.workspaceId,
+    title: session.title,
+    createdAt: session.createdAt,
+    updatedAt: session.updatedAt,
+    signPreviews: session.context
+      .slice(-sessionPreviewLimit)
+      .map((sign) => makeSignPreview(sign)),
+  })
   sortSessionsByUpdatedAt(state.sessions)
   return session
 }
@@ -115,13 +131,13 @@ export async function updateSessionTitle(
 
   if (current === undefined) return
 
-  const session: S.Session = {
+  const session: WorkspaceSessionPreview = {
     ...current,
     title,
     updatedAt: Date.now(),
   }
 
-  await windbell.sessions.put(session)
+  await windbell.sessions.patch({ sessionId, title })
   cancelPendingStateLoad(state)
   state.sessions[index] = session
   sortSessionsByUpdatedAt(state.sessions)

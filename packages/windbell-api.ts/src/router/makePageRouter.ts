@@ -41,7 +41,10 @@ export function makePageRouter(options: PageRouterOptions): Hono {
   app.get("/home", () => pages.home({}))
 
   app.get("/workspaces/:workspaceId", (c) =>
-    pages.workspace({ workspaceId: c.req.param("workspaceId") }),
+    pages.workspace({
+      workspaceId: c.req.param("workspaceId"),
+      previewLimit: c.req.query("previewLimit"),
+    }),
   )
 
   app.get("/sessions/:sessionId", (c) =>
@@ -51,6 +54,7 @@ export function makePageRouter(options: PageRouterOptions): Hono {
   app.get("/session-dustbin", (c) =>
     pages.sessionDustbin({
       workspaceId: c.req.query("workspaceId") || undefined,
+      previewLimit: c.req.query("previewLimit"),
     }),
   )
 

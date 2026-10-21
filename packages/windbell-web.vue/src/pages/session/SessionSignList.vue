@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { makeSignPreview } from "@windbell/semiosis.ts/core"
 import type * as S from "@windbell/semiosis.ts/core"
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
@@ -337,7 +338,7 @@ defineExpose({ scrollTo, scrollToBottom, scrollToTurn })
             v-else
             class="py-0.5"
             :data-sign-index="index"
-            :sign="sign"
+            :sign-preview="makeSignPreview(sign)"
             @tag-click="toggleSign(index, sign)"
             @line-click="toggleSign(index, sign)"
           />

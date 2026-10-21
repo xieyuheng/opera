@@ -199,6 +199,10 @@ test("windbell router", async (t) => {
       }),
     )
 
+    unwrap(await database.sessions.appendSign(session.id, S.UserSign("one")))
+    unwrap(await database.sessions.appendSign(session.id, S.UserSign("two")))
+    unwrap(await database.sessions.appendSign(session.id, S.UserSign("three")))
+
     const homeResponse = await request("/api/pages/home")
     assert.equal(homeResponse.status, 200)
     const home = (await homeResponse.json()) as {
@@ -214,24 +218,63 @@ test("windbell router", async (t) => {
       session.id,
     )
 
-    const workspaceResponse = await request(
+    const missingPreviewLimitResponse = await request(
       `/api/pages/workspaces/${pageWorkspace.id}`,
+    )
+    assert.equal(missingPreviewLimitResponse.status, 400)
+
+    const workspaceResponse = await request(
+      `/api/pages/workspaces/${pageWorkspace.id}?previewLimit=2`,
     )
     assert.equal(workspaceResponse.status, 200)
     const workspaceData = (await workspaceResponse.json()) as {
       workspace: { id: string }
-      sessions: Array<{ id: string }>
+      sessionPreviews: Array<{
+        id: string
+        signPreviews: Array<{
+          kind: S.Sign["kind"]
+          truncatedContent: string
+        }>
+      }>
     }
     assert.equal(workspaceData.workspace.id, pageWorkspace.id)
-    assert.equal(workspaceData.sessions[0]?.id, session.id)
+    assert.equal(workspaceData.sessionPreviews[0]?.id, session.id)
+    assert.deepEqual(
+      workspaceData.sessionPreviews[0]?.signPreviews.map((preview) => ({
+        kind: preview.kind,
+        truncatedContent: preview.truncatedContent,
+      })),
+      [
+        { kind: "UserSign", truncatedContent: "two" },
+        { kind: "UserSign", truncatedContent: "three" },
+      ],
+    )
+
+    const patchResponse = await request(`/api/sessions/${session.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ title: "patched-title" }),
+    })
+    assert.equal(patchResponse.status, 200)
 
     const sessionResponse = await request(`/api/pages/sessions/${session.id}`)
     assert.equal(sessionResponse.status, 200)
     const sessionData = (await sessionResponse.json()) as {
-      session: { id: string }
+      session: {
+        id: string
+        title: string
+        context: Array<{ kind: S.Sign["kind"]; content?: string }>
+      }
       workspace: { id: string }
     }
     assert.equal(sessionData.session.id, session.id)
+    assert.equal(sessionData.session.title, "patched-title")
+    assert.deepEqual(
+      sessionData.session.context.map((sign) => sign.content),
+      ["one", "two", "three"],
+    )
     assert.equal(sessionData.workspace.id, pageWorkspace.id)
 
     const createSessionResponse = await request("/api/sessions", {
@@ -297,6 +340,38 @@ test("windbell router", async (t) => {
     assert.equal(turnDetailsResponse.status, 200)
     assert.deepEqual(await turnDetailsResponse.json(), [
       { ...turn, steps: [step] },
+    ])
+
+    const trashResponse = await request("/api/dustbin/sessions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ sessionId: session.id }),
+    })
+    assert.equal(trashResponse.status, 200)
+
+    const missingDustbinPreviewLimitResponse = await request(
+      `/api/pages/session-dustbin?workspaceId=${pageWorkspace.id}`,
+    )
+    assert.equal(missingDustbinPreviewLimitResponse.status, 400)
+
+    const dustbinResponse = await request(
+      `/api/pages/session-dustbin?workspaceId=${pageWorkspace.id}&previewLimit=1`,
+    )
+    assert.equal(dustbinResponse.status, 200)
+    const dustbinData = (await dustbinResponse.json()) as {
+      sessionPreviews: Array<{
+        id: string
+        signPreviews: Array<{
+          kind: S.Sign["kind"]
+          truncatedContent: string
+        }>
+      }>
+    }
+    assert.equal(dustbinData.sessionPreviews[0]?.id, session.id)
+    assert.deepEqual(dustbinData.sessionPreviews[0]?.signPreviews, [
+      { kind: "UserSign", truncatedContent: "three" },
     ])
   }
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue"
-import type * as S from "@windbell/semiosis.ts/core"
+import type { WorkspaceSessionPreview } from "@windbell/windbell-api.ts/client"
 import { computed, ref } from "vue"
 import { useI18n } from "vue-i18n"
 import { useRoute, useRouter } from "vue-router"
@@ -65,7 +65,9 @@ async function createSession(): Promise<void> {
   }
 }
 
-async function handleTrashSession(session: S.Session): Promise<void> {
+async function handleTrashSession(
+  session: WorkspaceSessionPreview,
+): Promise<void> {
   try {
     await trashSession(state, session.id)
   } catch (error) {
@@ -74,7 +76,7 @@ async function handleTrashSession(session: S.Session): Promise<void> {
 }
 
 async function editSessionTitle(
-  session: S.Session,
+  session: WorkspaceSessionPreview,
   title: string,
 ): Promise<void> {
   try {

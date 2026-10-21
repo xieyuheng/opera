@@ -116,6 +116,14 @@ export function makeDomainRouter(options: DomainRouterOptions): Hono {
     })
   })
 
+  app.patch("/sessions/:sessionId", async (c) => {
+    const body = readRecord(await readJsonBody(c))
+    return sessions.patch({
+      sessionId: c.req.param("sessionId"),
+      title: readString(body, "title"),
+    })
+  })
+
   app.delete("/sessions/:sessionId", (c) =>
     sessions.remove({ sessionId: c.req.param("sessionId") }),
   )

@@ -21,8 +21,11 @@ export type PageControllerOptions = {
   loadProviderData: ReturnType<typeof LoadProviderData>
 }
 
+const PreviewLimitSchema = z.coerce.number().int().nonnegative()
+
 export const LoadWorkspaceDataInputSchema = z.object({
   workspaceId: z.string(),
+  previewLimit: PreviewLimitSchema,
 })
 
 export const LoadSessionDataInputSchema = z.object({
@@ -32,9 +35,11 @@ export const LoadSessionDataInputSchema = z.object({
 export const LoadSessionDustbinDataInputSchema = z
   .object({
     workspaceId: z.string().optional(),
+    previewLimit: PreviewLimitSchema,
   })
   .transform((input) => ({
     workspaceId: input.workspaceId,
+    previewLimit: input.previewLimit,
   }))
 
 export const LoadProviderDataInputSchema = z.object({

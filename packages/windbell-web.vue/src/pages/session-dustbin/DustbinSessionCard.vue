@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type * as S from "@windbell/semiosis.ts/core"
-import { computed } from "vue"
+import type { DustbinSessionPreview } from "@windbell/windbell-api.ts/client"
 import { useI18n } from "vue-i18n"
 
 import SmallButton from "../../components/buttons/SmallButton.vue"
@@ -8,19 +7,11 @@ import Card from "../../components/card/Card.vue"
 import SignLine from "../../components/sign/SignLine.vue"
 import { formatDateTime } from "../../utils/datetime/index.ts"
 import { sessionDustbinMessages } from "./SessionDustbin.i18n.ts"
-import type { SessionDustbinListItem } from "./SessionDustbinState.ts"
 
-const props = withDefaults(
-  defineProps<{
-    session: SessionDustbinListItem
-    busy?: boolean
-    previewLimit?: number
-  }>(),
-  {
-    busy: false,
-    previewLimit: 5,
-  },
-)
+const props = defineProps<{
+  session: DustbinSessionPreview
+  busy?: boolean
+}>()
 
 const emit = defineEmits<{
   restore: []
@@ -30,13 +21,6 @@ const emit = defineEmits<{
 const { t } = useI18n({
   messages: sessionDustbinMessages,
   useScope: "local",
-})
-
-const previewSigns = computed(() => {
-  const signs = props.session.context
-  const limit = Math.max(0, props.previewLimit)
-
-  return signs.slice(Math.max(0, signs.length - limit))
 })
 
 function requestRemove(): void {
@@ -65,11 +49,11 @@ function requestRemove(): void {
         </SmallButton>
       </div>
 
-      <ol v-if="previewSigns.length > 0" class="flex flex-col gap-1">
+      <ol v-if="session.signPreviews.length > 0" class="flex flex-col gap-1">
         <SignLine
-          v-for="(sign, index) in previewSigns"
+          v-for="(signPreview, index) in session.signPreviews"
           :key="index"
-          :sign="sign"
+          :sign-preview="signPreview"
         />
       </ol>
     </div>

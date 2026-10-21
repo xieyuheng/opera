@@ -31,6 +31,10 @@ export type SessionService = {
     title: string
   }): Promise<Result<Session, ServiceError>>
   get(id: SessionId): Promise<Result<Session | undefined, ServiceError>>
+  patch(options: {
+    sessionId: SessionId
+    title: string
+  }): Promise<Result<void, ServiceError>>
   getUsage(options: {
     sessionId: SessionId
   }): Promise<Result<SessionUsage, ServiceError>>
@@ -217,6 +221,17 @@ export function makeSessionService(
         return err(makeServiceErrorFromDatabaseError(result.error))
       }
       return ok(result.value)
+    },
+
+    async patch(patchOptions) {
+      const result = await database.sessions.updateTitle(
+        patchOptions.sessionId,
+        patchOptions.title,
+      )
+      if (isError(result)) {
+        return err(makeServiceErrorFromDatabaseError(result.error))
+      }
+      return ok(undefined)
     },
 
     async getUsage(usageOptions) {
