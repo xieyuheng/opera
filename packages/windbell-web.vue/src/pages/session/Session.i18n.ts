@@ -30,6 +30,8 @@ export const sessionMessages = {
     tokensUnit: "词元",
     openRanger: "巡察",
     closeRanger: "巡闭",
+    openMenu: "打开菜单",
+    closeMenu: "关闭菜单",
   },
   "en-US": {
     description: "An interpretation process made of signs.",
@@ -62,5 +64,7 @@ export const sessionMessages = {
     tokensUnit: "tok",
     openRanger: "Ranger",
     closeRanger: "Return",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
   },
 }

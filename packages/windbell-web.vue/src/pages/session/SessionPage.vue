@@ -281,20 +281,22 @@ useHead(() => ({
       <div
         class="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden sm:mr-1"
       >
-        <div class="pointer-events-none absolute inset-x-0 top-1 z-50 sm:top-2">
-          <div
-            class="flex flex-wrap items-start justify-between gap-2 px-1 sm:px-2"
-          >
-            <SessionToolbarLeft :state="state" @select-turn="selectTurn" />
+        <div class="pointer-events-none absolute inset-x-0 top-0 z-50">
+          <div class="flex flex-wrap items-start justify-between gap-2">
+            <div class="mt-1 px-1 sm:mt-2 sm:px-2">
+              <SessionToolbarLeft :state="state" @select-turn="selectTurn" />
+            </div>
 
-            <SessionToolbarRight
-              class="shrink-0"
-              :ranger-open="rangerOpen"
-              :next-sign-display-mode="nextDisplayMode"
-              @back="goBack"
-              @toggle-ranger="rangerOpen = !rangerOpen"
-              @cycle-sign-display-mode="cycleSignDisplayMode"
-            />
+            <div class="mt-0.5 pr-2 sm:mt-2 sm:px-2">
+              <SessionToolbarRight
+                class="shrink-0"
+                :ranger-open="rangerOpen"
+                :next-sign-display-mode="nextDisplayMode"
+                @back="goBack"
+                @toggle-ranger="rangerOpen = !rangerOpen"
+                @cycle-sign-display-mode="cycleSignDisplayMode"
+              />
+            </div>
           </div>
         </div>
 

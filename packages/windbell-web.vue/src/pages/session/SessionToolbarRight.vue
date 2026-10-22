@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed } from "vue"
+import { Menu, X } from "@lucide/vue"
+import { computed, ref } from "vue"
 import { useI18n } from "vue-i18n"
 
 import MediumButton from "../../components/buttons/MediumButton.vue"
@@ -22,6 +23,8 @@ const { t } = useI18n({
   useScope: "local",
 })
 
+const mobileMenuOpen = ref(false)
+
 const nextSignDisplayLabel = computed(() => {
   switch (props.nextSignDisplayMode) {
     case "expand":
@@ -35,33 +38,52 @@ const nextSignDisplayLabel = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-2 sm:flex-row">
-    <div class="flex hidden items-center sm:block">
-      <MediumButton type="button" @click="emit('back')">
-        <span>{{ t("app.back") }}</span>
-      </MediumButton>
-    </div>
-
-    <MediumButton
+  <div class="relative flex flex-col items-end gap-2">
+    <button
       type="button"
-      :title="nextSignDisplayLabel"
-      @click="emit('cycleSignDisplayMode')"
+      class="text-sign-user pointer-events-auto inline-flex cursor-pointer items-center justify-center border-0 bg-transparent p-0 sm:hidden"
+      :title="mobileMenuOpen ? t('closeMenu') : t('openMenu')"
+      :aria-label="mobileMenuOpen ? t('closeMenu') : t('openMenu')"
+      :aria-expanded="mobileMenuOpen"
+      aria-controls="session-toolbar-right-menu"
+      @click="mobileMenuOpen = !mobileMenuOpen"
     >
-      <span>{{ nextSignDisplayLabel }}</span>
-    </MediumButton>
+      <X v-if="mobileMenuOpen" class="size-7" aria-hidden="true" />
+      <Menu v-else class="size-7" aria-hidden="true" />
+    </button>
 
-    <div class="flex items-center">
+    <div
+      id="session-toolbar-right-menu"
+      class="absolute top-full right-0 z-50 mt-2 w-max flex-col gap-2 sm:static sm:mt-0 sm:flex sm:w-auto sm:flex-row"
+      :class="mobileMenuOpen ? 'flex' : 'hidden'"
+    >
+      <div class="flex items-center">
+        <MediumButton type="button" @click="emit('back')">
+          <span>{{ t("app.back") }}</span>
+        </MediumButton>
+      </div>
+
       <MediumButton
         type="button"
-        :active="props.rangerOpen"
-        :aria-pressed="props.rangerOpen"
-        :title="props.rangerOpen ? t('closeRanger') : t('openRanger')"
-        @click="emit('toggleRanger')"
+        :title="nextSignDisplayLabel"
+        @click="emit('cycleSignDisplayMode')"
       >
-        <span>
-          {{ props.rangerOpen ? t("closeRanger") : t("openRanger") }}
-        </span>
+        <span>{{ nextSignDisplayLabel }}</span>
       </MediumButton>
+
+      <div class="flex items-center">
+        <MediumButton
+          type="button"
+          :active="props.rangerOpen"
+          :aria-pressed="props.rangerOpen"
+          :title="props.rangerOpen ? t('closeRanger') : t('openRanger')"
+          @click="emit('toggleRanger')"
+        >
+          <span>
+            {{ props.rangerOpen ? t("closeRanger") : t("openRanger") }}
+          </span>
+        </MediumButton>
+      </div>
     </div>
   </div>
 </template>

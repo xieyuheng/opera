@@ -1,6 +1,3 @@
-# 移动端
-[windbell-web.vue] 改善 ranger 移动端布局
-[windbell-web.vue] session-page 改善移动端 hud 显示
 # 文档
 [windbell-docs.vitepress] 改善文档
 [docs] 已经实现了 museum.vue 否还需要使用 vitepress？
