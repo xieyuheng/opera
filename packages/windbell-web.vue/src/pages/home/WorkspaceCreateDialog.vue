@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FileSystemEntry } from "@windbell/fs.ts/fs"
 import { unwrap } from "@windbell/std.ts/result"
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"
+import { computed, onBeforeUnmount, onMounted, ref } from "vue"
 import { useI18n } from "vue-i18n"
 
 import { windbellFs as fs } from "../../app/fs.ts"
@@ -25,70 +25,41 @@ const { t } = useI18n({
 
 const currentDirectory = ref("")
 const entries = ref<Array<FileSystemEntry>>([])
-const selectedIndex = ref(-1)
-const list = ref<HTMLUListElement | null>(null)
-const previewEntries = ref<Array<FileSystemEntry>>([])
 const loading = ref(false)
 const loadError = ref<string | undefined>(undefined)
-const previewLoading = ref(false)
-const previewError = ref<string | undefined>(undefined)
-const name = ref("")
 
-let previewRequestId = 0
+let loadRequestId = 0
 
-const selectedEntry = computed(() => entries.value[selectedIndex.value])
+const currentName = computed(() => pathName(currentDirectory.value))
+const canGoParent = computed(() => {
+  if (currentDirectory.value === "") return false
+
+  return parentDirectory(currentDirectory.value) !== currentDirectory.value
+})
 const canCreate = computed(
-  () =>
-    selectedEntry.value !== undefined &&
-    name.value.trim() !== "" &&
-    !props.creating,
+  () => currentDirectory.value !== "" && !props.creating,
 )
 
 async function loadDirectory(path: string): Promise<void> {
+  const requestId = ++loadRequestId
+
   loading.value = true
   loadError.value = undefined
 
   try {
     const nextEntries = unwrap(await fs.listEntries(path))
-    const directories = directoryEntries(nextEntries)
+
+    if (requestId !== loadRequestId) return
 
     currentDirectory.value = path
-    entries.value = directories
-    selectedIndex.value = directories.length === 0 ? -1 : 0
+    entries.value = directoryEntries(nextEntries)
   } catch (error) {
+    if (requestId !== loadRequestId) return
+
     loadError.value = error instanceof Error ? error.message : String(error)
   } finally {
-    loading.value = false
-  }
-}
-
-async function loadPreview(): Promise<void> {
-  const entry = selectedEntry.value
-  const requestId = ++previewRequestId
-
-  previewEntries.value = []
-  previewError.value = undefined
-
-  if (entry === undefined || entry.kind !== "Directory") {
-    previewLoading.value = false
-    return
-  }
-
-  previewLoading.value = true
-
-  try {
-    const nextEntries = unwrap(await fs.listEntries(entry.path))
-
-    if (requestId !== previewRequestId) return
-
-    previewEntries.value = directoryEntries(nextEntries)
-  } catch (error) {
-    if (requestId !== previewRequestId) return
-
-    previewError.value = error instanceof Error ? error.message : String(error)
-  } finally {
-    if (requestId === previewRequestId) {
-      previewLoading.value = false
+    if (requestId === loadRequestId) {
+      loading.value = false
     }
   }
 }
@@ -108,46 +79,13 @@ async function enterEntry(entry: FileSystemEntry): Promise<void> {
   await loadDirectory(entry.path)
 }
 
-async function enterSelectedEntry(): Promise<void> {
-  const entry = selectedEntry.value
-  if (entry === undefined) return
-
-  await enterEntry(entry)
-}
-
-function selectEntry(index: number): void {
-  if (index < 0 || index >= entries.value.length) return
-
-  selectedIndex.value = index
-}
-
-function moveSelection(delta: number): void {
-  if (entries.value.length === 0) return
-
-  const index = selectedIndex.value + delta
-  if (index < 0 || index >= entries.value.length) return
-
-  selectEntry(index)
-}
-
 function submit(): void {
-  const entry = selectedEntry.value
-  if (!canCreate.value || entry === undefined) return
+  if (!canCreate.value) return
 
   emit("create", {
-    name: name.value.trim(),
-    root: entry.path,
+    name: currentName.value,
+    root: currentDirectory.value,
   })
-}
-
-function isTextInput(target: EventTarget | null): boolean {
-  if (!(target instanceof HTMLElement)) return false
-
-  return (
-    target instanceof HTMLInputElement ||
-    target instanceof HTMLTextAreaElement ||
-    target.isContentEditable
-  )
 }
 
 async function handleKeydown(event: KeyboardEvent): Promise<void> {
@@ -156,62 +94,15 @@ async function handleKeydown(event: KeyboardEvent): Promise<void> {
     return
   }
 
-  if (isTextInput(event.target)) return
-
-  switch (event.key) {
-    case "ArrowUp": {
-      event.preventDefault()
-      moveSelection(-1)
-      return
-    }
-
-    case "ArrowDown": {
-      event.preventDefault()
-      moveSelection(1)
-      return
-    }
-
-    case "ArrowLeft": {
-      event.preventDefault()
-      await goParent()
-      return
-    }
-
-    case "ArrowRight": {
-      const entry = selectedEntry.value
-      if (entry?.kind !== "Directory") return
-
-      event.preventDefault()
-      await enterEntry(entry)
-      return
-    }
-
-    case "Enter": {
-      event.preventDefault()
-      submit()
-      return
-    }
+  if (event.key === "ArrowLeft") {
+    event.preventDefault()
+    await goParent()
   }
 }
 
 function onKeydown(event: KeyboardEvent): void {
   void handleKeydown(event)
 }
-
-watch(selectedEntry, () => {
-  name.value = selectedEntry.value?.name ?? ""
-  void loadPreview()
-})
-
-watch(selectedIndex, async (index) => {
-  await nextTick()
-
-  const item = list.value?.children[index] as HTMLElement | undefined
-  const button = item?.querySelector<HTMLButtonElement>("button")
-
-  button?.focus({ preventScroll: true })
-  item?.scrollIntoView({ block: "nearest" })
-})
 
 onMounted(async () => {
   window.addEventListener("keydown", onKeydown)
@@ -244,6 +135,13 @@ function directoryEntries(
     })
 }
 
+function pathName(value: string): string {
+  const trimmed = value.replace(/[/\\]+$/, "")
+  const index = Math.max(trimmed.lastIndexOf("/"), trimmed.lastIndexOf("\\"))
+
+  return (index === -1 ? trimmed : trimmed.slice(index + 1)) || "/"
+}
+
 function normalizePath(path: string): string {
   if (path === "/") return path
 
@@ -273,7 +171,7 @@ function parentDirectory(path: string): string {
     @click.self="!props.creating && emit('close')"
   >
     <form
-      class="border-line bg-paper text-ink flex max-h-[80vh] w-full max-w-3xl flex-col overflow-hidden rounded-lg border-x-3 border-b-3"
+      class="border-line bg-paper text-ink flex h-[calc(100dvh-2rem)] max-h-[40rem] w-full max-w-3xl flex-col overflow-hidden rounded-lg border-x-3 border-b-3"
       @submit.prevent="submit"
     >
       <header class="bg-line shrink-0 px-3 py-2">
@@ -281,17 +179,39 @@ function parentDirectory(path: string): string {
           <h2 class="text-base font-semibold">
             {{ t("createWorkspace") }}
           </h2>
-          <p class="text-ink mt-1 text-xs">
-            {{ t("createWorkspaceHint") }}
-          </p>
         </div>
       </header>
 
-      <div class="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden p-4">
-        <div
-          class="border-line grid h-64 shrink-0 grid-cols-2 overflow-hidden rounded border"
-        >
-          <div class="h-full overflow-y-auto">
+      <div class="thin-scrollbar min-h-0 flex-1 overflow-y-auto p-4">
+        <div class="flex flex-col gap-3">
+          <label class="flex flex-col gap-1 text-sm">
+            <span class="text-ink">{{ t("root") }}</span>
+            <input
+              :value="currentDirectory"
+              class="border-line text-ink w-full rounded border bg-transparent px-2 py-1.5 font-mono outline-none"
+              type="text"
+              readonly
+            />
+          </label>
+
+          <div class="border-line overflow-hidden rounded border">
+            <header class="border-line flex h-10 items-center border-b">
+              <button
+                type="button"
+                class="text-ink flex h-full min-w-0 flex-1 items-center px-3 text-left transition-colors"
+                :class="
+                  canGoParent
+                    ? 'hover:bg-line cursor-pointer'
+                    : 'cursor-default'
+                "
+                :disabled="!canGoParent"
+                :title="canGoParent ? t('goParent') : currentName"
+                @click="goParent"
+              >
+                <span class="truncate">{{ currentName }}</span>
+              </button>
+            </header>
+
             <p v-if="loading" class="text-ink px-3 py-2">
               {{ t("loading") }}
             </p>
@@ -307,18 +227,12 @@ function parentDirectory(path: string): string {
               {{ t("emptyDirectory") }}
             </p>
 
-            <ul v-else ref="list" class="flex flex-col">
-              <li v-for="(entry, index) in entries" :key="entry.path">
+            <ul v-else class="flex flex-col">
+              <li v-for="entry in entries" :key="entry.path">
                 <button
-                  class="flex w-full items-center gap-2 px-3 py-2 text-left transition-colors outline-none"
-                  :class="
-                    index === selectedIndex
-                      ? 'bg-ink/15 text-ink'
-                      : 'hover:bg-line'
-                  "
+                  class="text-ink hover:bg-line flex w-full items-center gap-2 px-3 py-2 text-left transition-colors outline-none"
                   type="button"
-                  @click="selectEntry(index)"
-                  @dblclick="enterEntry(entry)"
+                  @click="enterEntry(entry)"
                 >
                   <span class="truncate">{{ entry.name }}/</span>
                 </button>
@@ -326,79 +240,27 @@ function parentDirectory(path: string): string {
             </ul>
           </div>
 
-          <div class="border-line h-full overflow-y-auto border-l">
-            <p v-if="selectedEntry === undefined" class="text-ink px-3 py-2">
-              {{ t("noSelection") }}
-            </p>
-
-            <p v-else-if="previewLoading" class="text-ink px-3 py-2">
-              {{ t("loading") }}
-            </p>
-
-            <p
-              v-else-if="previewError !== undefined"
-              class="text-sign-error px-3 py-2"
-            >
-              {{ previewError }}
-            </p>
-
-            <p
-              v-else-if="previewEntries.length === 0"
-              class="text-ink px-3 py-2"
-            >
-              {{ t("emptyDirectory") }}
-            </p>
-
-            <ul v-else class="flex flex-col">
-              <li v-for="entry in previewEntries" :key="entry.path">
-                <div class="flex items-center gap-2 px-3 py-2">
-                  <span class="truncate">{{ entry.name }}/</span>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <label class="flex flex-col gap-1 text-sm">
-            <span class="text-ink">{{ t("root") }}</span>
-            <input
-              :value="selectedEntry?.path ?? ''"
-              class="border-line text-ink w-full rounded border bg-transparent px-2 py-1.5 font-mono outline-none"
-              type="text"
-              readonly
-            />
-          </label>
-
-          <label class="flex flex-col gap-1 text-sm">
-            <span class="text-ink">{{ t("nameEditable") }}</span>
-            <input
-              v-model="name"
-              class="border-line text-ink placeholder:text-ink w-full rounded border bg-transparent px-2 py-1.5 outline-none disabled:opacity-50"
-              type="text"
-              :disabled="selectedEntry === undefined"
-            />
-          </label>
-        </div>
-
-        <p v-if="props.error !== undefined" class="text-sign-error text-sm">
-          {{ props.error }}
-        </p>
-
-        <div class="flex flex-wrap items-center gap-2">
-          <MediumButton
-            type="button"
-            :disabled="props.creating"
-            @click="emit('close')"
-          >
-            {{ t("cancel") }}
-          </MediumButton>
-
-          <MediumButton type="submit" :disabled="!canCreate">
-            {{ props.creating ? t("creating") : t("create") }}
-          </MediumButton>
+          <p v-if="props.error !== undefined" class="text-sign-error text-sm">
+            {{ props.error }}
+          </p>
         </div>
       </div>
+
+      <footer
+        class="border-line flex shrink-0 flex-wrap items-center gap-2 border-t p-4"
+      >
+        <MediumButton
+          type="button"
+          :disabled="props.creating"
+          @click="emit('close')"
+        >
+          {{ t("cancel") }}
+        </MediumButton>
+
+        <MediumButton type="submit" :disabled="!canCreate">
+          {{ props.creating ? t("creating") : t("create") }}
+        </MediumButton>
+      </footer>
     </form>
   </div>
 </template>

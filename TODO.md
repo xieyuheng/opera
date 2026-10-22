@@ -1,3 +1,11 @@
+[windbell-web.vue] session-page 修复轮次列表滚动条位置
+[windbell-web.vue] home-page 「创建工作区」改为使用原生 popover api 和 card 组件
+[docs] 已经实现了 museum.vue 否还需要使用 vitepress？
+[opera] 把 museum.vue 合并到 windbell，
+[opera] 把 windbell repo 改名为 opera，
+- opera programmatica 编程作品集。
+[windbell-web.vue] 改善 ranger 移动端布局
+[windbell-web.vue] ranger 支持语法高亮
 [windbell-docs.vitepress] 改善文档
 [windbell-web.vue] 利用调色板设计 theme
 [semantic.ts] 文学式编程 agent interpret 和 agent loop
@@ -8,21 +16,3 @@
 - 最重要的是支持手机上使用
 - git diff 甚至不支持中文文件名
 - 可能需要 git diff 的 parser
-
-既然我已经快速实现了 museum.vue，
-应该考虑是否还需要使用 vitepress。
-
-把 museum.vue 合并到 windbell，
-把 windbell repo 改名为 opera，
-opera programmatica 编程作品集。
-
-[windbell-web.vue] WorkspaceCreateDialog 在手机上依然固定两栏
-
-- WorkspaceCreateDialog.vue:292 是 grid-cols-2，
-  窄屏下目录列表和预览各占一半，名字很容易被截断；
-  同时 max-h-[80vh] 加内部固定 h-64，
-  小屏或键盘弹出时操作区可能被挤掉。建议：
-
-  * 移动端改成单列或分步选择。
-  * 使用 max-h-[calc(100dvh-2rem)]，让内容区可滚动。
-  * 目录条目单击进入，不要依赖 @dblclick。
