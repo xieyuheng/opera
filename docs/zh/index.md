@@ -10,7 +10,7 @@ hero:
       link: /zh/diary/
     - theme: alt
       text: GitHub
-      link: https://github.com/xieyuheng/windbell
+      link: https://github.com/xieyuheng/opera
       target: _blank
       rel: noreferrer
 ---

@@ -7,7 +7,7 @@ hero:
   actions:
     - theme: brand
       text: GitHub
-      link: https://github.com/xieyuheng/windbell
+      link: https://github.com/xieyuheng/opera
       target: _blank
       rel: noreferrer
 ---
