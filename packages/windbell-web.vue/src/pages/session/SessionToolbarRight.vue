@@ -35,7 +35,7 @@ const nextSignDisplayLabel = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-row gap-2">
+  <div class="flex flex-col gap-2 sm:flex-row">
     <div class="flex hidden items-center sm:block">
       <MediumButton type="button" @click="emit('back')">
         <span>{{ t("app.back") }}</span>
@@ -50,7 +50,7 @@ const nextSignDisplayLabel = computed(() => {
       <span>{{ nextSignDisplayLabel }}</span>
     </MediumButton>
 
-    <div class="flex hidden items-center sm:block">
+    <div class="flex items-center">
       <MediumButton
         type="button"
         :active="props.rangerOpen"

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from "vue"
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
 
+import { useMediaQuery } from "../../utils/dom/useMediaQuery.ts"
 import { makeDividerState } from "../divider/DividerState.ts"
 import ResizeDivider from "../divider/ResizeDivider.vue"
 import { rangerMessages } from "./Ranger.i18n.ts"
@@ -22,18 +23,27 @@ const props = defineProps<{
   locationStorageKey: string
 }>()
 
+const emit = defineEmits<{
+  close: []
+}>()
+
 const { t } = useI18n({
   messages: rangerMessages,
   useScope: "local",
 })
 
 const state = makeRangerState(props.root, props.locationStorageKey)
+const isMobile = useMediaQuery("(max-width: 639px)")
+const mobileSidebarOpen = ref(true)
 const sidebarDivider = makeDividerState({
   defaultRatio: 0.25,
   minRatio: 0.15,
   maxRatio: 0.5,
   storageKey: "windbell.ranger.sidebarRatio",
 })
+const sidebarStyle = computed(() =>
+  isMobile.value ? undefined : { width: `${sidebarDivider.ratio * 100}%` },
+)
 const panel = ref<HTMLElement | null>(null)
 
 let stopWatch: (() => void) | undefined
@@ -63,7 +73,7 @@ async function handleSelect(index: number): Promise<void> {
   state.focus = "sidebar"
   selectEntry(state, index)
 
-  if (wasSelected && entry.kind === "Directory") {
+  if (entry.kind === "Directory" && (isMobile.value || wasSelected)) {
     await openSelectedEntry(state)
   }
 }
@@ -150,28 +160,33 @@ onBeforeUnmount(() => {
 <template>
   <main
     ref="panel"
-    class="flex h-dvh w-full overflow-hidden outline-none"
+    class="flex h-dvh w-full flex-col overflow-hidden outline-none sm:flex-row"
     tabindex="0"
     @pointerdown="focusPanel"
     @keydown="onKeydown"
   >
     <RangerSidebar
-      class="shrink-0"
-      :style="{ width: `${sidebarDivider.ratio * 100}%` }"
+      class="order-2 w-full shrink-0 sm:order-1 sm:w-auto"
+      :class="isMobile ? (mobileSidebarOpen ? 'h-[45dvh]' : 'h-10') : 'h-full'"
+      :style="sidebarStyle"
       :root="state.root"
       :current-directory="state.currentDirectory"
       :entries="state.entries"
       :selected-index="state.selectedIndex"
       :focus="state.focus"
+      :mobile="isMobile"
+      :expanded="mobileSidebarOpen"
       @select="handleSelect($event)"
       @go-parent="handleGoParent"
+      @toggle="mobileSidebarOpen = !mobileSidebarOpen"
+      @close="emit('close')"
     />
 
-    <ResizeDivider :state="sidebarDivider" />
+    <ResizeDivider class="order-2 hidden sm:flex" :state="sidebarDivider" />
 
     <section
       v-if="state.isLoading"
-      class="flex min-w-0 flex-1 items-start px-4 py-3"
+      class="order-1 flex min-h-0 min-w-0 flex-1 items-start px-4 py-3 sm:order-3"
     >
       <p class="text-ink">
         {{ t("loading") }}
@@ -180,14 +195,17 @@ onBeforeUnmount(() => {
 
     <section
       v-else-if="state.error !== undefined && !state.hasLoaded"
-      class="flex min-w-0 flex-1 items-start px-4 py-3"
+      class="order-1 flex min-h-0 min-w-0 flex-1 items-start px-4 py-3 sm:order-3"
     >
       <p class="text-sign-error">
         {{ state.error }}
       </p>
     </section>
 
-    <section v-else class="flex min-w-0 flex-1 flex-col">
+    <section
+      v-else
+      class="order-1 flex min-h-0 min-w-0 flex-1 flex-col sm:order-3"
+    >
       <p v-if="state.error !== undefined" class="text-sign-error px-4 py-3">
         {{ state.error }}
       </p>

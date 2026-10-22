@@ -275,6 +275,7 @@ useHead(() => ({
   <main class="flex h-dvh w-full overflow-hidden">
     <section
       class="relative flex min-h-0 min-w-0 shrink-0 flex-row overflow-hidden"
+      :class="{ 'max-sm:hidden': rangerPaneVisible }"
       :style="{ width: sessionPaneWidth }"
     >
       <div
@@ -350,12 +351,20 @@ useHead(() => ({
       </div>
     </section>
 
-    <ResizeDivider v-if="rangerPaneVisible" :state="sessionDivider" />
+    <ResizeDivider
+      v-if="rangerPaneVisible"
+      class="hidden sm:flex"
+      :state="sessionDivider"
+    />
 
-    <div v-if="rangerPaneVisible" class="h-dvh min-w-0 flex-1 overflow-hidden">
+    <div
+      v-if="rangerPaneVisible"
+      class="bg-paper fixed inset-0 z-40 h-dvh min-w-0 overflow-hidden sm:static sm:z-auto sm:flex-1"
+    >
       <Ranger
         :root="state.workspaceRoot"
         :location-storage-key="locationStorageKey"
+        @close="rangerOpen = false"
       />
     </div>
   </main>
