@@ -1,6 +1,6 @@
 import process from "node:process"
 
-import { ok } from "@windbell/std.ts/result"
+import { ok } from "@xieyuheng/std.ts/result"
 
 import { runChildProcess } from "../child-process/runChildProcess.ts"
 import { toShellError } from "../child-process/toShellError.ts"

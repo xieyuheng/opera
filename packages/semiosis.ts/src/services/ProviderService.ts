@@ -1,4 +1,4 @@
-import { err, isError, ok, type Result } from "@windbell/std.ts/result"
+import { err, isError, ok, type Result } from "@xieyuheng/std.ts/result"
 
 import { deleteApiKey, hasApiKey, writeApiKey } from "../database/apiKey.ts"
 import type { Database } from "../database/Database.ts"

@@ -1,10 +1,10 @@
 import process from "node:process"
 import { fileURLToPath } from "node:url"
 
-import * as Cli from "@windbell/cli.ts"
-import { makeLocalFileSystem } from "@windbell/fs.ts/local-fs"
-import { getPackageJson } from "@windbell/std.ts/node"
-import { makePath } from "@windbell/std.ts/path"
+import * as Cli from "@xieyuheng/cli.ts"
+import { makeLocalFileSystem } from "@xieyuheng/fs.ts/local-fs"
+import { getPackageJson } from "@xieyuheng/std.ts/node"
+import { makePath } from "@xieyuheng/std.ts/path"
 
 import { resolveAppPaths, defaultAppRoot } from "../app/defaultAppRoot.ts"
 import { makeDatabase } from "../database/index.ts"

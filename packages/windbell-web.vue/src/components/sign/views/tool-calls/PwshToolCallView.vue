@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import * as S from "@windbell/semiosis.ts/core"
+import * as S from "@xieyuheng/semiosis.ts/core"
 import { Ajv } from "ajv"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"

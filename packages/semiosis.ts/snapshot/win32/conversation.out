@@ -87,7 +87,7 @@ pwsh
 
 #!/usr/bin/env -S node
 
-import { errorReport } from "@windbell/std.ts/error"
+import { errorReport } from "@xieyuheng/std.ts/error"
 import process from "node:process"
 import { makeCli } from "./cli/makeCli.ts"
 

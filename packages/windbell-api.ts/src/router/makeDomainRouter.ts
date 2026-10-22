@@ -1,4 +1,4 @@
-import type * as S from "@windbell/semiosis.ts"
+import type * as S from "@xieyuheng/semiosis.ts"
 import { Hono } from "hono"
 import { stream } from "hono/streaming"
 

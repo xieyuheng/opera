@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { FileSystemEntry } from "@windbell/fs.ts/fs"
-import { unwrap } from "@windbell/std.ts/result"
+import type { FileSystemEntry } from "@xieyuheng/fs.ts/fs"
+import { unwrap } from "@xieyuheng/std.ts/result"
 import { computed, ref } from "vue"
 import { useI18n } from "vue-i18n"
 

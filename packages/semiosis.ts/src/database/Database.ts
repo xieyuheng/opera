@@ -1,6 +1,6 @@
-import type { FileSystem } from "@windbell/fs.ts/fs"
-import type { Path } from "@windbell/std.ts/path"
-import { unwrap } from "@windbell/std.ts/result"
+import type { FileSystem } from "@xieyuheng/fs.ts/fs"
+import type { Path } from "@xieyuheng/std.ts/path"
+import { unwrap } from "@xieyuheng/std.ts/result"
 
 import {
   makeDustbinSessionStore,

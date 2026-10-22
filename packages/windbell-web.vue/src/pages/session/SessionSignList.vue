@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { makeSignPreview } from "@windbell/semiosis.ts/core"
-import type * as S from "@windbell/semiosis.ts/core"
+import { makeSignPreview } from "@xieyuheng/semiosis.ts/core"
+import type * as S from "@xieyuheng/semiosis.ts/core"
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
 

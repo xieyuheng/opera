@@ -1,4 +1,4 @@
-import type { Result } from "@windbell/std.ts/result"
+import type { Result } from "@xieyuheng/std.ts/result"
 
 import type { LockError } from "./LockError.ts"
 

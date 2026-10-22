@@ -1,4 +1,4 @@
-import { makeJsonEndpoint, requestServerSentEvents } from "@windbell/http.ts"
+import { makeJsonEndpoint, requestServerSentEvents } from "@xieyuheng/http.ts"
 
 import type { ChatCompletionInput } from "./ChatCompletionInput.ts"
 import {

@@ -11,7 +11,7 @@ importers:
 
   packages/cli.ts:
     dependencies:
-      '@windbell/std.ts':
+      '@xieyuheng/std.ts':
         specifier: workspace:*
         version: link:../std.ts
     devDependencies:
@@ -32,13 +32,13 @@ importers:
       '@hono/node-server':
         specifier: 2.1.5
         version: 2.1.5(hono@4.13.13)
-      '@windbell/fs.ts':
+      '@xieyuheng/fs.ts':
         specifier: workspace:*
         version: link:../fs.ts
-      '@windbell/http.ts':
+      '@xieyuheng/http.ts':
         specifier: workspace:*
         version: link:../http.ts
-      '@windbell/std.ts':
+      '@xieyuheng/std.ts':
         specifier: workspace:*
         version: link:../std.ts
       hono:
@@ -60,7 +60,7 @@ importers:
 
   packages/fs.ts:
     dependencies:
-      '@windbell/std.ts':
+      '@xieyuheng/std.ts':
         specifier: workspace:*
         version: link:../std.ts
     devDependencies:
@@ -92,10 +92,10 @@ importers:
 
   packages/lock.ts:
     dependencies:
-      '@windbell/fs.ts':
+      '@xieyuheng/fs.ts':
         specifier: workspace:*
         version: link:../fs.ts
-      '@windbell/std.ts':
+      '@xieyuheng/std.ts':
         specifier: workspace:*
         version: link:../std.ts
     devDependencies:
@@ -169,22 +169,22 @@ importers:
 
   packages/semiosis.ts:
     dependencies:
-      '@windbell/cli.ts':
+      '@xieyuheng/cli.ts':
         specifier: workspace:*
         version: link:../cli.ts
-      '@windbell/fs.ts':
+      '@xieyuheng/fs.ts':
         specifier: workspace:*
         version: link:../fs.ts
-      '@windbell/http.ts':
+      '@xieyuheng/http.ts':
         specifier: workspace:*
         version: link:../http.ts
-      '@windbell/lock.ts':
+      '@xieyuheng/lock.ts':
         specifier: workspace:*
         version: link:../lock.ts
-      '@windbell/sh.ts':
+      '@xieyuheng/sh.ts':
         specifier: workspace:*
         version: link:../sh.ts
-      '@windbell/std.ts':
+      '@xieyuheng/std.ts':
         specifier: workspace:*
         version: link:../std.ts
       ajv:
@@ -206,7 +206,7 @@ importers:
 
   packages/sh.ts:
     dependencies:
-      '@windbell/std.ts':
+      '@xieyuheng/std.ts':
         specifier: workspace:*
         version: link:../std.ts
     devDependencies:
@@ -237,22 +237,22 @@ importers:
       '@hono/node-server':
         specifier: 2.1.5
         version: 2.1.5(hono@4.13.13)
-      '@windbell/fs-api.ts':
+      '@xieyuheng/fs-api.ts':
         specifier: workspace:*
         version: link:../fs-api.ts
-      '@windbell/fs.ts':
+      '@xieyuheng/fs.ts':
         specifier: workspace:*
         version: link:../fs.ts
-      '@windbell/http.ts':
+      '@xieyuheng/http.ts':
         specifier: workspace:*
         version: link:../http.ts
-      '@windbell/semiosis.ts':
+      '@xieyuheng/semiosis.ts':
         specifier: workspace:*
         version: link:../semiosis.ts
-      '@windbell/sh.ts':
+      '@xieyuheng/sh.ts':
         specifier: workspace:*
         version: link:../sh.ts
-      '@windbell/std.ts':
+      '@xieyuheng/std.ts':
         specifier: workspace:*
         version: link:../std.ts
       hono:
@@ -277,19 +277,19 @@ importers:
       '@hono/node-server':
         specifier: 2.1.5
         version: 2.1.5(hono@4.13.13)
-      '@windbell/cli.ts':
+      '@xieyuheng/cli.ts':
         specifier: workspace:*
         version: link:../cli.ts
-      '@windbell/fs.ts':
+      '@xieyuheng/fs.ts':
         specifier: workspace:*
         version: link:../fs.ts
-      '@windbell/semiosis.ts':
+      '@xieyuheng/semiosis.ts':
         specifier: workspace:*
         version: link:../semiosis.ts
-      '@windbell/std.ts':
+      '@xieyuheng/std.ts':
         specifier: workspace:*
         version: link:../std.ts
-      '@windbell/windbell-api.ts':
+      '@xieyuheng/windbell-api.ts':
         specifier: workspace:*
         version: link:../windbell-api.ts
       vite:
@@ -335,28 +335,28 @@ importers:
       '@unhead/vue':
         specifier: 3.4.3
         version: 3.4.3(@oxc-project/types@0.154.0)(esbuild@0.28.2)(lightningcss@1.33.0)(rolldown@1.2.14)(rollup@4.64.10)(vite@8.3.4(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))(vue@3.5.44(typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2))
-      '@windbell/common-fonts.css':
+      '@xieyuheng/common-fonts.css':
         specifier: workspace:*
         version: link:../common-fonts.css
-      '@windbell/fs-api.ts':
+      '@xieyuheng/fs-api.ts':
         specifier: workspace:*
         version: link:../fs-api.ts
-      '@windbell/fs.ts':
+      '@xieyuheng/fs.ts':
         specifier: workspace:*
         version: link:../fs.ts
-      '@windbell/markdown.vue':
+      '@xieyuheng/markdown.vue':
         specifier: workspace:*
         version: link:../markdown.vue
-      '@windbell/semiosis.ts':
+      '@xieyuheng/semiosis.ts':
         specifier: workspace:*
         version: link:../semiosis.ts
-      '@windbell/sh.ts':
+      '@xieyuheng/sh.ts':
         specifier: workspace:*
         version: link:../sh.ts
-      '@windbell/std.ts':
+      '@xieyuheng/std.ts':
         specifier: workspace:*
         version: link:../std.ts
-      '@windbell/windbell-api.ts':
+      '@xieyuheng/windbell-api.ts':
         specifier: workspace:*
         version: link:../windbell-api.ts
       ajv:

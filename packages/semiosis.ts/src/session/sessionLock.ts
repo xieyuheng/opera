@@ -1,4 +1,4 @@
-import { makeFileLockService } from "@windbell/lock.ts/file-lock"
+import { makeFileLockService } from "@xieyuheng/lock.ts/file-lock"
 
 import type { Database } from "../database/Database.ts"
 import type { SessionId } from "./Session.ts"

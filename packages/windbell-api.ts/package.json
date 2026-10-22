@@ -1,5 +1,5 @@
 {
-  "name": "@windbell/windbell-api.ts",
+  "name": "@xieyuheng/windbell-api.ts",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -9,12 +9,12 @@
   ],
   "dependencies": {
     "@hono/node-server": "2.1.5",
-    "@windbell/fs-api.ts": "workspace:*",
-    "@windbell/fs.ts": "workspace:*",
-    "@windbell/http.ts": "workspace:*",
-    "@windbell/semiosis.ts": "workspace:*",
-    "@windbell/sh.ts": "workspace:*",
-    "@windbell/std.ts": "workspace:*",
+    "@xieyuheng/fs-api.ts": "workspace:*",
+    "@xieyuheng/fs.ts": "workspace:*",
+    "@xieyuheng/http.ts": "workspace:*",
+    "@xieyuheng/semiosis.ts": "workspace:*",
+    "@xieyuheng/sh.ts": "workspace:*",
+    "@xieyuheng/std.ts": "workspace:*",
     "hono": "4.13.13",
     "zod": "^4.6.7"
   },

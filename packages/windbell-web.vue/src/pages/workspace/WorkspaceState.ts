@@ -1,6 +1,6 @@
-import { makeSignPreview } from "@windbell/semiosis.ts/core"
-import type * as S from "@windbell/semiosis.ts/core"
-import type { WorkspaceSessionPreview } from "@windbell/windbell-api.ts/client"
+import { makeSignPreview } from "@xieyuheng/semiosis.ts/core"
+import type * as S from "@xieyuheng/semiosis.ts/core"
+import type { WorkspaceSessionPreview } from "@xieyuheng/windbell-api.ts/client"
 import { reactive } from "vue"
 
 import { windbell } from "../../app/windbell"

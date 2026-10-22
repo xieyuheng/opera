@@ -1,4 +1,4 @@
-import type * as S from "@windbell/semiosis.ts"
+import type * as S from "@xieyuheng/semiosis.ts"
 
 export type WindbellRouterOptions = {
   database: S.Database

@@ -1,5 +1,5 @@
 {
-  "name": "@windbell/cli.ts",
+  "name": "@xieyuheng/cli.ts",
   "version": "0.4.3",
   "private": true,
   "license": "GPL-3.0-or-later",
@@ -9,7 +9,7 @@
     "src"
   ],
   "dependencies": {
-    "@windbell/std.ts": "workspace:*"
+    "@xieyuheng/std.ts": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

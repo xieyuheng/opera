@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type * as S from "@windbell/semiosis.ts/core"
+import type * as S from "@xieyuheng/semiosis.ts/core"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 

@@ -1,4 +1,4 @@
-import type { FileSystemEntry } from "@windbell/fs.ts/fs"
+import type { FileSystemEntry } from "@xieyuheng/fs.ts/fs"
 
 export type RangerDirectoryContent = {
   type: "directory"

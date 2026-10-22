@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Markdown from "@windbell/markdown.vue"
-import type * as S from "@windbell/semiosis.ts/core"
+import Markdown from "@xieyuheng/markdown.vue"
+import type * as S from "@xieyuheng/semiosis.ts/core"
 import { computed } from "vue"
 
 import type { SignState } from "../signState.ts"

@@ -1,5 +1,5 @@
-import { errorReport } from "@windbell/std.ts/error"
-import { unwrap } from "@windbell/std.ts/result"
+import { errorReport } from "@xieyuheng/std.ts/error"
+import { unwrap } from "@xieyuheng/std.ts/result"
 
 import type { Database } from "../database/index.ts"
 import type { Repl } from "../repl/Repl.ts"

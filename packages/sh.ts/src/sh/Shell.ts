@@ -1,4 +1,4 @@
-import type { Result } from "@windbell/std.ts/result"
+import type { Result } from "@xieyuheng/std.ts/result"
 
 import type { ShellError } from "./ShellError.ts"
 import type { ShellOutput } from "./ShellOutput.ts"

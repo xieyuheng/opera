@@ -1,5 +1,5 @@
-import type * as S from "@windbell/semiosis.ts"
-import { ok, type Result } from "@windbell/std.ts/result"
+import type * as S from "@xieyuheng/semiosis.ts"
+import { ok, type Result } from "@xieyuheng/std.ts/result"
 
 export type WindbellHealth = {
   ok: boolean

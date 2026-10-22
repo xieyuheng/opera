@@ -1,6 +1,6 @@
-import type * as S from "@windbell/semiosis.ts"
-import type { MaybePromise } from "@windbell/std.ts/promise"
-import type { Result } from "@windbell/std.ts/result"
+import type * as S from "@xieyuheng/semiosis.ts"
+import type { MaybePromise } from "@xieyuheng/std.ts/promise"
+import type { Result } from "@xieyuheng/std.ts/result"
 import type { z } from "zod"
 
 import { serviceErrorStatus } from "./serviceErrorStatus.ts"

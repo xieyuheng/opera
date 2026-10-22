@@ -3,9 +3,9 @@ import type {
   FileSystemError,
   FileSystemErrorType,
   FileType,
-} from "@windbell/fs.ts/fs"
-import type { Json, JsonObject } from "@windbell/std.ts/json"
-import type { Result } from "@windbell/std.ts/result"
+} from "@xieyuheng/fs.ts/fs"
+import type { Json, JsonObject } from "@xieyuheng/std.ts/json"
+import type { Result } from "@xieyuheng/std.ts/result"
 import { z } from "zod"
 
 const JsonValueSchema: z.ZodType<Json> = z.lazy(() =>

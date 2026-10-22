@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue"
-import type { DustbinSessionPreview } from "@windbell/windbell-api.ts/client"
+import type { DustbinSessionPreview } from "@xieyuheng/windbell-api.ts/client"
 import { computed, ref } from "vue"
 import { useI18n } from "vue-i18n"
 import { useRoute } from "vue-router"

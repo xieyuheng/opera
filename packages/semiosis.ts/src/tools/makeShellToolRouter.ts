@@ -1,4 +1,4 @@
-import type { Shell } from "@windbell/sh.ts/sh"
+import type { Shell } from "@xieyuheng/sh.ts/sh"
 
 import {
   makeToolRouter,

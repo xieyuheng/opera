@@ -1,6 +1,6 @@
-import type { LockService } from "@windbell/lock.ts/lock"
-import type { Shell } from "@windbell/sh.ts/sh"
-import { err, isError, ok, unwrap, type Result } from "@windbell/std.ts/result"
+import type { LockService } from "@xieyuheng/lock.ts/lock"
+import type { Shell } from "@xieyuheng/sh.ts/sh"
+import { err, isError, ok, unwrap, type Result } from "@xieyuheng/std.ts/result"
 
 import type { Database } from "../database/Database.ts"
 import type { ModelTotalUsage, ModelUsage } from "../model/index.ts"

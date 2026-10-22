@@ -5,8 +5,8 @@ import {
   resolveHeaders,
   withNotFoundAsUndefined,
   type HeaderSource,
-} from "@windbell/http.ts"
-import type * as S from "@windbell/semiosis.ts"
+} from "@xieyuheng/http.ts"
+import type * as S from "@xieyuheng/semiosis.ts"
 import { z } from "zod"
 
 import type {

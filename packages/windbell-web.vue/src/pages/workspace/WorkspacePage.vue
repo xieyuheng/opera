@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue"
-import type { WorkspaceSessionPreview } from "@windbell/windbell-api.ts/client"
+import type { WorkspaceSessionPreview } from "@xieyuheng/windbell-api.ts/client"
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
 import { useRoute, useRouter } from "vue-router"

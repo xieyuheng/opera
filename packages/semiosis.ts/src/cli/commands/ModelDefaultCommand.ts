@@ -1,5 +1,5 @@
-import type * as Cli from "@windbell/cli.ts"
-import { unwrap } from "@windbell/std.ts/result"
+import type * as Cli from "@xieyuheng/cli.ts"
+import { unwrap } from "@xieyuheng/std.ts/result"
 
 import type { Database } from "../../database/index.ts"
 import { setDefaultModel } from "../../models/index.ts"

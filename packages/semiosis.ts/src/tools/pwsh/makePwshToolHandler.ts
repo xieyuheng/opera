@@ -1,4 +1,4 @@
-import { makePwsh } from "@windbell/sh.ts/pwsh"
+import { makePwsh } from "@xieyuheng/sh.ts/pwsh"
 
 import type { ToolHandler } from "../../tool/index.ts"
 import { formatShellOutput } from "../formatShellOutput.ts"

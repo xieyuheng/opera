@@ -1,4 +1,4 @@
-import { makeBash } from "@windbell/sh.ts/bash"
+import { makeBash } from "@xieyuheng/sh.ts/bash"
 
 import type { ToolHandler } from "../../tool/index.ts"
 import { formatShellOutput } from "../formatShellOutput.ts"

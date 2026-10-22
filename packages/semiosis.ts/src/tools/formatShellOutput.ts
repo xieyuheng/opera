@@ -1,4 +1,4 @@
-import type { ShellOutput } from "@windbell/sh.ts/sh"
+import type { ShellOutput } from "@xieyuheng/sh.ts/sh"
 
 export function formatShellOutput(
   output: ShellOutput,

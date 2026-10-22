@@ -2,9 +2,9 @@ import {
   makeServiceError,
   makeServiceErrorFromDatabaseError,
   makeSignPreview,
-} from "@windbell/semiosis.ts"
-import type * as S from "@windbell/semiosis.ts"
-import { err, isError, ok, type Result } from "@windbell/std.ts/result"
+} from "@xieyuheng/semiosis.ts"
+import type * as S from "@xieyuheng/semiosis.ts"
+import { err, isError, ok, type Result } from "@xieyuheng/std.ts/result"
 
 import {
   encodeWorkspaceSessionCursor,

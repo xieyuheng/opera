@@ -5,9 +5,9 @@ import Path from "node:path"
 import process from "node:process"
 import { test } from "node:test"
 
-import { makeLocalFileSystem } from "@windbell/fs.ts/local-fs"
-import * as S from "@windbell/semiosis.ts"
-import { makePath } from "@windbell/std.ts/path"
+import { makeLocalFileSystem } from "@xieyuheng/fs.ts/local-fs"
+import * as S from "@xieyuheng/semiosis.ts"
+import { makePath } from "@xieyuheng/std.ts/path"
 
 import { isAccessTokenExpired, makeAccessTokenStore } from "./AccessToken.ts"
 

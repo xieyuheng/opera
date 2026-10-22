@@ -1,7 +1,7 @@
 import Path from "node:path"
 import process from "node:process"
 
-import { makeHttpFileSystemRouter } from "@windbell/fs-api.ts/router"
+import { makeHttpFileSystemRouter } from "@xieyuheng/fs-api.ts/router"
 import {
   makeDustbinSessionService,
   makeDustbinWorkspaceService,
@@ -9,10 +9,10 @@ import {
   makeSessionService,
   makeSettingsService,
   makeWorkspaceService,
-} from "@windbell/semiosis.ts"
-import { defaultAppRoot, resolveAppPaths } from "@windbell/semiosis.ts"
-import { makeBash } from "@windbell/sh.ts/bash"
-import { makePwsh } from "@windbell/sh.ts/pwsh"
+} from "@xieyuheng/semiosis.ts"
+import { defaultAppRoot, resolveAppPaths } from "@xieyuheng/semiosis.ts"
+import { makeBash } from "@xieyuheng/sh.ts/bash"
+import { makePwsh } from "@xieyuheng/sh.ts/pwsh"
 import { Hono } from "hono"
 import { cors } from "hono/cors"
 

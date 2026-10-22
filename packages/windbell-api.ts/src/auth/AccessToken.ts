@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto"
 
-import type * as S from "@windbell/semiosis.ts"
+import type * as S from "@xieyuheng/semiosis.ts"
 
 export type AccessToken = {
   value: string

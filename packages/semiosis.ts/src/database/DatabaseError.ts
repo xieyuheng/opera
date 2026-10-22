@@ -1,5 +1,5 @@
-import type { FileSystemError, FileSystemErrorType } from "@windbell/fs.ts/fs"
-import { ResultUnwrapError, err, type Result } from "@windbell/std.ts/result"
+import type { FileSystemError, FileSystemErrorType } from "@xieyuheng/fs.ts/fs"
+import { ResultUnwrapError, err, type Result } from "@xieyuheng/std.ts/result"
 
 export type DatabaseErrorType =
   | FileSystemErrorType

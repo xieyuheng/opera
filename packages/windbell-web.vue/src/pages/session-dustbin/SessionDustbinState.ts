@@ -1,5 +1,5 @@
-import type * as S from "@windbell/semiosis.ts/core"
-import type { DustbinSessionPreview } from "@windbell/windbell-api.ts/client"
+import type * as S from "@xieyuheng/semiosis.ts/core"
+import type { DustbinSessionPreview } from "@xieyuheng/windbell-api.ts/client"
 import { reactive } from "vue"
 
 import { windbell } from "../../app/windbell"

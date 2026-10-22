@@ -1,6 +1,6 @@
-import { makeServiceError } from "@windbell/semiosis.ts"
-import type * as S from "@windbell/semiosis.ts"
-import { err } from "@windbell/std.ts/result"
+import { makeServiceError } from "@xieyuheng/semiosis.ts"
+import type * as S from "@xieyuheng/semiosis.ts"
+import { err } from "@xieyuheng/std.ts/result"
 import { z } from "zod"
 
 import { makeAction } from "../http/makeAction.ts"

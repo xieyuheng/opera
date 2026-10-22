@@ -1,5 +1,5 @@
-import type * as S from "@windbell/semiosis.ts"
-import { ok } from "@windbell/std.ts/result"
+import type * as S from "@xieyuheng/semiosis.ts"
+import { ok } from "@xieyuheng/std.ts/result"
 import { z } from "zod"
 
 import { makeAction } from "../http/makeAction.ts"

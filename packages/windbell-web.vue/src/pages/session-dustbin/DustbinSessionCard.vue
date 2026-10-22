@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DustbinSessionPreview } from "@windbell/windbell-api.ts/client"
+import type { DustbinSessionPreview } from "@xieyuheng/windbell-api.ts/client"
 import { useI18n } from "vue-i18n"
 
 import SmallButton from "../../components/buttons/SmallButton.vue"

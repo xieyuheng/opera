@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { WorkspaceSessionPreview } from "@windbell/windbell-api.ts/client"
+import type { WorkspaceSessionPreview } from "@xieyuheng/windbell-api.ts/client"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 import { RouterLink } from "vue-router"

@@ -1,4 +1,4 @@
-import type * as Cli from "@windbell/cli.ts"
+import type * as Cli from "@xieyuheng/cli.ts"
 
 import type { Database } from "../../database/index.ts"
 import { deleteApiKey } from "../../database/index.ts"

@@ -4,8 +4,8 @@ import fs from "node:fs/promises"
 import Os from "node:os"
 import Path from "node:path"
 
-import type { JsonObject } from "@windbell/std.ts/json"
-import { err, isError, ok, type Result } from "@windbell/std.ts/result"
+import type { JsonObject } from "@xieyuheng/std.ts/json"
+import { err, isError, ok, type Result } from "@xieyuheng/std.ts/result"
 
 import type {
   FileSystem,

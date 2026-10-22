@@ -1,11 +1,11 @@
-# @windbell/common-fonts.css
+# @xieyuheng/common-fonts.css
 
 Common font faces and font-family tokens for Windbell applications.
 
 Import the package CSS:
 
 ```css
-@import "@windbell/common-fonts.css";
+@import "@xieyuheng/common-fonts.css";
 ```
 
 The package does not define a default font. The consuming application chooses a font by setting `data-font` on the root element:

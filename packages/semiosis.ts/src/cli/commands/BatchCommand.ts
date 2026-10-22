@@ -1,8 +1,8 @@
 import Path from "node:path"
 import process from "node:process"
 
-import type * as Cli from "@windbell/cli.ts"
-import { errorReport } from "@windbell/std.ts/error"
+import type * as Cli from "@xieyuheng/cli.ts"
+import { errorReport } from "@xieyuheng/std.ts/error"
 
 import { agentInterpret } from "../../agent/index.ts"
 import type { Database } from "../../database/index.ts"

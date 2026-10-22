@@ -1,4 +1,4 @@
-import { err, ok, type Result } from "@windbell/std.ts/result"
+import { err, ok, type Result } from "@xieyuheng/std.ts/result"
 
 import { makeDatabaseError, type DatabaseError } from "./DatabaseError.ts"
 

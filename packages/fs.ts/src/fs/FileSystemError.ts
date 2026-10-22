@@ -1,4 +1,4 @@
-import type { JsonObject } from "@windbell/std.ts/json"
+import type { JsonObject } from "@xieyuheng/std.ts/json"
 
 export type FileSystemErrorType =
   | "aborted"

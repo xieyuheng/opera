@@ -1,5 +1,5 @@
-import { modelEntryContextWindow } from "@windbell/semiosis.ts/core"
-import type * as S from "@windbell/semiosis.ts/core"
+import { modelEntryContextWindow } from "@xieyuheng/semiosis.ts/core"
+import type * as S from "@xieyuheng/semiosis.ts/core"
 import { reactive } from "vue"
 
 import { windbell } from "../../app/windbell"

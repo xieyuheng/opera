@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Markdown from "@windbell/markdown.vue"
+import Markdown from "@xieyuheng/markdown.vue"
 import { computed } from "vue"
 import { useRoute } from "vue-router"
 

@@ -5,8 +5,8 @@ import type {
   FileSystemStat,
   FileSystemWatchEvent,
   FileType,
-} from "@windbell/fs.ts/fs"
-import type { FileSystemError } from "@windbell/fs.ts/fs"
+} from "@xieyuheng/fs.ts/fs"
+import type { FileSystemError } from "@xieyuheng/fs.ts/fs"
 import {
   HttpRequestError,
   makeJsonEndpoint,
@@ -16,9 +16,9 @@ import {
   sendRequest,
   type HeaderSource,
   type ServerSentEvent,
-} from "@windbell/http.ts"
-import type { JsonObject } from "@windbell/std.ts/json"
-import { err, ok, type Result } from "@windbell/std.ts/result"
+} from "@xieyuheng/http.ts"
+import type { JsonObject } from "@xieyuheng/std.ts/json"
+import { err, ok, type Result } from "@xieyuheng/std.ts/result"
 
 import {
   BooleanSchema,

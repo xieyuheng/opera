@@ -5,9 +5,9 @@ import Path from "node:path"
 import process from "node:process"
 import { test } from "node:test"
 
-import { makeLocalFileSystem } from "@windbell/fs.ts/local-fs"
-import { makePath } from "@windbell/std.ts/path"
-import { unwrap } from "@windbell/std.ts/result"
+import { makeLocalFileSystem } from "@xieyuheng/fs.ts/local-fs"
+import { makePath } from "@xieyuheng/std.ts/path"
+import { unwrap } from "@xieyuheng/std.ts/result"
 
 import { makeDatabase } from "../database/index.ts"
 import { setDefaultProvider } from "./setDefaultProvider.ts"

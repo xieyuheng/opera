@@ -1,6 +1,6 @@
 import process from "node:process"
 
-import type * as Cli from "@windbell/cli.ts"
+import type * as Cli from "@xieyuheng/cli.ts"
 
 import type { Database } from "../../database/index.ts"
 import { writeApiKey } from "../../database/index.ts"

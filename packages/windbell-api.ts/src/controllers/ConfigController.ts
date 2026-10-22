@@ -1,4 +1,4 @@
-import { ok } from "@windbell/std.ts/result"
+import { ok } from "@xieyuheng/std.ts/result"
 import { z } from "zod"
 
 import { makeAction } from "../http/makeAction.ts"

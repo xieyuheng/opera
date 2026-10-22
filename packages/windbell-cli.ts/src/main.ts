@@ -2,7 +2,7 @@
 
 import process from "node:process"
 
-import { errorReport } from "@windbell/std.ts/error"
+import { errorReport } from "@xieyuheng/std.ts/error"
 
 import { makeCli } from "./cli/makeCli.ts"
 

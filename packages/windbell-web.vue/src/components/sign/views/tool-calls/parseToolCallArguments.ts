@@ -1,4 +1,4 @@
-import type * as S from "@windbell/semiosis.ts/core"
+import type * as S from "@xieyuheng/semiosis.ts/core"
 
 export function parseToolCallArguments(sign: S.ToolCallSign): unknown {
   try {

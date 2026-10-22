@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue"
-import type * as S from "@windbell/semiosis.ts/core"
+import type * as S from "@xieyuheng/semiosis.ts/core"
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
 

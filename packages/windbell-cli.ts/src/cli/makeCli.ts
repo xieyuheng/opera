@@ -1,7 +1,7 @@
 import { fileURLToPath } from "node:url"
 
-import * as Cli from "@windbell/cli.ts"
-import { getPackageJson } from "@windbell/std.ts/node"
+import * as Cli from "@xieyuheng/cli.ts"
+import { getPackageJson } from "@xieyuheng/std.ts/node"
 
 import { makeDevHandler } from "./commands/dev.ts"
 import { makeStartHandler } from "./commands/start.ts"

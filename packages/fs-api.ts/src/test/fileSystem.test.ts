@@ -4,9 +4,9 @@ import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
 
-import type { FileSystemError, FileSystemWatchEvent } from "@windbell/fs.ts/fs"
-import type { Result } from "@windbell/std.ts/result"
-import { unwrap } from "@windbell/std.ts/result"
+import type { FileSystemError, FileSystemWatchEvent } from "@xieyuheng/fs.ts/fs"
+import type { Result } from "@xieyuheng/std.ts/result"
+import { unwrap } from "@xieyuheng/std.ts/result"
 
 import { makeHttpFileSystemClient } from "../client/index.ts"
 import { makeHttpFileSystemRouter } from "../router/index.ts"

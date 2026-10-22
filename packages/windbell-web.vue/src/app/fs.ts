@@ -1,4 +1,4 @@
-import { makeHttpFileSystemClient } from "@windbell/fs-api.ts/client"
+import { makeHttpFileSystemClient } from "@xieyuheng/fs-api.ts/client"
 
 import { authHeaders } from "./auth.ts"
 

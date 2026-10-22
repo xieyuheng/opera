@@ -1,5 +1,5 @@
-import type { Path } from "@windbell/std.ts/path"
-import { isError, ok, type Result } from "@windbell/std.ts/result"
+import type { Path } from "@xieyuheng/std.ts/path"
+import { isError, ok, type Result } from "@xieyuheng/std.ts/result"
 
 import type { Settings } from "../settings/Settings.ts"
 import type { DatabaseError } from "./DatabaseError.ts"

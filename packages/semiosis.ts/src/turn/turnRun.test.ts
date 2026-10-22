@@ -1,7 +1,7 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 
-import { ok } from "@windbell/std.ts/result"
+import { ok } from "@xieyuheng/std.ts/result"
 
 import { makeAgent } from "../agent/index.ts"
 import type { SessionStore } from "../database/index.ts"

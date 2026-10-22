@@ -1,8 +1,8 @@
-import type { FileSystem } from "@windbell/fs.ts/fs"
-import { makeFileLockService } from "@windbell/lock.ts/file-lock"
-import type { LockService } from "@windbell/lock.ts/lock"
-import type { Shell } from "@windbell/sh.ts/sh"
-import type { Path } from "@windbell/std.ts/path"
+import type { FileSystem } from "@xieyuheng/fs.ts/fs"
+import { makeFileLockService } from "@xieyuheng/lock.ts/file-lock"
+import type { LockService } from "@xieyuheng/lock.ts/lock"
+import type { Shell } from "@xieyuheng/sh.ts/sh"
+import type { Path } from "@xieyuheng/std.ts/path"
 
 import { makeDatabase, type Database } from "../database/Database.ts"
 import {

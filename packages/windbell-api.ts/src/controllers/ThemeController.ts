@@ -1,5 +1,5 @@
-import { makeServiceError } from "@windbell/semiosis.ts"
-import { err, ok } from "@windbell/std.ts/result"
+import { makeServiceError } from "@xieyuheng/semiosis.ts"
+import { err, ok } from "@xieyuheng/std.ts/result"
 import { z } from "zod"
 
 import { makeAction } from "../http/makeAction.ts"

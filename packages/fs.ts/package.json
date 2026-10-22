@@ -1,5 +1,5 @@
 {
-  "name": "@windbell/fs.ts",
+  "name": "@xieyuheng/fs.ts",
   "version": "0.1.0",
   "private": true,
   "license": "GPL-3.0-or-later",
@@ -14,7 +14,7 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@windbell/std.ts": "workspace:*"
+    "@xieyuheng/std.ts": "workspace:*"
   },
   "exports": {
     ".": "./src/index.ts",

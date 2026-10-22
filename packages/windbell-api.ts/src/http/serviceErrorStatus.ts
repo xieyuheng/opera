@@ -1,4 +1,4 @@
-import type * as S from "@windbell/semiosis.ts"
+import type * as S from "@xieyuheng/semiosis.ts"
 
 export function serviceErrorStatus(error: S.ServiceError): number {
   if (error.type === "not-found" || error.type.endsWith("-not-found")) {

@@ -4,11 +4,11 @@ import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
 
-import { makeLocalFileSystem } from "@windbell/fs.ts/local-fs"
-import type { LockService } from "@windbell/lock.ts/lock"
-import { makeBash } from "@windbell/sh.ts/bash"
-import { makePath } from "@windbell/std.ts/path"
-import { ok, unwrap } from "@windbell/std.ts/result"
+import { makeLocalFileSystem } from "@xieyuheng/fs.ts/local-fs"
+import type { LockService } from "@xieyuheng/lock.ts/lock"
+import { makeBash } from "@xieyuheng/sh.ts/bash"
+import { makePath } from "@xieyuheng/std.ts/path"
+import { ok, unwrap } from "@xieyuheng/std.ts/result"
 
 import { makeSemiosisService } from "./SemiosisService.ts"
 

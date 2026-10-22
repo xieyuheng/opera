@@ -1,4 +1,4 @@
-import type { FileSystem } from "@windbell/fs.ts/fs"
+import type { FileSystem } from "@xieyuheng/fs.ts/fs"
 import { Hono } from "hono"
 
 import { makeHttpFileSystemRouter } from "../router/index.ts"

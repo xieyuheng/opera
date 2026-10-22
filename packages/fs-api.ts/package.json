@@ -1,5 +1,5 @@
 {
-  "name": "@windbell/fs-api.ts",
+  "name": "@xieyuheng/fs-api.ts",
   "version": "0.1.0",
   "private": true,
   "license": "GPL-3.0-or-later",
@@ -14,9 +14,9 @@
   },
   "dependencies": {
     "@hono/node-server": "2.1.5",
-    "@windbell/fs.ts": "workspace:*",
-    "@windbell/http.ts": "workspace:*",
-    "@windbell/std.ts": "workspace:*",
+    "@xieyuheng/fs.ts": "workspace:*",
+    "@xieyuheng/http.ts": "workspace:*",
+    "@xieyuheng/std.ts": "workspace:*",
     "hono": "4.13.13",
     "zod": "^4.6.7"
   },

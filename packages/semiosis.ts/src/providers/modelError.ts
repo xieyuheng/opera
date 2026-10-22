@@ -1,4 +1,4 @@
-import { HttpRequestError } from "@windbell/http.ts"
+import { HttpRequestError } from "@xieyuheng/http.ts"
 import { ZodError } from "zod"
 
 import type { ModelError, ModelInterpretEvent } from "../model/index.ts"

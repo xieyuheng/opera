@@ -1,6 +1,6 @@
 @import "tailwindcss";
-@import "@windbell/markdown.vue/styles/index.css";
-@import "@windbell/common-fonts.css";
+@import "@xieyuheng/markdown.vue/styles/index.css";
+@import "@xieyuheng/common-fonts.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

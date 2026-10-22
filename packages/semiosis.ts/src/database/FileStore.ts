@@ -1,6 +1,6 @@
-import type { FileSystem, FileSystemError } from "@windbell/fs.ts/fs"
-import type { Path } from "@windbell/std.ts/path"
-import { err, isError, ok, type Result } from "@windbell/std.ts/result"
+import type { FileSystem, FileSystemError } from "@xieyuheng/fs.ts/fs"
+import type { Path } from "@xieyuheng/std.ts/path"
+import { err, isError, ok, type Result } from "@xieyuheng/std.ts/result"
 
 import {
   makeDatabaseErrorFromFileSystemError,

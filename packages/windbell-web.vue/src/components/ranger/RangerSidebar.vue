@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FileSystemEntry } from "@windbell/fs.ts/fs"
+import type { FileSystemEntry } from "@xieyuheng/fs.ts/fs"
 import { computed, nextTick, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
 

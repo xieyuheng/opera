@@ -3,14 +3,14 @@ import Path from "node:path"
 import process from "node:process"
 import { fileURLToPath } from "node:url"
 
-import type * as Cli from "@windbell/cli.ts"
-import { makeLocalFileSystem } from "@windbell/fs.ts/local-fs"
-import * as S from "@windbell/semiosis.ts"
-import { makePath } from "@windbell/std.ts/path"
+import type * as Cli from "@xieyuheng/cli.ts"
+import { makeLocalFileSystem } from "@xieyuheng/fs.ts/local-fs"
+import * as S from "@xieyuheng/semiosis.ts"
+import { makePath } from "@xieyuheng/std.ts/path"
 import {
   makeAccessTokenStore,
   startWindbellServer,
-} from "@windbell/windbell-api.ts"
+} from "@xieyuheng/windbell-api.ts"
 
 import { formatLocalDateTime, makeAccessTokenUrl } from "../startLog.ts"
 

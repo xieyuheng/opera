@@ -1,5 +1,5 @@
 {
-  "name": "@windbell/semiosis.ts",
+  "name": "@xieyuheng/semiosis.ts",
   "version": "0.1.0",
   "private": true,
   "license": "GPL-3.0-or-later",
@@ -14,12 +14,12 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@windbell/cli.ts": "workspace:*",
-    "@windbell/fs.ts": "workspace:*",
-    "@windbell/http.ts": "workspace:*",
-    "@windbell/lock.ts": "workspace:*",
-    "@windbell/sh.ts": "workspace:*",
-    "@windbell/std.ts": "workspace:*",
+    "@xieyuheng/cli.ts": "workspace:*",
+    "@xieyuheng/fs.ts": "workspace:*",
+    "@xieyuheng/http.ts": "workspace:*",
+    "@xieyuheng/lock.ts": "workspace:*",
+    "@xieyuheng/sh.ts": "workspace:*",
+    "@xieyuheng/std.ts": "workspace:*",
     "ajv": "^8.20.0",
     "zod": "^4.6.7"
   },

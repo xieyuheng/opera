@@ -1,9 +1,9 @@
 import assert from "node:assert/strict"
 import { test } from "node:test"
 
-import type { LockService } from "@windbell/lock.ts/lock"
-import { makeBash } from "@windbell/sh.ts/bash"
-import { ok } from "@windbell/std.ts/result"
+import type { LockService } from "@xieyuheng/lock.ts/lock"
+import { makeBash } from "@xieyuheng/sh.ts/bash"
+import { ok } from "@xieyuheng/std.ts/result"
 
 import type { Database } from "../database/Database.ts"
 import { makeSessionService } from "./SessionService.ts"

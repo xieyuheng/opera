@@ -4,7 +4,7 @@ import Os from "node:os"
 import Path from "node:path"
 import { test } from "node:test"
 
-import { resolvePwshPath } from "@windbell/sh.ts/pwsh"
+import { resolvePwshPath } from "@xieyuheng/sh.ts/pwsh"
 
 import { assertSessionToolPlatform } from "./assertSessionToolPlatform.ts"
 import { makeBashToolHandler, makeBashToolSign } from "./bash/index.ts"

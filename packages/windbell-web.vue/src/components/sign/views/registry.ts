@@ -1,4 +1,4 @@
-import type * as S from "@windbell/semiosis.ts/core"
+import type * as S from "@xieyuheng/semiosis.ts/core"
 import type { Component } from "vue"
 
 import SignMarkdownView from "./SignMarkdownView.vue"
