@@ -13,7 +13,7 @@ import { acquireSessionLease } from "./sessionLock.ts"
 
 test("session lock leases coordinate a local database", async (t) => {
   const root = await fs.mkdtemp(
-    Path.join(Os.tmpdir(), "semiosis-session-lock-"),
+    Path.join(Os.tmpdir(), "windbell-session-lock-"),
   )
 
   t.after(async () => {

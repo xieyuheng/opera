@@ -65,7 +65,7 @@ test("makeDefaultToolRouter defines the platform shell tool", () => {
 })
 
 test("resolvePwshPath probes well-known win32 install locations", async () => {
-  const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "semiosis-pwsh-path-"))
+  const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-pwsh-path-"))
 
   try {
     const dir = Path.join(root, "PowerShell", "7")

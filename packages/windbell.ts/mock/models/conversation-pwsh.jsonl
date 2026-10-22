@@ -1,4 +1,4 @@
 [{"kind":"ReasoningSign","content":"用户想了解项目说明。"},{"kind":"AssistantSign","content":"我先读取 README.md。"},{"kind":"ToolCallSign","callId":"call-readme","name":"pwsh","arguments":"{\"command\":\"[Console]::Out.Write((Get-Content -Raw README.md))\"}"}]
-[{"kind":"ReasoningSign","content":"README.md 说明这是一个最小的 semiosis 示例。"},{"kind":"AssistantSign","content":"README.md 说明这是一个最小 semiosis 示例。"}]
+[{"kind":"ReasoningSign","content":"README.md 说明这是一个最小的 windbell 示例。"},{"kind":"AssistantSign","content":"README.md 说明这是一个最小 windbell 示例。"}]
 [{"kind":"ReasoningSign","content":"用户还想看入口文件。"},{"kind":"AssistantSign","content":"我再读取 src/main.ts。"},{"kind":"ToolCallSign","callId":"call-main","name":"pwsh","arguments":"{\"command\":\"[Console]::Out.Write((Get-Content -Raw src/main.ts))\"}"}]
 [{"kind":"ReasoningSign","content":"入口文件里有一个最小的命令入口。"},{"kind":"AssistantSign","content":"src/main.ts 中定义了命令行工具入口。"}]

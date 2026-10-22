@@ -10,17 +10,17 @@ import { makeBash } from "@xieyuheng/sh.ts/bash"
 import { makePath } from "@xieyuheng/std.ts/path"
 import { ok, unwrap } from "@xieyuheng/std.ts/result"
 
-import { makeSemiosisService } from "./SemiosisService.ts"
+import { makeWindbellService } from "./WindbellService.ts"
 
-test("makeSemiosisService manages workspaces and sessions", async (t) => {
-  const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "semiosis-di-"))
+test("makeWindbellService manages workspaces and sessions", async (t) => {
+  const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-di-"))
 
   t.after(async () => {
     await fs.rm(root, { recursive: true, force: true })
   })
 
   const path = makePath(Os.platform() === "win32" ? "win32" : "posix")
-  const semiosis = makeSemiosisService({
+  const windbell = makeWindbellService({
     fs: makeLocalFileSystem(),
     path,
     root,
@@ -28,14 +28,14 @@ test("makeSemiosisService manages workspaces and sessions", async (t) => {
   })
 
   const workspace = unwrap(
-    await semiosis.workspaces.ensure({
+    await windbell.workspaces.ensure({
       name: "test",
       root: path.join(root, "workspace"),
     }),
   )
 
   const session = unwrap(
-    await semiosis.sessions.make({
+    await windbell.sessions.make({
       workspaceId: workspace.id,
       title: "test",
     }),
@@ -46,7 +46,7 @@ test("makeSemiosisService manages workspaces and sessions", async (t) => {
   assert.equal(session.context[1]?.kind, "PersonaSign")
 
   const sessions = unwrap(
-    await semiosis.sessions.list({
+    await windbell.sessions.list({
       workspaceId: workspace.id,
     }),
   )
@@ -54,14 +54,14 @@ test("makeSemiosisService manages workspaces and sessions", async (t) => {
   assert.equal(sessions.length, 1)
   assert.equal(sessions[0]?.id, session.id)
 
-  unwrap(await semiosis.dustbin.sessions.trash(session.id))
+  unwrap(await windbell.dustbin.sessions.trash(session.id))
   assert.equal(
-    unwrap(await semiosis.sessions.list({ workspaceId: workspace.id })).length,
+    unwrap(await windbell.sessions.list({ workspaceId: workspace.id })).length,
     0,
   )
 
   const dustbin = unwrap(
-    await semiosis.dustbin.sessions.list({
+    await windbell.dustbin.sessions.list({
       workspaceId: workspace.id,
     }),
   )
@@ -69,8 +69,8 @@ test("makeSemiosisService manages workspaces and sessions", async (t) => {
   assert.equal(dustbin.length, 1)
 })
 
-test("makeSemiosisService propagates a lock service to sessions", async (t) => {
-  const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "semiosis-lock-"))
+test("makeWindbellService propagates a lock service to sessions", async (t) => {
+  const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-lock-"))
 
   t.after(async () => {
     await fs.rm(root, { recursive: true, force: true })
@@ -88,7 +88,7 @@ test("makeSemiosisService propagates a lock service to sessions", async (t) => {
     },
   }
 
-  const semiosis = makeSemiosisService({
+  const windbell = makeWindbellService({
     fs: makeLocalFileSystem(),
     path,
     root,
@@ -96,7 +96,7 @@ test("makeSemiosisService propagates a lock service to sessions", async (t) => {
     lock,
   })
 
-  const iterator = semiosis.sessions
+  const iterator = windbell.sessions
     .interpret({
       sessionId: "missing" as never,
       model: { providerName: "mock", name: "mock" },
@@ -109,8 +109,8 @@ test("makeSemiosisService propagates a lock service to sessions", async (t) => {
   assert.deepEqual(lockedKeys, ["missing"])
 })
 
-test("makeSemiosisService creates a file lock from lockRoot", async (t) => {
-  const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "semiosis-lock-root-"))
+test("makeWindbellService creates a file lock from lockRoot", async (t) => {
+  const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-lock-root-"))
 
   t.after(async () => {
     await fs.rm(root, { recursive: true, force: true })
@@ -118,7 +118,7 @@ test("makeSemiosisService creates a file lock from lockRoot", async (t) => {
 
   const path = makePath(Os.platform() === "win32" ? "win32" : "posix")
   const lockRoot = path.join(root, "locks")
-  const semiosis = makeSemiosisService({
+  const windbell = makeWindbellService({
     fs: makeLocalFileSystem(),
     path,
     root,
@@ -126,7 +126,7 @@ test("makeSemiosisService creates a file lock from lockRoot", async (t) => {
     lockRoot,
   })
 
-  const iterator = semiosis.sessions
+  const iterator = windbell.sessions
     .interpret({
       sessionId: "missing" as never,
       model: { providerName: "mock", name: "mock" },

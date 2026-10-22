@@ -26,7 +26,7 @@ Run commands in a PowerShell shell.
 
 [persona]
 
-You are a helpful software engineer assistant. The workspace is a small semiosis example.
+You are a helpful software engineer assistant. The workspace is a small windbell example.
 
 [user]
 
@@ -50,18 +50,18 @@ pwsh
 
 [tool-output]
 
-# semiosis.ts
+# windbell.ts
 
 A minimal coding agent for DeepSeek API.
 
 
 [reasoning]
 
-README.md 说明这是一个最小的 semiosis 示例。
+README.md 说明这是一个最小的 windbell 示例。
 
 [assistant]
 
-README.md 说明这是一个最小 semiosis 示例。
+README.md 说明这是一个最小 windbell 示例。
 
 [user]
 

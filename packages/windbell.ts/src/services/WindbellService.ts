@@ -21,7 +21,7 @@ import {
   type WorkspaceService,
 } from "./WorkspaceService.ts"
 
-export type SemiosisServiceOptions = {
+export type WindbellServiceOptions = {
   fs: FileSystem
   path: Path
   root: string
@@ -30,7 +30,7 @@ export type SemiosisServiceOptions = {
   lockRoot?: string
 }
 
-export type SemiosisService = {
+export type WindbellService = {
   database: Database
   providers: ProviderService
   settings: SettingsService
@@ -42,9 +42,9 @@ export type SemiosisService = {
   }
 }
 
-export function makeSemiosisService(
-  options: SemiosisServiceOptions,
-): SemiosisService {
+export function makeWindbellService(
+  options: WindbellServiceOptions,
+): WindbellService {
   const database = makeDatabase({
     fs: options.fs,
     path: options.path,

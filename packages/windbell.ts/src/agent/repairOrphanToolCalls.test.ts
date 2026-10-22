@@ -208,7 +208,7 @@ test("agentInterpret records a ToolOutputSign for every tool call", async () => 
 })
 
 test("agentInterpret repairs persisted orphan tool calls and yields input", async () => {
-  const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "semiosis-repair-"))
+  const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-repair-"))
 
   try {
     const database = makeDatabase({

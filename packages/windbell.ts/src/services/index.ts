@@ -1,5 +1,5 @@
 export * from "./ServiceError.ts"
-export * from "./SemiosisService.ts"
+export * from "./WindbellService.ts"
 export * from "./ProviderService.ts"
 export * from "./SettingsService.ts"
 export * from "./WorkspaceService.ts"

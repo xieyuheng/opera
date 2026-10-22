@@ -13,7 +13,7 @@ import { UserSign } from "../sign/index.ts"
 import { makeDatabase } from "./index.ts"
 
 test("SessionStore stores turns and slices context by sequence", async () => {
-  const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "semiosis-turn-"))
+  const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-turn-"))
 
   try {
     const database = makeDatabase({
@@ -123,7 +123,7 @@ test("SessionStore stores turns and slices context by sequence", async () => {
 })
 
 test("SessionStore lists session pages by updatedAt descending", async () => {
-  const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "semiosis-page-"))
+  const root = await fs.mkdtemp(Path.join(Os.tmpdir(), "windbell-page-"))
 
   try {
     const database = makeDatabase({
