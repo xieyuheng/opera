@@ -10,6 +10,27 @@ import {
 
 export type RangerFocus = "sidebar" | "view"
 
+function entryGroup(entry: FileSystemEntry): number {
+  const hidden = entry.name.startsWith(".")
+
+  if (entry.kind === "Directory") {
+    return hidden ? 2 : 0
+  }
+
+  return hidden ? 3 : 1
+}
+
+function sortRangerEntries(
+  entries: Array<FileSystemEntry>,
+): Array<FileSystemEntry> {
+  return [...entries].sort((left, right) => {
+    const groupDiff = entryGroup(left) - entryGroup(right)
+    if (groupDiff !== 0) return groupDiff
+
+    return left.name.localeCompare(right.name)
+  })
+}
+
 export type RangerState = {
   root: string
   locationStorageKey: string
@@ -111,7 +132,7 @@ export async function loadDirectory(
       return false
     }
 
-    const entries = result.value
+    const entries = sortRangerEntries(result.value)
 
     const selectedIndex =
       options.selectPath === undefined
@@ -159,7 +180,7 @@ export async function refreshRanger(state: RangerState): Promise<void> {
     return
   }
 
-  const entries = result.value
+  const entries = sortRangerEntries(result.value)
   const selectedPath = state.selectedEntry?.path
   const selectedIndex =
     selectedPath === undefined
