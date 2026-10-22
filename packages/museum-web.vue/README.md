@@ -1,20 +1,5 @@
-# @xieyuheng/museum-web.vue
+# 博物馆 / Museum
 
-Example website and development harness for `@xieyuheng/museum.vue`.
+把个人主页比喻为「个人博物馆」：
 
-## Development
-
-```sh
-./scripts/dev.sh
-```
-
-Open the dev server and test the example content in `public/files/`.
-
-## Build
-
-```sh
-./scripts/clean.sh
-./scripts/build.sh
-```
-
-The example content is copied from `public/files/` into `dist/files/`.
+- <https://museum.xieyuheng.com>
