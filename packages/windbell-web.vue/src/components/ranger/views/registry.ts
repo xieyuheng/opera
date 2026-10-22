@@ -2,63 +2,110 @@ import type { FileSystemEntry } from "@xieyuheng/fs.ts/fs"
 import type { Component } from "vue"
 
 import { windbellFs as fs } from "../../../app/fs.ts"
+import { resolveFileLanguage } from "./fileLanguage.ts"
 import MarkdownView from "./MarkdownView.vue"
 import TextView from "./TextView.vue"
 
 const textExtensions = new Set([
+  // shell
   "bash",
-  "c",
-  "cc",
-  "conf",
-  "cpp",
-  "cs",
-  "css",
-  "csv",
-  "cts",
-  "cjs",
   "fish",
-  "go",
-  "graphql",
-  "gql",
+  "sh",
+  "zsh",
+
+  // PowerShell
+  "ps1",
+  "psm1",
+  "psd1",
+
+  // C family
+  "c",
   "h",
+  "cc",
+  "cpp",
   "hpp",
+  "cs",
+
+  // JVM
+  "java",
+  "kt",
+
+  // web
+  "css",
   "htm",
   "html",
-  "ini",
-  "java",
   "js",
+  "cjs",
+  "mjs",
+  "jsx",
+  "ts",
+  "cts",
+  "mts",
+  "tsx",
+  "vue",
+  "less",
+  "scss",
+
+  // JSON
   "json",
   "jsonc",
-  "jsx",
-  "kt",
-  "less",
-  "log",
-  "mjs",
-  "mts",
-  "php",
-  "py",
-  "rb",
-  "rs",
-  "scss",
-  "sh",
-  "sql",
-  "text",
+  "jsonl",
+  "ndjson",
+
+  // config
+  "conf",
+  "env",
+  "ini",
+  "properties",
+  "svg",
   "toml",
-  "ts",
-  "tsv",
-  "tsx",
-  "txt",
-  "vue",
+  "xaml",
   "xml",
   "yaml",
   "yml",
-  "zsh",
+
+  // build tools
+  "cmake",
+  "dockerfile",
+  "mk",
+
+  // diff
+  "diff",
+  "patch",
+
+  // languages
+  "clj",
+  "cljc",
+  "cljs",
+  "edn",
+  "go",
+  "graphql",
+  "gql",
+  "lua",
+  "php",
+  "py",
+  "rake",
+  "rb",
+  "rs",
+  "sql",
+
+  // assembly
+  "asm",
+  "inc",
+  "nasm",
+  "s",
+  "yasm",
+
+  // plain text and data
+  "csv",
+  "log",
+  "text",
+  "tsv",
+  "txt",
 
   // from x-lisp
   "meta",
   "basic",
-  "xvm",
-  "x86",
 ])
 
 function extensionOf(name: string): string {
@@ -75,6 +122,7 @@ export async function resolveFileView(
 
   const extension = extensionOf(entry.name)
   if (extension === "md" || extension === "markdown") return MarkdownView
+  if (resolveFileLanguage(entry.path) !== undefined) return TextView
   if (textExtensions.has(extension)) return TextView
 
   const result = await fs.classifyFile(entry.path)
