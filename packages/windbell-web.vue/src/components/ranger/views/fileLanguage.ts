@@ -39,6 +39,12 @@ const languageByExtension: Record<string, string> = {
   vue: "vue",
   yaml: "yaml",
   yml: "yaml",
+
+  // from x-lisp
+  meta: "meta-lisp",
+  basic: "basic-lisp",
+  xvm: "xvm-lisp",
+  x86: "x86-lisp",
 }
 
 export function resolveFileLanguage(path: string): string | undefined {

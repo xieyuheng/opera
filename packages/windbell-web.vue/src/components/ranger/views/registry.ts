@@ -53,6 +53,12 @@ const textExtensions = new Set([
   "yaml",
   "yml",
   "zsh",
+
+  // from x-lisp
+  "meta",
+  "basic",
+  "xvm",
+  "x86",
 ])
 
 function extensionOf(name: string): string {
