@@ -18,10 +18,7 @@ const { t } = useI18n({
     </template>
 
     <div class="flex flex-col gap-4 p-3">
-      <p
-        class="leading-relaxed whitespace-pre-line"
-        v-text="t('welcomeMessage')"
-      />
+      <p class="whitespace-pre-line" v-text="t('welcomeMessage')" />
 
       <div class="flex flex-wrap items-center gap-2">
         <MediumButton :to="{ name: 'provider-list' }">

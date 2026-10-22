@@ -108,7 +108,7 @@ onBeforeUnmount(() => {
     </div>
 
     <pre
-      class="overflow-x-auto px-3 py-2 font-mono leading-relaxed"
+      class="overflow-x-auto px-3 py-2 font-mono"
     ><HighlightedCodeView
         v-if="highlighted"
         :tokens="highlighted"
