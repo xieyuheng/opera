@@ -16,7 +16,7 @@ const language = computed(() => resolveFileLanguage(props.content.path))
 <template>
   <div class="flex h-full min-h-0 flex-col overflow-hidden">
     <pre
-      class="text-ink min-h-0 flex-1 overflow-auto px-4 py-3 font-mono"
+      class="text-ink min-h-0 flex-1 overflow-auto px-3 py-3 font-mono"
     ><HighlightedText
         :text="text"
         :language="language"

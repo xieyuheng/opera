@@ -99,7 +99,7 @@ watch(
   <section
     class="bg-paper relative flex h-full min-h-0 flex-col overflow-hidden"
   >
-    <p v-if="error !== undefined" class="text-sign-error px-4 py-3">
+    <p v-if="error !== undefined" class="text-sign-error px-3 py-3">
       {{ error }}
     </p>
 

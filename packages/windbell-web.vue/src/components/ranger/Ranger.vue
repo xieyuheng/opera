@@ -186,7 +186,7 @@ onBeforeUnmount(() => {
 
     <section
       v-if="state.isLoading"
-      class="order-1 flex min-h-0 min-w-0 flex-1 items-start px-4 py-3 sm:order-3"
+      class="order-1 flex min-h-0 min-w-0 flex-1 items-start px-3 py-3 sm:order-3"
     >
       <p class="text-ink">
         {{ t("loading") }}
@@ -195,7 +195,7 @@ onBeforeUnmount(() => {
 
     <section
       v-else-if="state.error !== undefined && !state.hasLoaded"
-      class="order-1 flex min-h-0 min-w-0 flex-1 items-start px-4 py-3 sm:order-3"
+      class="order-1 flex min-h-0 min-w-0 flex-1 items-start px-3 py-3 sm:order-3"
     >
       <p class="text-sign-error">
         {{ state.error }}
@@ -206,7 +206,7 @@ onBeforeUnmount(() => {
       v-else
       class="order-1 flex min-h-0 min-w-0 flex-1 flex-col sm:order-3"
     >
-      <p v-if="state.error !== undefined" class="text-sign-error px-4 py-3">
+      <p v-if="state.error !== undefined" class="text-sign-error px-3 py-3">
         {{ state.error }}
       </p>
 
