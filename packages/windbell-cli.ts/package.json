@@ -14,7 +14,7 @@
     "@xieyuheng/semiosis.ts": "workspace:*",
     "@xieyuheng/std.ts": "workspace:*",
     "@xieyuheng/windbell-api.ts": "workspace:*",
-    "vite": "8.3.4"
+    "vite": "8.3.5"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
