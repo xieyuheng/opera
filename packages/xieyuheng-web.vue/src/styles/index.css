@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "@xieyuheng/common-fonts.css";
+
+@theme inline {
+  --font-mono: var(--font-code, ui-monospace, monospace);
+}
+
+html[data-font] body {
+  font-family: var(--font-body);
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+}

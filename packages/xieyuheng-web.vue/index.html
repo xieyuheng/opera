@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-CN" data-font="source-han-sans">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Xie Yuheng's Homepage" />
+    <title>Xie Yuheng</title>
+    <script>
+      const colorScheme = window.matchMedia("(prefers-color-scheme: dark)")
+
+      function applyColorScheme() {
+        document.documentElement.classList.toggle("dark", colorScheme.matches)
+        document.documentElement.style.colorScheme = colorScheme.matches
+          ? "dark"
+          : "light"
+      }
+
+      applyColorScheme()
+      colorScheme.addEventListener("change", applyColorScheme)
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <noscript>
+      <strong>Our website does not work without JavaScript.</strong>
+    </noscript>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

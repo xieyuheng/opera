@@ -1,0 +1,13 @@
+# museum-web example curation
+# 空行会被忽略
+
+0 首页 index.md
+1 笔记 notes/index.md
+2 Markdown测试 notes/markdown.md
+2 列表与任务 notes/lists.md
+2 无标题页面 notes/no-title.md
+2 深层页面 notes/deep/index.md
+3 更深一层 notes/deep/grandchild.md
+1 研究 topics/index.md
+2 线性逻辑 topics/linear-logic.md
+1 关于 about.md

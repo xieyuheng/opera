@@ -1,0 +1,26 @@
+{
+  "name": "@xieyuheng/museum.vue",
+  "private": true,
+  "version": "0.1.0",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles/index.css": "./styles/index.css"
+  },
+  "scripts": {
+    "check": "vue-tsc --noEmit",
+    "format": "oxfmt src --write"
+  },
+  "dependencies": {
+    "@xieyuheng/markdown.vue": "workspace:*",
+    "vue": "^3.5.44"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "oxfmt": "0.73.0",
+    "typescript": "^7.0.2",
+    "vue-tsc": "^3.3.13"
+  }
+}

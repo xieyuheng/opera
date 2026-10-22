@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN" data-font="source-han-sans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="light dark" />
+    <title>Museum</title>
+    <script>
+      const colorScheme = window.matchMedia("(prefers-color-scheme: dark)")
+
+      function applyColorScheme() {
+        document.documentElement.classList.toggle("dark", colorScheme.matches)
+        document.documentElement.style.colorScheme = colorScheme.matches
+          ? "dark"
+          : "light"
+      }
+
+      applyColorScheme()
+      colorScheme.addEventListener("change", applyColorScheme)
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

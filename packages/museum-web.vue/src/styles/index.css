@@ -1,0 +1,21 @@
+@import "@xieyuheng/common-fonts.css";
+@import "@xieyuheng/museum.vue/styles/index.css";
+
+@theme inline {
+  --font-mono: var(--font-code, ui-monospace, monospace);
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+}
+
+html[data-font] body {
+  font-family: var(--font-body);
+}
+
+.dark select,
+.dark option {
+  background-color: var(--color-line);
+  color: var(--color-ink);
+}

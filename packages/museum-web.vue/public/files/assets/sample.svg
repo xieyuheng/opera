@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="180" viewBox="0 0 480 180">
+  <rect width="480" height="180" fill="#111" />
+  <circle cx="110" cy="90" r="48" fill="#fff" />
+  <rect x="190" y="48" width="220" height="84" fill="#72dec2" />
+  <text x="200" y="105" font-family="serif" font-size="42" fill="#111">museum</text>
+</svg>

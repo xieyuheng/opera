@@ -1,0 +1,1 @@
+declare const __MUSEUM_CONTENT_BASE_URL__: string

@@ -1,0 +1,24 @@
+@import "tailwindcss";
+@import "@xieyuheng/markdown.vue/styles/index.css";
+
+@source "../src";
+
+:root {
+  --museum-paper: #ffffff;
+  --museum-ink: #000000;
+  --museum-line: #d8d8d8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --museum-paper: #000000;
+    --museum-ink: #ffffff;
+    --museum-line: #3a3a3a;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--museum-paper);
+  --color-ink: var(--museum-ink);
+  --color-line: var(--museum-line);
+}

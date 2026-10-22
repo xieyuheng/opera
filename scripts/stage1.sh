@@ -17,6 +17,9 @@ set -e
 ./scripts/run-in.sh windbell-cli.ts format.sh
 ./scripts/run-in.sh windbell-api.ts format.sh
 ./scripts/run-in.sh windbell-web.vue format.sh
+./scripts/run-in.sh museum.vue format.sh
+./scripts/run-in.sh museum-web.vue format.sh
+./scripts/run-in.sh xieyuheng-web.vue format.sh
 
 # ts check
 
@@ -31,6 +34,9 @@ set -e
 ./scripts/run-in.sh windbell-cli.ts check.sh
 ./scripts/run-in.sh windbell-api.ts check.sh
 ./scripts/run-in.sh windbell-web.vue check.sh
+./scripts/run-in.sh museum.vue check.sh
+./scripts/run-in.sh museum-web.vue check.sh
+./scripts/run-in.sh xieyuheng-web.vue check.sh
 
 # ts test
 
@@ -48,3 +54,5 @@ set -e
 # frontend build
 
 ./scripts/run-in.sh windbell-web.vue clean.sh build.sh
+./scripts/run-in.sh museum-web.vue clean.sh build.sh
+./scripts/run-in.sh xieyuheng-web.vue clean.sh build.sh

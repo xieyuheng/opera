@@ -1,0 +1,25 @@
+{
+  "name": "@xieyuheng/museum-web.vue",
+  "private": true,
+  "version": "0.1.0",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "dependencies": {
+    "@xieyuheng/common-fonts.css": "workspace:*",
+    "@xieyuheng/museum.vue": "workspace:*",
+    "vue": "^3.5.44",
+    "vue-router": "^5.4.0",
+    "wrangler": "^4.151.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^26.6.5",
+    "@vitejs/plugin-vue": "^6.0.10",
+    "oxfmt": "0.73.0",
+    "sirv": "^3.0.2",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vue-tsc": "^3.3.13"
+  }
+}
