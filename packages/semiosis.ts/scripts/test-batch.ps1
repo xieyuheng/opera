@@ -6,9 +6,9 @@ $PSNativeCommandUseErrorActionPreference = $true
 
 Set-Location (Join-Path $PSScriptRoot '..')
 
-$databaseDir = Join-Path ([IO.Path]::GetTempPath()) ([IO.Path]::GetRandomFileName())
-New-Item -ItemType Directory -Path $databaseDir | Out-Null
-$env:WINDBELL_HOME = $databaseDir
+$operaHome = Join-Path ([IO.Path]::GetTempPath()) ([IO.Path]::GetRandomFileName())
+New-Item -ItemType Directory -Path $operaHome | Out-Null
+$env:OPERA_HOME = $operaHome
 
 try {
   $snapshotDir = 'snapshot/win32'
@@ -39,5 +39,5 @@ try {
   $truncateOutputOut = Join-Path $snapshotDir 'truncate-output.out'
   node src/main.ts batch @truncateOutput > $truncateOutputOut
 } finally {
-  Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $databaseDir
+  Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $operaHome
 }

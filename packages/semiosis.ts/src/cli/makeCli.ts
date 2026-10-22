@@ -6,7 +6,7 @@ import { makeLocalFileSystem } from "@xieyuheng/fs.ts/local-fs"
 import { getPackageJson } from "@xieyuheng/std.ts/node"
 import { makePath } from "@xieyuheng/std.ts/path"
 
-import { resolveAppPaths, defaultAppRoot } from "../app/defaultAppRoot.ts"
+import { resolveWindbellPaths } from "../app/windbellPaths.ts"
 import { makeDatabase } from "../database/index.ts"
 import { makeApiKeyDeleteHandler } from "./commands/ApiKeyDeleteCommand.ts"
 import { makeApiKeyPutHandler } from "./commands/ApiKeyPutCommand.ts"
@@ -20,7 +20,7 @@ import { makeProviderListHandler } from "./commands/ProviderListCommand.ts"
 import { makeReplHandler } from "./commands/ReplCommand.ts"
 
 export function makeCli() {
-  const paths = resolveAppPaths(defaultAppRoot())
+  const paths = resolveWindbellPaths()
   const database = makeDatabase({
     fs: makeLocalFileSystem(),
     path: makePath(process.platform === "win32" ? "win32" : "posix"),

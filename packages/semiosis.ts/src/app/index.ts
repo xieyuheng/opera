@@ -1,1 +1,1 @@
-export * from "./defaultAppRoot.ts"
+export * from "./windbellPaths.ts"

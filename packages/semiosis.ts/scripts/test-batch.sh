@@ -2,9 +2,9 @@
 
 set -e
 
-database_dir="$(mktemp -d)"
-export WINDBELL_HOME="$database_dir"
-trap 'rm -rf "$database_dir"' EXIT
+opera_home="$(mktemp -d)"
+export OPERA_HOME="$opera_home"
+trap 'rm -rf "$opera_home"' EXIT
 
 snapshot_dir="snapshot/linux"
 mkdir -p "$snapshot_dir"

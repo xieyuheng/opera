@@ -10,7 +10,6 @@ import {
   makeSettingsService,
   makeWorkspaceService,
 } from "@xieyuheng/semiosis.ts"
-import { defaultAppRoot, resolveAppPaths } from "@xieyuheng/semiosis.ts"
 import { makeBash } from "@xieyuheng/sh.ts/bash"
 import { makePwsh } from "@xieyuheng/sh.ts/pwsh"
 import { Hono } from "hono"
@@ -27,8 +26,6 @@ import type { WindbellRouterOptions } from "./WindbellRouterOptions.ts"
 
 export function makeWindbellRouter(options: WindbellRouterOptions): Hono {
   const app = new Hono()
-  const appPaths = resolveAppPaths(options.windbellRoot ?? defaultAppRoot())
-  const lockRoot = options.lockRoot ?? appPaths.lockRoot
   const sh = process.platform === "win32" ? makePwsh() : makeBash()
   const sessions = makeSessionService({ database: options.database, sh })
   const workspaces = makeWorkspaceService({ database: options.database })
@@ -44,7 +41,7 @@ export function makeWindbellRouter(options: WindbellRouterOptions): Hono {
   const health = makeHealthController()
   const config = makeConfigController({
     databaseRoot: options.database.root,
-    lockRoot,
+    lockRoot: options.lockRoot,
     shellName: process.platform === "win32" ? "pwsh" : "bash",
   })
 

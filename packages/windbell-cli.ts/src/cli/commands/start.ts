@@ -36,10 +36,10 @@ export function makeStartHandler() {
       process.env.CORS_ORIGIN ??
       defaultCorsOrigin
 
-    const appPaths = S.resolveAppPaths(
-      readOptionalString(context.options, "--windbell-root") ??
-        S.defaultAppRoot(),
-    )
+    const paths = S.resolveWindbellPaths({
+      databaseRoot: readOptionalString(context.options, "--database-root"),
+      lockRoot: readOptionalString(context.options, "--session-lock-root"),
+    })
 
     const webDistRoot =
       readOptionalString(context.options, "--web-dist-root") ??
@@ -54,7 +54,7 @@ export function makeStartHandler() {
     const database = S.makeDatabase({
       fs: makeLocalFileSystem(),
       path: makePath(process.platform === "win32" ? "win32" : "posix"),
-      root: appPaths.databaseRoot,
+      root: paths.databaseRoot,
     })
 
     const accessTokenStore = makeAccessTokenStore({ database })
@@ -65,8 +65,7 @@ export function makeStartHandler() {
       hostname,
       port,
       corsOrigin,
-      windbellRoot: appPaths.root,
-      lockRoot: appPaths.lockRoot,
+      lockRoot: paths.lockRoot,
       webDistRoot,
     })
 

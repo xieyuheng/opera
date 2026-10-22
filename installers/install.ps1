@@ -1,24 +1,24 @@
 #!/usr/bin/env pwsh
 #Requires -Version 7.3
 #
-# windbell installer (Windows)
+# opera installer (Windows)
 #
 # This script may be downloaded and saved anywhere. It does not assume
-# that it is run from inside the windbell source tree.
+# that it is run from inside the opera source tree.
 #
 # Usage:
 #   pwsh -File install.ps1
 #   pwsh -File install.ps1 --no-build
 #
 # Environment overrides:
-#   WINDBELL_HOME          default: $HOME\.windbell
-#   WINDBELL_REPO          default: https://github.com/xieyuheng/windbell.git
-#   WINDBELL_REPO_FALLBACK default: https://git.sr.ht/~xieyuheng/windbell
-#   WINDBELL_VERSION       default: master
-#   WINDBELL_NODE_VERSION  default: v24.21.0
-#   WINDBELL_PNPM_VERSION  default: 12.9.1
-#   WINDBELL_NODE_MIRROR   default: https://nodejs.org/dist
-#   WINDBELL_USER_AGENT    default: a browser-like UA
+#   OPERA_HOME          default: $HOME\.opera
+#   OPERA_REPO          default: https://github.com/xieyuheng/opera.git
+#   OPERA_REPO_FALLBACK default: https://git.sr.ht/~xieyuheng/opera
+#   OPERA_VERSION       default: master
+#   OPERA_NODE_VERSION  default: v24.21.0
+#   OPERA_PNPM_VERSION  default: 12.9.1
+#   OPERA_NODE_MIRROR   default: https://nodejs.org/dist
+#   OPERA_USER_AGENT    default: a browser-like UA
 #
 # NOTE: native commands are allowed to fail here (downloads fall back to
 # mirrors, git fetch falls back to other remotes). We therefore keep
@@ -73,9 +73,9 @@ function Get-NodeMirrors {
 }
 
 function Get-GitRepos {
-  $list = @($script:WindbellRepo)
-  if ($script:WindbellRepoFallback -and $script:WindbellRepoFallback -ne $script:WindbellRepo) {
-    $list += $script:WindbellRepoFallback
+  $list = @($script:OperaRepo)
+  if ($script:OperaRepoFallback -and $script:OperaRepoFallback -ne $script:OperaRepo) {
+    $list += $script:OperaRepoFallback
   }
   return $list
 }
@@ -83,20 +83,20 @@ function Get-GitRepos {
 # ---------------------------------------------------------------------------
 # configuration (environment first, --options override later)
 
-$script:WindbellHome         = Get-EnvOr 'WINDBELL_HOME'          (Join-Path $HOME '.windbell')
-$script:WindbellRepo         = Get-EnvOr 'WINDBELL_REPO'          'https://github.com/xieyuheng/windbell.git'
-$script:WindbellRepoFallback = Get-EnvOr 'WINDBELL_REPO_FALLBACK' 'https://git.sr.ht/~xieyuheng/windbell'
-$script:WindbellVersion      = Get-EnvOr 'WINDBELL_VERSION'       'master'
-$script:NodeVersion          = Get-EnvOr 'WINDBELL_NODE_VERSION'  'v24.21.0'
-$script:PnpmVersion          = Get-EnvOr 'WINDBELL_PNPM_VERSION'  '12.9.1'
-$script:DoBuild              = $true
+$script:OperaHome         = Get-EnvOr 'OPERA_HOME'          (Join-Path $HOME '.opera')
+$script:OperaRepo         = Get-EnvOr 'OPERA_REPO'          'https://github.com/xieyuheng/opera.git'
+$script:OperaRepoFallback = Get-EnvOr 'OPERA_REPO_FALLBACK' 'https://git.sr.ht/~xieyuheng/opera'
+$script:OperaVersion      = Get-EnvOr 'OPERA_VERSION'       'master'
+$script:NodeVersion       = Get-EnvOr 'OPERA_NODE_VERSION'  'v24.21.0'
+$script:PnpmVersion       = Get-EnvOr 'OPERA_PNPM_VERSION'  '12.9.1'
+$script:DoBuild           = $true
 
-$script:NodeMirrorIsSet   = -not [string]::IsNullOrEmpty([Environment]::GetEnvironmentVariable('WINDBELL_NODE_MIRROR'))
-$script:NodeMirror        = Get-EnvOr 'WINDBELL_NODE_MIRROR' 'https://nodejs.org/dist'
-$script:UserAgent         = Get-EnvOr 'WINDBELL_USER_AGENT' 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-$script:ConnectTimeout    = Get-EnvOr 'WINDBELL_CONNECT_TIMEOUT' '15'
-$script:DownloadTimeout   = Get-EnvOr 'WINDBELL_DOWNLOAD_TIMEOUT' '600'
-$script:DownloadRetries   = Get-EnvOr 'WINDBELL_DOWNLOAD_RETRIES' '3'
+$script:NodeMirrorIsSet   = -not [string]::IsNullOrEmpty([Environment]::GetEnvironmentVariable('OPERA_NODE_MIRROR'))
+$script:NodeMirror        = Get-EnvOr 'OPERA_NODE_MIRROR' 'https://nodejs.org/dist'
+$script:UserAgent         = Get-EnvOr 'OPERA_USER_AGENT' 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+$script:ConnectTimeout    = Get-EnvOr 'OPERA_CONNECT_TIMEOUT' '15'
+$script:DownloadTimeout   = Get-EnvOr 'OPERA_DOWNLOAD_TIMEOUT' '600'
+$script:DownloadRetries   = Get-EnvOr 'OPERA_DOWNLOAD_RETRIES' '3'
 
 # ---------------------------------------------------------------------------
 # platform / download / checksum
@@ -236,14 +236,14 @@ function Install-Source {
       return
     }
 
-    Write-Log "updating windbell source to $script:WindbellVersion"
+    Write-Log "updating opera source to $script:OperaVersion"
 
     & git -C $src fetch --tags origin 2>$null
 
     if ($LASTEXITCODE -eq 0) {
-      & git -C $src checkout $script:WindbellVersion 2>$null
-      if ($LASTEXITCODE -ne 0) { Write-Die "cannot checkout $script:WindbellVersion in $src" }
-      & git -C $src pull --ff-only origin $script:WindbellVersion 2>$null
+      & git -C $src checkout $script:OperaVersion 2>$null
+      if ($LASTEXITCODE -ne 0) { Write-Die "cannot checkout $script:OperaVersion in $src" }
+      & git -C $src pull --ff-only origin $script:OperaVersion 2>$null
       return
     }
 
@@ -251,7 +251,7 @@ function Install-Source {
 
     $fetched = $false
     foreach ($repo in Get-GitRepos) {
-      Write-Log "fetching $script:WindbellVersion from $repo"
+      Write-Log "fetching $script:OperaVersion from $repo"
 
       & git -C $src fetch --tags $repo 2>$null
       if ($LASTEXITCODE -ne 0) {
@@ -259,18 +259,18 @@ function Install-Source {
         continue
       }
 
-      & git -C $src checkout $script:WindbellVersion 2>$null
+      & git -C $src checkout $script:OperaVersion 2>$null
       if ($LASTEXITCODE -ne 0) {
-        Write-Warn "cannot checkout $script:WindbellVersion after fetching from $repo"
+        Write-Warn "cannot checkout $script:OperaVersion after fetching from $repo"
         continue
       }
 
-      & git -C $src pull --ff-only $repo $script:WindbellVersion 2>$null
+      & git -C $src pull --ff-only $repo $script:OperaVersion 2>$null
       $fetched = $true
       break
     }
 
-    if (-not $fetched) { Write-Die 'failed to update windbell source from all repositories' }
+    if (-not $fetched) { Write-Die 'failed to update opera source from all repositories' }
     return
   }
 
@@ -283,15 +283,15 @@ function Install-Source {
   $cloned = $false
   foreach ($repo in Get-GitRepos) {
     Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $src
-    Write-Log "cloning windbell source into $src from $repo"
+    Write-Log "cloning opera source into $src from $repo"
 
-    & git clone --branch $script:WindbellVersion $repo $src 2>$null
+    & git clone --branch $script:OperaVersion $repo $src 2>$null
     if ($LASTEXITCODE -eq 0) { $cloned = $true; break }
 
     Write-Warn "git clone failed: $repo"
   }
 
-  if (-not $cloned) { Write-Die 'failed to clone windbell source from all repositories' }
+  if (-not $cloned) { Write-Die 'failed to clone opera source from all repositories' }
 }
 
 # ---------------------------------------------------------------------------
@@ -337,7 +337,7 @@ function Install-Pnpm {
   Set-Content -LiteralPath (Join-Path $script:LibDir 'pnpm\current') -Value $script:PnpmVersion
 }
 
-function Set-WindbellEnv {
+function Set-OperaEnv {
   $env:PATH                     = "$script:NodeHome;$env:PATH"
   $env:XDG_CACHE_HOME           = $script:TmpDir
   $env:npm_config_cache         = Join-Path $script:TmpDir 'npm'
@@ -349,7 +349,7 @@ function Invoke-PnpmInstall {
 
   Push-Location $script:SrcDir
   try {
-    Set-WindbellEnv
+    Set-OperaEnv
     & $script:PnpmBin install --frozen-lockfile --store-dir (Join-Path $script:LibDir 'pnpm\store')
     if ($LASTEXITCODE -ne 0) { Write-Die 'pnpm install failed' }
   } finally {
@@ -365,7 +365,7 @@ function Invoke-RunIn {
 
   Push-Location $script:SrcDir
   try {
-    Set-WindbellEnv
+    Set-OperaEnv
     & (Join-Path $script:SrcDir 'scripts\run-in.ps1') $Package @Tasks
     if ($LASTEXITCODE -ne 0) { Write-Die "task failed: $Package $($Tasks -join ' ')" }
   } finally {
@@ -395,43 +395,43 @@ function Write-Shims {
   $ascii = [Text.Encoding]::ASCII
   $init = @(
     '@echo off'
-    'rem windbell runtime init (Windows cmd)'
+    'rem opera runtime init (Windows cmd)'
     'rem'
-    'rem Sourced (via call) by the windbell bin shims. It resolves'
-    'rem WINDBELL_HOME and the platform, then reads NODE_HOME and'
+    'rem Sourced (via call) by the opera bin shims. It resolves'
+    'rem OPERA_HOME and the platform, then reads NODE_HOME and'
     'rem PNPM_HOME from the "current" version files.'
     'rem'
     'rem This file must NOT use setlocal: the caller needs the variables.'
     ''
-    'if "%WINDBELL_HOME%"=="" set "WINDBELL_HOME=%~dp0.."'
-    ('set "WINDBELL_PLATFORM=' + $script:WindbellPlatform + '"')
-    'set "NODE_CURRENT=%WINDBELL_HOME%\lib\node\%WINDBELL_PLATFORM%\current"'
-    'set "PNPM_CURRENT=%WINDBELL_HOME%\lib\pnpm\current"'
+    'if "%OPERA_HOME%"=="" set "OPERA_HOME=%~dp0.."'
+    ('set "OPERA_PLATFORM=' + $script:OperaPlatform + '"')
+    'set "NODE_CURRENT=%OPERA_HOME%\lib\node\%OPERA_PLATFORM%\current"'
+    'set "PNPM_CURRENT=%OPERA_HOME%\lib\pnpm\current"'
     ''
     'if not exist "%NODE_CURRENT%" ('
-    '  >&2 echo windbell: Node is not installed for platform %WINDBELL_PLATFORM%'
-    '  >&2 echo windbell: run %WINDBELL_HOME%\src\windbell\installers\install.ps1 first'
+    '  >&2 echo opera: Node is not installed for platform %OPERA_PLATFORM%'
+    '  >&2 echo opera: run %OPERA_HOME%\src\opera\installers\install.ps1 first'
     '  exit /b 1'
     ')'
     ''
     'if not exist "%PNPM_CURRENT%" ('
-    '  >&2 echo windbell: pnpm is not installed'
+    '  >&2 echo opera: pnpm is not installed'
     '  exit /b 1'
     ')'
     ''
     'set "NODE_VERSION="'
     'set /p NODE_VERSION=<"%NODE_CURRENT%"'
-    'set "NODE_HOME=%WINDBELL_HOME%\lib\node\%WINDBELL_PLATFORM%\%NODE_VERSION%"'
+    'set "NODE_HOME=%OPERA_HOME%\lib\node\%OPERA_PLATFORM%\%NODE_VERSION%"'
     ''
     'set "PNPM_VERSION="'
     'set /p PNPM_VERSION=<"%PNPM_CURRENT%"'
-    'set "PNPM_HOME=%WINDBELL_HOME%\lib\pnpm\%PNPM_VERSION%"'
+    'set "PNPM_HOME=%OPERA_HOME%\lib\pnpm\%PNPM_VERSION%"'
     ''
     'exit /b 0'
   )
 
   [IO.File]::WriteAllText(
-    (Join-Path $script:LibexecDir 'windbell-init.cmd'),
+    (Join-Path $script:LibexecDir 'opera-init.cmd'),
     (($init -join "`r`n") + "`r`n"),
     $ascii
   )
@@ -441,30 +441,28 @@ function Write-Shims {
   $preamble = @(
     '@echo off'
     'setlocal'
-    'set "WINDBELL_BIN_DIR=%~dp0"'
-    'set "WINDBELL_INIT=%WINDBELL_BIN_DIR%..\libexec\windbell-init.cmd"'
-    'if not exist "%WINDBELL_INIT%" set "WINDBELL_INIT=%USERPROFILE%\.windbell\libexec\windbell-init.cmd"'
-    'if not exist "%WINDBELL_INIT%" ('
-    '  >&2 echo windbell: cannot find windbell-init.cmd'
+    'set "OPERA_BIN_DIR=%~dp0"'
+    'set "OPERA_INIT=%OPERA_BIN_DIR%..\libexec\opera-init.cmd"'
+    'if not exist "%OPERA_INIT%" set "OPERA_INIT=%USERPROFILE%\.opera\libexec\opera-init.cmd"'
+    'if not exist "%OPERA_INIT%" ('
+    '  >&2 echo opera: cannot find opera-init.cmd'
     '  exit /b 1'
     ')'
-    'call "%WINDBELL_INIT%"'
+    'call "%OPERA_INIT%"'
     'if errorlevel 1 exit /b 1'
   )
 
   $shims['semiosis.cmd'] = $preamble + @(
     'set "PATH=%NODE_HOME%;%PATH%"'
-    'set "NODE_COMPILE_CACHE=%WINDBELL_HOME%\tmp\node"'
-    'if "%WINDBELL_DATABASE%"=="" set "WINDBELL_DATABASE=%WINDBELL_HOME%\database"'
-    '"%NODE_HOME%\node.exe" --stack-size=65536 "%WINDBELL_HOME%\src\windbell\packages\semiosis.ts\src\main.ts" %*'
+    'set "NODE_COMPILE_CACHE=%OPERA_HOME%\tmp\node"'
+    '"%NODE_HOME%\node.exe" --stack-size=65536 "%OPERA_HOME%\src\opera\packages\semiosis.ts\src\main.ts" %*'
     'exit /b %ERRORLEVEL%'
   )
 
   $shims['windbell.cmd'] = $preamble + @(
     'set "PATH=%NODE_HOME%;%PATH%"'
-    'set "NODE_COMPILE_CACHE=%WINDBELL_HOME%\tmp\node"'
-    'if "%WINDBELL_DATABASE%"=="" set "WINDBELL_DATABASE=%WINDBELL_HOME%\database"'
-    '"%NODE_HOME%\node.exe" "%WINDBELL_HOME%\src\windbell\packages\windbell-cli.ts\src\main.ts" %*'
+    'set "NODE_COMPILE_CACHE=%OPERA_HOME%\tmp\node"'
+    '"%NODE_HOME%\node.exe" "%OPERA_HOME%\src\opera\packages\windbell-cli.ts\src\main.ts" %*'
     'exit /b %ERRORLEVEL%'
   )
 
@@ -475,48 +473,34 @@ function Write-Shims {
 }
 
 # ---------------------------------------------------------------------------
-# database / final message / usage
-
-function Initialize-Database {
-  New-Item -ItemType Directory -Force -Path $script:DbDir | Out-Null
-
-  $gitignore = Join-Path $script:DbDir '.gitignore'
-  if (-not (Test-Path $gitignore)) {
-    [IO.File]::WriteAllText($gitignore, ".secrets/`n")
-  }
-
-  if (-not (Test-Path (Join-Path $script:DbDir '.git'))) {
-    & git -C $script:DbDir init -q 2>$null
-  }
-}
+# final message / usage
 
 function Write-FinalMessage {
   Write-Host ''
-  Write-Log 'windbell installed'
-  Write-Host "  home:     $script:WindbellHome"
+  Write-Log 'opera installed'
+  Write-Host "  home:     $script:OperaHome"
   Write-Host "  node:     $(Join-Path $script:NodeHome 'node.exe')"
   Write-Host "  pnpm:     $script:PnpmBin"
   Write-Host "  source:   $script:SrcDir"
-  Write-Host "  database: $script:DbDir"
 
   Write-Host ''
-  Write-Host 'Add this directory to your PATH if you want windbell commands available:'
+  Write-Host 'Add this directory to your PATH if you want opera commands available:'
   Write-Host ''
   Write-Host "  $script:BinDir"
   Write-Host ''
-  Write-Host 'This directory contains only windbell commands; Node, npm, and pnpm are not exposed.'
+  Write-Host 'This directory contains the installed opera commands; Node, npm, and pnpm are not exposed.'
   Write-Host ''
 }
 
 function Write-Usage {
   @(
-    'windbell installer (Windows)'
+    'opera installer (Windows)'
     ''
     'Usage:'
     '  pwsh -File install.ps1 [options]'
     ''
     'Options:'
-    '  --home DIR            install root (default: $HOME\.windbell)'
+    '  --home DIR            install root (default: $HOME\.opera)'
     '  --repo URL            git repository URL'
     '  --version REF         git branch or tag (default: master)'
     '  --node-version VER    Node version, e.g. v24.21.0'
@@ -538,13 +522,13 @@ function Main {
 
     if ($arg -eq '--home') {
       $i++; if ($i -ge $Arguments.Count) { Write-Die '--home requires an argument' }
-      $script:WindbellHome = $Arguments[$i]; $i++
+      $script:OperaHome = $Arguments[$i]; $i++
     } elseif ($arg -eq '--repo') {
       $i++; if ($i -ge $Arguments.Count) { Write-Die '--repo requires an argument' }
-      $script:WindbellRepo = $Arguments[$i]; $i++
+      $script:OperaRepo = $Arguments[$i]; $i++
     } elseif ($arg -eq '--version') {
       $i++; if ($i -ge $Arguments.Count) { Write-Die '--version requires an argument' }
-      $script:WindbellVersion = $Arguments[$i]; $i++
+      $script:OperaVersion = $Arguments[$i]; $i++
     } elseif ($arg -eq '--node-version') {
       $i++; if ($i -ge $Arguments.Count) { Write-Die '--node-version requires an argument' }
       $script:NodeVersion = $Arguments[$i]; $i++
@@ -560,12 +544,12 @@ function Main {
     }
   }
 
-  $script:SrcDir = Join-Path $script:WindbellHome 'src\windbell'
-  $script:LibDir = Join-Path $script:WindbellHome 'lib'
-  $script:LibexecDir = Join-Path $script:WindbellHome 'libexec'
-  $script:BinDir = Join-Path $script:WindbellHome 'bin'
-  $script:TmpDir = Join-Path $script:WindbellHome 'tmp'
-  $script:DbDir  = Join-Path $script:WindbellHome 'database'
+  $script:SrcDir = Join-Path $script:OperaHome 'src\opera'
+  $script:LibDir = Join-Path $script:OperaHome 'lib'
+  $script:LibexecDir = Join-Path $script:OperaHome 'libexec'
+  $script:BinDir = Join-Path $script:OperaHome 'bin'
+  $script:TmpDir = Join-Path $script:OperaHome 'tmp'
+  $script:VarDir = Join-Path $script:OperaHome 'var'
 
   Assert-Cmd 'git'
 
@@ -576,16 +560,15 @@ function Main {
     (Join-Path $script:TmpDir 'node'), (Join-Path $script:TmpDir 'pnpm'),
     (Join-Path $script:LibDir 'node'), (Join-Path $script:LibDir 'pnpm'),
     (Join-Path $script:LibDir 'pnpm\store'), (Join-Path $script:LibDir 'npm'),
-    (Join-Path $script:LibDir 'npm\global') | Out-Null
+    (Join-Path $script:LibDir 'npm\global'), $script:VarDir | Out-Null
 
-  $script:WindbellPlatform = Get-Platform
+  $script:OperaPlatform = Get-Platform
 
-  Install-Node $script:WindbellPlatform
+  Install-Node $script:OperaPlatform
   Install-Source
   Install-Pnpm
   Invoke-PnpmInstall
   Write-Shims
-  Initialize-Database
   Invoke-BuildProject
   Write-FinalMessage
 }
