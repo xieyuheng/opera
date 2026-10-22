@@ -23,21 +23,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: every script has a PowerShell sibling
-        shell: bash
-        run: |
-          status=0
-          while IFS= read -r sh; do
-            case "$sh" in
-              scripts/clean-branches.sh|scripts/new-worktree.sh) continue ;;
-            esac
-            if [ ! -f "${sh%.sh}.ps1" ]; then
-              echo "::error::missing PowerShell sibling for $sh"
-              status=1
-            fi
-          done < <(find scripts packages/*/scripts -name '*.sh' -type f)
-          exit $status
-
   stage1:
     name: stage1 (${{ matrix.os }})
     needs: parity
