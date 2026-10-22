@@ -74,6 +74,9 @@ function handleHeaderClick(): void {
   >
     <header
       class="border-line flex h-10 shrink-0 items-center border-t border-b sm:border-t-0"
+      :class="{
+        'border-b-0': !props.expanded,
+      }"
     >
       <button
         type="button"
