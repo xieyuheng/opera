@@ -1,7 +1,5 @@
-# 文档
 [windbell-docs.vitepress] 改善文档
-[docs] 已经实现了 museum.vue 否还需要使用 vitepress？
-- studium 和 opera 不在一个 repo，怎么办？
+# 截图
 [windbell.ts] 文学式编程 agent interpret 和 agent loop
 [windbell-web.vue] 利用调色板设计 theme -- 之后才能截图
 [windbell-docs.vitepress] 网站截图作为文档
