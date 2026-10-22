@@ -106,7 +106,7 @@ test("makeSemiosisService propagates a lock service to sessions", async (t) => {
     [Symbol.asyncIterator]()
 
   await assert.rejects(iterator.next(), /session not found: missing/)
-  assert.deepEqual(lockedKeys, ["session:missing"])
+  assert.deepEqual(lockedKeys, ["missing"])
 })
 
 test("makeSemiosisService creates a file lock from lockRoot", async (t) => {

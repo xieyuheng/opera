@@ -33,6 +33,8 @@ test("session lock leases coordinate a local database", async (t) => {
     lockRoot,
   })
 
+  assert.deepEqual(await fs.readdir(lockRoot), ["session-1.lock"])
+
   await assert.rejects(
     acquireSessionLease({
       database,

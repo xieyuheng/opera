@@ -67,7 +67,7 @@ test("sessions interpret locks the session and rejects concurrent runs", async (
   await waitFor(() => tryLockCalls.length === 1 && held)
 
   assert.deepEqual(tryLockCalls[0], {
-    key: "session:session-1",
+    key: "session-1",
     ttlMs: 60_000,
   })
 
@@ -83,7 +83,7 @@ test("sessions interpret locks the session and rejects concurrent runs", async (
   })
   assert.equal(tryLockCalls.length, 2)
   assert.deepEqual(tryLockCalls[1], {
-    key: "session:session-1",
+    key: "session-1",
     ttlMs: 60_000,
   })
 

@@ -25,7 +25,7 @@ export async function acquireSessionLease(
     root: options.lockRoot,
   })
 
-  const result = await lockService.tryLock(`session:${options.sessionId}`, {
+  const result = await lockService.tryLock(options.sessionId, {
     ttlMs: lockTtlMs,
   })
 

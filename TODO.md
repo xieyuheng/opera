@@ -1,11 +1,3 @@
----
-
-现在 为什么 session lock 的前缀有两个 session_session-？
-
-- 比如：session_session-a58a47a4-f786-47ff-b0bd-0fd1b12ce4e5.lock
-
----
-
 [docs] 已经实现了 museum.vue 否还需要使用 vitepress？
 [windbell-web.vue] 改善 ranger 移动端布局
 [windbell-web.vue] ranger 支持语法高亮

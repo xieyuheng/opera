@@ -92,10 +92,9 @@ export function makeSessionService(
       return
     }
 
-    const lockResult = await lockService.tryLock(
-      `session:${interpretOptions.sessionId}`,
-      { ttlMs: lockTtlMs },
-    )
+    const lockResult = await lockService.tryLock(interpretOptions.sessionId, {
+      ttlMs: lockTtlMs,
+    })
 
     if (lockResult.kind === "ErrorResult") {
       yield lockErrorEvent(lockResult.error.message)
