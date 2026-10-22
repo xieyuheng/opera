@@ -11,6 +11,7 @@ import SessionUsageButton from "./SessionUsageButton.vue"
 
 const props = defineProps<{
   state: SessionState
+  menuOpen: boolean
 }>()
 
 const emit = defineEmits<{
@@ -51,7 +52,10 @@ const userSummaries = computed(() => {
       :context-window="props.state.contextWindow"
     />
 
-    <div class="flex items-center gap-2">
+    <div
+      class="items-center gap-2 sm:flex"
+      :class="props.menuOpen ? 'flex' : 'hidden'"
+    >
       <SessionUsageButton
         v-if="props.state.totalUsage !== undefined"
         :total-usage="props.state.totalUsage"

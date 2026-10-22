@@ -116,6 +116,7 @@ const sessionDividerOptions = {
 }
 
 const state = getSessionState(sessionId.value)
+const toolbarMenuOpen = ref(false)
 const rangerOpen = ref(readStoredRangerOpen(sessionId.value))
 const signDisplayMode = ref<SignDisplayMode>(
   readStoredSignDisplayMode(sessionId.value),
@@ -284,12 +285,17 @@ useHead(() => ({
         <div class="pointer-events-none absolute inset-x-0 top-0 z-50">
           <div class="flex flex-wrap items-start justify-between gap-2">
             <div class="mt-1 px-1 sm:mt-2 sm:px-2">
-              <SessionToolbarLeft :state="state" @select-turn="selectTurn" />
+              <SessionToolbarLeft
+                :state="state"
+                :menu-open="toolbarMenuOpen"
+                @select-turn="selectTurn"
+              />
             </div>
 
             <div class="mt-0.5 pr-2 sm:mt-2 sm:px-2">
               <SessionToolbarRight
                 class="shrink-0"
+                v-model:menu-open="toolbarMenuOpen"
                 :ranger-open="rangerOpen"
                 :next-sign-display-mode="nextDisplayMode"
                 @back="goBack"

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Menu, X } from "@lucide/vue"
-import { computed, ref } from "vue"
+import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 
 import MediumButton from "../../components/buttons/MediumButton.vue"
@@ -8,11 +8,13 @@ import { sessionMessages } from "./Session.i18n.ts"
 import type { SignDisplayMode } from "./sessionSignDisplayMode.ts"
 
 const props = defineProps<{
+  menuOpen: boolean
   rangerOpen: boolean
   nextSignDisplayMode: SignDisplayMode
 }>()
 
 const emit = defineEmits<{
+  "update:menuOpen": [value: boolean]
   back: []
   toggleRanger: []
   cycleSignDisplayMode: []
@@ -22,8 +24,6 @@ const { t } = useI18n({
   messages: sessionMessages,
   useScope: "local",
 })
-
-const mobileMenuOpen = ref(false)
 
 const nextSignDisplayLabel = computed(() => {
   switch (props.nextSignDisplayMode) {
@@ -42,20 +42,20 @@ const nextSignDisplayLabel = computed(() => {
     <button
       type="button"
       class="text-sign-user pointer-events-auto inline-flex cursor-pointer items-center justify-center border-0 bg-transparent p-0 sm:hidden"
-      :title="mobileMenuOpen ? t('closeMenu') : t('openMenu')"
-      :aria-label="mobileMenuOpen ? t('closeMenu') : t('openMenu')"
-      :aria-expanded="mobileMenuOpen"
+      :title="props.menuOpen ? t('closeMenu') : t('openMenu')"
+      :aria-label="props.menuOpen ? t('closeMenu') : t('openMenu')"
+      :aria-expanded="props.menuOpen"
       aria-controls="session-toolbar-right-menu"
-      @click="mobileMenuOpen = !mobileMenuOpen"
+      @click="emit('update:menuOpen', !props.menuOpen)"
     >
-      <X v-if="mobileMenuOpen" class="size-7" aria-hidden="true" />
+      <X v-if="props.menuOpen" class="size-7" aria-hidden="true" />
       <Menu v-else class="size-7" aria-hidden="true" />
     </button>
 
     <div
       id="session-toolbar-right-menu"
       class="absolute top-full right-0 z-50 mt-2 w-max flex-col gap-2 sm:static sm:mt-0 sm:flex sm:w-auto sm:flex-row"
-      :class="mobileMenuOpen ? 'flex' : 'hidden'"
+      :class="props.menuOpen ? 'flex' : 'hidden'"
     >
       <div class="flex items-center">
         <MediumButton type="button" @click="emit('back')">
