@@ -174,7 +174,7 @@ function parentDirectory(path: string): string {
     :id="props.popoverId"
     ref="popover"
     popover="auto"
-    class="w-[30rem] max-w-8/9 bg-transparent"
+    class="workspace-create-popover w-[30rem] max-w-8/9 bg-transparent"
     :style="{
       position: 'fixed',
       inset: '0',
@@ -260,3 +260,10 @@ function parentDirectory(path: string): string {
     </Card>
   </div>
 </template>
+
+<style scoped>
+.workspace-create-popover::backdrop {
+  background-color: color-mix(in oklab, var(--color-ink) 10%, transparent);
+  backdrop-filter: blur(2px);
+}
+</style>
