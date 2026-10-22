@@ -1,5 +1,5 @@
-import type * as S from "@xieyuheng/semiosis.ts/core"
 import type { DustbinSessionPreview } from "@xieyuheng/windbell-api.ts/client"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import { reactive } from "vue"
 
 import { windbell } from "../../app/windbell"
@@ -8,7 +8,7 @@ import { cancelPendingStateLoad } from "../../utils/state/loadableState.ts"
 const sessionPreviewLimit = 5
 
 export type SessionDustbinState = {
-  workspaceId: S.WorkspaceId
+  workspaceId: W.WorkspaceId
   sessions: Array<DustbinSessionPreview>
   hasLoaded: boolean
   isLoading: boolean
@@ -18,7 +18,7 @@ export type SessionDustbinState = {
 }
 
 export function makeSessionDustbinState(
-  workspaceId: S.WorkspaceId,
+  workspaceId: W.WorkspaceId,
 ): SessionDustbinState {
   return reactive<SessionDustbinState>({
     workspaceId,
@@ -31,10 +31,10 @@ export function makeSessionDustbinState(
   })
 }
 
-const sessionDustbinStates = new Map<S.WorkspaceId, SessionDustbinState>()
+const sessionDustbinStates = new Map<W.WorkspaceId, SessionDustbinState>()
 
 export function getSessionDustbinState(
-  workspaceId: S.WorkspaceId,
+  workspaceId: W.WorkspaceId,
 ): SessionDustbinState {
   let state = sessionDustbinStates.get(workspaceId)
 
@@ -83,7 +83,7 @@ export async function loadSessionDustbin(
 
 export async function restoreSession(
   state: SessionDustbinState,
-  sessionId: S.SessionId,
+  sessionId: W.SessionId,
 ): Promise<void> {
   await windbell.dustbin.sessions.restore(sessionId)
   cancelPendingStateLoad(state)
@@ -92,7 +92,7 @@ export async function restoreSession(
 
 export async function removeSession(
   state: SessionDustbinState,
-  sessionId: S.SessionId,
+  sessionId: W.SessionId,
 ): Promise<void> {
   await windbell.dustbin.sessions.remove(sessionId)
   cancelPendingStateLoad(state)

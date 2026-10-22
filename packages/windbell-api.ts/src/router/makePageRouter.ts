@@ -1,13 +1,13 @@
-import type * as S from "@xieyuheng/semiosis.ts"
+import type * as W from "@xieyuheng/windbell.ts"
 import { Hono } from "hono"
 
 import { makePageController } from "../controllers/PageController.ts"
 import * as PageService from "../services/Page.ts"
 
 export type PageRouterOptions = {
-  database: S.Database
-  providers: S.ProviderService
-  settings: S.SettingsService
+  database: W.Database
+  providers: W.ProviderService
+  settings: W.SettingsService
 }
 
 export function makePageRouter(options: PageRouterOptions): Hono {

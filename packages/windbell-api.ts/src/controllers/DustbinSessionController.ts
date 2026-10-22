@@ -1,12 +1,12 @@
-import { makeServiceError } from "@xieyuheng/semiosis.ts"
-import type * as S from "@xieyuheng/semiosis.ts"
 import { err } from "@xieyuheng/std.ts/result"
+import { makeServiceError } from "@xieyuheng/windbell.ts"
+import type * as W from "@xieyuheng/windbell.ts"
 import { z } from "zod"
 
 import { makeAction } from "../http/makeAction.ts"
 
 export type DustbinSessionControllerOptions = {
-  dustbinSessions: S.DustbinSessionService
+  dustbinSessions: W.DustbinSessionService
 }
 
 export const ListDustbinSessionsInputSchema = z

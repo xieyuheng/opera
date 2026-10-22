@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { makeSignPreview } from "@xieyuheng/semiosis.ts/core"
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import { makeSignPreview } from "@xieyuheng/windbell.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue"
 import { useI18n } from "vue-i18n"
 
@@ -76,7 +76,7 @@ const signs = computed(() => {
   return [...props.state.context, ...activeSigns]
 })
 
-function defaultSignExpanded(sign: S.Sign): boolean {
+function defaultSignExpanded(sign: W.Sign): boolean {
   if (props.signDisplayMode === "overview") return false
 
   if (props.signDisplayMode === "digest") {
@@ -86,7 +86,7 @@ function defaultSignExpanded(sign: S.Sign): boolean {
   return true
 }
 
-function isSignExpanded(sign: S.Sign, index: number): boolean {
+function isSignExpanded(sign: W.Sign, index: number): boolean {
   const override = signOverrides.value.get(index)
   if (override === "expanded") return true
   if (override === "collapsed") return false
@@ -94,11 +94,11 @@ function isSignExpanded(sign: S.Sign, index: number): boolean {
   return defaultSignExpanded(sign)
 }
 
-function isStreamingSign(sign: S.Sign): boolean {
+function isStreamingSign(sign: W.Sign): boolean {
   return props.state.activeTurn?.partialSign === sign
 }
 
-function toggleSign(index: number, sign: S.Sign): void {
+function toggleSign(index: number, sign: W.Sign): void {
   const next = new Map(signOverrides.value)
   next.set(index, isSignExpanded(sign, index) ? "collapsed" : "expanded")
   signOverrides.value = next

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue"
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
 
@@ -23,7 +23,7 @@ const state = getWorkspaceDustbinState()
 const sessionPreviewLimit = 3
 const busyWorkspaceId = ref<string | undefined>(undefined)
 
-async function restore(workspace: S.DustbinWorkspace): Promise<void> {
+async function restore(workspace: W.DustbinWorkspace): Promise<void> {
   busyWorkspaceId.value = workspace.id
   state.error = undefined
 
@@ -36,7 +36,7 @@ async function restore(workspace: S.DustbinWorkspace): Promise<void> {
   }
 }
 
-async function remove(workspace: S.DustbinWorkspace): Promise<void> {
+async function remove(workspace: W.DustbinWorkspace): Promise<void> {
   busyWorkspaceId.value = workspace.id
   state.error = undefined
 

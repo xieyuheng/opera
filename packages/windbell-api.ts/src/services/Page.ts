@@ -1,10 +1,10 @@
+import { err, isError, ok, type Result } from "@xieyuheng/std.ts/result"
 import {
   makeServiceError,
   makeServiceErrorFromDatabaseError,
   makeSignPreview,
-} from "@xieyuheng/semiosis.ts"
-import type * as S from "@xieyuheng/semiosis.ts"
-import { err, isError, ok, type Result } from "@xieyuheng/std.ts/result"
+} from "@xieyuheng/windbell.ts"
+import type * as W from "@xieyuheng/windbell.ts"
 
 import {
   encodeWorkspaceSessionCursor,
@@ -23,17 +23,17 @@ import type {
 } from "../api/types.ts"
 
 export type PageDataServiceOptions = {
-  database: S.Database
+  database: W.Database
 }
 
 export type PageProviderServiceOptions = {
-  providers: S.ProviderService
-  settings: S.SettingsService
+  providers: W.ProviderService
+  settings: W.SettingsService
 }
 
 function fromDatabase<Output>(
-  result: Result<Output, S.DatabaseError>,
-): Result<Output, S.ServiceError> {
+  result: Result<Output, W.DatabaseError>,
+): Result<Output, W.ServiceError> {
   if (isError(result)) {
     return err(makeServiceErrorFromDatabaseError(result.error))
   }
@@ -41,7 +41,7 @@ function fromDatabase<Output>(
 }
 
 export function LoadHomeData(options: PageDataServiceOptions) {
-  return async (): Promise<Result<HomeData, S.ServiceError>> => {
+  return async (): Promise<Result<HomeData, W.ServiceError>> => {
     const workspacesResult = fromDatabase(
       await options.database.workspaces.list(),
     )
@@ -61,11 +61,11 @@ export function LoadHomeData(options: PageDataServiceOptions) {
 
 export function LoadWorkspaceData(options: PageDataServiceOptions) {
   return async (input: {
-    workspaceId: S.WorkspaceId
+    workspaceId: W.WorkspaceId
     previewLimit: number
     limit: number
     cursor?: WorkspaceSessionCursor
-  }): Promise<Result<WorkspacePageData, S.ServiceError>> => {
+  }): Promise<Result<WorkspacePageData, W.ServiceError>> => {
     const workspaceResult = fromDatabase(
       await options.database.workspaces.get(input.workspaceId),
     )
@@ -128,8 +128,8 @@ export function LoadWorkspaceData(options: PageDataServiceOptions) {
 
 export function LoadSessionData(options: PageDataServiceOptions) {
   return async (input: {
-    sessionId: S.SessionId
-  }): Promise<Result<SessionData, S.ServiceError>> => {
+    sessionId: W.SessionId
+  }): Promise<Result<SessionData, W.ServiceError>> => {
     const sessionResult = fromDatabase(
       await options.database.sessions.get(input.sessionId),
     )
@@ -168,9 +168,9 @@ export function LoadSessionData(options: PageDataServiceOptions) {
 
 export function LoadSessionDustbinData(options: PageDataServiceOptions) {
   return async (input: {
-    workspaceId: S.WorkspaceId | undefined
+    workspaceId: W.WorkspaceId | undefined
     previewLimit: number
-  }): Promise<Result<SessionDustbinPageData, S.ServiceError>> => {
+  }): Promise<Result<SessionDustbinPageData, W.ServiceError>> => {
     const indexesResult = fromDatabase(
       await options.database.dustbin.sessions.list({
         workspaceId: input.workspaceId,
@@ -207,7 +207,7 @@ export function LoadSessionDustbinData(options: PageDataServiceOptions) {
 }
 
 export function LoadWorkspaceDustbinData(options: PageDataServiceOptions) {
-  return async (): Promise<Result<WorkspaceDustbinData, S.ServiceError>> => {
+  return async (): Promise<Result<WorkspaceDustbinData, W.ServiceError>> => {
     const workspacesResult = fromDatabase(
       await options.database.dustbin.workspaces.list(),
     )
@@ -228,7 +228,7 @@ export function LoadWorkspaceDustbinData(options: PageDataServiceOptions) {
 }
 
 export function LoadProviderListData(options: PageProviderServiceOptions) {
-  return async (): Promise<Result<ProviderListData, S.ServiceError>> => {
+  return async (): Promise<Result<ProviderListData, W.ServiceError>> => {
     const providerConfigsResult = await options.providers.list()
     if (isError(providerConfigsResult)) return providerConfigsResult
 
@@ -271,7 +271,7 @@ export function LoadProviderListData(options: PageProviderServiceOptions) {
 export function LoadProviderData(options: PageProviderServiceOptions) {
   return async (input: {
     providerName: string
-  }): Promise<Result<ProviderData, S.ServiceError>> => {
+  }): Promise<Result<ProviderData, W.ServiceError>> => {
     const providerConfigsResult = await options.providers.list()
     if (isError(providerConfigsResult)) return providerConfigsResult
 
@@ -330,10 +330,10 @@ export function LoadProviderData(options: PageProviderServiceOptions) {
   }
 }
 
-function groupSessionsByWorkspace<T extends { workspaceId: S.WorkspaceId }>(
+function groupSessionsByWorkspace<T extends { workspaceId: W.WorkspaceId }>(
   sessions: Array<T>,
-): Record<S.WorkspaceId, Array<T>> {
-  const grouped: Record<S.WorkspaceId, Array<T>> = {}
+): Record<W.WorkspaceId, Array<T>> {
+  const grouped: Record<W.WorkspaceId, Array<T>> = {}
 
   for (const session of sessions) {
     grouped[session.workspaceId] ??= []

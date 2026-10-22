@@ -1,8 +1,6 @@
 import type * as Cli from "@xieyuheng/cli.ts"
-
-import type { Database } from "../../database/index.ts"
-import { deleteApiKey } from "../../database/index.ts"
-import { providerNames } from "../../providers/providerNames.ts"
+import type { Database } from "@xieyuheng/windbell.ts"
+import { deleteApiKey, providerNames } from "@xieyuheng/windbell.ts"
 
 export type ApiKeyDeleteCommandOptions = {
   database: Database

@@ -448,20 +448,6 @@ export PNPM_VERSION
 export PNPM_HOME
 SH
 
-  cat > "$BIN_DIR/semiosis" <<'SH'
-#!/bin/sh
-set -eu
-_opera_bin_dir="$(CDPATH= cd "$(dirname "$0")" && pwd)"
-if [ ! -f "$_opera_bin_dir/../libexec/opera-init.sh" ]; then
-  _opera_bin_dir="$HOME/.opera/bin"
-fi
-OPERA_BIN_DIR="$_opera_bin_dir"
-. "$OPERA_BIN_DIR/../libexec/opera-init.sh"
-export PATH="$NODE_HOME/bin:$PATH"
-export NODE_COMPILE_CACHE="$OPERA_HOME/tmp/node"
-exec "$NODE_HOME/bin/node" --stack-size=65536 "$OPERA_HOME/src/opera/packages/semiosis.ts/src/main.ts" "$@"
-SH
-
   cat > "$BIN_DIR/windbell" <<'SH'
 #!/bin/sh
 set -eu
@@ -476,7 +462,7 @@ export NODE_COMPILE_CACHE="$OPERA_HOME/tmp/node"
 exec "$NODE_HOME/bin/node" "$OPERA_HOME/src/opera/packages/windbell-cli.ts/src/main.ts" "$@"
 SH
 
-  chmod +x "$BIN_DIR/semiosis" "$BIN_DIR/windbell"
+  chmod +x "$BIN_DIR/windbell"
 }
 
 final_message() {

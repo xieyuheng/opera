@@ -1,8 +1,8 @@
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 
 export type SessionMinimapBlock = {
   index: number
-  kind: S.Sign["kind"]
+  kind: W.Sign["kind"]
   top: number
   height: number
   turnIndex?: number

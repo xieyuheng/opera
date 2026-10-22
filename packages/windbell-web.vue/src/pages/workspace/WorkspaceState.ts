@@ -1,6 +1,6 @@
-import { makeSignPreview } from "@xieyuheng/semiosis.ts/core"
-import type * as S from "@xieyuheng/semiosis.ts/core"
 import type { WorkspaceSessionPreview } from "@xieyuheng/windbell-api.ts/client"
+import { makeSignPreview } from "@xieyuheng/windbell.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import { reactive } from "vue"
 
 import { windbell } from "../../app/windbell"
@@ -10,8 +10,8 @@ const sessionPreviewLimit = 5
 const workspacePageSize = 10
 
 export type WorkspaceState = {
-  workspaceId: S.WorkspaceId
-  workspace: S.Workspace | undefined
+  workspaceId: W.WorkspaceId
+  workspace: W.Workspace | undefined
   sessions: Array<WorkspaceSessionPreview>
   nextCursor: string | null
   hasLoaded: boolean
@@ -34,7 +34,7 @@ function sortSessionsByUpdatedAt(
   })
 }
 
-export function makeWorkspaceState(workspaceId: S.WorkspaceId): WorkspaceState {
+export function makeWorkspaceState(workspaceId: W.WorkspaceId): WorkspaceState {
   return reactive<WorkspaceState>({
     workspaceId,
     workspace: undefined,
@@ -51,9 +51,9 @@ export function makeWorkspaceState(workspaceId: S.WorkspaceId): WorkspaceState {
   })
 }
 
-const workspaceStates = new Map<S.WorkspaceId, WorkspaceState>()
+const workspaceStates = new Map<W.WorkspaceId, WorkspaceState>()
 
-export function getWorkspaceState(workspaceId: S.WorkspaceId): WorkspaceState {
+export function getWorkspaceState(workspaceId: W.WorkspaceId): WorkspaceState {
   let state = workspaceStates.get(workspaceId)
 
   if (state === undefined) {
@@ -157,7 +157,7 @@ export async function loadMoreWorkspaceState(
 export async function makeSession(
   state: WorkspaceState,
   title: string,
-): Promise<S.Session> {
+): Promise<W.Session> {
   const session = await windbell.sessions.make({
     workspaceId: state.workspaceId,
     title,
@@ -180,7 +180,7 @@ export async function makeSession(
 
 export async function trashSession(
   state: WorkspaceState,
-  sessionId: S.SessionId,
+  sessionId: W.SessionId,
 ): Promise<void> {
   await windbell.dustbin.sessions.trash(sessionId)
   cancelPendingStateLoad(state)
@@ -189,7 +189,7 @@ export async function trashSession(
 
 export async function updateSessionTitle(
   state: WorkspaceState,
-  sessionId: S.SessionId,
+  sessionId: W.SessionId,
   title: string,
 ): Promise<void> {
   const index = state.sessions.findIndex((session) => session.id === sessionId)
@@ -216,7 +216,7 @@ export async function updateWorkspaceTitle(
   const current = state.workspace
   if (current === undefined) return
 
-  const workspace: S.Workspace = {
+  const workspace: W.Workspace = {
     ...current,
     name: title,
     updatedAt: Date.now(),

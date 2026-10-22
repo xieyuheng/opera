@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 
 import { sessionMessages } from "./Session.i18n.ts"
 
 const props = defineProps<{
-  usage?: S.ModelUsage
+  usage?: W.ModelUsage
   contextWindow?: number
 }>()
 

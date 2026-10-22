@@ -6,16 +6,16 @@ import process from "node:process"
 import { test } from "node:test"
 
 import { makeLocalFileSystem } from "@xieyuheng/fs.ts/local-fs"
-import * as S from "@xieyuheng/semiosis.ts"
 import { makePath } from "@xieyuheng/std.ts/path"
 import { unwrap } from "@xieyuheng/std.ts/result"
+import * as W from "@xieyuheng/windbell.ts"
 
 import { makeAccessTokenStore } from "../auth/AccessToken.ts"
 import { makeWindbellRouter } from "../router/index.ts"
 
 test("windbell router", async (t) => {
   const root = await mkdtemp(Path.join(tmpdir(), "windbell-api-"))
-  const database = S.makeDatabase({
+  const database = W.makeDatabase({
     fs: makeLocalFileSystem(),
     path: makePath(process.platform === "win32" ? "win32" : "posix"),
     root,
@@ -199,9 +199,9 @@ test("windbell router", async (t) => {
       }),
     )
 
-    unwrap(await database.sessions.appendSign(session.id, S.UserSign("one")))
-    unwrap(await database.sessions.appendSign(session.id, S.UserSign("two")))
-    unwrap(await database.sessions.appendSign(session.id, S.UserSign("three")))
+    unwrap(await database.sessions.appendSign(session.id, W.UserSign("one")))
+    unwrap(await database.sessions.appendSign(session.id, W.UserSign("two")))
+    unwrap(await database.sessions.appendSign(session.id, W.UserSign("three")))
 
     const homeResponse = await request("/api/pages/home")
     assert.equal(homeResponse.status, 200)
@@ -232,7 +232,7 @@ test("windbell router", async (t) => {
       sessionPreviews: Array<{
         id: string
         signPreviews: Array<{
-          kind: S.Sign["kind"]
+          kind: W.Sign["kind"]
           truncatedContent: string
         }>
       }>
@@ -265,7 +265,7 @@ test("windbell router", async (t) => {
       session: {
         id: string
         title: string
-        context: Array<{ kind: S.Sign["kind"]; content?: string }>
+        context: Array<{ kind: W.Sign["kind"]; content?: string }>
       }
       workspace: { id: string }
     }
@@ -354,7 +354,7 @@ test("windbell router", async (t) => {
       true,
     )
 
-    const turn: S.Turn = {
+    const turn: W.Turn = {
       id: "turn-test",
       sessionId: session.id,
       status: "completed",
@@ -369,7 +369,7 @@ test("windbell router", async (t) => {
     }
     unwrap(await database.sessions.putTurn(turn))
 
-    const step: S.TurnStep = {
+    const step: W.TurnStep = {
       sessionId: session.id,
       turnId: turn.id,
       sequenceNumber: 1,
@@ -414,7 +414,7 @@ test("windbell router", async (t) => {
       sessionPreviews: Array<{
         id: string
         signPreviews: Array<{
-          kind: S.Sign["kind"]
+          kind: W.Sign["kind"]
           truncatedContent: string
         }>
       }>

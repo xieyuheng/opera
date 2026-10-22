@@ -1,5 +1,5 @@
 {
-  "name": "@xieyuheng/semiosis.ts",
+  "name": "@xieyuheng/windbell.ts",
   "version": "0.1.0",
   "private": true,
   "license": "GPL-3.0-or-later",
@@ -22,9 +22,6 @@
     "@xieyuheng/std.ts": "workspace:*",
     "ajv": "^8.20.0",
     "zod": "^4.6.7"
-  },
-  "bin": {
-    "semiosis.ts": "src/main.ts"
   },
   "exports": {
     ".": "./src/exports/default.ts",

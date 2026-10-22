@@ -12,7 +12,7 @@
     "@xieyuheng/fs-api.ts": "workspace:*",
     "@xieyuheng/fs.ts": "workspace:*",
     "@xieyuheng/http.ts": "workspace:*",
-    "@xieyuheng/semiosis.ts": "workspace:*",
+    "@xieyuheng/windbell.ts": "workspace:*",
     "@xieyuheng/sh.ts": "workspace:*",
     "@xieyuheng/std.ts": "workspace:*",
     "hono": "4.13.13",

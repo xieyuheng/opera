@@ -2,4 +2,4 @@
 
 set -e
 
-rm -rf snapshot/linux
+rm -rf dist

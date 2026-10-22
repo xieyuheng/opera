@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto"
 import Path from "node:path"
 
-import type * as S from "@xieyuheng/semiosis.ts"
 import { unwrap } from "@xieyuheng/std.ts/result"
+import type * as W from "@xieyuheng/windbell.ts"
 
 import {
   isThemeId,
@@ -13,7 +13,7 @@ import {
 } from "./Theme.ts"
 
 export type ThemeStoreOptions = {
-  files: S.Database["files"]
+  files: W.Database["files"]
   root: string
 }
 
@@ -92,7 +92,7 @@ export function makeThemeStore(options: ThemeStoreOptions): ThemeStore {
 }
 
 async function readThemeFile(
-  files: S.Database["files"],
+  files: W.Database["files"],
   path: string,
 ): Promise<Theme | undefined> {
   const value = unwrap(await files.readJsonFile(path))

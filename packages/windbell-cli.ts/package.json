@@ -11,7 +11,7 @@
     "@hono/node-server": "2.1.5",
     "@xieyuheng/cli.ts": "workspace:*",
     "@xieyuheng/fs.ts": "workspace:*",
-    "@xieyuheng/semiosis.ts": "workspace:*",
+    "@xieyuheng/windbell.ts": "workspace:*",
     "@xieyuheng/std.ts": "workspace:*",
     "@xieyuheng/windbell-api.ts": "workspace:*",
     "vite": "8.3.5"

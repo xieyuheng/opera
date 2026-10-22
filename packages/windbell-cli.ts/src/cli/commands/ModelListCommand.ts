@@ -1,13 +1,13 @@
 import type * as Cli from "@xieyuheng/cli.ts"
-
-import type { Database } from "../../database/index.ts"
+import type { Database } from "@xieyuheng/windbell.ts"
 import {
   isModelPinned,
   listAvailableModels,
   listModelConfigs,
-} from "../../models/index.ts"
-import { readProviderConfig } from "../../provider/index.ts"
-import { providerNames } from "../../providers/providerNames.ts"
+  providerNames,
+  readProviderConfig,
+} from "@xieyuheng/windbell.ts"
+
 import { readFlag, readOptionalOption } from "../options.ts"
 
 export type ModelListCommandOptions = {

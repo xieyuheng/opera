@@ -9,7 +9,7 @@ set -e
 ./scripts/run-in.sh std.ts format.sh
 ./scripts/run-in.sh http.ts format.sh
 ./scripts/run-in.sh cli.ts format.sh
-./scripts/run-in.sh semiosis.ts format.sh
+./scripts/run-in.sh windbell.ts format.sh
 ./scripts/run-in.sh fs.ts format.sh
 ./scripts/run-in.sh fs-api.ts format.sh
 ./scripts/run-in.sh sh.ts format.sh
@@ -26,7 +26,7 @@ set -e
 ./scripts/run-in.sh std.ts check.sh
 ./scripts/run-in.sh http.ts check.sh
 ./scripts/run-in.sh cli.ts check.sh
-./scripts/run-in.sh semiosis.ts check.sh
+./scripts/run-in.sh windbell.ts check.sh
 ./scripts/run-in.sh fs.ts check.sh
 ./scripts/run-in.sh fs-api.ts check.sh
 ./scripts/run-in.sh sh.ts check.sh
@@ -47,7 +47,7 @@ set -e
 ./scripts/run-in.sh lock.ts test.sh
 ./scripts/run-in.sh http.ts test.sh
 ./scripts/run-in.sh cli.ts clean.sh test.sh
-./scripts/run-in.sh semiosis.ts clean.sh test.sh
+./scripts/run-in.sh windbell.ts clean.sh test.sh
 ./scripts/run-in.sh windbell-cli.ts clean.sh test.sh
 ./scripts/run-in.sh windbell-api.ts clean.sh test.sh
 

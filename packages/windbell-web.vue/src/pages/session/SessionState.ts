@@ -1,5 +1,5 @@
-import { modelEntryContextWindow } from "@xieyuheng/semiosis.ts/core"
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import { modelEntryContextWindow } from "@xieyuheng/windbell.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import { reactive } from "vue"
 
 import { windbell } from "../../app/windbell"
@@ -7,14 +7,14 @@ import { windbell } from "../../app/windbell"
 export type SessionActiveTurn = {
   turnId: string
   input: string
-  signs: Array<S.Sign>
-  partialSign?: S.Sign
+  signs: Array<W.Sign>
+  partialSign?: W.Sign
 }
 
 function appendSignDelta(
-  partialSign: S.Sign | undefined,
-  delta: S.SignDelta,
-): S.Sign {
+  partialSign: W.Sign | undefined,
+  delta: W.SignDelta,
+): W.Sign {
   const content =
     partialSign?.kind === delta.signKind && "content" in partialSign
       ? partialSign.content
@@ -27,17 +27,17 @@ function appendSignDelta(
 }
 
 export type SessionState = {
-  sessionId: S.SessionId
-  workspaceId: S.WorkspaceId
+  sessionId: W.SessionId
+  workspaceId: W.WorkspaceId
   workspaceRoot: string
   title: string
-  context: Array<S.Sign>
+  context: Array<W.Sign>
   activeTurn: SessionActiveTurn | undefined
-  modelRef: S.ModelRef | undefined
+  modelRef: W.ModelRef | undefined
   contextWindow: number | undefined
-  latestUsage: S.ModelUsage | undefined
-  totalUsage: S.ModelTotalUsage | undefined
-  turnDetails: Array<S.TurnDetails>
+  latestUsage: W.ModelUsage | undefined
+  totalUsage: W.ModelTotalUsage | undefined
+  turnDetails: Array<W.TurnDetails>
   hasLoaded: boolean
   isLoading: boolean
   isPending: boolean
@@ -59,7 +59,7 @@ function isNetworkError(error: unknown): boolean {
   return error instanceof TypeError
 }
 
-export function makeSessionState(sessionId: S.SessionId): SessionState {
+export function makeSessionState(sessionId: W.SessionId): SessionState {
   return reactive<SessionState>({
     sessionId,
     workspaceId: "",
@@ -83,8 +83,8 @@ export function makeSessionState(sessionId: S.SessionId): SessionState {
   })
 }
 
-const sessionStates = new Map<S.SessionId, SessionState>()
-const interpretationControllers = new Map<S.SessionId, AbortController>()
+const sessionStates = new Map<W.SessionId, SessionState>()
+const interpretationControllers = new Map<W.SessionId, AbortController>()
 
 function clearSessionError(state: SessionState): void {
   state.error = undefined
@@ -124,7 +124,7 @@ function beginActiveTurn(
   return state.activeTurn
 }
 
-async function readSessionModelRef(): Promise<S.ModelRef> {
+async function readSessionModelRef(): Promise<W.ModelRef> {
   const settings = await windbell.settings.get()
   const providerName = settings.defaultProvider
 
@@ -148,7 +148,7 @@ async function readSessionModelRef(): Promise<S.ModelRef> {
   }
 }
 
-async function resolveSessionModel(state: SessionState): Promise<S.ModelRef> {
+async function resolveSessionModel(state: SessionState): Promise<W.ModelRef> {
   const modelRef = await readSessionModelRef()
 
   if (
@@ -196,7 +196,7 @@ export function cancelSessionInterpretation(state: SessionState): void {
   interpretationControllers.get(state.sessionId)?.abort()
 }
 
-export function getSessionState(sessionId: S.SessionId): SessionState {
+export function getSessionState(sessionId: W.SessionId): SessionState {
   let state = sessionStates.get(sessionId)
 
   if (state === undefined) {
@@ -209,7 +209,7 @@ export function getSessionState(sessionId: S.SessionId): SessionState {
 
 export async function loadSessionState(
   state: SessionState,
-  sessionId: S.SessionId,
+  sessionId: W.SessionId,
 ): Promise<void> {
   const requestId = ++state.requestId
   state.sessionId = sessionId
@@ -252,8 +252,8 @@ export async function loadSessionState(
 async function runInterpretAttempt(options: {
   state: SessionState
   activeTurn: SessionActiveTurn
-  modelRef: S.ModelRef
-  input: S.UserSign
+  modelRef: W.ModelRef
+  input: W.UserSign
   signal: AbortSignal | undefined
 }): Promise<boolean> {
   const { state, activeTurn, modelRef, input, signal } = options
@@ -313,8 +313,8 @@ async function runInterpretAttempt(options: {
 async function runActiveTurnWithRetries(options: {
   state: SessionState
   activeTurn: SessionActiveTurn
-  modelRef: S.ModelRef
-  input: S.UserSign
+  modelRef: W.ModelRef
+  input: W.UserSign
   signal: AbortSignal | undefined
 }): Promise<boolean> {
   const { state, activeTurn, modelRef, input, signal } = options
@@ -368,7 +368,7 @@ export async function interpretSession(
   try {
     const modelRef = await resolveSessionModel(state)
 
-    const input: S.UserSign = {
+    const input: W.UserSign = {
       kind: "UserSign",
       content,
     }

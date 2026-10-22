@@ -1,4 +1,4 @@
-# semiosis.ts
+# windbell.ts
 
 AI agent inspired by [Peirce's Semiotics](https://plato.stanford.edu/entries/peirce-semiotics).
 

@@ -1,28 +1,28 @@
-import type * as S from "@xieyuheng/semiosis.ts"
+import type * as W from "@xieyuheng/windbell.ts"
 
 export type HomeData = {
-  workspaces: Array<S.Workspace>
-  sessionsByWorkspaceId: Record<S.WorkspaceId, Array<S.SessionIndex>>
+  workspaces: Array<W.Workspace>
+  sessionsByWorkspaceId: Record<W.WorkspaceId, Array<W.SessionIndex>>
 }
 
-export type SignPreview = S.SignPreview
+export type SignPreview = W.SignPreview
 
-export type WorkspaceSessionPreview = S.SessionIndex & {
+export type WorkspaceSessionPreview = W.SessionIndex & {
   signPreviews: Array<SignPreview>
 }
 
 export type WorkspacePageData = {
-  workspace: S.Workspace
+  workspace: W.Workspace
   sessionPreviews: Array<WorkspaceSessionPreview>
   nextCursor: string | null
 }
 
 export type SessionData = {
-  session: S.Session
-  workspace: S.Workspace
+  session: W.Session
+  workspace: W.Workspace
 }
 
-export type DustbinSessionPreview = S.DustbinSessionIndex & {
+export type DustbinSessionPreview = W.DustbinSessionIndex & {
   signPreviews: Array<SignPreview>
 }
 
@@ -31,8 +31,8 @@ export type SessionDustbinPageData = {
 }
 
 export type WorkspaceDustbinData = {
-  workspaces: Array<S.DustbinWorkspace>
-  sessionsByWorkspaceId: Record<S.WorkspaceId, Array<S.DustbinSessionIndex>>
+  workspaces: Array<W.DustbinWorkspace>
+  sessionsByWorkspaceId: Record<W.WorkspaceId, Array<W.DustbinSessionIndex>>
 }
 
 export type ProviderListModelData = {
@@ -55,9 +55,9 @@ export type ProviderListData = {
 }
 
 export type ProviderData = {
-  providerConfig: S.ProviderConfig
+  providerConfig: W.ProviderConfig
   apiKeyConfigured: boolean
   isDefaultProvider: boolean
   warning?: string
-  models: Array<S.ModelEntry>
+  models: Array<W.ModelEntry>
 }

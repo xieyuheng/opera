@@ -1,4 +1,4 @@
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import type { Component } from "vue"
 
 import SignMarkdownView from "./SignMarkdownView.vue"
@@ -55,7 +55,7 @@ const signViews = {
     labelKey: "signKind.toolOutput",
     color: "var(--color-sign-tool-output)",
   },
-} satisfies Record<S.Sign["kind"], SignViewConfig>
+} satisfies Record<W.Sign["kind"], SignViewConfig>
 
 const unsupportedSignView: SignViewConfig = {
   component: SignUnsupportedView,
@@ -64,11 +64,11 @@ const unsupportedSignView: SignViewConfig = {
 }
 
 export function resolveSignView(sign: {
-  kind: S.Sign["kind"]
+  kind: W.Sign["kind"]
 }): SignViewConfig {
   return signViews[sign.kind] ?? unsupportedSignView
 }
 
-export function resolveSignViewColor(kind: S.Sign["kind"]): string {
+export function resolveSignViewColor(kind: W.Sign["kind"]): string {
   return signViews[kind]?.color ?? unsupportedSignView.color
 }

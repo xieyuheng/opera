@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 import { RouterLink } from "vue-router"
@@ -14,8 +14,8 @@ import { homeMessages } from "./Home.i18n.ts"
 
 const props = withDefaults(
   defineProps<{
-    workspace: S.Workspace
-    sessions: Array<S.SessionIndex>
+    workspace: W.Workspace
+    sessions: Array<W.SessionIndex>
     previewLimit?: number
   }>(),
   {

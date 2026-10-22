@@ -1,14 +1,14 @@
-import type * as S from "@xieyuheng/semiosis.ts"
+import type * as W from "@xieyuheng/windbell.ts"
 import { z } from "zod"
 
 import { makeAction } from "../http/makeAction.ts"
 
 export type SettingsControllerOptions = {
-  settings: S.SettingsService
+  settings: W.SettingsService
 }
 
 export const PutSettingsInputSchema = z.object({
-  settings: z.custom<S.Settings>(),
+  settings: z.custom<W.Settings>(),
 })
 
 export function makeSettingsController(options: SettingsControllerOptions) {

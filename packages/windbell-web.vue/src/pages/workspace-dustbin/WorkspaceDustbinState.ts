@@ -1,12 +1,12 @@
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import { reactive } from "vue"
 
 import { windbell } from "../../app/windbell"
 import { cancelPendingStateLoad } from "../../utils/state/loadableState.ts"
 
 export type WorkspaceDustbinState = {
-  workspaces: Array<S.DustbinWorkspace>
-  sessionsByWorkspaceId: Record<S.WorkspaceId, Array<S.DustbinSessionIndex>>
+  workspaces: Array<W.DustbinWorkspace>
+  sessionsByWorkspaceId: Record<W.WorkspaceId, Array<W.DustbinSessionIndex>>
   hasLoaded: boolean
   isLoading: boolean
   isPending: boolean
@@ -33,9 +33,9 @@ export function getWorkspaceDustbinState(): WorkspaceDustbinState {
 }
 
 function groupSessionsByWorkspace(
-  sessions: Array<S.DustbinSessionIndex>,
-): Record<S.WorkspaceId, Array<S.DustbinSessionIndex>> {
-  const grouped: Record<S.WorkspaceId, Array<S.DustbinSessionIndex>> = {}
+  sessions: Array<W.DustbinSessionIndex>,
+): Record<W.WorkspaceId, Array<W.DustbinSessionIndex>> {
+  const grouped: Record<W.WorkspaceId, Array<W.DustbinSessionIndex>> = {}
 
   for (const session of sessions) {
     const workspaceSessions = grouped[session.workspaceId] ?? []
@@ -81,7 +81,7 @@ export async function loadWorkspaceDustbin(
 
 export async function restoreWorkspace(
   state: WorkspaceDustbinState,
-  workspaceId: S.WorkspaceId,
+  workspaceId: W.WorkspaceId,
 ): Promise<void> {
   await windbell.dustbin.workspaces.restore(workspaceId)
   cancelPendingStateLoad(state)
@@ -93,7 +93,7 @@ export async function restoreWorkspace(
 
 export async function removeWorkspace(
   state: WorkspaceDustbinState,
-  workspaceId: S.WorkspaceId,
+  workspaceId: W.WorkspaceId,
 ): Promise<void> {
   await windbell.dustbin.workspaces.remove(workspaceId)
   cancelPendingStateLoad(state)

@@ -2,7 +2,7 @@ import Path from "node:path"
 import process from "node:process"
 import { fileURLToPath } from "node:url"
 
-import * as S from "@xieyuheng/semiosis.ts"
+import * as W from "@xieyuheng/windbell.ts"
 
 export type DevOptions = {
   hostname: string
@@ -27,7 +27,7 @@ export function resolveDevOptions(
     readOptionalString(options, "--web-port") ?? process.env.WEB_PORT,
   )
 
-  const paths = S.resolveWindbellPaths({
+  const paths = W.resolveWindbellPaths({
     databaseRoot: readOptionalString(options, "--database-root"),
     lockRoot: readOptionalString(options, "--session-lock-root"),
   })

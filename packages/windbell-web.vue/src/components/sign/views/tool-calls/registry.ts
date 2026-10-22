@@ -1,4 +1,4 @@
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import type { Component } from "vue"
 
 import BashToolCallView from "./BashToolCallView.vue"
@@ -10,6 +10,6 @@ const toolCallViews: Partial<Record<string, Component>> = {
   pwsh: PwshToolCallView,
 }
 
-export function resolveToolCallView(sign: S.ToolCallSign): Component {
+export function resolveToolCallView(sign: W.ToolCallSign): Component {
   return toolCallViews[sign.name] ?? DefaultToolCallView
 }

@@ -1,12 +1,12 @@
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import { reactive } from "vue"
 
 import { windbell } from "../../app/windbell"
 import { cancelPendingStateLoad } from "../../utils/state/loadableState.ts"
 
 export type HomeState = {
-  workspaces: Array<S.Workspace>
-  sessionsByWorkspaceId: Record<S.WorkspaceId, Array<S.SessionIndex>>
+  workspaces: Array<W.Workspace>
+  sessionsByWorkspaceId: Record<W.WorkspaceId, Array<W.SessionIndex>>
   hasLoaded: boolean
   isLoading: boolean
   isPending: boolean
@@ -32,16 +32,16 @@ export function getHomeState(): HomeState {
   return homeState
 }
 
-function sortWorkspacesByUpdatedAt(workspaces: Array<S.Workspace>): void {
+function sortWorkspacesByUpdatedAt(workspaces: Array<W.Workspace>): void {
   workspaces.sort(
     (a, b) => b.updatedAt - a.updatedAt || b.createdAt - a.createdAt,
   )
 }
 
 function groupSessionsByWorkspace(
-  sessions: Array<S.SessionIndex>,
-): Record<S.WorkspaceId, Array<S.SessionIndex>> {
-  const grouped: Record<S.WorkspaceId, Array<S.SessionIndex>> = {}
+  sessions: Array<W.SessionIndex>,
+): Record<W.WorkspaceId, Array<W.SessionIndex>> {
+  const grouped: Record<W.WorkspaceId, Array<W.SessionIndex>> = {}
 
   for (const session of sessions) {
     const workspaceSessions = grouped[session.workspaceId] ?? []
@@ -90,7 +90,7 @@ export async function ensureWorkspace(
     name: string
     root: string
   },
-): Promise<S.Workspace> {
+): Promise<W.Workspace> {
   const workspace = await windbell.workspaces.ensure(options)
   cancelPendingStateLoad(state)
   const index = state.workspaces.findIndex((item) => item.id === workspace.id)
@@ -109,7 +109,7 @@ export async function ensureWorkspace(
 
 export async function trashWorkspace(
   state: HomeState,
-  workspaceId: S.WorkspaceId,
+  workspaceId: W.WorkspaceId,
 ): Promise<void> {
   await windbell.dustbin.workspaces.trash(workspaceId)
   cancelPendingStateLoad(state)
@@ -121,7 +121,7 @@ export async function trashWorkspace(
 
 export async function updateWorkspaceTitle(
   state: HomeState,
-  workspaceId: S.WorkspaceId,
+  workspaceId: W.WorkspaceId,
   name: string,
 ): Promise<void> {
   const index = state.workspaces.findIndex(
@@ -131,7 +131,7 @@ export async function updateWorkspaceTitle(
 
   if (current === undefined) return
 
-  const workspace: S.Workspace = {
+  const workspace: W.Workspace = {
     ...current,
     name,
     updatedAt: Date.now(),

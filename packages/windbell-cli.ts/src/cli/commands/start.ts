@@ -5,12 +5,12 @@ import { fileURLToPath } from "node:url"
 
 import type * as Cli from "@xieyuheng/cli.ts"
 import { makeLocalFileSystem } from "@xieyuheng/fs.ts/local-fs"
-import * as S from "@xieyuheng/semiosis.ts"
 import { makePath } from "@xieyuheng/std.ts/path"
 import {
   makeAccessTokenStore,
   startWindbellServer,
 } from "@xieyuheng/windbell-api.ts"
+import * as W from "@xieyuheng/windbell.ts"
 
 import { formatLocalDateTime, makeAccessTokenUrl } from "../startLog.ts"
 
@@ -36,7 +36,7 @@ export function makeStartHandler() {
       process.env.CORS_ORIGIN ??
       defaultCorsOrigin
 
-    const paths = S.resolveWindbellPaths({
+    const paths = W.resolveWindbellPaths({
       databaseRoot: readOptionalString(context.options, "--database-root"),
       lockRoot: readOptionalString(context.options, "--session-lock-root"),
     })
@@ -51,7 +51,7 @@ export function makeStartHandler() {
       )
     }
 
-    const database = S.makeDatabase({
+    const database = W.makeDatabase({
       fs: makeLocalFileSystem(),
       path: makePath(process.platform === "win32" ? "win32" : "posix"),
       root: paths.databaseRoot,

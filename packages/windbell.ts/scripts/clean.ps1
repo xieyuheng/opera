@@ -6,4 +6,4 @@ $PSNativeCommandUseErrorActionPreference = $true
 
 Set-Location (Join-Path $PSScriptRoot '..')
 
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue snapshot/win32
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue dist

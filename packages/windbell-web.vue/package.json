@@ -10,7 +10,7 @@
     "@xieyuheng/fs-api.ts": "workspace:*",
     "@xieyuheng/fs.ts": "workspace:*",
     "@xieyuheng/markdown.vue": "workspace:*",
-    "@xieyuheng/semiosis.ts": "workspace:*",
+    "@xieyuheng/windbell.ts": "workspace:*",
     "@xieyuheng/sh.ts": "workspace:*",
     "@xieyuheng/std.ts": "workspace:*",
     "@xieyuheng/windbell-api.ts": "workspace:*",

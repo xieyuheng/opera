@@ -1,6 +1,6 @@
-import type * as S from "@xieyuheng/semiosis.ts"
+import type * as W from "@xieyuheng/windbell.ts"
 
-export function serviceErrorStatus(error: S.ServiceError): number {
+export function serviceErrorStatus(error: W.ServiceError): number {
   if (error.type === "not-found" || error.type.endsWith("-not-found")) {
     return 404
   }

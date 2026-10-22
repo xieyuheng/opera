@@ -1,20 +1,20 @@
 import type * as Cli from "@xieyuheng/cli.ts"
 import { unwrap } from "@xieyuheng/std.ts/result"
+import type { Database } from "@xieyuheng/windbell.ts"
+import { setDefaultModel } from "@xieyuheng/windbell.ts"
 
-import type { Database } from "../../database/index.ts"
-import { unpinModel } from "../../models/index.ts"
 import { readOptionalOption } from "../options.ts"
 
-export type ModelUnpinCommandOptions = {
+export type ModelDefaultCommandOptions = {
   database: Database
 }
 
-export function makeModelUnpinHandler(options: ModelUnpinCommandOptions) {
+export function makeModelDefaultHandler(options: ModelDefaultCommandOptions) {
   return async (context: Cli.HandlerContext) => {
     const modelName = context.argValues["model-name"]
 
     if (modelName === undefined) {
-      throw new Error("expected command: model unpin <model-name>")
+      throw new Error("expected command: model default <model-name>")
     }
 
     const providerOption = readOptionalOption(context.options, "--provider")
@@ -25,13 +25,7 @@ export function makeModelUnpinHandler(options: ModelUnpinCommandOptions) {
       throw new Error("default provider is not configured")
     }
 
-    const unpinned = await unpinModel(options.database, providerName, modelName)
-
-    if (!unpinned) {
-      console.log(`model not pinned: ${providerName}/${modelName}`)
-      return
-    }
-
-    console.log(`unpinned: ${providerName}/${modelName}`)
+    await setDefaultModel(options.database, providerName, modelName)
+    console.log(`default model: ${providerName}/${modelName}`)
   }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import { computed } from "vue"
 
 import type { SignState } from "../signState.ts"
@@ -7,7 +7,7 @@ import { parseToolCallArguments } from "./tool-calls/parseToolCallArguments.ts"
 import { resolveToolCallView } from "./tool-calls/registry.ts"
 
 const props = defineProps<{
-  sign: S.ToolCallSign
+  sign: W.ToolCallSign
   state: SignState
 }>()
 

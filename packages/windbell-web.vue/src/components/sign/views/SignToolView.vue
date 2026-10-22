@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import Markdown from "@xieyuheng/markdown.vue"
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import { computed } from "vue"
 
 import type { SignState } from "../signState.ts"
 
 const props = defineProps<{
-  sign: S.ToolSign
+  sign: W.ToolSign
   state: SignState
 }>()
 

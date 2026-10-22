@@ -2,6 +2,8 @@ import Path from "node:path"
 import process from "node:process"
 
 import { makeHttpFileSystemRouter } from "@xieyuheng/fs-api.ts/router"
+import { makeBash } from "@xieyuheng/sh.ts/bash"
+import { makePwsh } from "@xieyuheng/sh.ts/pwsh"
 import {
   makeDustbinSessionService,
   makeDustbinWorkspaceService,
@@ -9,9 +11,7 @@ import {
   makeSessionService,
   makeSettingsService,
   makeWorkspaceService,
-} from "@xieyuheng/semiosis.ts"
-import { makeBash } from "@xieyuheng/sh.ts/bash"
-import { makePwsh } from "@xieyuheng/sh.ts/pwsh"
+} from "@xieyuheng/windbell.ts"
 import { Hono } from "hono"
 import { cors } from "hono/cors"
 

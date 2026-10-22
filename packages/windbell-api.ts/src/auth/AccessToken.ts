@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto"
 
-import type * as S from "@xieyuheng/semiosis.ts"
+import type * as W from "@xieyuheng/windbell.ts"
 
 export type AccessToken = {
   value: string
@@ -10,7 +10,7 @@ export type AccessToken = {
 }
 
 export type AccessTokenStoreOptions = {
-  database: S.Database
+  database: W.Database
 }
 
 export type AccessTokenStore = {

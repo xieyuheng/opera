@@ -1,11 +1,14 @@
 import process from "node:process"
 
 import type * as Cli from "@xieyuheng/cli.ts"
+import {
+  loadSessionWorkspace,
+  makeTtyRepl,
+  resumeAgentRepl,
+  startAgentRepl,
+  type Database,
+} from "@xieyuheng/windbell.ts"
 
-import { resumeAgentRepl, startAgentRepl } from "../../agent-repl/index.ts"
-import type { Database } from "../../database/index.ts"
-import { makeTtyRepl } from "../../repls/index.ts"
-import { loadSessionWorkspace } from "../../session/index.ts"
 import { readOptionalOption } from "../options.ts"
 import { ensureWorkspace, makeModelFromOptions } from "../shared.ts"
 

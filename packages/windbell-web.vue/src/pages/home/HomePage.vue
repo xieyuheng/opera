@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useHead } from "@unhead/vue"
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import { ref } from "vue"
 import { useI18n } from "vue-i18n"
 
@@ -51,7 +51,7 @@ async function createWorkspace(options: {
   }
 }
 
-async function handleTrashWorkspace(workspace: S.Workspace): Promise<void> {
+async function handleTrashWorkspace(workspace: W.Workspace): Promise<void> {
   try {
     await trashWorkspace(state, workspace.id)
   } catch (error) {
@@ -60,7 +60,7 @@ async function handleTrashWorkspace(workspace: S.Workspace): Promise<void> {
 }
 
 async function handleUpdateWorkspaceTitle(
-  workspace: S.Workspace,
+  workspace: W.Workspace,
   name: string,
 ): Promise<void> {
   try {

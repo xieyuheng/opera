@@ -1,6 +1,6 @@
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 
-export function signBody(sign: S.Sign): string {
+export function signBody(sign: W.Sign): string {
   switch (sign.kind) {
     case "PersonaSign":
     case "UserSign":

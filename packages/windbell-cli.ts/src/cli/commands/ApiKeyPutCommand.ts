@@ -1,10 +1,9 @@
 import process from "node:process"
 
 import type * as Cli from "@xieyuheng/cli.ts"
+import type { Database } from "@xieyuheng/windbell.ts"
+import { providerNames, writeApiKey } from "@xieyuheng/windbell.ts"
 
-import type { Database } from "../../database/index.ts"
-import { writeApiKey } from "../../database/index.ts"
-import { providerNames } from "../../providers/providerNames.ts"
 import { readLine } from "../input.ts"
 
 export type ApiKeyPutCommandOptions = {

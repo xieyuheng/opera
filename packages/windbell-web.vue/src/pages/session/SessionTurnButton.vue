@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import { computed, reactive, ref } from "vue"
 import { useI18n } from "vue-i18n"
 
@@ -8,7 +8,7 @@ import Card from "../../components/card/Card.vue"
 import { sessionMessages } from "./Session.i18n.ts"
 
 const props = defineProps<{
-  turns: Array<S.TurnDetails>
+  turns: Array<W.TurnDetails>
   userSummaries: Array<string | undefined>
 }>()
 

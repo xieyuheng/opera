@@ -1,4 +1,4 @@
-import type * as S from "@xieyuheng/semiosis.ts"
+import type * as W from "@xieyuheng/windbell.ts"
 import { Hono } from "hono"
 import { stream } from "hono/streaming"
 
@@ -11,13 +11,13 @@ import { makeWorkspaceController } from "../controllers/WorkspaceController.ts"
 import { readJsonBody, readRecord, readString } from "./readJson.ts"
 
 export type DomainRouterOptions = {
-  database: S.Database
-  sessions: S.SessionService
-  workspaces: S.WorkspaceService
-  dustbinSessions: S.DustbinSessionService
-  dustbinWorkspaces: S.DustbinWorkspaceService
-  providers: S.ProviderService
-  settings: S.SettingsService
+  database: W.Database
+  sessions: W.SessionService
+  workspaces: W.WorkspaceService
+  dustbinSessions: W.DustbinSessionService
+  dustbinWorkspaces: W.DustbinWorkspaceService
+  providers: W.ProviderService
+  settings: W.SettingsService
 }
 
 export function makeDomainRouter(options: DomainRouterOptions): Hono {
@@ -70,7 +70,7 @@ export function makeDomainRouter(options: DomainRouterOptions): Hono {
   )
 
   app.put("/workspaces/:workspaceId", async (c) => {
-    const workspace = (await readJsonBody(c)) as S.Workspace
+    const workspace = (await readJsonBody(c)) as W.Workspace
     return workspaceController.put({
       workspaceId: c.req.param("workspaceId"),
       workspace,
@@ -109,7 +109,7 @@ export function makeDomainRouter(options: DomainRouterOptions): Hono {
   )
 
   app.put("/sessions/:sessionId", async (c) => {
-    const session = (await readJsonBody(c)) as S.Session
+    const session = (await readJsonBody(c)) as W.Session
     return sessions.put({
       sessionId: c.req.param("sessionId"),
       session,
@@ -142,7 +142,7 @@ export function makeDomainRouter(options: DomainRouterOptions): Hono {
     const body = readRecord(await readJsonBody(c))
     const model = body.model as { providerName: string; name: string }
     const turnId = readString(body, "turnId")
-    const input = body.input as Array<S.Sign>
+    const input = body.input as Array<W.Sign>
 
     c.header("Content-Type", "application/x-ndjson; charset=utf-8")
     c.header("Cache-Control", "no-store")
@@ -286,7 +286,7 @@ export function makeDomainRouter(options: DomainRouterOptions): Hono {
   app.get("/settings", () => settings.get({}))
 
   app.put("/settings", async (c) => {
-    const value = (await readJsonBody(c)) as S.Settings
+    const value = (await readJsonBody(c)) as W.Settings
     return settings.put({ settings: value })
   })
 

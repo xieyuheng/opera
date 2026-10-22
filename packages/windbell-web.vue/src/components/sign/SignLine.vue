@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 
@@ -7,7 +7,7 @@ import { signMessages } from "./Sign.i18n.ts"
 import { resolveSignView } from "./views/registry.ts"
 
 const props = defineProps<{
-  signPreview: S.SignPreview
+  signPreview: W.SignPreview
 }>()
 
 const emit = defineEmits<{

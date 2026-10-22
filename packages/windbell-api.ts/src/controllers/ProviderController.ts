@@ -1,11 +1,11 @@
-import type * as S from "@xieyuheng/semiosis.ts"
 import { ok } from "@xieyuheng/std.ts/result"
+import type * as W from "@xieyuheng/windbell.ts"
 import { z } from "zod"
 
 import { makeAction } from "../http/makeAction.ts"
 
 export type ProviderControllerOptions = {
-  providers: S.ProviderService
+  providers: W.ProviderService
 }
 
 export const GetProviderInputSchema = z.object({

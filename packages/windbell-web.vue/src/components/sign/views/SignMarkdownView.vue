@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import Markdown from "@xieyuheng/markdown.vue"
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 
 import type { SignState } from "../signState.ts"
 
 defineProps<{
-  sign: S.PersonaSign | S.UserSign | S.ReasoningSign | S.AssistantSign
+  sign: W.PersonaSign | W.UserSign | W.ReasoningSign | W.AssistantSign
   state: SignState
 }>()
 </script>

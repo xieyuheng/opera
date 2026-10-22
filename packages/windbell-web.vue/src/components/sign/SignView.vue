@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import { computed } from "vue"
 
 import type { SignState } from "./signState.ts"
 import { resolveSignView } from "./views/registry.ts"
 
 const props = defineProps<{
-  sign: S.Sign
+  sign: W.Sign
   state: SignState
 }>()
 

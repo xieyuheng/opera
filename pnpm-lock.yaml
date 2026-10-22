@@ -235,43 +235,6 @@ importers:
         specifier: ^3.3.13
         version: 3.3.13(typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2)
 
-  packages/semiosis.ts:
-    dependencies:
-      '@xieyuheng/cli.ts':
-        specifier: workspace:*
-        version: link:../cli.ts
-      '@xieyuheng/fs.ts':
-        specifier: workspace:*
-        version: link:../fs.ts
-      '@xieyuheng/http.ts':
-        specifier: workspace:*
-        version: link:../http.ts
-      '@xieyuheng/lock.ts':
-        specifier: workspace:*
-        version: link:../lock.ts
-      '@xieyuheng/sh.ts':
-        specifier: workspace:*
-        version: link:../sh.ts
-      '@xieyuheng/std.ts':
-        specifier: workspace:*
-        version: link:../std.ts
-      ajv:
-        specifier: ^8.20.0
-        version: 8.20.0
-      zod:
-        specifier: ^4.6.7
-        version: 4.6.7
-    devDependencies:
-      '@types/node':
-        specifier: ^26.6.5
-        version: 26.6.5
-      oxfmt:
-        specifier: 0.74.0
-        version: 0.74.0
-      typescript:
-        specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
-        version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
-
   packages/sh.ts:
     dependencies:
       '@xieyuheng/std.ts':
@@ -314,15 +277,15 @@ importers:
       '@xieyuheng/http.ts':
         specifier: workspace:*
         version: link:../http.ts
-      '@xieyuheng/semiosis.ts':
-        specifier: workspace:*
-        version: link:../semiosis.ts
       '@xieyuheng/sh.ts':
         specifier: workspace:*
         version: link:../sh.ts
       '@xieyuheng/std.ts':
         specifier: workspace:*
         version: link:../std.ts
+      '@xieyuheng/windbell.ts':
+        specifier: workspace:*
+        version: link:../windbell.ts
       hono:
         specifier: 4.13.13
         version: 4.13.13
@@ -351,15 +314,15 @@ importers:
       '@xieyuheng/fs.ts':
         specifier: workspace:*
         version: link:../fs.ts
-      '@xieyuheng/semiosis.ts':
-        specifier: workspace:*
-        version: link:../semiosis.ts
       '@xieyuheng/std.ts':
         specifier: workspace:*
         version: link:../std.ts
       '@xieyuheng/windbell-api.ts':
         specifier: workspace:*
         version: link:../windbell-api.ts
+      '@xieyuheng/windbell.ts':
+        specifier: workspace:*
+        version: link:../windbell.ts
       vite:
         specifier: 8.3.5
         version: 8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1)
@@ -415,9 +378,6 @@ importers:
       '@xieyuheng/markdown.vue':
         specifier: workspace:*
         version: link:../markdown.vue
-      '@xieyuheng/semiosis.ts':
-        specifier: workspace:*
-        version: link:../semiosis.ts
       '@xieyuheng/sh.ts':
         specifier: workspace:*
         version: link:../sh.ts
@@ -427,6 +387,9 @@ importers:
       '@xieyuheng/windbell-api.ts':
         specifier: workspace:*
         version: link:../windbell-api.ts
+      '@xieyuheng/windbell.ts':
+        specifier: workspace:*
+        version: link:../windbell.ts
       ajv:
         specifier: 8.20.0
         version: 8.20.0
@@ -464,6 +427,43 @@ importers:
       vue-tsc:
         specifier: ^3.3.13
         version: 3.3.13(typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2)
+
+  packages/windbell.ts:
+    dependencies:
+      '@xieyuheng/cli.ts':
+        specifier: workspace:*
+        version: link:../cli.ts
+      '@xieyuheng/fs.ts':
+        specifier: workspace:*
+        version: link:../fs.ts
+      '@xieyuheng/http.ts':
+        specifier: workspace:*
+        version: link:../http.ts
+      '@xieyuheng/lock.ts':
+        specifier: workspace:*
+        version: link:../lock.ts
+      '@xieyuheng/sh.ts':
+        specifier: workspace:*
+        version: link:../sh.ts
+      '@xieyuheng/std.ts':
+        specifier: workspace:*
+        version: link:../std.ts
+      ajv:
+        specifier: ^8.20.0
+        version: 8.20.0
+      zod:
+        specifier: ^4.6.7
+        version: 4.6.7
+    devDependencies:
+      '@types/node':
+        specifier: ^26.6.5
+        version: 26.6.5
+      oxfmt:
+        specifier: 0.74.0
+        version: 0.74.0
+      typescript:
+        specifier: npm:typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
+        version: typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2
 
   packages/x-lisp-shiki.ts:
     devDependencies:

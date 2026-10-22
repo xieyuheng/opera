@@ -1,8 +1,8 @@
 import type * as Cli from "@xieyuheng/cli.ts"
 import { unwrap } from "@xieyuheng/std.ts/result"
+import type { Database } from "@xieyuheng/windbell.ts"
+import { pinModel } from "@xieyuheng/windbell.ts"
 
-import type { Database } from "../../database/index.ts"
-import { pinModel } from "../../models/index.ts"
 import { readOptionalOption } from "../options.ts"
 
 export type ModelPinCommandOptions = {

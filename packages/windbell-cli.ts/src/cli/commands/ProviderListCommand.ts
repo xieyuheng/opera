@@ -1,10 +1,11 @@
 import type * as Cli from "@xieyuheng/cli.ts"
 import { unwrap } from "@xieyuheng/std.ts/result"
-
-import type { Database } from "../../database/index.ts"
-import { hasApiKey } from "../../database/index.ts"
-import { readProviderConfig } from "../../provider/index.ts"
-import { providerNames } from "../../providers/providerNames.ts"
+import type { Database } from "@xieyuheng/windbell.ts"
+import {
+  hasApiKey,
+  providerNames,
+  readProviderConfig,
+} from "@xieyuheng/windbell.ts"
 
 export type ProviderListCommandOptions = {
   database: Database

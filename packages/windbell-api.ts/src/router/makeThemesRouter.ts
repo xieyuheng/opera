@@ -1,4 +1,4 @@
-import type * as S from "@xieyuheng/semiosis.ts"
+import type * as W from "@xieyuheng/windbell.ts"
 import { Hono } from "hono"
 
 import { makeThemeController } from "../controllers/ThemeController.ts"
@@ -6,7 +6,7 @@ import { makeThemeStore } from "../theme/ThemeStore.ts"
 import { readJsonBody, readRecord, readString } from "./readJson.ts"
 
 export type ThemesRouterOptions = {
-  files: S.Database["files"]
+  files: W.Database["files"]
   root: string
 }
 

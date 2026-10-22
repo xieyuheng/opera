@@ -1,6 +1,6 @@
-import type * as S from "@xieyuheng/semiosis.ts"
 import type { MaybePromise } from "@xieyuheng/std.ts/promise"
 import type { Result } from "@xieyuheng/std.ts/result"
+import type * as W from "@xieyuheng/windbell.ts"
 import type { z } from "zod"
 
 import { serviceErrorStatus } from "./serviceErrorStatus.ts"
@@ -11,7 +11,7 @@ export type MakeActionOptions = {
 
 export function makeAction<Input, Output>(
   schema: z.ZodType<Input>,
-  service: (input: Input) => MaybePromise<Result<Output, S.ServiceError>>,
+  service: (input: Input) => MaybePromise<Result<Output, W.ServiceError>>,
   options: MakeActionOptions = {},
 ): (input: unknown) => Promise<Response> {
   return async (input) => {

@@ -1,4 +1,4 @@
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 import { reactive } from "vue"
 
 import { windbell } from "../../app/windbell"
@@ -12,11 +12,11 @@ export type ProviderState = {
   requestId: number
   error: string | undefined
   warning: string | undefined
-  providerConfig: S.ProviderConfig | undefined
+  providerConfig: W.ProviderConfig | undefined
   apiKeyConfigured: boolean
   isDefaultProvider: boolean
   busyModelNames: Record<string, boolean>
-  models: Array<S.ModelEntry>
+  models: Array<W.ModelEntry>
 }
 
 export function makeProviderState(providerName: string): ProviderState {

@@ -6,7 +6,7 @@ import {
   withNotFoundAsUndefined,
   type HeaderSource,
 } from "@xieyuheng/http.ts"
-import type * as S from "@xieyuheng/semiosis.ts"
+import type * as W from "@xieyuheng/windbell.ts"
 import { z } from "zod"
 
 import type {
@@ -46,14 +46,14 @@ export type WindbellClient = {
 export type PagesClient = {
   loadHomeData(): Promise<HomeData>
   loadWorkspaceData(options: {
-    workspaceId: S.WorkspaceId
+    workspaceId: W.WorkspaceId
     previewLimit: number
     limit?: number
     cursor?: string
   }): Promise<WorkspacePageData>
-  loadSessionData(options: { sessionId: S.SessionId }): Promise<SessionData>
+  loadSessionData(options: { sessionId: W.SessionId }): Promise<SessionData>
   loadSessionDustbinData(options: {
-    workspaceId: S.WorkspaceId
+    workspaceId: W.WorkspaceId
     previewLimit: number
   }): Promise<SessionDustbinPageData>
   loadWorkspaceDustbinData(): Promise<WorkspaceDustbinData>
@@ -62,77 +62,77 @@ export type PagesClient = {
 }
 
 export type WorkspacesClient = {
-  list(): Promise<Array<S.Workspace>>
-  ensure(options: { name: string; root: string }): Promise<S.Workspace>
-  get(id: S.WorkspaceId): Promise<S.Workspace | undefined>
-  put(workspace: S.Workspace): Promise<void>
-  remove(id: S.WorkspaceId): Promise<void>
+  list(): Promise<Array<W.Workspace>>
+  ensure(options: { name: string; root: string }): Promise<W.Workspace>
+  get(id: W.WorkspaceId): Promise<W.Workspace | undefined>
+  put(workspace: W.Workspace): Promise<void>
+  remove(id: W.WorkspaceId): Promise<void>
 }
 
 export type SessionsClient = {
   list(options: {
-    workspaceId: S.WorkspaceId | undefined
-  }): Promise<Array<S.SessionIndex>>
+    workspaceId: W.WorkspaceId | undefined
+  }): Promise<Array<W.SessionIndex>>
   make(options: {
-    workspaceId: S.WorkspaceId
+    workspaceId: W.WorkspaceId
     title: string
-  }): Promise<S.Session>
-  get(id: S.SessionId): Promise<S.Session | undefined>
-  put(session: S.Session): Promise<void>
-  patch(options: { sessionId: S.SessionId; title: string }): Promise<void>
+  }): Promise<W.Session>
+  get(id: W.SessionId): Promise<W.Session | undefined>
+  put(session: W.Session): Promise<void>
+  patch(options: { sessionId: W.SessionId; title: string }): Promise<void>
   generateTitle(options: {
-    sessionId: S.SessionId
-    model: S.ModelRef
+    sessionId: W.SessionId
+    model: W.ModelRef
   }): Promise<string>
-  getUsage(options: { sessionId: S.SessionId }): Promise<S.SessionUsage>
+  getUsage(options: { sessionId: W.SessionId }): Promise<W.SessionUsage>
   listTurns(options: {
-    sessionId: S.SessionId
+    sessionId: W.SessionId
     details?: false
-  }): Promise<Array<S.Turn>>
+  }): Promise<Array<W.Turn>>
   listTurns(options: {
-    sessionId: S.SessionId
+    sessionId: W.SessionId
     details: true
-  }): Promise<Array<S.TurnDetails>>
+  }): Promise<Array<W.TurnDetails>>
   interpret(options: {
-    sessionId: S.SessionId
-    model: S.ModelRef
+    sessionId: W.SessionId
+    model: W.ModelRef
     turnId: string
-    input: Array<S.Sign>
+    input: Array<W.Sign>
     signal?: AbortSignal
-  }): AsyncGenerator<S.TurnEvent>
-  remove(id: S.SessionId): Promise<void>
+  }): AsyncGenerator<W.TurnEvent>
+  remove(id: W.SessionId): Promise<void>
 }
 
 export type DustbinSessionsClient = {
   list(options: {
-    workspaceId: S.WorkspaceId | undefined
-  }): Promise<Array<S.DustbinSessionIndex>>
-  get(id: S.SessionId): Promise<S.Session | undefined>
-  trash(id: S.SessionId): Promise<void>
-  restore(id: S.SessionId): Promise<void>
-  remove(id: S.SessionId): Promise<void>
+    workspaceId: W.WorkspaceId | undefined
+  }): Promise<Array<W.DustbinSessionIndex>>
+  get(id: W.SessionId): Promise<W.Session | undefined>
+  trash(id: W.SessionId): Promise<void>
+  restore(id: W.SessionId): Promise<void>
+  remove(id: W.SessionId): Promise<void>
 }
 
 export type DustbinWorkspacesClient = {
-  list(): Promise<Array<S.DustbinWorkspace>>
-  get(id: S.WorkspaceId): Promise<S.DustbinWorkspace | undefined>
-  trash(id: S.WorkspaceId): Promise<void>
-  restore(id: S.WorkspaceId): Promise<void>
-  remove(id: S.WorkspaceId): Promise<void>
+  list(): Promise<Array<W.DustbinWorkspace>>
+  get(id: W.WorkspaceId): Promise<W.DustbinWorkspace | undefined>
+  trash(id: W.WorkspaceId): Promise<void>
+  restore(id: W.WorkspaceId): Promise<void>
+  remove(id: W.WorkspaceId): Promise<void>
 }
 
 export type ProvidersClient = {
-  list(): Promise<Array<S.ProviderConfig>>
-  get(name: string): Promise<S.ProviderConfig>
+  list(): Promise<Array<W.ProviderConfig>>
+  get(name: string): Promise<W.ProviderConfig>
   getApiKeyStatus(name: string): Promise<boolean>
   listModels(options: {
     providerName: string
     all?: boolean
-  }): Promise<Array<S.ModelEntry>>
+  }): Promise<Array<W.ModelEntry>>
   getModel(options: {
     providerName: string
     modelName: string
-  }): Promise<S.ModelEntry>
+  }): Promise<W.ModelEntry>
   pinModel(options: { providerName: string; modelName: string }): Promise<void>
   unpinModel(options: {
     providerName: string
@@ -147,8 +147,8 @@ export type ProvidersClient = {
 }
 
 export type SettingsClient = {
-  get(): Promise<S.Settings>
-  put(settings: S.Settings): Promise<void>
+  get(): Promise<W.Settings>
+  put(settings: W.Settings): Promise<void>
 }
 
 export type ThemesClient = {
@@ -230,31 +230,31 @@ export function makeWindbellClient(
     list: makeJsonEndpoint(config, {
       method: "GET",
       path: "/workspaces",
-      output: JsonDataSchema<Array<S.Workspace>>(),
+      output: JsonDataSchema<Array<W.Workspace>>(),
     }),
     ensure: makeJsonEndpoint(config, {
       method: "POST",
       path: "/workspaces/ensure",
       body: (options) => options,
-      output: JsonDataSchema<S.Workspace>(),
+      output: JsonDataSchema<W.Workspace>(),
     }),
     get: withNotFoundAsUndefined(
       makeJsonEndpoint(config, {
         method: "GET",
-        path: (id: S.WorkspaceId) => `/workspaces/${encodeURIComponent(id)}`,
-        output: JsonDataSchema<S.Workspace>(),
+        path: (id: W.WorkspaceId) => `/workspaces/${encodeURIComponent(id)}`,
+        output: JsonDataSchema<W.Workspace>(),
       }),
     ),
     put: makeJsonEndpoint(config, {
       method: "PUT",
-      path: (workspace: S.Workspace) =>
+      path: (workspace: W.Workspace) =>
         `/workspaces/${encodeURIComponent(workspace.id)}`,
       body: (workspace) => workspace,
       output: VoidSchema,
     }),
     remove: makeJsonEndpoint(config, {
       method: "DELETE",
-      path: (id: S.WorkspaceId) => `/workspaces/${encodeURIComponent(id)}`,
+      path: (id: W.WorkspaceId) => `/workspaces/${encodeURIComponent(id)}`,
       output: VoidSchema,
     }),
   }
@@ -270,31 +270,31 @@ export function makeWindbellClient(
         }
         return query
       },
-      output: JsonDataSchema<Array<S.SessionIndex>>(),
+      output: JsonDataSchema<Array<W.SessionIndex>>(),
     }),
     make: makeJsonEndpoint(config, {
       method: "POST",
       path: "/sessions",
       body: (options) => options,
-      output: JsonDataSchema<S.Session>(),
+      output: JsonDataSchema<W.Session>(),
     }),
     get: withNotFoundAsUndefined(
       makeJsonEndpoint(config, {
         method: "GET",
-        path: (id: S.SessionId) => `/sessions/${encodeURIComponent(id)}`,
-        output: JsonDataSchema<S.Session>(),
+        path: (id: W.SessionId) => `/sessions/${encodeURIComponent(id)}`,
+        output: JsonDataSchema<W.Session>(),
       }),
     ),
     put: makeJsonEndpoint(config, {
       method: "PUT",
-      path: (session: S.Session) =>
+      path: (session: W.Session) =>
         `/sessions/${encodeURIComponent(session.id)}`,
       body: (session) => session,
       output: VoidSchema,
     }),
     patch: makeJsonEndpoint(config, {
       method: "PATCH",
-      path: (options: { sessionId: S.SessionId; title: string }) =>
+      path: (options: { sessionId: W.SessionId; title: string }) =>
         `/sessions/${encodeURIComponent(options.sessionId)}`,
       body: (options) => ({ title: options.title }),
       output: VoidSchema,
@@ -302,7 +302,7 @@ export function makeWindbellClient(
     async generateTitle(options) {
       const result = await makeJsonEndpoint(config, {
         method: "POST",
-        path: (input: { sessionId: S.SessionId; model: S.ModelRef }) =>
+        path: (input: { sessionId: W.SessionId; model: W.ModelRef }) =>
           `/sessions/${encodeURIComponent(input.sessionId)}/title`,
         body: (input) => input,
         output: z.object({ title: z.string() }),
@@ -314,7 +314,7 @@ export function makeWindbellClient(
       method: "GET",
       path: (options) =>
         `/sessions/${encodeURIComponent(options.sessionId)}/usage`,
-      output: JsonDataSchema<S.SessionUsage>(),
+      output: JsonDataSchema<W.SessionUsage>(),
     }),
     listTurns: makeJsonEndpoint(config, {
       method: "GET",
@@ -327,10 +327,10 @@ export function makeWindbellClient(
         }
         return query
       },
-      output: JsonDataSchema<Array<S.Turn | S.TurnDetails>>(),
+      output: JsonDataSchema<Array<W.Turn | W.TurnDetails>>(),
     }) as SessionsClient["listTurns"],
     async *interpret(options) {
-      for await (const event of requestNdjson<S.TurnEvent>({
+      for await (const event of requestNdjson<W.TurnEvent>({
         baseUrl: config.baseUrl,
         method: "POST",
         path: `/sessions/${encodeURIComponent(options.sessionId)}/interpret`,
@@ -347,7 +347,7 @@ export function makeWindbellClient(
     },
     remove: makeJsonEndpoint(config, {
       method: "DELETE",
-      path: (id: S.SessionId) => `/sessions/${encodeURIComponent(id)}`,
+      path: (id: W.SessionId) => `/sessions/${encodeURIComponent(id)}`,
       output: VoidSchema,
     }),
   }
@@ -357,38 +357,38 @@ export function makeWindbellClient(
       list: makeJsonEndpoint(config, {
         method: "GET",
         path: "/dustbin/sessions",
-        query: (options: { workspaceId: S.WorkspaceId | undefined }) => {
+        query: (options: { workspaceId: W.WorkspaceId | undefined }) => {
           const query = new URLSearchParams()
           if (options.workspaceId !== undefined) {
             query.set("workspaceId", options.workspaceId)
           }
           return query
         },
-        output: JsonDataSchema<Array<S.DustbinSessionIndex>>(),
+        output: JsonDataSchema<Array<W.DustbinSessionIndex>>(),
       }),
       get: withNotFoundAsUndefined(
         makeJsonEndpoint(config, {
           method: "GET",
-          path: (id: S.SessionId) =>
+          path: (id: W.SessionId) =>
             `/dustbin/sessions/${encodeURIComponent(id)}`,
-          output: JsonDataSchema<S.Session>(),
+          output: JsonDataSchema<W.Session>(),
         }),
       ),
       trash: makeJsonEndpoint(config, {
         method: "POST",
         path: "/dustbin/sessions",
-        body: (id: S.SessionId) => ({ sessionId: id }),
+        body: (id: W.SessionId) => ({ sessionId: id }),
         output: VoidSchema,
       }),
       restore: makeJsonEndpoint(config, {
         method: "POST",
-        path: (id: S.SessionId) =>
+        path: (id: W.SessionId) =>
           `/dustbin/sessions/${encodeURIComponent(id)}/restore`,
         output: VoidSchema,
       }),
       remove: makeJsonEndpoint(config, {
         method: "DELETE",
-        path: (id: S.SessionId) =>
+        path: (id: W.SessionId) =>
           `/dustbin/sessions/${encodeURIComponent(id)}`,
         output: VoidSchema,
       }),
@@ -397,31 +397,31 @@ export function makeWindbellClient(
       list: makeJsonEndpoint(config, {
         method: "GET",
         path: "/dustbin/workspaces",
-        output: JsonDataSchema<Array<S.DustbinWorkspace>>(),
+        output: JsonDataSchema<Array<W.DustbinWorkspace>>(),
       }),
       get: withNotFoundAsUndefined(
         makeJsonEndpoint(config, {
           method: "GET",
-          path: (id: S.WorkspaceId) =>
+          path: (id: W.WorkspaceId) =>
             `/dustbin/workspaces/${encodeURIComponent(id)}`,
-          output: JsonDataSchema<S.DustbinWorkspace>(),
+          output: JsonDataSchema<W.DustbinWorkspace>(),
         }),
       ),
       trash: makeJsonEndpoint(config, {
         method: "POST",
         path: "/dustbin/workspaces",
-        body: (id: S.WorkspaceId) => ({ workspaceId: id }),
+        body: (id: W.WorkspaceId) => ({ workspaceId: id }),
         output: VoidSchema,
       }),
       restore: makeJsonEndpoint(config, {
         method: "POST",
-        path: (id: S.WorkspaceId) =>
+        path: (id: W.WorkspaceId) =>
           `/dustbin/workspaces/${encodeURIComponent(id)}/restore`,
         output: VoidSchema,
       }),
       remove: makeJsonEndpoint(config, {
         method: "DELETE",
-        path: (id: S.WorkspaceId) =>
+        path: (id: W.WorkspaceId) =>
           `/dustbin/workspaces/${encodeURIComponent(id)}`,
         output: VoidSchema,
       }),
@@ -432,12 +432,12 @@ export function makeWindbellClient(
     list: makeJsonEndpoint(config, {
       method: "GET",
       path: "/providers",
-      output: JsonDataSchema<Array<S.ProviderConfig>>(),
+      output: JsonDataSchema<Array<W.ProviderConfig>>(),
     }),
     get: makeJsonEndpoint(config, {
       method: "GET",
       path: (name: string) => `/providers/${encodeURIComponent(name)}`,
-      output: JsonDataSchema<S.ProviderConfig>(),
+      output: JsonDataSchema<W.ProviderConfig>(),
     }),
     getApiKeyStatus: async (name) => {
       const result = await makeJsonEndpoint(config, {
@@ -458,7 +458,7 @@ export function makeWindbellClient(
         if (options.all === true) query.set("all", "true")
         return query
       },
-      output: JsonDataSchema<Array<S.ModelEntry>>(),
+      output: JsonDataSchema<Array<W.ModelEntry>>(),
     }),
     getModel: makeJsonEndpoint(config, {
       method: "GET",
@@ -469,7 +469,7 @@ export function makeWindbellClient(
         query.set("modelName", options.modelName)
         return query
       },
-      output: JsonDataSchema<S.ModelEntry>(),
+      output: JsonDataSchema<W.ModelEntry>(),
     }),
     pinModel: makeJsonEndpoint(config, {
       method: "POST",
@@ -510,7 +510,7 @@ export function makeWindbellClient(
     get: makeJsonEndpoint(config, {
       method: "GET",
       path: "/settings",
-      output: JsonDataSchema<S.Settings>(),
+      output: JsonDataSchema<W.Settings>(),
     }),
     put: makeJsonEndpoint(config, {
       method: "PUT",

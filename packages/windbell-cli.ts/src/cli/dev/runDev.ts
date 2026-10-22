@@ -4,13 +4,13 @@ import process from "node:process"
 
 import type { ServerType } from "@hono/node-server"
 import { makeLocalFileSystem } from "@xieyuheng/fs.ts/local-fs"
-import * as S from "@xieyuheng/semiosis.ts"
 import { makePath } from "@xieyuheng/std.ts/path"
 import {
   closeServer,
   makeAccessTokenStore,
   startWindbellServer,
 } from "@xieyuheng/windbell-api.ts"
+import * as W from "@xieyuheng/windbell.ts"
 import { createServer, type ViteDevServer } from "vite"
 
 import {
@@ -23,7 +23,7 @@ import type { DevOptions } from "./resolveDevOptions.ts"
 const defaultWebPort = 5173
 
 export async function runDev(options: DevOptions): Promise<void> {
-  const database = S.makeDatabase({
+  const database = W.makeDatabase({
     fs: makeLocalFileSystem(),
     path: makePath(process.platform === "win32" ? "win32" : "posix"),
     root: options.databaseRoot,

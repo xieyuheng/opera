@@ -1,7 +1,7 @@
-import type * as S from "@xieyuheng/semiosis.ts"
+import type * as W from "@xieyuheng/windbell.ts"
 
 export type WindbellRouterOptions = {
-  database: S.Database
+  database: W.Database
   corsOrigin: string | undefined
   lockRoot: string
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { OpenRouterModelEntry } from "@xieyuheng/semiosis.ts/core"
+import type { OpenRouterModelEntry } from "@xieyuheng/windbell.ts/core"
 import { useI18n } from "vue-i18n"
 
 import Card from "../../components/card/Card.vue"

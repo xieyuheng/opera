@@ -1,7 +1,6 @@
 import type * as Cli from "@xieyuheng/cli.ts"
-
-import type { Database } from "../../database/index.ts"
-import { setDefaultProvider } from "../../settings/setDefaultProvider.ts"
+import type { Database } from "@xieyuheng/windbell.ts"
+import { setDefaultProvider } from "@xieyuheng/windbell.ts"
 
 export type ProviderDefaultCommandOptions = {
   database: Database

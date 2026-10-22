@@ -6,14 +6,14 @@ import process from "node:process"
 import { test } from "node:test"
 
 import { makeLocalFileSystem } from "@xieyuheng/fs.ts/local-fs"
-import * as S from "@xieyuheng/semiosis.ts"
 import { makePath } from "@xieyuheng/std.ts/path"
+import * as W from "@xieyuheng/windbell.ts"
 
 import { isAccessTokenExpired, makeAccessTokenStore } from "./AccessToken.ts"
 
 test("access token store", async (t) => {
   const root = await mkdtemp(Path.join(tmpdir(), "windbell-access-token-"))
-  const database = S.makeDatabase({
+  const database = W.makeDatabase({
     fs: makeLocalFileSystem(),
     path: makePath(process.platform === "win32" ? "win32" : "posix"),
     root,

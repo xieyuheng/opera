@@ -1,15 +1,15 @@
-import type * as S from "@xieyuheng/semiosis.ts/core"
+import type * as W from "@xieyuheng/windbell.ts/core"
 
 export type PendingInterpret = {
   kind: "PendingInterpret"
-  sessionId: S.SessionId
+  sessionId: W.SessionId
   content: string
   generateTitle: boolean
 }
 
 export type SessionMessage = PendingInterpret
 
-const inbox = new Map<S.SessionId, Array<SessionMessage>>()
+const inbox = new Map<W.SessionId, Array<SessionMessage>>()
 
 export function sendSessionMessage(message: SessionMessage): void {
   const messages = inbox.get(message.sessionId) ?? []
@@ -19,7 +19,7 @@ export function sendSessionMessage(message: SessionMessage): void {
 }
 
 export function receiveSessionMessages(
-  sessionId: S.SessionId,
+  sessionId: W.SessionId,
 ): Array<SessionMessage> {
   const messages = inbox.get(sessionId) ?? []
   inbox.delete(sessionId)

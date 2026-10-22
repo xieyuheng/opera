@@ -8,4 +8,3 @@ Set-Location (Join-Path $PSScriptRoot '..')
 
 node --test src/**/*.test.ts
 
-& (Join-Path $PSScriptRoot 'test-batch.ps1')

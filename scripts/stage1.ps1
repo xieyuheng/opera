@@ -13,7 +13,7 @@ Set-Location (Join-Path $PSScriptRoot '..')
 ./scripts/run-in.ps1 std.ts format
 ./scripts/run-in.ps1 http.ts format
 ./scripts/run-in.ps1 cli.ts format
-./scripts/run-in.ps1 semiosis.ts format
+./scripts/run-in.ps1 windbell.ts format
 ./scripts/run-in.ps1 fs.ts format
 ./scripts/run-in.ps1 fs-api.ts format
 ./scripts/run-in.ps1 sh.ts format
@@ -27,7 +27,7 @@ Set-Location (Join-Path $PSScriptRoot '..')
 ./scripts/run-in.ps1 std.ts check
 ./scripts/run-in.ps1 http.ts check
 ./scripts/run-in.ps1 cli.ts check
-./scripts/run-in.ps1 semiosis.ts check
+./scripts/run-in.ps1 windbell.ts check
 ./scripts/run-in.ps1 fs.ts check
 ./scripts/run-in.ps1 fs-api.ts check
 ./scripts/run-in.ps1 sh.ts check
@@ -45,7 +45,7 @@ Set-Location (Join-Path $PSScriptRoot '..')
 ./scripts/run-in.ps1 lock.ts test
 ./scripts/run-in.ps1 http.ts test
 ./scripts/run-in.ps1 cli.ts clean test
-./scripts/run-in.ps1 semiosis.ts clean test
+./scripts/run-in.ps1 windbell.ts clean test
 ./scripts/run-in.ps1 windbell-cli.ts clean test
 ./scripts/run-in.ps1 windbell-api.ts clean test
 

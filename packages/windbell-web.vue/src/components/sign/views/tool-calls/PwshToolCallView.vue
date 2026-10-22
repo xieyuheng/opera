@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import * as S from "@xieyuheng/semiosis.ts/core"
+import * as W from "@xieyuheng/windbell.ts/core"
 import { Ajv } from "ajv"
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
@@ -8,7 +8,7 @@ import { signMessages } from "../../Sign.i18n.ts"
 import type { SignState } from "../../signState.ts"
 
 const props = defineProps<{
-  sign: S.ToolCallSign
+  sign: W.ToolCallSign
   args: unknown
   state: SignState
 }>()
@@ -27,7 +27,7 @@ const ajv = new Ajv({
   strict: false,
 })
 
-const validate = ajv.compile(S.pwshToolParameters)
+const validate = ajv.compile(W.pwshToolParameters)
 
 const pwshArgs = computed<PwshArguments>(() => {
   if (!validate(props.args)) {

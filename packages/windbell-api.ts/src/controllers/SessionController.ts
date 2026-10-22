@@ -1,12 +1,12 @@
-import { makeServiceError } from "@xieyuheng/semiosis.ts"
-import type * as S from "@xieyuheng/semiosis.ts"
 import { err, ok } from "@xieyuheng/std.ts/result"
+import { makeServiceError } from "@xieyuheng/windbell.ts"
+import type * as W from "@xieyuheng/windbell.ts"
 import { z } from "zod"
 
 import { makeAction } from "../http/makeAction.ts"
 
 export type SessionControllerOptions = {
-  sessions: S.SessionService
+  sessions: W.SessionService
 }
 
 export const ListSessionsInputSchema = z
@@ -33,7 +33,7 @@ export const ListSessionTurnsInputSchema = z.object({
 
 export const PutSessionInputSchema = z.object({
   sessionId: z.string(),
-  session: z.custom<S.Session>(),
+  session: z.custom<W.Session>(),
 })
 
 export const PatchSessionInputSchema = z.object({

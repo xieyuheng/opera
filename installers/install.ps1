@@ -452,13 +452,6 @@ function Write-Shims {
     'if errorlevel 1 exit /b 1'
   )
 
-  $shims['semiosis.cmd'] = $preamble + @(
-    'set "PATH=%NODE_HOME%;%PATH%"'
-    'set "NODE_COMPILE_CACHE=%OPERA_HOME%\tmp\node"'
-    '"%NODE_HOME%\node.exe" --stack-size=65536 "%OPERA_HOME%\src\opera\packages\semiosis.ts\src\main.ts" %*'
-    'exit /b %ERRORLEVEL%'
-  )
-
   $shims['windbell.cmd'] = $preamble + @(
     'set "PATH=%NODE_HOME%;%PATH%"'
     'set "NODE_COMPILE_CACHE=%OPERA_HOME%\tmp\node"'
