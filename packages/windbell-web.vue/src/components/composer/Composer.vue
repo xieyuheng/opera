@@ -276,10 +276,22 @@ function focusActiveTextarea(): void {
   writeSelection(compactTextarea.value, selection)
 }
 
+function shouldAutofocus(): boolean {
+  if (!props.autofocus) return false
+
+  // Avoid opening the virtual keyboard automatically on touch devices.
+  return (
+    typeof window.matchMedia !== "function" ||
+    !window.matchMedia("(pointer: coarse)").matches
+  )
+}
+
 onMounted(() => {
+  const autofocus = shouldAutofocus()
+
   if (showExpanded.value) {
     void resizeExpandedTextarea()
-    if (props.autofocus) {
+    if (autofocus) {
       focusActiveTextarea()
     }
 
@@ -287,7 +299,7 @@ onMounted(() => {
   }
 
   captureCompactHeight()
-  if (props.autofocus) {
+  if (autofocus) {
     focusActiveTextarea()
   }
 })
