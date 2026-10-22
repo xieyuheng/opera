@@ -520,7 +520,7 @@ function handleToggle(): void {
       <textarea
         ref="expandedTextarea"
         v-model="input"
-        class="thin-scrollbar text-ink placeholder:text-ink/60 w-full resize-none overflow-y-auto bg-transparent outline-none disabled:opacity-50"
+        class="text-ink placeholder:text-ink/60 w-full resize-none overflow-y-auto bg-transparent outline-none disabled:opacity-50"
         :class="{ 'min-h-0 flex-1': manualHeight !== null }"
         :disabled="props.disabled"
         :placeholder="props.placeholder"

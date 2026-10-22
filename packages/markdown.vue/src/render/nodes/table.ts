@@ -4,7 +4,7 @@ import { h } from "vue"
 import type { MarkdownNodeRenderer } from "../types.ts"
 
 export const renderTable: MarkdownNodeRenderer<Table> = (ctx, node) => {
-  return h("div", { class: "my-4 overflow-x-auto thin-scrollbar" }, [
+  return h("div", { class: "my-4 overflow-x-auto " }, [
     h(
       "table",
       { class: "w-full border-collapse text-left" },

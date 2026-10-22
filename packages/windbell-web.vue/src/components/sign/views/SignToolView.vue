@@ -23,7 +23,7 @@ const parametersText = computed(() =>
 
     <Markdown :text="sign.description" />
 
-    <pre class="thin-scrollbar overflow-x-auto font-mono whitespace-pre">{{
+    <pre class="overflow-x-auto font-mono whitespace-pre">{{
       parametersText
     }}</pre>
   </div>

@@ -291,7 +291,7 @@ function parentDirectory(path: string): string {
         <div
           class="border-line grid h-64 shrink-0 grid-cols-2 overflow-hidden rounded border"
         >
-          <div class="thin-scrollbar h-full overflow-y-auto">
+          <div class="h-full overflow-y-auto">
             <p v-if="loading" class="text-ink px-3 py-2">
               {{ t("loading") }}
             </p>
@@ -326,9 +326,7 @@ function parentDirectory(path: string): string {
             </ul>
           </div>
 
-          <div
-            class="thin-scrollbar border-line h-full overflow-y-auto border-l"
-          >
+          <div class="border-line h-full overflow-y-auto border-l">
             <p v-if="selectedEntry === undefined" class="text-ink px-3 py-2">
               {{ t("noSelection") }}
             </p>

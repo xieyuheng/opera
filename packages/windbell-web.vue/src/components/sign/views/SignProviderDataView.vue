@@ -10,7 +10,7 @@ defineProps<{
 </script>
 
 <template>
-  <pre class="thin-scrollbar overflow-x-auto font-mono whitespace-pre-wrap">{{
+  <pre class="overflow-x-auto font-mono whitespace-pre-wrap">{{
     JSON.stringify(sign.data, null, 2)
   }}</pre>
 </template>

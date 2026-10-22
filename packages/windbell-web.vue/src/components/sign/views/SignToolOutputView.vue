@@ -10,7 +10,5 @@ defineProps<{
 </script>
 
 <template>
-  <pre class="thin-scrollbar overflow-x-auto font-mono whitespace-pre">{{
-    sign.content
-  }}</pre>
+  <pre class="overflow-x-auto font-mono whitespace-pre">{{ sign.content }}</pre>
 </template>

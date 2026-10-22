@@ -12,8 +12,8 @@ const text = computed(() => new TextDecoder().decode(props.content.bytes))
 
 <template>
   <div class="flex h-full min-h-0 flex-col overflow-hidden">
-    <pre
-      class="thin-scrollbar text-ink min-h-0 flex-1 overflow-auto px-4 py-3 font-mono"
-      >{{ text }}</pre>
+    <pre class="text-ink min-h-0 flex-1 overflow-auto px-4 py-3 font-mono">{{
+      text
+    }}</pre>
   </div>
 </template>

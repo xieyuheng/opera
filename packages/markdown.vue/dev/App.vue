@@ -50,7 +50,7 @@ const source = ref(
 </script>
 
 <template>
-  <article class="thin-scrollbar p-6">
+  <article class=" p-6">
     <Markdown :text="source" />
   </article>
 </template>
