@@ -7,6 +7,7 @@ export type RangerDirectoryContent = {
 
 export type RangerFileContent = {
   type: "file"
+  path: string
   bytes: Uint8Array
 }
 

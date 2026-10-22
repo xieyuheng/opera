@@ -56,7 +56,7 @@ async function loadEntryView(
 
   return {
     component: view,
-    content: { type: "file", bytes },
+    content: { type: "file", path: entry.path, bytes },
   }
 }
 

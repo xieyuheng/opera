@@ -3,6 +3,7 @@ import Markdown from "@xieyuheng/markdown.vue"
 import { computed, ref, watch } from "vue"
 
 import type { RangerFileContent } from "../RangerContent.ts"
+import HighlightedText from "./HighlightedText.vue"
 import MarkdownToolbar from "./MarkdownToolbar.vue"
 import {
   readStoredMarkdownViewMode,
@@ -40,7 +41,7 @@ watch(mode, (value) => {
       <pre
         v-else
         class="text-ink m-0 font-mono break-words whitespace-pre-wrap"
-        >{{ text }}</pre>
+      ><HighlightedText :text="text" language="markdown" /></pre>
     </div>
   </div>
 </template>
