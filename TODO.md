@@ -1,4 +1,3 @@
-[windbell-web.vue] session-page 修复轮次列表滚动条位置
 [windbell-web.vue] home-page 「创建工作区」改为使用原生 popover api 和 card 组件
 [docs] 已经实现了 museum.vue 否还需要使用 vitepress？
 [opera] 把 museum.vue 合并到 windbell，
