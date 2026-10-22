@@ -2,11 +2,10 @@
 
 VitePress documentation site for windbell.
 
-The source lives in the repository `docs/` directory:
+The documentation source lives in this package's `docs/` directory:
 
 - `docs/en/` — English documentation
 - `docs/zh/` — Chinese documentation
-- `docs/diary/` — development diary (Chinese), rewritten to `/zh/diary/`
 
 ## Commands
 

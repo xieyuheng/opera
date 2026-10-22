@@ -4,14 +4,9 @@ import { fileURLToPath } from "node:url"
 
 import { defineConfig } from "vitepress"
 
-import { demoteDiaryHeadings } from "./markdown/demote-diary-headings"
-import { markdownSidebar } from "./sidebar"
-
 const here = dirname(fileURLToPath(import.meta.url))
-const repoRoot = resolve(here, "../../..")
-const docsDir = resolve(repoRoot, "docs")
-const diaryDir = resolve(docsDir, "diary")
-const repository = "https://github.com/xieyuheng/windbell"
+const docsDir = resolve(here, "../docs")
+const repository = "https://github.com/xieyuheng/opera"
 const require = createRequire(import.meta.url)
 const vueDir = dirname(require.resolve("vue/package.json"))
 const vueServerRenderer = require.resolve("vue/server-renderer")
@@ -19,9 +14,6 @@ const vueServerRenderer = require.resolve("vue/server-renderer")
 export default defineConfig({
   srcDir: docsDir,
   cleanUrls: true,
-  rewrites: {
-    "diary/:rest*": "zh/diary/:rest*",
-  },
 
   vite: {
     resolve: {
@@ -35,12 +27,6 @@ export default defineConfig({
     },
   },
 
-  markdown: {
-    config(md) {
-      demoteDiaryHeadings(md)
-    },
-  },
-
   title: "windbell",
   description: "Windbell documentation",
 
@@ -51,9 +37,6 @@ export default defineConfig({
       link: "/en/",
       title: "windbell",
       description: "Windbell documentation",
-      themeConfig: {
-        nav: [{ text: "Home", link: "/en/" }],
-      },
     },
     zh: {
       label: "中文",
@@ -61,23 +44,10 @@ export default defineConfig({
       link: "/zh/",
       title: "风铃",
       description: "Windbell 文档",
-      themeConfig: {
-        nav: [
-          { text: "首页", link: "/zh/" },
-          { text: "开发日志", link: "/zh/diary/" },
-        ],
-        sidebar: {
-          "/zh/diary/": markdownSidebar(diaryDir, "/zh/diary/"),
-        },
-      },
     },
   },
 
   themeConfig: {
-    nav: [
-      { text: "English", link: "/en/" },
-      { text: "中文", link: "/zh/" },
-    ],
     socialLinks: [{ icon: "github", link: repository }],
     search: {
       provider: "local",
@@ -86,8 +56,5 @@ export default defineConfig({
       level: [2, 3],
     },
     langMenuLabel: "Change language / 切换语言",
-    // English has no diary, so do not try to preserve the current path
-    // when switching languages.
-    i18nRouting: false,
   },
 })

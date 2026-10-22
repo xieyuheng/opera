@@ -4,12 +4,6 @@ hero:
   name: windbell
   text: Documentation
   tagline: AI agent inspired by Peirce's Semiotics
-  actions:
-    - theme: brand
-      text: GitHub
-      link: https://github.com/xieyuheng/opera
-      target: _blank
-      rel: noreferrer
 ---
 
 ## Documentation
