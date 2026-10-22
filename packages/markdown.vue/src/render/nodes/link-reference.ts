@@ -9,7 +9,11 @@ export const renderLinkReference: MarkdownNodeRenderer<LinkReference> = (
   node,
 ) => {
   const definition = ctx.state.definitions.get(node.identifier)
-  const href = safeUrl(definition?.url)
+  const rawHref = safeUrl(definition?.url)
+  const href =
+    rawHref === undefined
+      ? undefined
+      : (ctx.environment.resolveUrl?.(rawHref, { kind: "link" }) ?? rawHref)
   const children = ctx.renderChildren(node.children)
 
   if (href === undefined) {
@@ -22,8 +26,15 @@ export const renderLinkReference: MarkdownNodeRenderer<LinkReference> = (
       href,
       title: definition?.title ?? undefined,
       class: "underline underline-offset-2",
-      target: "_blank",
+      target: ctx.environment.linkTarget
+        ? ctx.environment.linkTarget(href)
+        : "_blank",
       rel: "noopener noreferrer",
+      onClick: ctx.environment.handleLinkClick
+        ? (event: MouseEvent) => {
+            ctx.environment.handleLinkClick?.(event, href)
+          }
+        : undefined,
     },
     children,
   )

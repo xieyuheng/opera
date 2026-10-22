@@ -5,7 +5,11 @@ import { safeUrl } from "../../markdownUrl.ts"
 import type { MarkdownNodeRenderer } from "../types.ts"
 
 export const renderImage: MarkdownNodeRenderer<Image> = (ctx, node) => {
-  const src = safeUrl(node.url, { image: true })
+  const rawSrc = safeUrl(node.url, { image: true })
+  const src =
+    rawSrc === undefined
+      ? undefined
+      : (ctx.environment.resolveUrl?.(rawSrc, { kind: "image" }) ?? rawSrc)
 
   if (src === undefined) {
     return h("span", null, node.alt ?? "")

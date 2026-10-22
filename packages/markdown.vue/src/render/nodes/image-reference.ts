@@ -9,7 +9,11 @@ export const renderImageReference: MarkdownNodeRenderer<ImageReference> = (
   node,
 ) => {
   const definition = ctx.state.definitions.get(node.identifier)
-  const src = safeUrl(definition?.url, { image: true })
+  const rawSrc = safeUrl(definition?.url, { image: true })
+  const src =
+    rawSrc === undefined
+      ? undefined
+      : (ctx.environment.resolveUrl?.(rawSrc, { kind: "image" }) ?? rawSrc)
 
   if (src === undefined) {
     return h("span", null, node.alt ?? node.label ?? "")
