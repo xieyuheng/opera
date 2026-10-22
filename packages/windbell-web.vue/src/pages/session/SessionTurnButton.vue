@@ -147,7 +147,7 @@ function handleToggle(event: Event): void {
           {{ t("turnEmpty") }}
         </p>
 
-        <div v-else class="flex px-3 py-2 max-h-96 flex-col overflow-y-auto">
+        <div v-else class="flex max-h-96 flex-col overflow-y-auto px-3 py-2">
           <div v-for="(turn, index) in props.turns" :key="turn.id">
             <div class="flex items-center gap-2 py-1">
               <button

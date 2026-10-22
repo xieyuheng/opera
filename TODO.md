@@ -1,8 +1,7 @@
-[windbell-web.vue] home-page 「创建工作区」改为使用原生 popover api 和 card 组件
-[docs] 已经实现了 museum.vue 否还需要使用 vitepress？
 [opera] 把 museum.vue 合并到 windbell，
 [opera] 把 windbell repo 改名为 opera，
 - opera programmatica 编程作品集。
+[docs] 已经实现了 museum.vue 否还需要使用 vitepress？
 [windbell-web.vue] 改善 ranger 移动端布局
 [windbell-web.vue] ranger 支持语法高亮
 [windbell-docs.vitepress] 改善文档

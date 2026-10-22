@@ -1,20 +1,21 @@
 <script setup lang="ts">
 import type { FileSystemEntry } from "@windbell/fs.ts/fs"
 import { unwrap } from "@windbell/std.ts/result"
-import { computed, onBeforeUnmount, onMounted, ref } from "vue"
+import { computed, ref } from "vue"
 import { useI18n } from "vue-i18n"
 
 import { windbellFs as fs } from "../../app/fs.ts"
 import MediumButton from "../../components/buttons/MediumButton.vue"
+import Card from "../../components/card/Card.vue"
 import { homeMessages } from "./Home.i18n.ts"
 
 const props = defineProps<{
+  popoverId: string
   creating: boolean
   error?: string
 }>()
 
 const emit = defineEmits<{
-  close: []
   create: [options: { name: string; root: string }]
 }>()
 
@@ -23,6 +24,7 @@ const { t } = useI18n({
   useScope: "local",
 })
 
+const popover = ref<HTMLElement | null>(null)
 const currentDirectory = ref("")
 const entries = ref<Array<FileSystemEntry>>([])
 const loading = ref(false)
@@ -39,6 +41,20 @@ const canGoParent = computed(() => {
 const canCreate = computed(
   () => currentDirectory.value !== "" && !props.creating,
 )
+
+function open(): void {
+  const element = popover.value
+  if (element === null || element.matches(":popover-open")) return
+
+  element.showPopover()
+}
+
+function close(): void {
+  const element = popover.value
+  if (element === null || !element.matches(":popover-open")) return
+
+  element.hidePopover()
+}
 
 async function loadDirectory(path: string): Promise<void> {
   const requestId = ++loadRequestId
@@ -61,6 +77,14 @@ async function loadDirectory(path: string): Promise<void> {
     if (requestId === loadRequestId) {
       loading.value = false
     }
+  }
+}
+
+async function loadHomeDirectory(): Promise<void> {
+  try {
+    await loadDirectory(unwrap(await fs.home()))
+  } catch (error) {
+    loadError.value = error instanceof Error ? error.message : String(error)
   }
 }
 
@@ -88,35 +112,15 @@ function submit(): void {
   })
 }
 
-async function handleKeydown(event: KeyboardEvent): Promise<void> {
-  if (event.key === "Escape") {
-    if (!props.creating) emit("close")
-    return
-  }
+function handleToggle(event: Event): void {
+  const state = (event as Event & { newState?: string }).newState
 
-  if (event.key === "ArrowLeft") {
-    event.preventDefault()
-    await goParent()
+  if (state === "open") {
+    void loadHomeDirectory()
   }
 }
 
-function onKeydown(event: KeyboardEvent): void {
-  void handleKeydown(event)
-}
-
-onMounted(async () => {
-  window.addEventListener("keydown", onKeydown)
-
-  try {
-    await loadDirectory(unwrap(await fs.home()))
-  } catch (error) {
-    loadError.value = error instanceof Error ? error.message : String(error)
-  }
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener("keydown", onKeydown)
-})
+defineExpose({ open, close })
 
 function directoryEntries(
   entries: Array<FileSystemEntry>,
@@ -167,100 +171,92 @@ function parentDirectory(path: string): string {
 
 <template>
   <div
-    class="bg-ink/30 fixed inset-0 z-50 flex items-center justify-center p-4"
-    @click.self="!props.creating && emit('close')"
+    :id="props.popoverId"
+    ref="popover"
+    popover="auto"
+    class="w-[30rem] max-w-8/9 bg-transparent"
+    :style="{
+      position: 'fixed',
+      inset: '0',
+      margin: 'auto',
+      overflow: 'visible',
+    }"
+    @toggle="handleToggle"
   >
-    <form
-      class="border-line bg-paper text-ink flex h-[calc(100dvh-2rem)] max-h-[40rem] w-full max-w-3xl flex-col overflow-hidden rounded-lg border-x-3 border-b-3"
-      @submit.prevent="submit"
-    >
-      <header class="bg-line shrink-0 px-3 py-2">
-        <div>
-          <h2 class="text-base font-semibold">
-            {{ t("createWorkspace") }}
-          </h2>
-        </div>
-      </header>
+    <Card as="form" class="flex h-full flex-col" @submit.prevent="submit">
+      <template #tag>
+        <h2 class="text-base font-semibold">
+          {{ t("createWorkspace") }}
+        </h2>
+      </template>
 
-      <div class="thin-scrollbar min-h-0 flex-1 overflow-y-auto p-4">
-        <div class="flex flex-col gap-3">
-          <label class="flex flex-col gap-1 text-sm">
-            <span class="text-ink">{{ t("root") }}</span>
-            <input
-              :value="currentDirectory"
-              class="border-line text-ink w-full rounded border bg-transparent px-2 py-1.5 font-mono outline-none"
-              type="text"
-              readonly
-            />
-          </label>
+      <div class="bg-paper flex h-[60svh] min-h-0 flex-col gap-3 p-3">
+        <label class="flex shrink-0 flex-col gap-1">
+          <span class="text-ink">{{ t("root") }}</span>
+          <input
+            :value="currentDirectory"
+            class="border-line text-ink w-full rounded border bg-transparent px-2 py-1.5 font-mono outline-none"
+            type="text"
+            readonly
+          />
+        </label>
 
-          <div class="border-line overflow-hidden rounded border">
-            <header class="border-line flex h-10 items-center border-b">
-              <button
-                type="button"
-                class="text-ink flex h-full min-w-0 flex-1 items-center px-3 text-left transition-colors"
-                :class="
-                  canGoParent
-                    ? 'hover:bg-line cursor-pointer'
-                    : 'cursor-default'
-                "
-                :disabled="!canGoParent"
-                :title="canGoParent ? t('goParent') : currentName"
-                @click="goParent"
-              >
-                <span class="truncate">{{ currentName }}</span>
-              </button>
-            </header>
-
-            <p v-if="loading" class="text-ink px-3 py-2">
-              {{ t("loading") }}
-            </p>
-
-            <p
-              v-else-if="loadError !== undefined"
-              class="text-sign-error px-3 py-2"
+        <div
+          class="border-line flex min-h-0 flex-1 flex-col overflow-hidden rounded border"
+        >
+          <header class="border-line flex h-10 shrink-0 items-center border-b">
+            <button
+              type="button"
+              class="text-ink flex h-full min-w-0 flex-1 items-center px-3 text-left transition-colors"
+              :class="
+                canGoParent ? 'hover:bg-line cursor-pointer' : 'cursor-default'
+              "
+              :disabled="!canGoParent"
+              :title="canGoParent ? t('goParent') : currentName"
+              @click="goParent"
             >
-              {{ loadError }}
-            </p>
+              <span class="truncate">{{ currentName }}</span>
+            </button>
+          </header>
 
-            <p v-else-if="entries.length === 0" class="text-ink px-3 py-2">
-              {{ t("emptyDirectory") }}
-            </p>
-
-            <ul v-else class="flex flex-col">
-              <li v-for="entry in entries" :key="entry.path">
-                <button
-                  class="text-ink hover:bg-line flex w-full items-center gap-2 px-3 py-2 text-left transition-colors outline-none"
-                  type="button"
-                  @click="enterEntry(entry)"
-                >
-                  <span class="truncate">{{ entry.name }}/</span>
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          <p v-if="props.error !== undefined" class="text-sign-error text-sm">
-            {{ props.error }}
+          <p v-if="loading" class="text-ink px-3 py-2">
+            {{ t("loading") }}
           </p>
+
+          <p
+            v-else-if="loadError !== undefined"
+            class="text-sign-error px-3 py-2"
+          >
+            {{ loadError }}
+          </p>
+
+          <p v-else-if="entries.length === 0" class="text-ink px-3 py-2">
+            {{ t("emptyDirectory") }}
+          </p>
+
+          <ul v-else class="min-h-0 flex-1 overflow-y-auto">
+            <li v-for="entry in entries" :key="entry.path">
+              <button
+                class="text-ink hover:bg-line flex w-full items-center gap-2 px-3 py-2 text-left transition-colors outline-none"
+                type="button"
+                @click="enterEntry(entry)"
+              >
+                <span class="truncate">{{ entry.name }}/</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <p v-if="props.error !== undefined" class="text-sign-error shrink-0">
+          {{ props.error }}
+        </p>
+
+        <div class="flex shrink-0 flex-wrap items-center gap-2">
+          <MediumButton type="submit" :disabled="!canCreate">
+            {{ props.creating ? t("creating") : t("create") }}
+          </MediumButton>
         </div>
       </div>
-
-      <footer
-        class="border-line flex shrink-0 flex-wrap items-center gap-2 border-t p-4"
-      >
-        <MediumButton
-          type="button"
-          :disabled="props.creating"
-          @click="emit('close')"
-        >
-          {{ t("cancel") }}
-        </MediumButton>
-
-        <MediumButton type="submit" :disabled="!canCreate">
-          {{ props.creating ? t("creating") : t("create") }}
-        </MediumButton>
-      </footer>
-    </form>
+    </Card>
   </div>
 </template>

@@ -22,19 +22,16 @@ const { t } = useI18n({
   useScope: "local",
 })
 const state = getHomeState()
-const createDialogOpen = ref(false)
+const workspaceCreatePopoverId = "workspace-create-popover"
+const createDialog = ref<InstanceType<typeof WorkspaceCreateDialog> | null>(
+  null,
+)
 const creating = ref(false)
 const createError = ref<string | undefined>(undefined)
 
 function openCreateDialog(): void {
   createError.value = undefined
-  createDialogOpen.value = true
-}
-
-function closeCreateDialog(): void {
-  if (creating.value) return
-
-  createDialogOpen.value = false
+  createDialog.value?.open()
 }
 
 async function createWorkspace(options: {
@@ -46,7 +43,7 @@ async function createWorkspace(options: {
 
   try {
     await ensureWorkspace(state, options)
-    createDialogOpen.value = false
+    createDialog.value?.close()
   } catch (error) {
     createError.value = error instanceof Error ? error.message : String(error)
   } finally {
@@ -108,7 +105,12 @@ useHead(() => ({
       </h2>
 
       <div class="flex flex-wrap items-center gap-2">
-        <MediumButton type="button" @click="openCreateDialog">
+        <MediumButton
+          type="button"
+          :popovertarget="workspaceCreatePopoverId"
+          popovertargetaction="toggle"
+          @click="createError = undefined"
+        >
           <span>{{ t("newWorkspace") }}</span>
         </MediumButton>
 
@@ -156,10 +158,10 @@ useHead(() => ({
     <HomeWelcomeCard v-else @create="openCreateDialog" />
 
     <WorkspaceCreateDialog
-      v-if="createDialogOpen"
+      ref="createDialog"
+      :popover-id="workspaceCreatePopoverId"
       :creating="creating"
       :error="createError"
-      @close="closeCreateDialog"
       @create="createWorkspace"
     />
   </PageLayout>
