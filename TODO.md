@@ -1,10 +1,17 @@
 # 截图
-[windbell-docs.vitepress] 工作页面截图
+[windbell-docs.vitepress] 设置面截图
 [windbell-web.vue] 利用调色板设计 theme
 # 设计
 [windbell-web.vue] 模仿 telegram 设计纹样背景
+
 # git
-[windbell-web.vue] 需要以更好的方式看 diff
-- 最重要的是支持手机上使用
-- git diff 甚至不支持中文文件名
+
+[windbell-web.vue]
+
+在手机上，我们需要不依赖额外的工具，
+以更好的方式随时查看 git diff。
+
+- 可能需要模仿 [fs-api.ts] package 设置一个 [git-api.ts]
 - 可能需要 git diff 的 parser
+
+关于这个问题，你有什么想法？

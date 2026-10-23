@@ -174,7 +174,7 @@ hero:
 
 ![](./images/2026-10-24--06-43-31.png){data-zoomable}
 
-对应功能在手机上的截图：
+「首页」在手机上的截图：
 
 ![](./images/photo_2_2026-10-24_06-47-36.jpg){.screenshot data-zoomable}
 ![](./images/photo_1_2026-10-24_06-47-36.jpg){.screenshot data-zoomable}
@@ -182,8 +182,20 @@ hero:
 
 ## 工作区
 
-TODO 工作区截图
+「工作区页面」有多个「对话卡片」：
 
-TODO 工作区移动端截图
+![](./images/2026-10-24--07-00-15.png){data-zoomable}
+
+在「工作区页面」的输入框，可以开启新对话：
+
+- 支持按「回车」编辑多行文本。
+
+![](./images/2026-10-24--07-03-34.png){data-zoomable}
+
+「工作区页面」在手机上的截图：
+
+![](./images/photo_1_2026-10-24_07-10-06.jpg){.screenshot data-zoomable}
+![](./images/photo_2_2026-10-24_07-10-06.jpg){.screenshot data-zoomable}
+![](./images/photo_3_2026-10-24_07-10-06.jpg){.screenshot data-zoomable}
 
 ## 设置
