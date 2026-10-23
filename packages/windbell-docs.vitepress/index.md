@@ -199,3 +199,30 @@ hero:
 ![](./images/photo_3_2026-10-24_07-10-06.jpg){.screenshot data-zoomable}
 
 ## 设置
+
+从「首页」点击「设置」按钮，可以进入「设置页面」：
+
+- 可以选择「语言」「颜色模式」「字体」等等。
+
+![](./images/2026-10-24--07-13-05.png){data-zoomable}
+
+从「设置页面」点击「提供商与模型」：
+
+- 可以配置 API key 以及默认模型。
+
+![](./images/2026-10-24--07-13-27.png){data-zoomable}
+
+从「设置页面」点击「主题列表」：
+
+![](./images/2026-10-24--07-13-41.png){data-zoomable}
+
+在具体的「主题页面」可以配置主题的配色，并且实时看到配色效果：
+
+![](./images/2026-10-24--07-13-52.png){data-zoomable}
+
+设置相关的页面在手机上的截图：
+
+![](./images/photo_1_2026-10-24_07-20-27.jpg){.screenshot data-zoomable}
+![](./images/photo_2_2026-10-24_07-20-27.jpg){.screenshot data-zoomable}
+![](./images/photo_3_2026-10-24_07-20-27.jpg){.screenshot data-zoomable}
+![](./images/photo_4_2026-10-24_07-20-27.jpg){.screenshot data-zoomable}
