@@ -11,6 +11,7 @@ const vueDir = dirname(require.resolve("vue/package.json"))
 const vueServerRenderer = require.resolve("vue/server-renderer")
 
 export default defineConfig({
+  appearance: "force-dark",
   cleanUrls: true,
 
   vite: {
