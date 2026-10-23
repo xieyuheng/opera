@@ -2,6 +2,7 @@
 title: git and session database
 author: xieyuheng
 date: 2026-10-07
+tag: windbell
 ---
 
 由于我们用纯文本保存 markdown 类的 session。
