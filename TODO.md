@@ -1,4 +1,10 @@
+# 配色
+
 [windbell-web.vue] 利用调色板设计 theme
+[windbell-web.vue] 安装之后应该带有 deepseek 配色
+
+# 纹样
+
 [windbell-web.vue] 模仿 telegram 设计纹样背景
 
 # git
