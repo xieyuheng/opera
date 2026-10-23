@@ -1,3 +1,10 @@
+# 文档
+
+[windbell-docs.vitepress] 关于在手机上使用的文档
+
+- 需要自己的域名
+- 需要 cloudflare 隧道作为中继服务
+
 # 配色
 
 [windbell-web.vue] 利用调色板设计 theme
