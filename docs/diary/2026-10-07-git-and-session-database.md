@@ -15,4 +15,4 @@ date: 2026-10-07
   如果某段修改是不想要的，可以直接用 git reset 来 undo。
 
 未来可以考虑设计 git-api.ts（类似 fs-api.ts），
-来惯例本地部署的 git。
+来管理本地部署的 git。

@@ -43,7 +43,9 @@ export type ModelInterpretEvent =
   | { type: "error"; error: ModelError }
   | { type: "usage"; usage: ModelUsage }
 
-export type Model = ModelRef & {
+export type Model = {
+  providerName: string
+  name: string
   interpret: (
     input: Array<Sign>,
     options?: ModelInterpretOptions,

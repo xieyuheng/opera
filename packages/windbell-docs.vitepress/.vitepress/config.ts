@@ -31,10 +31,9 @@ export default defineConfig({
   description: "Windbell documentation",
 
   locales: {
-    en: {
+    root: {
       label: "English",
       lang: "en-US",
-      link: "/en/",
       title: "windbell",
       description: "Windbell documentation",
     },
@@ -44,6 +43,25 @@ export default defineConfig({
       link: "/zh/",
       title: "风铃",
       description: "Windbell 文档",
+      themeConfig: {
+        nav: [
+          {
+            text: "说明书",
+            link: "/zh/manual/",
+          },
+        ],
+        sidebar: {
+          "/zh/manual/": [
+            {
+              text: "说明书",
+              items: [
+                { text: "题解", link: "/zh/manual/" },
+                { text: "安装", link: "/zh/manual/installation" },
+              ],
+            },
+          ],
+        },
+      },
     },
   },
 
