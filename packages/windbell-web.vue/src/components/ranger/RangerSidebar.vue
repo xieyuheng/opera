@@ -102,6 +102,7 @@ function handleHeaderClick(): void {
       </button>
 
       <button
+        v-if="mobile"
         type="button"
         class="text-ink hover:bg-line h-full shrink-0 px-2 text-sm transition-colors"
         @click.stop="emit('close')"
