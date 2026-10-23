@@ -1,5 +1,4 @@
 # 截图
-[windbell-docs.vitepress] 支持手机截图，一行多个截图
 [windbell-web.vue] 利用调色板设计 theme
 # 设计
 [windbell-web.vue] 模仿 telegram 设计纹样背景

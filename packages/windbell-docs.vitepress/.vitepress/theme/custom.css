@@ -5,3 +5,18 @@
 .medium-zoom-image--opened {
   z-index: 101;
 }
+
+/* 同一段落中的截图自动排成响应式网格，一行可显示多张。 */
+.vp-doc p:has(> img.screenshot) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.vp-doc p:has(> img.screenshot) > img.screenshot {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+}

@@ -4,13 +4,15 @@ hero:
   name: 风铃
   text: 智能体
   tagline: |
-      - 受到皮尔士符号学启发的智能体；
-      - 极简主义，只有一个 shell 工具；
-      - 本地网页应用，支持从手机操作电脑。
+    受到皮尔士符号学启发的智能体；
+    极简主义，只有一个 shell 工具；
+    本地网页应用，支持手机操作电脑。
 ---
 
-> * 思维不是一个封闭的内在过程，而是一个符号解释的过程，\
->   每一个思想都是一个符号，它指向另一个符号，\
+> * 思维不是一个封闭的内在过程，\
+>   而是一个符号解释的过程，\
+>   每一个思想都是一个符号，\
+>   它指向另一个符号，\
 >   如此无限延伸。
 > * 人的思想就是符号的连续解释过程。
 > * 人即符号。
@@ -113,3 +115,16 @@ hero:
 - 列表中的「轮次」是可以点击的，点击可以跳到对应的符号卡片。
 
 ![](./images/2026-10-23--14-09-34.png){data-zoomable}
+
+### 手机上的对话页面
+
+对话页面的是最常用的主要页面，
+所以很多细节都为手机做了专门的适配。
+
+![](./images/photo_1_2026-10-23_14-58-00.jpg){.screenshot data-zoomable}
+![](./images/photo_2_2026-10-23_14-58-00.jpg){.screenshot data-zoomable}
+![](./images/photo_3_2026-10-23_14-58-00.jpg){.screenshot data-zoomable}
+
+![](./images/photo_4_2026-10-23_14-58-00.jpg){.screenshot data-zoomable}
+![](./images/photo_5_2026-10-23_14-58-00.jpg){.screenshot data-zoomable}
+![](./images/photo_7_2026-10-23_14-58-00.jpg){.screenshot data-zoomable}
