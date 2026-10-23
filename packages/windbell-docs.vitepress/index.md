@@ -226,3 +226,80 @@ hero:
 ![](./images/photo_2_2026-10-24_07-20-27.jpg){.screenshot data-zoomable}
 ![](./images/photo_3_2026-10-24_07-20-27.jpg){.screenshot data-zoomable}
 ![](./images/photo_4_2026-10-24_07-20-27.jpg){.screenshot data-zoomable}
+
+## 安装
+
+我采用 [基于源代码](https://github.com/xieyuheng/opera) 的方式发布软件。
+
+因为在 AI 的时代，这有很多好处：
+
+- 方便 AI 智能体在使用软件过程中阅读源码。
+- 每个用户都可以利用 AI 智能体修改源码。
+
+```sh
+git clone https://github.com/xieyuheng/opera
+```
+
+准备与构建脚本：
+
+```sh
+scripts/prepare.sh
+scripts/build.sh
+```
+
+可执行文件脚本保存在 `./bin/windbell`。
+
+启动 windbell 服务：
+
+- 然后打开启动器返回的本地网址 `http://localhost:4090/?token=XXXXXX`，
+  就可以使用「风铃」智能体了。
+
+```sh
+$ ./bin/windbell start
+2026-10-24 07:40:51 windbell start: http://localhost:4090/?token=XXXXXX
+```
+
+软件运行时的数据，会以文件的形式保存在：
+
+```sh
+~/.opera
+- var/
+  - windbell/
+    - database/
+      - settings.json
+      - providers/
+      - sessions/
+      - themes/
+      - workspaces/
+```
+
+另外，仓库中提供了两个安装脚本：
+
+```sh
+installers/install.sh   # bash (linux)
+installers/install.ps1  # powershell (windows)
+```
+
+比如在 Linux 上，会安装在 `~/.opera` 路径下：
+
+```sh
+~/.opera
+- lib/          # 所依赖的程序
+  - node/
+  - npm/
+  - pnpm/
+- bin/
+  - windbell*   # 可执行文件
+- libexec/
+- src/
+  - opera/      # 源代码仓库的克隆
+- tmp/
+- var/
+  - windbell/
+    - database/ # 用文件系统实现的数据库
+      - settings.json
+      - providers/
+      - sessions/
+      - themes/
+      - workspaces/
+```
