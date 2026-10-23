@@ -41,19 +41,6 @@ useHead({
             <span>xieyuheng</span>
           </a>
         </li>
-
-        <li class="max-w-fit hover:text-orange-500 dark:hover:text-orange-300">
-          <a
-            href="mailto:xyheme@gmail.com"
-            target="_blank"
-            rel="noreferrer"
-            class="flex items-center hover:underline"
-            title="my email"
-          >
-            <EnvelopeIcon class="mr-3 h-6 w-6 shrink-0" />
-            <span>xyheme@gmail.com</span>
-          </a>
-        </li>
       </ul>
     </div>
   </div>
