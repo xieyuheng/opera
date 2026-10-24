@@ -227,7 +227,7 @@ hero:
 ![](./images/photo_3_2026-10-24_07-20-27.jpg){.screenshot data-zoomable}
 ![](./images/photo_4_2026-10-24_07-20-27.jpg){.screenshot data-zoomable}
 
-## 安装
+## 源代码
 
 我采用 [基于源代码](https://github.com/xieyuheng/opera) 的方式发布软件。
 
@@ -240,14 +240,38 @@ hero:
 git clone https://github.com/xieyuheng/opera
 ```
 
-准备与构建脚本：
+源代码代码目录：
+
+```sh
+  /home/xyh/projects/xieyuheng/opera (master)
+$ ll
+total 264K
+-rw-rw-r--  1 xyh xyh   11 Oct 19 02:47 AUTHORS
+drwxrwxr-x  2 xyh xyh 4.0K Oct 23 00:02 bin/
+drwxr-xr-x  3 xyh xyh 4.0K Oct 23 04:02 docs/
+drwxr-xr-x  2 xyh xyh 4.0K Oct 19 02:47 installers/
+-rw-rw-r--  1 xyh xyh  35K Oct 19 02:47 LICENSE
+drwxrwxr-x  3 xyh xyh 4.0K Oct 24 21:15 node_modules/
+drwxrwxr-x 20 xyh xyh 4.0K Oct 23 00:00 packages/
+-rw-rw-r--  1 xyh xyh 185K Oct 24 21:15 pnpm-lock.yaml
+-rw-rw-r--  1 xyh xyh  227 Oct 20 20:26 pnpm-workspace.yaml
+-rw-rw-r--  1 xyh xyh  260 Oct 24 21:15 README.md
+drwxrwxr-x  2 xyh xyh 4.0K Oct 24 21:15 scripts/
+-rw-rw-r--  1 xyh xyh  688 Oct 25 01:04 TODO.md
+```
+
+`scripts/` 中有很多工具性脚本，比如「准备」与「构建」脚本在：
 
 ```sh
 scripts/prepare.sh
 scripts/build.sh
 ```
 
-可执行文件脚本保存在 `./bin/windbell`。
+可执行文件脚本保存在：
+
+```sh
+bin/windbell
+```
 
 启动 windbell 服务：
 
@@ -255,7 +279,7 @@ scripts/build.sh
   就可以使用「风铃」智能体了。
 
 ```sh
-$ ./bin/windbell start
+$ bin/windbell start
 2026-10-24 07:40:51 windbell start: http://localhost:4090/?token=XXXXXX
 ```
 
@@ -272,6 +296,47 @@ $ ./bin/windbell start
       - themes/
       - workspaces/
 ```
+
+### 用 git 管理数据库
+
+我自己会使用一个远程的私有 git 仓库，
+来备份 `~/.opera/var/windbell/database`
+这个数据库：
+
+```sh
+  /home/xyh/.opera/var/windbell/database (master)
+$ cat .git/config
+[core]
+    repositoryformatversion = 0
+    filemode = true
+    bare = false
+    logallrefupdates = true
+
+[remote "origin"]
+    url = git@github.com:xieyuheng/windbell-database.git
+    fetch = +refs/heads/*:refs/remotes/origin/*
+
+[branch "master"]
+    remote = origin
+    merge = refs/heads/master
+```
+
+注意：
+
+- 使用**私有**仓库。
+- 另外，我会在 `.gitignore` 文件中加入：
+  ```
+  .secrets/
+  ```
+  避免 API key 被记录在 git 中。
+
+用 git 管理数据库的好处是：
+
+- 有远程备份。
+- 随时回退到之前的对话。
+- 方便在不同的电脑之间同步。
+
+### 安装脚本
 
 另外，仓库中提供了两个安装脚本：
 

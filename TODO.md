@@ -1,15 +1,12 @@
 # 文档
 
-[windbell-docs.vitepress] 关于在手机上使用的文档
+[windbell-docs.vitepress] 关于 手机在局域网中使用
+[windbell-docs.vitepress] 关于 cloudflare
 
 - 需要自己的域名
 - 需要 cloudflare 隧道作为中继服务
 
 另外还有本地使用 ipv6 的使用方式
-
-另外还有本地局域网非 https 的使用方式
-
-[windbell-docs.vitepress] 关于使用 git 管理 windbell/databse 的建议。
 
 # 配色
 
