@@ -4,9 +4,7 @@ import { useRoute } from "vue-router"
 
 const route = useRoute()
 
-useHead({
-  title: "404 | 谢宇恒",
-})
+useHead({ title: "404" })
 </script>
 
 <template>
