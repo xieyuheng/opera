@@ -1,5 +1,9 @@
 import Os from "node:os"
 
+export type ListServerUrlInfosOptions = {
+  ipv6?: boolean
+}
+
 export type ServerUrlInfo = {
   kind: "local" | "exposed"
   family: "IPv4" | "IPv6"
@@ -7,7 +11,10 @@ export type ServerUrlInfo = {
   interfaceName?: string
 }
 
-export function listServerUrlInfos(hostname: string): Array<ServerUrlInfo> {
+export function listServerUrlInfos(
+  hostname: string,
+  options: ListServerUrlInfosOptions = {},
+): Array<ServerUrlInfo> {
   if (hostname === "0.0.0.0") {
     return [
       { kind: "local", family: "IPv4", hostname: "127.0.0.1" },
@@ -19,7 +26,7 @@ export function listServerUrlInfos(hostname: string): Array<ServerUrlInfo> {
     return [
       { kind: "local", family: "IPv4", hostname: "127.0.0.1" },
       ...listExposedAddresses("IPv4"),
-      ...listExposedAddresses("IPv6"),
+      ...(options.ipv6 ? listExposedAddresses("IPv6") : []),
     ]
   }
 

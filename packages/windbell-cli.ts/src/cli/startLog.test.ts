@@ -64,3 +64,13 @@ test("formatLocalDateTime formats local date and time", () => {
 
   assert.equal(formatLocalDateTime(date), "2026-01-02 03:04:05")
 })
+
+test("listServerUrlInfos only lists IPv4 by default", () => {
+  assert.ok(listServerUrlInfos("::").every((info) => info.family === "IPv4"))
+})
+
+test("listServerUrlInfos keeps an explicit IPv6 host", () => {
+  assert.deepEqual(listServerUrlInfos("::1"), [
+    { kind: "local", family: "IPv6", hostname: "::1" },
+  ])
+})

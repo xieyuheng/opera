@@ -5,10 +5,11 @@ import { fileURLToPath } from "node:url"
 import * as W from "@xieyuheng/windbell.ts"
 
 import { readFlag } from "../options.ts"
-import { resolveHostname } from "../resolveHostname.ts"
+import { resolveHostname, resolveIpv6 } from "../resolveHostname.ts"
 
 export type DevOptions = {
   hostname: string
+  ipv6: boolean
   qrCode: boolean
   apiPort: number | undefined
   webPort: number | undefined
@@ -21,6 +22,7 @@ export function resolveDevOptions(
   options: Record<string, unknown>,
 ): DevOptions {
   const hostname = resolveHostname(options)
+  const ipv6 = resolveIpv6(options)
 
   const apiPort = readOptionalPort(
     readOptionalString(options, "--api-port") ?? process.env.API_PORT,
@@ -40,6 +42,7 @@ export function resolveDevOptions(
 
   return {
     hostname,
+    ipv6,
     qrCode: readFlag(options, "--qr-code"),
     apiPort,
     webPort,

@@ -45,6 +45,17 @@ test("resolveDevOptions exposes all interfaces with --expose", () => {
   assert.equal(resolveDevOptions({ "--expose": true }).hostname, "::")
 })
 
+test("resolveDevOptions disables IPv6 by default", () => {
+  assert.equal(resolveDevOptions({ "--expose": true }).ipv6, false)
+})
+
+test("resolveDevOptions enables IPv6 with --expose --ipv6", () => {
+  assert.equal(
+    resolveDevOptions({ "--expose": true, "--ipv6": true }).ipv6,
+    true,
+  )
+})
+
 function restoreEnv(name: string, value: string | undefined) {
   if (value === undefined) {
     delete process.env[name]

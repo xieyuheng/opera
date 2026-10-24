@@ -14,7 +14,7 @@ import * as W from "@xieyuheng/windbell.ts"
 
 import { readFlag } from "../options.ts"
 import { printQrCode } from "../qrCode.ts"
-import { resolveHostname } from "../resolveHostname.ts"
+import { resolveHostname, resolveIpv6 } from "../resolveHostname.ts"
 import {
   formatLocalDateTime,
   formatServerUrlInfo,
@@ -28,6 +28,7 @@ const defaultCorsOrigin: string | undefined = undefined
 export function makeStartHandler() {
   return async (context: Cli.HandlerContext) => {
     const hostname = resolveHostname(context.options)
+    const ipv6 = resolveIpv6(context.options)
     const printQr = readFlag(context.options, "--qr-code")
 
     const port = parsePositiveInt(
@@ -75,7 +76,7 @@ export function makeStartHandler() {
     })
 
     const timestamp = formatLocalDateTime(new Date())
-    const urls = listServerUrlInfos(hostname).map((urlInfo) => ({
+    const urls = listServerUrlInfos(hostname, { ipv6 }).map((urlInfo) => ({
       info: urlInfo,
       url: makeAccessTokenUrl({
         hostname: urlInfo.hostname,

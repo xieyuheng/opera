@@ -75,7 +75,9 @@ export async function runDev(options: DevOptions): Promise<void> {
 
     console.log(`[${timestamp}] [windbell dev] api local (IPv4): ${apiUrl}`)
 
-    const urls = listServerUrlInfos(options.hostname).map((urlInfo) => ({
+    const urls = listServerUrlInfos(options.hostname, {
+      ipv6: options.ipv6,
+    }).map((urlInfo) => ({
       info: urlInfo,
       url: makeAccessTokenUrl({
         hostname: urlInfo.hostname,
