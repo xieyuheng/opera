@@ -12,6 +12,8 @@ import {
 } from "@xieyuheng/windbell-api.ts"
 import * as W from "@xieyuheng/windbell.ts"
 
+import { readFlag } from "../options.ts"
+import { printQrCode } from "../qrCode.ts"
 import { resolveHostname } from "../resolveHostname.ts"
 import {
   formatLocalDateTime,
@@ -26,6 +28,7 @@ const defaultCorsOrigin: string | undefined = undefined
 export function makeStartHandler() {
   return async (context: Cli.HandlerContext) => {
     const hostname = resolveHostname(context.options)
+    const printQr = readFlag(context.options, "--qr-code")
 
     const port = parsePositiveInt(
       readOptionalString(context.options, "--port") ??
@@ -72,17 +75,23 @@ export function makeStartHandler() {
     })
 
     const timestamp = formatLocalDateTime(new Date())
-
-    for (const urlInfo of listServerUrlInfos(hostname)) {
-      const url = makeAccessTokenUrl({
+    const urls = listServerUrlInfos(hostname).map((urlInfo) => ({
+      info: urlInfo,
+      url: makeAccessTokenUrl({
         hostname: urlInfo.hostname,
         port: info.port,
         token: accessToken.value,
-      })
+      }),
+    }))
 
+    for (const { info: urlInfo, url } of urls) {
       console.log(
         `[${timestamp}] [windbell start] ${formatServerUrlInfo(urlInfo)}: ${url}`,
       )
+
+      if (printQr && urlInfo.kind === "exposed") {
+        await printQrCode(url)
+      }
     }
   }
 }

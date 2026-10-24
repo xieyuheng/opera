@@ -4,10 +4,12 @@ import { fileURLToPath } from "node:url"
 
 import * as W from "@xieyuheng/windbell.ts"
 
+import { readFlag } from "../options.ts"
 import { resolveHostname } from "../resolveHostname.ts"
 
 export type DevOptions = {
   hostname: string
+  qrCode: boolean
   apiPort: number | undefined
   webPort: number | undefined
   databaseRoot: string
@@ -38,6 +40,7 @@ export function resolveDevOptions(
 
   return {
     hostname,
+    qrCode: readFlag(options, "--qr-code"),
     apiPort,
     webPort,
     databaseRoot: paths.databaseRoot,

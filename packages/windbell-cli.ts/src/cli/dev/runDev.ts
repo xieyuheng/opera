@@ -13,6 +13,7 @@ import {
 import * as W from "@xieyuheng/windbell.ts"
 import { createServer, type ViteDevServer } from "vite"
 
+import { printQrCode } from "../qrCode.ts"
 import {
   formatLocalDateTime,
   formatServerUrlInfo,
@@ -74,16 +75,23 @@ export async function runDev(options: DevOptions): Promise<void> {
 
     console.log(`[${timestamp}] [windbell dev] api local (IPv4): ${apiUrl}`)
 
-    for (const urlInfo of listServerUrlInfos(options.hostname)) {
-      const webUrl = makeAccessTokenUrl({
+    const urls = listServerUrlInfos(options.hostname).map((urlInfo) => ({
+      info: urlInfo,
+      url: makeAccessTokenUrl({
         hostname: urlInfo.hostname,
         port: webPort,
         token: accessToken.value,
-      })
+      }),
+    }))
 
+    for (const { info: urlInfo, url: webUrl } of urls) {
       console.log(
         `[${timestamp}] [windbell dev] web ${formatServerUrlInfo(urlInfo)}: ${webUrl}`,
       )
+
+      if (options.qrCode && urlInfo.kind === "exposed") {
+        await printQrCode(webUrl)
+      }
     }
 
     installShutdownHandlers({
