@@ -1,17 +1,6 @@
-# 文档
-
-[windbell-docs.vitepress] 关于 手机在局域网中使用
-[windbell-docs.vitepress] 关于 cloudflare
-
-- 需要自己的域名
-- 需要 cloudflare 隧道作为中继服务
-
-另外还有本地使用 ipv6 的使用方式
-
 # 配色
 
 [windbell-web.vue] 利用调色板设计 theme
-[windbell-web.vue] 安装之后应该带有 deepseek 配色
 
 # 纹样
 
