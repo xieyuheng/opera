@@ -363,7 +363,7 @@ importers:
         version: 0.74.0
       vitepress:
         specifier: ^1.6.4
-        version: 1.6.4(@algolia/client-search@5.60.0)(@types/node@26.6.5)(lightningcss@1.33.0)(postcss@8.5.31)(search-insights@2.17.3)
+        version: 1.6.4(@algolia/client-search@5.60.0)(@types/node@26.6.5)(lightningcss@1.33.0)(postcss@8.5.31)(qrcode@1.5.4)(search-insights@2.17.3)
       vue:
         specifier: ^3.5.44
         version: 3.5.44(typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2)
@@ -4241,13 +4241,14 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@vueuse/integrations@12.8.2(focus-trap@7.8.0)':
+  '@vueuse/integrations@12.8.2(focus-trap@7.8.0)(qrcode@1.5.4)':
     dependencies:
       '@vueuse/core': 12.8.2
       '@vueuse/shared': 12.8.2
       vue: 3.5.44(typescript-native-bridge@6.0.3-bridge.17.tsgo.7.0.2)
     optionalDependencies:
       focus-trap: 7.8.0
+      qrcode: 1.5.4
     transitivePeerDependencies:
       - typescript
 
@@ -5444,7 +5445,7 @@ snapshots:
       jiti: 2.7.0
       yaml: 2.9.1
 
-  vitepress@1.6.4(@algolia/client-search@5.60.0)(@types/node@26.6.5)(lightningcss@1.33.0)(postcss@8.5.31)(search-insights@2.17.3):
+  vitepress@1.6.4(@algolia/client-search@5.60.0)(@types/node@26.6.5)(lightningcss@1.33.0)(postcss@8.5.31)(qrcode@1.5.4)(search-insights@2.17.3):
     dependencies:
       '@docsearch/css': 3.8.2
       '@docsearch/js': 3.8.2(@algolia/client-search@5.60.0)(search-insights@2.17.3)
@@ -5457,7 +5458,7 @@ snapshots:
       '@vue/devtools-api': 7.7.10
       '@vue/shared': 3.5.44
       '@vueuse/core': 12.8.2
-      '@vueuse/integrations': 12.8.2(focus-trap@7.8.0)
+      '@vueuse/integrations': 12.8.2(focus-trap@7.8.0)(qrcode@1.5.4)
       focus-trap: 7.8.0
       mark.js: 8.11.1
       minisearch: 7.2.0
