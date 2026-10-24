@@ -415,7 +415,7 @@ installers/install.ps1  # powershell (windows)
 
 可以使用方案 B：
 
-- 设置光猫与路由器，使得 ipv6 入网流量不被阻拦。
+- 设置光猫与路由器，使得 ipv6 入站流量不被阻拦。
 - 在本地启动 windbell 服务是带上 `--ipv6` 参数使用 ipv6 地址。
 
 此时的网络效果是：
