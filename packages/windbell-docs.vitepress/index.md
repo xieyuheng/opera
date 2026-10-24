@@ -240,7 +240,7 @@ hero:
 git clone https://github.com/xieyuheng/opera
 ```
 
-源代码代码目录：
+在我电脑上的源代码目录：
 
 ```sh
   /home/xyh/projects/xieyuheng/opera (master)
@@ -260,7 +260,9 @@ drwxrwxr-x  2 xyh xyh 4.0K Oct 24 21:15 scripts/
 -rw-rw-r--  1 xyh xyh  688 Oct 25 01:04 TODO.md
 ```
 
-`scripts/` 中有很多工具性脚本，比如「准备」与「构建」脚本在：
+`scripts/` 中有很多工具性脚本。
+
+先运行「准备」与「构建」脚本：
 
 ```sh
 scripts/prepare.sh
@@ -275,13 +277,31 @@ bin/windbell
 
 启动 windbell 服务：
 
-- 然后打开启动器返回的本地网址 `http://localhost:4090/?token=XXXXXX`，
-  就可以使用「风铃」智能体了。
+```sh
+$ bin/windbell start --expose --qr-code
+```
+
+终端输出日志中包含使用信息：
 
 ```sh
-$ bin/windbell start
-2026-10-24 07:40:51 windbell start: http://localhost:4090/?token=XXXXXX
+[2026-10-24 22:57:00] [windbell start] local (IPv4): http://127.0.0.1:4090/?token=XXXXXX
+[2026-10-24 22:57:00] [windbell start] exposed (IPv4, wlp0s20f3): http://192.168.5.28:4090/?token=XXXXXX
+
+#
+# 二维码
+#
+
 ```
+
+- 打开本地网址 `http://127.0.0.1:4090/?token=...` 就可以使用。
+- `--expose` 参数代表把服务暴露在局域网中：
+  `http://192.168.5.28:4090/?token=...`。
+  - 这个地址可以在局域网中用手机访问。
+  - 所谓「局域网」就是说电脑和手机连接同一个 wifi。
+- `--qr-code` 代表在终端中打印 `--expose` 的网址的二维码，方便手机扫码使用。
+  - 注意：「微信扫码」和「支付宝扫码」不行，
+    因为它们不会调用手机的浏览器。
+    - 安卓手机推荐使用 [BinaryEye](https://github.com/markusfisch/BinaryEye) 扫码。
 
 软件运行时的数据，会以文件的形式保存在：
 
