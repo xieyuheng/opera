@@ -2,6 +2,7 @@ import assert from "node:assert/strict"
 import { test } from "node:test"
 
 import {
+  formatLocalDateTime,
   formatServerUrlInfo,
   listServerUrlInfos,
   makeAccessTokenUrl,
@@ -49,11 +50,17 @@ test("listServerUrlInfos only lists loopback for localhost", () => {
 test("formatServerUrlInfo includes address family and interface", () => {
   assert.equal(
     formatServerUrlInfo({
-      kind: "lan",
+      kind: "exposed",
       family: "IPv6",
       hostname: "2409::1",
       interfaceName: "wlan0",
     }),
-    "lan (IPv6, wlan0)",
+    "exposed (IPv6, wlan0)",
   )
+})
+
+test("formatLocalDateTime formats local date and time", () => {
+  const date = new Date(2026, 0, 2, 3, 4, 5)
+
+  assert.equal(formatLocalDateTime(date), "2026-01-02 03:04:05")
 })

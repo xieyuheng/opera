@@ -12,6 +12,7 @@ import {
 } from "@xieyuheng/windbell-api.ts"
 import * as W from "@xieyuheng/windbell.ts"
 
+import { resolveHostname } from "../resolveHostname.ts"
 import {
   formatLocalDateTime,
   formatServerUrlInfo,
@@ -19,16 +20,12 @@ import {
   makeAccessTokenUrl,
 } from "../startLog.ts"
 
-const defaultHostname = "::"
 const defaultPort = 4090
 const defaultCorsOrigin: string | undefined = undefined
 
 export function makeStartHandler() {
   return async (context: Cli.HandlerContext) => {
-    const hostname =
-      readOptionalString(context.options, "--host") ??
-      process.env.HOST ??
-      defaultHostname
+    const hostname = resolveHostname(context.options)
 
     const port = parsePositiveInt(
       readOptionalString(context.options, "--port") ??
@@ -84,7 +81,7 @@ export function makeStartHandler() {
       })
 
       console.log(
-        `${timestamp} windbell start: ${formatServerUrlInfo(urlInfo)}: ${url}`,
+        `[${timestamp}] [windbell start] ${formatServerUrlInfo(urlInfo)}: ${url}`,
       )
     }
   }

@@ -4,6 +4,8 @@ import { fileURLToPath } from "node:url"
 
 import * as W from "@xieyuheng/windbell.ts"
 
+import { resolveHostname } from "../resolveHostname.ts"
+
 export type DevOptions = {
   hostname: string
   apiPort: number | undefined
@@ -16,8 +18,7 @@ export type DevOptions = {
 export function resolveDevOptions(
   options: Record<string, unknown>,
 ): DevOptions {
-  const hostname =
-    readOptionalString(options, "--host") ?? process.env.HOST ?? "::"
+  const hostname = resolveHostname(options)
 
   const apiPort = readOptionalPort(
     readOptionalString(options, "--api-port") ?? process.env.API_PORT,

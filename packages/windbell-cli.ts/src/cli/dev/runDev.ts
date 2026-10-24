@@ -72,7 +72,7 @@ export async function runDev(options: DevOptions): Promise<void> {
       port: apiInfo.port,
     })
 
-    console.log(`${timestamp} windbell dev api: ${apiUrl}`)
+    console.log(`[${timestamp}] [windbell dev] api local (IPv4): ${apiUrl}`)
 
     for (const urlInfo of listServerUrlInfos(options.hostname)) {
       const webUrl = makeAccessTokenUrl({
@@ -82,7 +82,7 @@ export async function runDev(options: DevOptions): Promise<void> {
       })
 
       console.log(
-        `${timestamp} windbell dev web: ${formatServerUrlInfo(urlInfo)}: ${webUrl}`,
+        `[${timestamp}] [windbell dev] web ${formatServerUrlInfo(urlInfo)}: ${webUrl}`,
       )
     }
 

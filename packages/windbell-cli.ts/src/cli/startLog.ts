@@ -1,7 +1,7 @@
 import Os from "node:os"
 
 export type ServerUrlInfo = {
-  kind: "local" | "lan"
+  kind: "local" | "exposed"
   family: "IPv4" | "IPv6"
   hostname: string
   interfaceName?: string
@@ -11,15 +11,15 @@ export function listServerUrlInfos(hostname: string): Array<ServerUrlInfo> {
   if (hostname === "0.0.0.0") {
     return [
       { kind: "local", family: "IPv4", hostname: "127.0.0.1" },
-      ...listLanAddresses("IPv4"),
+      ...listExposedAddresses("IPv4"),
     ]
   }
 
   if (hostname === "::") {
     return [
       { kind: "local", family: "IPv4", hostname: "127.0.0.1" },
-      ...listLanAddresses("IPv4"),
-      ...listLanAddresses("IPv6"),
+      ...listExposedAddresses("IPv4"),
+      ...listExposedAddresses("IPv6"),
     ]
   }
 
@@ -37,7 +37,7 @@ export function listServerUrlInfos(hostname: string): Array<ServerUrlInfo> {
 
   return [
     {
-      kind: "lan",
+      kind: "exposed",
       family: hostname.includes(":") ? "IPv6" : "IPv4",
       hostname,
     },
@@ -65,18 +65,6 @@ export function makeServerUrl(options: {
   return `http://${formatUrlHostname(hostname)}:${options.port}/`
 }
 
-export function makeAccessTokenUrl(options: {
-  hostname: string
-  port: number
-  token: string
-}): string {
-  const url = new URL(
-    makeServerUrl({ hostname: options.hostname, port: options.port }),
-  )
-  url.searchParams.set("token", options.token)
-  return url.href
-}
-
 export function formatLocalDateTime(date: Date): string {
   return [
     String(date.getFullYear()).padStart(4, "0"),
@@ -93,11 +81,23 @@ export function formatLocalDateTime(date: Date): string {
   ].join("")
 }
 
+export function makeAccessTokenUrl(options: {
+  hostname: string
+  port: number
+  token: string
+}): string {
+  const url = new URL(
+    makeServerUrl({ hostname: options.hostname, port: options.port }),
+  )
+  url.searchParams.set("token", options.token)
+  return url.href
+}
+
 function formatUrlHostname(hostname: string): string {
   return hostname.includes(":") ? `[${hostname}]` : hostname
 }
 
-function listLanAddresses(family: "IPv4" | "IPv6"): Array<ServerUrlInfo> {
+function listExposedAddresses(family: "IPv4" | "IPv6"): Array<ServerUrlInfo> {
   const infos: Array<ServerUrlInfo> = []
   const seen = new Set<string>()
 
@@ -117,7 +117,7 @@ function listLanAddresses(family: "IPv4" | "IPv6"): Array<ServerUrlInfo> {
       seen.add(key)
 
       infos.push({
-        kind: "lan",
+        kind: "exposed",
         family,
         hostname: address.address,
         interfaceName,

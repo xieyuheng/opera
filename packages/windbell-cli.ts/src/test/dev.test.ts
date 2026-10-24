@@ -37,6 +37,14 @@ test("resolveDevOptions rejects invalid ports", () => {
   )
 })
 
+test("resolveDevOptions defaults to IPv4 loopback", () => {
+  assert.equal(resolveDevOptions({}).hostname, "127.0.0.1")
+})
+
+test("resolveDevOptions exposes all interfaces with --expose", () => {
+  assert.equal(resolveDevOptions({ "--expose": true }).hostname, "::")
+})
+
 function restoreEnv(name: string, value: string | undefined) {
   if (value === undefined) {
     delete process.env[name]

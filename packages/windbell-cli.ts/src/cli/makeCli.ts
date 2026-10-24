@@ -35,6 +35,7 @@ export function makeCli() {
       path: ["start"],
       options: {
         "--host": { valueName: "host" },
+        "--expose": {},
         "--port": { valueName: "port" },
         "--cors-origin": { valueName: "origin" },
         "--database-root": { valueName: "path" },
@@ -48,6 +49,7 @@ export function makeCli() {
       path: ["dev"],
       options: {
         "--host": { valueName: "host" },
+        "--expose": {},
         "--api-port": { valueName: "port" },
         "--web-port": { valueName: "port" },
         "--database-root": { valueName: "path" },
