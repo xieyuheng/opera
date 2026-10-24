@@ -399,7 +399,7 @@ installers/install.ps1  # powershell (windows)
 
 - 用 cloudflare 管理域名。
 - 在本地启动 windbell 服务。
-- 使用 cloudflare 隧道，将本地服务通过自己的域名暴露到外网。
+- 使用 cloudflare 隧道，将本地服务通过自己的域名暴露到公网。
 
 此时的网络效果是：
 
