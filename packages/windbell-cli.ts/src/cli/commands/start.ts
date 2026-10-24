@@ -12,9 +12,14 @@ import {
 } from "@xieyuheng/windbell-api.ts"
 import * as W from "@xieyuheng/windbell.ts"
 
-import { formatLocalDateTime, makeAccessTokenUrl } from "../startLog.ts"
+import {
+  formatLocalDateTime,
+  formatServerUrlInfo,
+  listServerUrlInfos,
+  makeAccessTokenUrl,
+} from "../startLog.ts"
 
-const defaultHostname = "localhost"
+const defaultHostname = "::"
 const defaultPort = 4090
 const defaultCorsOrigin: string | undefined = undefined
 
@@ -69,13 +74,19 @@ export function makeStartHandler() {
       webDistRoot,
     })
 
-    const url = makeAccessTokenUrl({
-      hostname,
-      port: info.port,
-      token: accessToken.value,
-    })
+    const timestamp = formatLocalDateTime(new Date())
 
-    console.log(`${formatLocalDateTime(new Date())} windbell start: ${url}`)
+    for (const urlInfo of listServerUrlInfos(hostname)) {
+      const url = makeAccessTokenUrl({
+        hostname: urlInfo.hostname,
+        port: info.port,
+        token: accessToken.value,
+      })
+
+      console.log(
+        `${timestamp} windbell start: ${formatServerUrlInfo(urlInfo)}: ${url}`,
+      )
+    }
   }
 }
 

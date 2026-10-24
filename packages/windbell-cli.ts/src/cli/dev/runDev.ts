@@ -15,6 +15,8 @@ import { createServer, type ViteDevServer } from "vite"
 
 import {
   formatLocalDateTime,
+  formatServerUrlInfo,
+  listServerUrlInfos,
   makeAccessTokenUrl,
   makeServerUrl,
 } from "../startLog.ts"
@@ -53,7 +55,7 @@ export async function runDev(options: DevOptions): Promise<void> {
         strictPort: options.webPort !== undefined,
         proxy: {
           "/api": {
-            target: `http://${options.hostname}:${apiInfo.port}`,
+            target: `http://127.0.0.1:${apiInfo.port}`,
             changeOrigin: true,
           },
         },
@@ -70,14 +72,19 @@ export async function runDev(options: DevOptions): Promise<void> {
       port: apiInfo.port,
     })
 
-    const webUrl = makeAccessTokenUrl({
-      hostname: options.hostname,
-      port: webPort,
-      token: accessToken.value,
-    })
-
     console.log(`${timestamp} windbell dev api: ${apiUrl}`)
-    console.log(`${timestamp} windbell dev web: ${webUrl}`)
+
+    for (const urlInfo of listServerUrlInfos(options.hostname)) {
+      const webUrl = makeAccessTokenUrl({
+        hostname: urlInfo.hostname,
+        port: webPort,
+        token: accessToken.value,
+      })
+
+      console.log(
+        `${timestamp} windbell dev web: ${formatServerUrlInfo(urlInfo)}: ${webUrl}`,
+      )
+    }
 
     installShutdownHandlers({
       apiServer,

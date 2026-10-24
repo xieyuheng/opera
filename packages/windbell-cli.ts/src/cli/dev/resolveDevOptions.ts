@@ -17,7 +17,7 @@ export function resolveDevOptions(
   options: Record<string, unknown>,
 ): DevOptions {
   const hostname =
-    readOptionalString(options, "--host") ?? process.env.HOST ?? "localhost"
+    readOptionalString(options, "--host") ?? process.env.HOST ?? "::"
 
   const apiPort = readOptionalPort(
     readOptionalString(options, "--api-port") ?? process.env.API_PORT,

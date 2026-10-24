@@ -17,6 +17,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@xieyuheng/std.ts": "workspace:*",
     "@xieyuheng/x-lisp-shiki.ts": "workspace:*",
     "mdast-util-from-markdown": "2.1.0",
     "mdast-util-frontmatter": "2.0.1",

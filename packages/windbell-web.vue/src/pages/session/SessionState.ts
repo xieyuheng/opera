@@ -1,3 +1,4 @@
+import { uuid } from "@xieyuheng/std.ts/uuid"
 import { modelEntryContextWindow } from "@xieyuheng/windbell.ts/core"
 import type * as W from "@xieyuheng/windbell.ts/core"
 import { reactive } from "vue"
@@ -104,7 +105,7 @@ function beginActiveTurn(
   content: string,
   turnId?: string,
 ): SessionActiveTurn {
-  const id = turnId ?? `turn-${crypto.randomUUID()}`
+  const id = turnId ?? `turn-${uuid()}`
 
   if (state.activeTurn?.turnId === id) {
     state.activeTurn.input = content

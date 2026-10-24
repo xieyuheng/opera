@@ -1,10 +1,68 @@
+import Os from "node:os"
+
+export type ServerUrlInfo = {
+  kind: "local" | "lan"
+  family: "IPv4" | "IPv6"
+  hostname: string
+  interfaceName?: string
+}
+
+export function listServerUrlInfos(hostname: string): Array<ServerUrlInfo> {
+  if (hostname === "0.0.0.0") {
+    return [
+      { kind: "local", family: "IPv4", hostname: "127.0.0.1" },
+      ...listLanAddresses("IPv4"),
+    ]
+  }
+
+  if (hostname === "::") {
+    return [
+      { kind: "local", family: "IPv4", hostname: "127.0.0.1" },
+      ...listLanAddresses("IPv4"),
+      ...listLanAddresses("IPv6"),
+    ]
+  }
+
+  if (hostname === "localhost") {
+    return [{ kind: "local", family: "IPv4", hostname }]
+  }
+
+  if (hostname === "127.0.0.1") {
+    return [{ kind: "local", family: "IPv4", hostname }]
+  }
+
+  if (hostname === "::1") {
+    return [{ kind: "local", family: "IPv6", hostname }]
+  }
+
+  return [
+    {
+      kind: "lan",
+      family: hostname.includes(":") ? "IPv6" : "IPv4",
+      hostname,
+    },
+  ]
+}
+
+export function formatServerUrlInfo(info: ServerUrlInfo): string {
+  const details: Array<string> = [info.family]
+
+  if (info.interfaceName !== undefined) {
+    details.push(info.interfaceName)
+  }
+
+  return `${info.kind} (${details.join(", ")})`
+}
+
 export function makeServerUrl(options: {
   hostname: string
   port: number
 }): string {
-  const hostname = displayHostname(options.hostname)
-  const host = hostname.includes(":") ? `[${hostname}]` : hostname
-  return new URL(`http://${host}:${options.port}/`).href
+  const hostname =
+    options.hostname === "0.0.0.0" || options.hostname === "::"
+      ? "127.0.0.1"
+      : options.hostname
+  return `http://${formatUrlHostname(hostname)}:${options.port}/`
 }
 
 export function makeAccessTokenUrl(options: {
@@ -35,7 +93,37 @@ export function formatLocalDateTime(date: Date): string {
   ].join("")
 }
 
-function displayHostname(hostname: string): string {
-  if (hostname === "0.0.0.0" || hostname === "::") return "127.0.0.1"
-  return hostname
+function formatUrlHostname(hostname: string): string {
+  return hostname.includes(":") ? `[${hostname}]` : hostname
+}
+
+function listLanAddresses(family: "IPv4" | "IPv6"): Array<ServerUrlInfo> {
+  const infos: Array<ServerUrlInfo> = []
+  const seen = new Set<string>()
+
+  for (const [interfaceName, addresses] of Object.entries(
+    Os.networkInterfaces(),
+  )) {
+    for (const address of addresses ?? []) {
+      if (address.internal) continue
+      if (address.family !== family) continue
+
+      // Browser URLs cannot carry an IPv6 zone id, so link-local addresses
+      // cannot be represented as usable URLs.
+      if (family === "IPv6" && address.address.startsWith("fe80:")) continue
+
+      const key = `${family}:${address.address}`
+      if (seen.has(key)) continue
+      seen.add(key)
+
+      infos.push({
+        kind: "lan",
+        family,
+        hostname: address.address,
+        interfaceName,
+      })
+    }
+  }
+
+  return infos
 }

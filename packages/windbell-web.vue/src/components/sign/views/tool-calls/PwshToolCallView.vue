@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { clipboardWriteText } from "@xieyuheng/std.ts/clipboard"
 import * as W from "@xieyuheng/windbell.ts/core"
 import { Ajv } from "ajv"
 import { computed } from "vue"
@@ -42,11 +43,7 @@ const pwshArgs = computed<PwshArguments>(() => {
 })
 
 async function copyText(text: string): Promise<void> {
-  try {
-    await navigator.clipboard.writeText(text)
-  } catch {
-    // ignore clipboard errors
-  }
+  await clipboardWriteText(text)
 }
 
 function copyPath(): void {

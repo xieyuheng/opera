@@ -111,6 +111,9 @@ importers:
 
   packages/markdown.vue:
     dependencies:
+      '@xieyuheng/std.ts':
+        specifier: workspace:*
+        version: link:../std.ts
       '@xieyuheng/x-lisp-shiki.ts':
         specifier: workspace:*
         version: link:../x-lisp-shiki.ts

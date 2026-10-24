@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { clipboardWriteText } from "@xieyuheng/std.ts/clipboard"
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from "vue"
 
 import {
@@ -39,28 +40,7 @@ const language = computed(() => props.lang?.trim() || "text")
 const extraInfo = computed(() => props.meta?.trim() ?? "")
 
 async function writeToClipboard(text: string): Promise<boolean> {
-  try {
-    await navigator.clipboard.writeText(text)
-    return true
-  } catch {
-    // Fall back to a temporary textarea for browsers without Clipboard API.
-  }
-
-  const textarea = document.createElement("textarea")
-  textarea.value = text
-  textarea.setAttribute("readonly", "")
-  textarea.style.position = "fixed"
-  textarea.style.opacity = "0"
-  document.body.append(textarea)
-  textarea.select()
-
-  try {
-    return document.execCommand("copy")
-  } catch {
-    return false
-  } finally {
-    textarea.remove()
-  }
+  return await clipboardWriteText(text)
 }
 
 async function copyCode(): Promise<void> {
@@ -107,9 +87,7 @@ onBeforeUnmount(() => {
       </button>
     </div>
 
-    <pre
-      class="overflow-x-auto px-3 py-2 font-mono"
-    ><HighlightedCodeView
+    <pre class="overflow-x-auto px-3 py-2 font-mono"><HighlightedCodeView
         v-if="highlighted"
         :tokens="highlighted"
       /><code v-else>{{ code }}</code></pre>
