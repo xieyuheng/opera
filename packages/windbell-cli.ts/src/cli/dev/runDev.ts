@@ -13,6 +13,7 @@ import {
 import * as W from "@xieyuheng/windbell.ts"
 import { createServer, type ViteDevServer } from "vite"
 
+import { checkExposedUrlInfos } from "../exposure.ts"
 import { printQrCode } from "../qrCode.ts"
 import {
   formatLocalDateTime,
@@ -26,6 +27,21 @@ import type { DevOptions } from "./resolveDevOptions.ts"
 const defaultWebPort = 5173
 
 export async function runDev(options: DevOptions): Promise<void> {
+  const urlInfos = listServerUrlInfos(options.hostname, {
+    ipv6: options.ipv6,
+  })
+
+  if (options.expose) {
+    const error = checkExposedUrlInfos(urlInfos, { ipv6: options.ipv6 })
+
+    if (error !== undefined) {
+      const timestamp = formatLocalDateTime(new Date())
+      console.error(`[${timestamp}] [windbell dev] ${error}; exiting`)
+      process.exitCode = 1
+      return
+    }
+  }
+
   const database = W.makeDatabase({
     fs: makeLocalFileSystem(),
     path: makePath(process.platform === "win32" ? "win32" : "posix"),
@@ -75,9 +91,7 @@ export async function runDev(options: DevOptions): Promise<void> {
 
     console.log(`[${timestamp}] [windbell dev] api local (IPv4): ${apiUrl}`)
 
-    const urls = listServerUrlInfos(options.hostname, {
-      ipv6: options.ipv6,
-    }).map((urlInfo) => ({
+    const urls = urlInfos.map((urlInfo) => ({
       info: urlInfo,
       url: makeAccessTokenUrl({
         hostname: urlInfo.hostname,

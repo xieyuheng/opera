@@ -9,6 +9,7 @@ import { resolveHostname, resolveIpv6 } from "../resolveHostname.ts"
 
 export type DevOptions = {
   hostname: string
+  expose: boolean
   ipv6: boolean
   qrCode: boolean
   apiPort: number | undefined
@@ -22,6 +23,7 @@ export function resolveDevOptions(
   options: Record<string, unknown>,
 ): DevOptions {
   const hostname = resolveHostname(options)
+  const expose = readFlag(options, "--expose")
   const ipv6 = resolveIpv6(options)
 
   const apiPort = readOptionalPort(
@@ -42,6 +44,7 @@ export function resolveDevOptions(
 
   return {
     hostname,
+    expose,
     ipv6,
     qrCode: readFlag(options, "--qr-code"),
     apiPort,

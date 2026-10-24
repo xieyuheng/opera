@@ -56,6 +56,11 @@ test("resolveDevOptions enables IPv6 with --expose --ipv6", () => {
   )
 })
 
+test("resolveDevOptions tracks --expose", () => {
+  assert.equal(resolveDevOptions({ "--expose": true }).expose, true)
+  assert.equal(resolveDevOptions({}).expose, false)
+})
+
 function restoreEnv(name: string, value: string | undefined) {
   if (value === undefined) {
     delete process.env[name]

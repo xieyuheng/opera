@@ -12,6 +12,7 @@ import {
 } from "@xieyuheng/windbell-api.ts"
 import * as W from "@xieyuheng/windbell.ts"
 
+import { checkExposedUrlInfos } from "../exposure.ts"
 import { readFlag } from "../options.ts"
 import { printQrCode } from "../qrCode.ts"
 import { resolveHostname, resolveIpv6 } from "../resolveHostname.ts"
@@ -28,8 +29,21 @@ const defaultCorsOrigin: string | undefined = undefined
 export function makeStartHandler() {
   return async (context: Cli.HandlerContext) => {
     const hostname = resolveHostname(context.options)
+    const expose = readFlag(context.options, "--expose")
     const ipv6 = resolveIpv6(context.options)
     const printQr = readFlag(context.options, "--qr-code")
+    const urlInfos = listServerUrlInfos(hostname, { ipv6 })
+
+    if (expose) {
+      const error = checkExposedUrlInfos(urlInfos, { ipv6 })
+
+      if (error !== undefined) {
+        const timestamp = formatLocalDateTime(new Date())
+        console.error(`[${timestamp}] [windbell start] ${error}; exiting`)
+        process.exitCode = 1
+        return
+      }
+    }
 
     const port = parsePositiveInt(
       readOptionalString(context.options, "--port") ??
@@ -76,7 +90,7 @@ export function makeStartHandler() {
     })
 
     const timestamp = formatLocalDateTime(new Date())
-    const urls = listServerUrlInfos(hostname, { ipv6 }).map((urlInfo) => ({
+    const urls = urlInfos.map((urlInfo) => ({
       info: urlInfo,
       url: makeAccessTokenUrl({
         hostname: urlInfo.hostname,
