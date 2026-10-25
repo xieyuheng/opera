@@ -1,20 +1,16 @@
 import type { Yaml } from "mdast"
 import { h } from "vue"
-import * as YAML from "yaml"
 
+import {
+  readFrontmatterString,
+  type MarkdownFrontmatter,
+} from "../../frontmatter.ts"
 import type { MarkdownNodeRenderer } from "../types.ts"
 
 interface FrontmatterData {
   title: string | undefined
   authors: string[]
   date: string | undefined
-}
-
-function readString(value: unknown): string | undefined {
-  if (typeof value === "string") return value
-  if (typeof value === "number") return String(value)
-
-  return undefined
 }
 
 function readStringArray(value: unknown): string[] {
@@ -52,39 +48,26 @@ function readYear(value: unknown): string | undefined {
   return undefined
 }
 
-function readFrontmatter(node: Yaml): FrontmatterData | undefined {
-  let value: unknown
+function readFrontmatter(
+  data: MarkdownFrontmatter | undefined,
+): FrontmatterData | undefined {
+  if (data === undefined) return undefined
 
-  try {
-    value = YAML.parse(node.value)
-  } catch {
-    return undefined
+  return {
+    title: readFrontmatterString(data, "title"),
+    authors: readStringArray(data.authors ?? data.author),
+    date: readDate(data.date) ?? readYear(data.year),
   }
-
-  if (value === null || typeof value !== "object" || Array.isArray(value)) {
-    return undefined
-  }
-
-  const record = value as Record<string, unknown>
-  const title = readString(record.title)
-  const authors = readStringArray(record.authors ?? record.author)
-  const date = readDate(record.date) ?? readYear(record.year)
-
-  if (title === undefined && authors.length === 0 && date === undefined) {
-    return undefined
-  }
-
-  return { title, authors, date }
 }
 
 export const renderYaml: MarkdownNodeRenderer<Yaml> = (ctx, node) => {
-  const frontmatter = readFrontmatter(node)
+  const frontmatter = readFrontmatter(ctx.state.frontmatter)
 
   if (frontmatter === undefined) {
     return h("pre", { class: "whitespace-pre-wrap font-mono mb-8" }, node.value)
   }
 
-  return h("header", { class: "flex flex-col gap-1 mb-8" }, [
+  const children = [
     frontmatter.title === undefined
       ? null
       : h(
@@ -96,5 +79,9 @@ export const renderYaml: MarkdownNodeRenderer<Yaml> = (ctx, node) => {
       ? null
       : h("div", null, frontmatter.authors.join(", ")),
     frontmatter.date === undefined ? null : h("div", null, frontmatter.date),
-  ])
+  ]
+
+  if (children.every((child) => child === null)) return null
+
+  return h("header", { class: "flex flex-col gap-1 mb-8" }, children)
 }

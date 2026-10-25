@@ -1,11 +1,17 @@
 import type { Definition, FootnoteDefinition, Root } from "mdast"
 
+import {
+  findFrontmatterNode,
+  parseFrontmatter,
+  type MarkdownFrontmatter,
+} from "./frontmatter.ts"
 import type { MarkdownNode } from "./markdownTypes.ts"
 
 export interface MarkdownState {
   definitions: ReadonlyMap<string, Definition>
   footnoteDefinitions: ReadonlyMap<string, FootnoteDefinition>
   footnoteNumbers: ReadonlyMap<string, number>
+  frontmatter: MarkdownFrontmatter | undefined
 }
 
 interface MarkdownStateBuilder {
@@ -48,5 +54,8 @@ export function createMarkdownState(root: Root): MarkdownState {
 
   collectState(root, state)
 
-  return state
+  return {
+    ...state,
+    frontmatter: parseFrontmatter(findFrontmatterNode(root)),
+  }
 }

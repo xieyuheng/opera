@@ -8,8 +8,19 @@ export {
   highlightCode,
   type HighlightedCode,
 } from "./highlight/index.ts"
+export {
+  findFrontmatterNode,
+  parseFrontmatter,
+  readFrontmatterString,
+} from "./frontmatter.ts"
+export type { MarkdownFrontmatter } from "./frontmatter.ts"
 export { createMarkdownState } from "./markdownState.ts"
 export { parseMarkdown } from "./parseMarkdown.ts"
+export {
+  createMarkdownStyle,
+  defaultMarkdownStyle,
+  readFrontmatterStyle,
+} from "./style.ts"
 export {
   createMarkdownRenderContext,
   renderMarkdownNode,

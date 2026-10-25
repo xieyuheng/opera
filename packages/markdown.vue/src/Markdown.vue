@@ -1,5 +1,11 @@
 <script lang="ts">
-import { computed, defineComponent, h, type PropType } from "vue"
+import {
+  computed,
+  defineComponent,
+  h,
+  type CSSProperties,
+  type PropType,
+} from "vue"
 
 import { createMarkdownState } from "./markdownState.ts"
 import type { MarkdownNode } from "./markdownTypes.ts"
@@ -9,6 +15,7 @@ import type {
   MarkdownEnvironment,
   MarkdownNodeRenderer,
 } from "./render/types.ts"
+import { createMarkdownStyle } from "./style.ts"
 
 export default defineComponent({
   name: "Markdown",
@@ -41,10 +48,14 @@ export default defineComponent({
       }),
     )
 
+    const style = computed<CSSProperties>(() =>
+      createMarkdownStyle(ctx.value.state.frontmatter),
+    )
+
     return () => {
       return h(
         "div",
-        { class: "text-ink" },
+        { class: "text-ink", style: style.value },
         ctx.value.renderChildren(root.value.children),
       )
     }
