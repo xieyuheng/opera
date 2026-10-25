@@ -117,7 +117,7 @@ watch(
 </script>
 
 <template>
-  <div class="flex flex-col items-start gap-6">
+  <div class="flex flex-col items-start gap-8">
     <header
       class="flex w-full max-w-[720px] flex-col items-start gap-8 px-3 pt-3 sm:flex-row sm:px-8 sm:pt-8"
     >
