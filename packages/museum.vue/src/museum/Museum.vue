@@ -137,3 +137,10 @@ watch(
     </main>
   </div>
 </template>
+
+<style>
+a:hover {
+  background-color: var(--color-ink);
+  color: var(--color-paper);
+}
+</style>
