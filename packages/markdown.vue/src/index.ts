@@ -15,6 +15,7 @@ export {
 } from "./frontmatter.ts"
 export type { MarkdownFrontmatter } from "./frontmatter.ts"
 export { createMarkdownState } from "./markdownState.ts"
+export { safeUrl } from "./markdownUrl.ts"
 export { parseMarkdown } from "./parseMarkdown.ts"
 export {
   createMarkdownStyle,

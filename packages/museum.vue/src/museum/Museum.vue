@@ -1,7 +1,14 @@
 <script setup lang="ts">
-import Markdown from "@xieyuheng/markdown.vue"
+import Markdown, {
+  findFrontmatterNode,
+  parseFrontmatter,
+  parseMarkdown,
+  readFrontmatterString,
+  safeUrl,
+} from "@xieyuheng/markdown.vue"
 import { computed, watch } from "vue"
 
+import { readMuseumCoverImage } from "./MuseumCoverImage.ts"
 import MuseumNav from "./MuseumNav.vue"
 import {
   isMuseumPageMissing,
@@ -35,6 +42,32 @@ const markdownEnvironment = computed(() =>
 )
 
 const missingPage = computed(() => isMuseumPageMissing(state))
+
+const frontmatter = computed(() => {
+  if (state.documentKind !== "markdown" || state.documentText === "") {
+    return undefined
+  }
+
+  return parseFrontmatter(
+    findFrontmatterNode(parseMarkdown(state.documentText)),
+  )
+})
+
+const coverImage = computed(() => {
+  const image = readMuseumCoverImage(frontmatter.value)
+  if (image === undefined) return undefined
+
+  const rawSrc = safeUrl(image.src, { image: true })
+  if (rawSrc === undefined) return undefined
+
+  return {
+    ...image,
+    src:
+      markdownEnvironment.value?.resolveUrl?.(rawSrc, { kind: "image" }) ??
+      rawSrc,
+    alt: image.alt ?? readFrontmatterString(frontmatter.value, "title"),
+  }
+})
 
 function requestRootNavigation(): void {
   if (state.curation === undefined || rootNavigationRequested) return
@@ -84,8 +117,10 @@ watch(
 </script>
 
 <template>
-  <div class="flex max-w-[43rem] flex-col gap-6 p-3 sm:p-8">
-    <header class="flex flex-col items-start gap-8 sm:flex-row">
+  <div class="flex flex-col items-start gap-6">
+    <header
+      class="flex w-full max-w-[45rem] flex-col items-start gap-8 px-3 pt-3 sm:flex-row sm:px-8 sm:pt-8"
+    >
       <h1 @click.prevent="emit('navigate', state.curation?.root.name || '')">
         <slot name="logo" />
       </h1>
@@ -99,7 +134,25 @@ watch(
       />
     </header>
 
-    <main>
+    <figure
+      v-if="coverImage"
+      class="m-0 w-full max-w-[48rem] p-0"
+      :style="
+        coverImage.maxWidth === undefined
+          ? undefined
+          : { maxWidth: coverImage.maxWidth }
+      "
+    >
+      <img
+        :src="coverImage.src"
+        :alt="coverImage.alt"
+        class="block h-auto w-full"
+        loading="eager"
+        decoding="async"
+      />
+    </figure>
+
+    <main class="w-full max-w-[45rem] px-3 pb-3 sm:px-8 sm:pb-8">
       <p v-if="state.isCurationLoading">正在读取 curation…</p>
 
       <p v-else-if="state.curationError">
