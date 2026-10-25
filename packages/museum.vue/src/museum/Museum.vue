@@ -119,7 +119,7 @@ watch(
 <template>
   <div class="flex flex-col items-start gap-6">
     <header
-      class="flex w-full max-w-[45rem] flex-col items-start gap-8 px-3 pt-3 sm:flex-row sm:px-8 sm:pt-8"
+      class="flex w-full max-w-[720px] flex-col items-start gap-8 px-3 pt-3 sm:flex-row sm:px-8 sm:pt-8"
     >
       <h1 @click.prevent="emit('navigate', state.curation?.root.name || '')">
         <slot name="logo" />
@@ -136,7 +136,7 @@ watch(
 
     <figure
       v-if="coverImage"
-      class="m-0 w-full max-w-[48rem] p-0"
+      class="m-0 w-full max-w-[800px] p-0"
       :style="
         coverImage.maxWidth === undefined
           ? undefined
@@ -152,7 +152,7 @@ watch(
       />
     </figure>
 
-    <main class="w-full max-w-[45rem] px-3 pb-3 sm:px-8 sm:pb-8">
+    <main class="w-full max-w-[720px] px-3 pb-3 sm:px-8 sm:pb-8">
       <p v-if="state.isCurationLoading">正在读取 curation…</p>
 
       <p v-else-if="state.curationError">
