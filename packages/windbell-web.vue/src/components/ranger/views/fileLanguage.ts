@@ -81,6 +81,14 @@ const languageByExtension: Record<string, string> = {
   s: "asm",
   yasm: "asm",
 
+  // lisp
+  asdf: "common-lisp",
+  cl: "common-lisp",
+  lisp: "common-lisp",
+  rkt: "scheme",
+  scm: "scheme",
+  ss: "scheme",
+
   // from x-lisp
   meta: "meta-lisp",
   basic: "basic-lisp",

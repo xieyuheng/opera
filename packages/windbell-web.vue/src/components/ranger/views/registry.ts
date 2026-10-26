@@ -103,6 +103,14 @@ const textExtensions = new Set([
   "tsv",
   "txt",
 
+  // lisp
+  "asdf",
+  "cl",
+  "lisp",
+  "rkt",
+  "scm",
+  "ss",
+
   // from x-lisp
   "meta",
   "basic",
