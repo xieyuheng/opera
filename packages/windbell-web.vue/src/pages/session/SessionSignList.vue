@@ -38,7 +38,7 @@ const { t } = useI18n({
   useScope: "local",
 })
 
-const BOTTOM_THRESHOLD = 32
+const BOTTOM_THRESHOLD = 5
 
 const scroller = ref<HTMLElement | null>(null)
 const content = ref<HTMLElement | null>(null)
