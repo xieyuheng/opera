@@ -150,6 +150,13 @@ watch(
         loading="eager"
         decoding="async"
       />
+
+      <figcaption
+        v-if="coverImage.alt"
+        class="px-3 pt-2 text-sm sm:px-8 sm:pt-3"
+      >
+        {{ coverImage.alt }}
+      </figcaption>
     </figure>
 
     <main class="w-full max-w-[720px] px-3 pb-3 sm:px-8 sm:pb-8">

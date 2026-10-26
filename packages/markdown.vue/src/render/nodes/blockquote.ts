@@ -9,7 +9,7 @@ export const renderBlockquote: MarkdownNodeRenderer<Blockquote> = (
 ) => {
   return h(
     "blockquote",
-    { class: "my-3 border-l-3 border-ink/60 pl-4 text-ink" },
+    { class: "my-6 border-ink/60 px-8 text-ink" },
     ctx.renderChildren(node.children),
   )
 }
