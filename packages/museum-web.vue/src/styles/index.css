@@ -19,3 +19,8 @@ html[data-font] body {
   background-color: var(--color-line);
   color: var(--color-ink);
 }
+
+::selection {
+  color: black;
+  background: white;
+}
