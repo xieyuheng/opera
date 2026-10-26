@@ -13,6 +13,7 @@ import type {
 export type MarkdownRenderOptions = {
   environment?: MarkdownEnvironment
   renderers?: Partial<Record<MarkdownNode["type"], MarkdownNodeRenderer>>
+  headingAnchors?: boolean
 }
 
 export function createMarkdownRenderContext(
@@ -23,6 +24,7 @@ export function createMarkdownRenderContext(
     state,
     environment: options.environment ?? {},
     renderers: options.renderers ?? {},
+    headingAnchors: options.headingAnchors ?? false,
   } as MarkdownRenderContext
 
   ctx.renderNode = (node) => renderMarkdownNode(ctx, node)

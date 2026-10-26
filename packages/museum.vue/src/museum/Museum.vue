@@ -190,6 +190,7 @@ watch(
           v-else-if="state.documentUrl && state.documentKind === 'markdown'"
           :text="state.documentText"
           :environment="markdownEnvironment"
+          heading-anchors
         />
 
         <p v-else-if="state.documentUrl">暂不支持这种文件类型。</p>

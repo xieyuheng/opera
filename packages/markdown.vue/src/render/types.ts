@@ -35,6 +35,7 @@ export type MarkdownRenderContext = {
   state: MarkdownState
   environment: MarkdownEnvironment
   renderers: Partial<Record<MarkdownNode["type"], MarkdownNodeRenderer>>
+  headingAnchors: boolean
   renderNode: (node: MarkdownNode) => VNodeChild
   renderChildren: (nodes: readonly MarkdownNode[]) => VNodeChild[]
 }

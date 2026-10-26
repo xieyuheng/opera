@@ -37,6 +37,11 @@ export default defineComponent({
       >,
       default: undefined,
     },
+
+    headingAnchors: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   setup(props) {
@@ -45,6 +50,7 @@ export default defineComponent({
       createMarkdownRenderContext(createMarkdownState(root.value), {
         environment: props.environment,
         renderers: props.renderers,
+        headingAnchors: props.headingAnchors,
       }),
     )
 

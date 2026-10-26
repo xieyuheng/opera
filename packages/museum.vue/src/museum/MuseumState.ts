@@ -283,6 +283,8 @@ export function makeMuseumMarkdownEnvironment(
     },
 
     handleLinkClick(event, url) {
+      if (url.startsWith("#")) return false
+
       try {
         const resolved = new URL(url, documentUrl)
         const node = lookup(resolved)
