@@ -17,3 +17,9 @@
 - 可能需要 git diff 的 parser
 
 关于这个问题，你有什么想法？
+
+# 搜索
+
+[windbell-web.vue]
+
+用 deepseek 的搜索 API 获得一个付费的没有广告的搜索引擎
