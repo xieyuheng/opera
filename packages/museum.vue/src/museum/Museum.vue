@@ -168,15 +168,16 @@ watch(
 
       <template v-else-if="state.curation">
         <div v-if="missingPage">
-          <p>curation 中没有这个页面。</p>
+          <p>策展列表中没有这个藏品。</p>
           <a
             :href="
               props.makeHref?.(state.curation.root.name) ??
               `/${encodeURIComponent(state.curation.root.name)}`
             "
             @click.prevent="emit('navigate', state.curation.root.name)"
+            class="underline"
           >
-            回到 {{ state.curation.root.name }}
+            回到{{ state.curation.root.name }}
           </a>
         </div>
 

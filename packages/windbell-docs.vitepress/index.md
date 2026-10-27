@@ -431,3 +431,13 @@ installers/install.ps1  # powershell (windows)
 可以配合 [ddclient](https://github.com/ddclient/ddclient) 使用。
 
 这也需要自己的域名，但是不经过隧道的直接 ipv6 连接速度更快。
+
+## 多余的话
+
+关于风铃智能体，
+我还有一些多余的话。
+
+讨论智能体与皮尔士符号学之间的关系，
+放在我的个人主页中了：
+
+- <https://museum.xieyuheng.com/exhibits/风铃>
