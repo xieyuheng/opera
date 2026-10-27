@@ -403,7 +403,7 @@ installers/install.ps1  # powershell (windows)
 
 此时的网络效果是：
 
-```ascii
+```
 手机 -[访问自己的域名]-> cloudflare 服务器 -[隧道]-> 本地服务
 ```
 
@@ -420,7 +420,7 @@ installers/install.ps1  # powershell (windows)
 
 此时的网络效果是：
 
-```ascii
+```
 手机 -[访问自己 ipv6 地址]-> 本地服务
 ```
 
