@@ -23,7 +23,7 @@ export default defineConfig({
     },
   },
   title: "风铃",
-  description: "「风铃」智能体文档",
+  description: "「风铃」智能体",
   themeConfig: {
     search: { provider: "local" },
     outline: { level: [2, 3] },
