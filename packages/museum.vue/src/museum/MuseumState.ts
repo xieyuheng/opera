@@ -8,7 +8,7 @@ import {
 } from "../curation/index.ts"
 import { loadDocument } from "./document.ts"
 
-export type MuseumDocumentKind = "none" | "markdown" | "unsupported"
+export type MuseumDocumentKind = "none" | "markdown" | "html" | "unsupported"
 
 export type MuseumNavColumn = {
   key: "children" | "siblings" | "uncles"
@@ -170,7 +170,10 @@ export async function loadMuseumDocument(state: MuseumState): Promise<void> {
 
   state.documentError = undefined
 
-  if (documentUrl === undefined || state.documentKind !== "markdown") {
+  if (
+    documentUrl === undefined ||
+    (state.documentKind !== "markdown" && state.documentKind !== "html")
+  ) {
     state.documentText = ""
     state.isDocumentLoading = false
     return
@@ -309,5 +312,7 @@ function documentKindOf(documentUrl: string | undefined): MuseumDocumentKind {
   if (documentUrl === undefined) return "none"
 
   const pathname = new URL(documentUrl).pathname.toLowerCase()
-  return pathname.endsWith(".md") ? "markdown" : "unsupported"
+  if (pathname.endsWith(".md")) return "markdown"
+  if (pathname.endsWith(".html") || pathname.endsWith(".htm")) return "html"
+  return "unsupported"
 }

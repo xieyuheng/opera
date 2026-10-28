@@ -22,3 +22,7 @@
   --color-ink: var(--museum-ink);
   --color-line: var(--museum-line);
 }
+
+.museum-html {
+  min-width: 0;
+}

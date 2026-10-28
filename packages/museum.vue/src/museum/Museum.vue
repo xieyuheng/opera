@@ -9,6 +9,7 @@ import Markdown, {
 import { computed, watch } from "vue"
 
 import { readMuseumCoverImage } from "./MuseumCoverImage.ts"
+import MuseumHtml from "./MuseumHtml.vue"
 import MuseumNav from "./MuseumNav.vue"
 import {
   isMuseumPageMissing,
@@ -192,6 +193,13 @@ watch(
           :text="state.documentText"
           :environment="markdownEnvironment"
           heading-anchors
+        />
+
+        <MuseumHtml
+          v-else-if="state.documentUrl && state.documentKind === 'html'"
+          :html="state.documentText"
+          :document-url="state.documentUrl"
+          :environment="markdownEnvironment"
         />
 
         <p v-else-if="state.documentUrl">暂不支持这种文件类型。</p>

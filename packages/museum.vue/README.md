@@ -1,8 +1,8 @@
 # @xieyuheng/museum.vue
 
-A Vue component that renders a curated tree of Markdown documents.
+A Vue component that renders a curated tree of Markdown and HTML documents.
 
-The component owns curation parsing, page lookup, Markdown loading, relative
+The component owns curation parsing, page lookup, document loading, relative
 link resolution, and the ranger-like navigation. Routing is left to the host
 application.
 
@@ -39,6 +39,41 @@ cover-image:
 
 The cover spans the full content width without horizontal padding. When a
 custom `max-width` is smaller than the viewport, the cover remains left-aligned.
+
+## HTML documents
+
+Museum pages may use `.html` files. `.htm` is also accepted as an alias.
+
+An HTML document is treated as a fragment rendered inside the museum content
+area. The application header, logo, and navigation are still owned by Museum.
+The fragment may contain multiple top-level elements and its own `<style>`
+element.
+
+```html
+<article class="exhibit-calligraphy">
+  <img
+    src="../assets/images/calligraphy/01.png"
+    alt="Calligraphy"
+  />
+  <style>
+    .exhibit-calligraphy img {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</article>
+```
+
+Relative `action`, `href`, `poster`, `src`, and `xlink:href` attributes are
+resolved against the HTML document URL. Relative URLs inside `<style>` blocks
+and inline `style` attributes are resolved the same way.
+
+HTML files are trusted content. Museum does not sanitize them, and it does not
+rewrite author-provided attributes such as `target` or `rel`.
+
+Typography is owned by the HTML document itself. The museum only provides the
+`.museum-html` wrapper. Style selectors inside the document should be scoped by
+a unique root class to avoid affecting the application or other pages.
 
 ## Styles
 
