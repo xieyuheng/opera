@@ -35,5 +35,5 @@ function handleClick(event: MouseEvent): void {
 </script>
 
 <template>
-  <div class="museum-html" @click="handleClick" v-html="renderedHtml" />
+  <div class="w-full min-w-0" @click="handleClick" v-html="renderedHtml" />
 </template>

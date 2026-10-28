@@ -160,15 +160,44 @@ watch(
       </figcaption>
     </figure>
 
-    <main class="w-full max-w-[720px] px-3 pb-3 sm:px-8 sm:pb-8">
-      <p v-if="state.isCurationLoading">正在读取 curation…</p>
+    <main class="w-full">
+      <div
+        v-if="state.isCurationLoading || state.isDocumentLoading"
+        class="w-full max-w-[720px] px-3 pb-3 sm:px-8 sm:pb-8"
+      >
+        <p v-if="state.isCurationLoading">正在读取 curation…</p>
+        <p v-else>正在读取页面…</p>
+      </div>
 
-      <p v-else-if="state.curationError">
-        {{ state.curationError }}
-      </p>
+      <div
+        v-else-if="
+          state.curationError !== undefined || state.documentError !== undefined
+        "
+        class="w-full max-w-[720px] px-3 pb-3 sm:px-8 sm:pb-8"
+      >
+        <p>{{ state.curationError ?? state.documentError }}</p>
+      </div>
 
-      <template v-else-if="state.curation">
-        <div v-if="missingPage">
+      <MuseumHtml
+        v-else-if="state.documentUrl && state.documentKind === 'html'"
+        :html="state.documentText"
+        :document-url="state.documentUrl"
+        :environment="markdownEnvironment"
+      />
+
+      <div
+        v-else-if="state.documentUrl && state.documentKind === 'markdown'"
+        class="w-full max-w-[720px] px-3 pb-3 sm:px-8 sm:pb-8"
+      >
+        <Markdown
+          :text="state.documentText"
+          :environment="markdownEnvironment"
+          heading-anchors
+        />
+      </div>
+
+      <div v-else class="w-full max-w-[720px] px-3 pb-3 sm:px-8 sm:pb-8">
+        <template v-if="missingPage && state.curation">
           <p>策展列表中没有这个藏品。</p>
           <a
             :href="
@@ -180,30 +209,10 @@ watch(
           >
             回到{{ state.curation.root.name }}
           </a>
-        </div>
-
-        <p v-else-if="state.isDocumentLoading">正在读取页面…</p>
-
-        <p v-else-if="state.documentError">
-          {{ state.documentError }}
-        </p>
-
-        <Markdown
-          v-else-if="state.documentUrl && state.documentKind === 'markdown'"
-          :text="state.documentText"
-          :environment="markdownEnvironment"
-          heading-anchors
-        />
-
-        <MuseumHtml
-          v-else-if="state.documentUrl && state.documentKind === 'html'"
-          :html="state.documentText"
-          :document-url="state.documentUrl"
-          :environment="markdownEnvironment"
-        />
+        </template>
 
         <p v-else-if="state.documentUrl">暂不支持这种文件类型。</p>
-      </template>
+      </div>
     </main>
   </div>
 </template>

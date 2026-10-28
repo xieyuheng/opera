@@ -44,10 +44,11 @@ custom `max-width` is smaller than the viewport, the cover remains left-aligned.
 
 Museum pages may use `.html` files. `.htm` is also accepted as an alias.
 
-An HTML document is treated as a fragment rendered inside the museum content
-area. The application header, logo, and navigation are still owned by Museum.
-The fragment may contain multiple top-level elements and its own `<style>`
-element.
+An HTML document is treated as a fragment rendered inside a full-width host.
+Unlike Markdown, Museum does not apply a content width or horizontal padding;
+the HTML document owns its own layout. The application header, logo, and
+navigation are still owned by Museum. The fragment may contain multiple
+top-level elements and its own `<style>` element.
 
 ```html
 <article class="exhibit-calligraphy">
@@ -71,9 +72,9 @@ and inline `style` attributes are resolved the same way.
 HTML files are trusted content. Museum does not sanitize them, and it does not
 rewrite author-provided attributes such as `target` or `rel`.
 
-Typography is owned by the HTML document itself. The museum only provides the
-`.museum-html` wrapper. Style selectors inside the document should be scoped by
-a unique root class to avoid affecting the application or other pages.
+Typography is owned by the HTML document itself. The museum only provides a
+full-width wrapper. Style selectors inside the document should be scoped by a
+unique root class to avoid affecting the application or other pages.
 
 ## Styles
 
