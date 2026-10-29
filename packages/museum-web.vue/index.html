@@ -9,17 +9,28 @@
     <meta name="color-scheme" content="light dark" />
     <title>Museum</title>
     <script>
-      const colorScheme = window.matchMedia("(prefers-color-scheme: dark)")
+      let colorMode = "system"
 
-      function applyColorScheme() {
-        document.documentElement.classList.toggle("dark", colorScheme.matches)
-        document.documentElement.style.colorScheme = colorScheme.matches
-          ? "dark"
-          : "light"
+      try {
+        const storedColorMode = localStorage.getItem("museum.color-mode")
+        if (
+          storedColorMode === "system" ||
+          storedColorMode === "light" ||
+          storedColorMode === "dark"
+        ) {
+          colorMode = storedColorMode
+        }
+      } catch {
+        // Ignore storage errors and fall back to the system color mode.
       }
 
-      applyColorScheme()
-      colorScheme.addEventListener("change", applyColorScheme)
+      const dark =
+        colorMode === "dark" ||
+        (colorMode === "system" &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+
+      document.documentElement.classList.toggle("dark", dark)
+      document.documentElement.style.colorScheme = dark ? "dark" : "light"
     </script>
   </head>
   <body>
