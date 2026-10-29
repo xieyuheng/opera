@@ -9,13 +9,13 @@
     "@xieyuheng/museum.vue": "workspace:*",
     "vue": "^3.5.44",
     "vue-router": "^5.4.0",
-    "wrangler": "^4.153.0"
+    "wrangler": "^4.155.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "@vitejs/plugin-vue": "^6.0.10",
-    "oxfmt": "0.74.0",
+    "oxfmt": "0.75.0",
     "sirv": "^3.0.2",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",

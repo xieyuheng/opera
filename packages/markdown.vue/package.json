@@ -31,9 +31,9 @@
   "devDependencies": {
     "@tailwindcss/vite": "4.3.3",
     "@types/mdast": "4.0.4",
-    "@types/node": "26.6.5",
+    "@types/node": "26.6.6",
     "@vitejs/plugin-vue": "6.0.10",
-    "oxfmt": "0.74.0",
+    "oxfmt": "0.75.0",
     "tailwindcss": "4.3.3",
     "typescript": "7.0.2",
     "vite": "8.3.5",

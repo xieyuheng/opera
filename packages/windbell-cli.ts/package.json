@@ -18,9 +18,9 @@
     "vite": "8.3.5"
   },
   "devDependencies": {
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "@types/qrcode": "1.5.6",
-    "oxfmt": "0.74.0",
+    "oxfmt": "0.75.0",
     "typescript": "^7.0.2"
   },
   "bin": {
