@@ -1,3 +1,9 @@
+---
+
+准备工作：
+
+- 可以先给 windbell 自定义「人设」的功能。
+
 # 配色
 
 [windbell-web.vue] 利用调色板设计 theme
