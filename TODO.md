@@ -1,6 +1,19 @@
+# 文学式编程
+
+用更多的文学式编程总结 windbell 的设计细节
+
+# 基于 markdown 的本地知识库
+
+类似 wiki
+可选用 git
+
 # 准备工作
 
 可以先给 windbell 自定义「人设」的功能。
+
+# tg
+
+把 windbell 接入 tg bot
 
 # 配色
 
