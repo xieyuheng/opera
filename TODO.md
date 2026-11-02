@@ -10,6 +10,22 @@
 
 类似 wiki，可选用 git 做版本管理
 
+# 在 ai 时代快速学习一个新领域
+
+机器学习，the little learner
+写一个自己的 ML 框架
+
+研究 andrej-karpathy：
+
+- andrej-karpathy-skills
+- autoresearch
+- microgpt
+- nanochat
+
+# 在 ai 时代尝试实现自己的面向用户的 app
+
+关键词：局域网，知识库，基于智能体，卡片推荐
+
 # 配色
 
 [windbell-web.vue] 利用调色板设计 theme
