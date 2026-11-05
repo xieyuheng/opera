@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "dependencies": {
-    "@lucide/vue": "1.63.0",
+    "@lucide/vue": "1.67.0",
     "@unhead/vue": "3.4.3",
     "@xieyuheng/common-fonts.css": "workspace:*",
     "@xieyuheng/fs-api.ts": "workspace:*",
@@ -16,17 +16,17 @@
     "@xieyuheng/windbell.ts": "workspace:*",
     "ajv": "8.20.0",
     "vue": "3.5.44",
-    "vue-i18n": "11.4.16",
+    "vue-i18n": "11.4.18",
     "vue-router": "5.4.0"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "4.3.3",
+    "@tailwindcss/vite": "4.3.4",
     "@types/node": "26.6.6",
     "@vitejs/plugin-vue": "6.0.10",
-    "oxfmt": "0.75.0",
-    "tailwindcss": "4.3.3",
+    "oxfmt": "0.76.0",
+    "tailwindcss": "4.3.4",
     "typescript": "7.0.2",
     "vite": "8.3.5",
-    "vue-tsc": "^3.3.13"
+    "vue-tsc": "^3.3.14"
   }
 }

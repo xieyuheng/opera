@@ -19,8 +19,8 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
-    "oxfmt": "0.75.0",
+    "oxfmt": "0.76.0",
     "typescript": "^7.0.2",
-    "vue-tsc": "^3.3.13"
+    "vue-tsc": "^3.3.14"
   }
 }
