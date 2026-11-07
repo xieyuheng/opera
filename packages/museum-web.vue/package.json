@@ -7,9 +7,9 @@
   "dependencies": {
     "@xieyuheng/common-fonts.css": "workspace:*",
     "@xieyuheng/museum.vue": "workspace:*",
-    "vue": "^3.5.44",
+    "vue": "^3.5.45",
     "vue-router": "^5.4.0",
-    "wrangler": "^4.157.0"
+    "wrangler": "^4.158.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.4",
@@ -19,7 +19,7 @@
     "sirv": "^3.0.2",
     "tailwindcss": "^4.3.4",
     "typescript": "^7.0.2",
-    "vite": "^8.3.5",
+    "vite": "^8.3.6",
     "vue-tsc": "^3.3.14"
   }
 }

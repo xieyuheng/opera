@@ -15,7 +15,7 @@
     "@xieyuheng/windbell-api.ts": "workspace:*",
     "@xieyuheng/windbell.ts": "workspace:*",
     "qrcode": "1.5.4",
-    "vite": "8.3.5"
+    "vite": "8.3.6"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",

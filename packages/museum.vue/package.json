@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@xieyuheng/markdown.vue": "workspace:*",
-    "vue": "^3.5.44"
+    "vue": "^3.5.45"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
