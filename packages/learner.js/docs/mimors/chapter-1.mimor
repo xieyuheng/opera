@@ -1,0 +1,50 @@
+<metadata theme-color="blue" />
+
+<front-cover>
+  1: The Lines Sleep Tonight
+</front-cover>
+
+<question>
+  What is the equation of a line?
+
+  <answer>
+    y = w * x + b
+
+    x is the argument of line,
+    w and b are parameters of line.
+  </answer>
+</question>
+
+<cloze>
+  Functions that accept parameters after
+  the arguments are known as
+
+  <blank>parameterized functions</blank>
+</cloze>
+
+<question>
+  What is learning?
+
+  <answer>
+    Finding the parameters of a function
+    from a data set is known as learning.
+  </answer>
+</question>
+
+这个定义很关键，
+因为能够把握住关键概念的定义，
+可以帮助我们推广和修改理论。
+
+注意这里对 Parameters 的限制是 number。
+
+The Rule of Parameters
+(Initial Version)
+Every parameter is a number.
+
+<cloze>
+  Can we define a function that determines parameters for any data set?
+
+  Yes, we can, and such a function is an example of
+  what is known as
+  <blank>machine learning</blank>.
+</cloze>
