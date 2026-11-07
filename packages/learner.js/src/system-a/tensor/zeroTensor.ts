@@ -1,6 +1,6 @@
 import { repeatApply } from "../../utils/repeatApply.ts"
-import type { Tensor } from "./Tensor.ts"
 import type { Shape } from "./shape.ts"
+import type { Tensor } from "./Tensor.ts"
 
 export function zeroTensor(shape: Shape): Tensor {
   if (shape.length === 0) return 0

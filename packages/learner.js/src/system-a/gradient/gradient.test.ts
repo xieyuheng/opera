@@ -1,5 +1,6 @@
 import assert from "node:assert"
 import { test } from "node:test"
+
 import { add, mul, sum } from "../toys/index.ts"
 import { gradient } from "./gradient.ts"
 

@@ -1,7 +1,7 @@
 import { randomGaussian } from "../../utils/randomGaussian.ts"
 import { repeatApply } from "../../utils/repeatApply.ts"
-import type { Tensor } from "./Tensor.ts"
 import type { Shape } from "./shape.ts"
+import type { Tensor } from "./Tensor.ts"
 
 export function randomTensor(
   mean: number,

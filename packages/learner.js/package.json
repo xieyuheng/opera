@@ -1,23 +1,19 @@
 {
   "name": "@xieyuheng/learner.js",
   "version": "0.3.0",
+  "private": true,
   "license": "GPL-3.0-or-later",
   "type": "module",
-  "main": "./lib/index.js",
-  "files": [
-    "src",
-    "lib"
-  ],
-  "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc --watch",
-    "test": "node --test",
-    "format": "prettier src --write"
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
   },
+  "files": [
+    "src"
+  ],
   "devDependencies": {
     "@types/node": "^26.6.6",
-    "prettier": "^3.9.10",
-    "prettier-plugin-organize-imports": "^4.3.0",
+    "oxfmt": "0.76.0",
     "typescript": "^7.0.2"
   }
 }

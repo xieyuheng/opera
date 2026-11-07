@@ -1,5 +1,6 @@
 import assert from "node:assert"
 import { test } from "node:test"
+
 import { shape } from "../tensor/index.ts"
 import { extend2 } from "./extend.ts"
 import { mul } from "./toys.ts"

@@ -1,5 +1,6 @@
 import assert from "node:assert"
 import { test } from "node:test"
+
 import { shape } from "./shape.ts"
 
 test("shape", () => {

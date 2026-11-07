@@ -1,5 +1,6 @@
 import assert from "node:assert"
 import { test } from "node:test"
+
 import { l2Loss } from "./chapter-3.ts"
 import { line } from "./interlude-i.ts"
 

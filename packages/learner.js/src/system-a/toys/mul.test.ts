@@ -1,5 +1,6 @@
 import assert from "node:assert"
 import { test } from "node:test"
+
 import { mul } from "./index.ts"
 
 // NOTE Related issues about `ext2`:

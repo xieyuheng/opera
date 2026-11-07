@@ -1,5 +1,5 @@
-import type { Tensor } from "../tensor/Tensor.ts"
 import { assertTensorArray } from "../tensor/assertions.ts"
+import type { Tensor } from "../tensor/Tensor.ts"
 import { sum } from "../toys/sum.ts"
 import { div } from "../toys/toys.ts"
 import { compareClassification } from "./compareClassification.ts"

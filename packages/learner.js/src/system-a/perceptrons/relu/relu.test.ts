@@ -1,5 +1,6 @@
 import assert from "node:assert"
 import { test } from "node:test"
+
 import { assertTensorAlmostEqual } from "../../tensor/assertions.ts"
 import { rectify, relu } from "./relu.ts"
 

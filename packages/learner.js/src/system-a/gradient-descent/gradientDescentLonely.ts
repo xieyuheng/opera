@@ -1,7 +1,7 @@
 import type { Tensor } from "../tensor/index.ts"
 import { mul, sub } from "../toys/index.ts"
-import type { Representation } from "./Representation.ts"
 import { gradientDescent } from "./gradientDescent.ts"
+import type { Representation } from "./Representation.ts"
 
 export function lonelyRepresentation(options: {
   learningRate: number

@@ -2,5 +2,5 @@
 
 set -e
 
-node --test src/**/*.test.ts
+node --test "src/**/*.test.ts"
 

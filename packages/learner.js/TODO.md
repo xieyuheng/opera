@@ -1,9 +1,5 @@
 # learner
 
-直接运行 ts 代码，避免 build 过程
-设置 scripts 避免使用 package.json
-用 monorepo
-
 在 ai 的帮助下重读 "the little learner"
 尝试用外部 markdown 文档做文学式编程
 

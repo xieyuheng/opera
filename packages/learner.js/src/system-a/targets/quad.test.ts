@@ -1,5 +1,6 @@
 import assert from "node:assert"
 import { test } from "node:test"
+
 import type { GradientDescentFn } from "../gradient-descent/gradientDescent.ts"
 import { gradientDescentLonely } from "../gradient-descent/gradientDescentLonely.ts"
 import { gradientDescentNaked } from "../gradient-descent/gradientDescentNaked.ts"

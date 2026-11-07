@@ -1,8 +1,8 @@
 import { arrayEqual } from "../../utils/arrayEqual.ts"
 import { assertArrayTheSame } from "../../utils/assertArrayTheSame.ts"
+import { assertTensorArray } from "./assertions.ts"
 import { isScalar } from "./Scalar.ts"
 import { type Tensor } from "./Tensor.ts"
-import { assertTensorArray } from "./assertions.ts"
 
 export type Shape = Array<number>
 

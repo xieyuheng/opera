@@ -7,8 +7,8 @@ import {
   denseBlock,
   denseBlockInitParameters,
 } from "../../perceptrons/relu/index.ts"
-import type { Tensor } from "../../tensor/Tensor.ts"
 import { samplingObjective } from "../../tensor/samplingObjective.ts"
+import type { Tensor } from "../../tensor/Tensor.ts"
 import { model } from "../model.ts"
 import { irisTrainXs, irisTrainYs } from "./irisDataset.ts"
 

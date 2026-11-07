@@ -1,4 +1,5 @@
 import { test } from "node:test"
+
 import { modelAccuracy } from "../modelAccuracy.ts"
 import { irisTestXs, irisTestYs } from "./irisDataset.ts"
 import { irisModel } from "./irisModel.ts"

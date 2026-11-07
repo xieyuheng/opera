@@ -1,5 +1,6 @@
 import assert from "node:assert"
 import { test } from "node:test"
+
 import { samples } from "./samples.ts"
 
 test("samples", () => {

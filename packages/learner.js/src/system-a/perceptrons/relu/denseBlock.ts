@@ -1,7 +1,7 @@
 import { Block } from "../../block/index.ts"
-import type { Tensor } from "../../tensor/Tensor.ts"
 import { randomTensor } from "../../tensor/randomTensor.ts"
 import type { Shape } from "../../tensor/shape.ts"
+import type { Tensor } from "../../tensor/Tensor.ts"
 import { zeroTensor } from "../../tensor/zeroTensor.ts"
 import { leakyRelu } from "./leakyRelu.ts"
 
