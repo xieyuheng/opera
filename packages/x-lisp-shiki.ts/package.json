@@ -16,7 +16,7 @@
     "src"
   ],
   "devDependencies": {
-    "oxfmt": "0.76.0",
+    "oxfmt": "0.77.0",
     "shiki": "4.6.0",
     "typescript": "^7.0.2"
   }
