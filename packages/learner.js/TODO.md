@@ -1,8 +1,3 @@
-# learner
-
-在 ai 的帮助下重读 "the little learner"
-尝试用外部 markdown 文档做文学式编程
-
 # Interlude VI: How the Model Trains
 
 [models] `accurateEnoughIrisTrainParameters`
