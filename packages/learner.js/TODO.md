@@ -3,10 +3,6 @@
 现在学了两种 layer 了，
 用图画笔记来总结一下不同神经网络的结构。
 
-练习手算 back propagation。
-
-- https://www.youtube.com/watch?v=SmZmBKc7Lrs
-
 用 propagator 构造带有复杂单元的神经网络。
 
 - neuron 本身就可以 back propagation，
